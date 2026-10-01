@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "tag": "c:plates/iron"
+    },
+    "x": {
+      "tag": "c:rods/iron"
+    }
+  },
+  "pattern": [
+    "xpx",
+    "p p",
+    "xpx"
+  ],
+  "result": {
+    "count": 16,
+    "id": "adv_rocketry:block_structure_block"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "adv_rocketry:motors"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:control_circuit_board"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:legs_upgrade"
+    }
+  ],
+  "ticks": 200
+}

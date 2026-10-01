@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:fluid_io_circuit_board"
+    },
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "g": {
+      "tag": "c:fans/steel"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    },
+    "r": {
+      "tag": "c:rods/iron"
+    },
+    "s": {
+      "item": "adv_rocketry:user_interface"
+    }
+  },
+  "pattern": [
+    "rsr",
+    "abc",
+    "pgp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:centrifuge"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    {
+      "item": "minecraft:compass"
+    },
+    {
+      "item": "adv_rocketry:user_interface"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:station_orientation_controller"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "parent": "adv_rocketry:normal/suitedup",
+  "criteria": {
+    "oxygen_vent": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "adv_rocketry:oxygen_vent"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.freshAir.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:oxygen_vent"
+    },
+    "title": {
+      "translate": "advancement.freshAir"
+    }
+  },
+  "requirements": [
+    [
+      "oxygen_vent"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

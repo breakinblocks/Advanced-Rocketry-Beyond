@@ -1,0 +1,6 @@
+allprojects { project ->
+    project.afterEvaluate {
+        project.sourceSets.main.java.srcDir project.file('dev/guide-export')
+        project.neoForge.runs.named('client') { gameDirectory = project.file('run-guide-export') }
+    }
+}

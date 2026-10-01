@@ -1,0 +1,42 @@
+{
+  "parent": "adv_rocketry:normal/power",
+  "criteria": {
+    "pipe": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": [
+                  "adv_rocketry:energy_cable",
+                  "adv_rocketry:fluid_pipe",
+                  "adv_rocketry:item_conduit"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.tubular.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:fluid_pipe"
+    },
+    "title": {
+      "translate": "advancement.tubular"
+    }
+  },
+  "requirements": [
+    [
+      "pipe"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

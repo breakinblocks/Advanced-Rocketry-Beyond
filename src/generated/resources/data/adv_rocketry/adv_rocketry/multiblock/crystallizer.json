@@ -1,0 +1,49 @@
+{
+  "controller": "adv_rocketry:crystallizer",
+  "keys": {
+    "I": {
+      "any": [
+        "adv_rocketry:block_item_input_block"
+      ]
+    },
+    "L": {
+      "any": [
+        "adv_rocketry:block_fluid_input_block"
+      ]
+    },
+    "O": {
+      "any": [
+        "adv_rocketry:block_item_output_block"
+      ]
+    },
+    "P": {
+      "any": [
+        [
+          "adv_rocketry:block_energy_input_block",
+          "adv_rocketry:creative_energy_input"
+        ]
+      ]
+    },
+    "Q": {
+      "any": [
+        "adv_rocketry:quartz_crucible"
+      ]
+    },
+    "l": {
+      "any": [
+        "adv_rocketry:block_fluid_output_block"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "QQQ",
+      "QQQ"
+    ],
+    [
+      "OcI",
+      "lPL"
+    ]
+  ],
+  "order": 2
+}

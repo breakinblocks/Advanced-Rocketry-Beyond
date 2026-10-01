@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/holographic",
+  "criteria": {
+    "centrifuge": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:centrifuge"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.spinCycle.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:centrifuge"
+    },
+    "title": {
+      "translate": "advancement.spinCycle"
+    }
+  },
+  "requirements": [
+    [
+      "centrifuge"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

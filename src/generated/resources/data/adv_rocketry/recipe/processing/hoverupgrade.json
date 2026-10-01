@@ -1,0 +1,29 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/redstone"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:basic_circuit"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:redstone_torch"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:hover_upgrade"
+    }
+  ],
+  "ticks": 200
+}

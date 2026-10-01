@@ -1,0 +1,24 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 20,
+  "inputs": [
+    {
+      "type": "neoforge:components",
+      "components": {
+        "minecraft:damage": 32766
+      },
+      "count": 1,
+      "items": "adv_rocketry:carbon_scrubber_cartridge"
+    }
+  ],
+  "machine": "chemical_reactor",
+  "outputs": [
+    {
+      "id": "adv_rocketry:carbon_scrubber_cartridge"
+    },
+    {
+      "id": "minecraft:charcoal"
+    }
+  ],
+  "ticks": 40
+}

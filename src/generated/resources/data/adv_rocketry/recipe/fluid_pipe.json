@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:glass"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "III",
+    "CCC",
+    "III"
+  ],
+  "result": {
+    "count": 8,
+    "id": "adv_rocketry:fluid_pipe"
+  }
+}

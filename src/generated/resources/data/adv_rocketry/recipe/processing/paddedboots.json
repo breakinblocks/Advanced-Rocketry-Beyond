@@ -1,0 +1,29 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:feather"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:leather_boots"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:padded_boots_upgrade"
+    }
+  ],
+  "ticks": 200
+}

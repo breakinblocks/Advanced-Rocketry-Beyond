@@ -1,0 +1,21 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "adv_rocketry:station_id_chip"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:tracking_circuit"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:elevator_chip"
+    }
+  ],
+  "ticks": 100
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/holographic",
+  "criteria": {
+    "warp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:electrolyzer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.electrifying.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:electrolyzer"
+    },
+    "title": {
+      "translate": "advancement.electrifying"
+    }
+  },
+  "requirements": [
+    [
+      "warp"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

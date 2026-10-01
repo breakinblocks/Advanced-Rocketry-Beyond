@@ -1,0 +1,29 @@
+{
+  "parent": "adv_rocketry:normal/liftoff",
+  "criteria": {
+    "moonlanding": {
+      "conditions": {
+        "milestone": "moon_landing"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.moonLanding.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:moon_turf"
+    },
+    "title": {
+      "translate": "advancement.moonLanding"
+    }
+  },
+  "requirements": [
+    [
+      "moonlanding"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

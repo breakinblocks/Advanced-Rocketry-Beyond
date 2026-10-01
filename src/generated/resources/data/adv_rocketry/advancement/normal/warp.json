@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/dilithium",
+  "criteria": {
+    "warp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:warp_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.warp.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:warp_core"
+    },
+    "title": {
+      "translate": "advancement.warp"
+    }
+  },
+  "requirements": [
+    [
+      "warp"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "l": {
+      "item": "minecraft:glowstone"
+    },
+    "p": {
+      "tag": "c:sheets/iron"
+    }
+  },
+  "pattern": [
+    "p  ",
+    " l ",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:circle_light"
+  }
+}

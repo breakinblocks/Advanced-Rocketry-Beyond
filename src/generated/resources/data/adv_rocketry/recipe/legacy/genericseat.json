@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "tag": "c:plates/steel"
+    },
+    "x": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "xsx"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:seat"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "adv_rocketry:processing",
+  "catalysts": [
+    {
+      "count": 1,
+      "tag": "c:lenses/precision_laser_etcher"
+    }
+  ],
+  "energy": 400,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:plates/gold"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/redstone"
+    },
+    {
+      "count": 4,
+      "item": "adv_rocketry:silicon_wafer"
+    }
+  ],
+  "machine": "precision_laser_etcher",
+  "outputs": [
+    {
+      "count": 2,
+      "id": "adv_rocketry:basic_circuit_plate"
+    }
+  ],
+  "ticks": 1200
+}

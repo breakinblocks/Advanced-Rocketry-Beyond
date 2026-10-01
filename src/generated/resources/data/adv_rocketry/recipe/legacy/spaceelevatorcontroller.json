@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "tag": "c:coils/aluminum"
+    },
+    "d": {
+      "item": "adv_rocketry:control_circuit_board"
+    }
+  },
+  "pattern": [
+    " d ",
+    "aba",
+    "ccc"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:space_elevator"
+  }
+}

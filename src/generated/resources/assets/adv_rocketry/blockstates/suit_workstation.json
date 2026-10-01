@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/suit_workstation",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/suit_workstation"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/suit_workstation",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/suit_workstation",
+      "y": 270
+    }
+  }
+}

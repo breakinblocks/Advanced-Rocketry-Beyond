@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "c:coils/copper"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    },
+    "r": {
+      "tag": "c:rods/steel"
+    }
+  },
+  "pattern": [
+    " cp",
+    "rrp",
+    " cp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:block_motor_block"
+  }
+}

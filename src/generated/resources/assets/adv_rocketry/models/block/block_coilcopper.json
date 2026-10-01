@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "adv_rocketry:connected",
+  "textures": {
+    "base": "adv_rocketry:block/ctm/coilside_copper/base",
+    "center": "adv_rocketry:block/ctm/coilside_copper/center",
+    "corner": "adv_rocketry:block/ctm/coilside_copper/corner",
+    "horizontal": "adv_rocketry:block/ctm/coilside_copper/horizontal",
+    "particle": "adv_rocketry:block/ctm/coilside_copper/base",
+    "vertical": "adv_rocketry:block/ctm/coilside_copper/vertical"
+  }
+}

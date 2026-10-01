@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:item_data_storage"
+    },
+    {
+      "item": "adv_rocketry:tracking_circuit"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:asteroid_chip"
+  }
+}

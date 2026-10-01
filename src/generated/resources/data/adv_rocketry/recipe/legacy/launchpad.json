@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:concrete"
+    },
+    {
+      "tag": "c:dyes/black"
+    },
+    {
+      "tag": "c:dyes/yellow"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:launch_pad"
+  }
+}

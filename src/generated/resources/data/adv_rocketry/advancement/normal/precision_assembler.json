@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/cutting_machine",
+  "criteria": {
+    "precision_assembler": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:precision_assembler"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.steadyHands.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:precision_assembler"
+    },
+    "title": {
+      "translate": "advancement.steadyHands"
+    }
+  },
+  "requirements": [
+    [
+      "precision_assembler"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

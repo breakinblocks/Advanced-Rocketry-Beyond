@@ -1,0 +1,62 @@
+{
+  "controller": "adv_rocketry:biome_scanner",
+  "keys": {
+    "M": {
+      "any": [
+        "#adv_rocketry:motors"
+      ]
+    },
+    "R": {
+      "any": [
+        "minecraft:redstone_block"
+      ]
+    },
+    "S": {
+      "any": [
+        "adv_rocketry:block_structure_block"
+      ]
+    },
+    "T": {
+      "any": [
+        "adv_rocketry:structure_tower"
+      ]
+    },
+    "Z": {
+      "any": [
+        "adv_rocketry:aluminum_block"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "     ",
+      "     ",
+      "  c  ",
+      "     ",
+      "     "
+    ],
+    [
+      "     ",
+      "     ",
+      "  M  ",
+      "     ",
+      "     "
+    ],
+    [
+      " ZZZ ",
+      "ZZTZZ",
+      "ZTSTZ",
+      "ZZTZZ",
+      " ZZZ "
+    ],
+    [
+      "     ",
+      "     ",
+      "  R  ",
+      "     ",
+      "     "
+    ]
+  ],
+  "order": 17,
+  "rotates": false
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/crystalline",
+  "criteria": {
+    "cutting_machine": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:cutting_machine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.cutItOut.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:cutting_machine"
+    },
+    "title": {
+      "translate": "advancement.cutItOut"
+    }
+  },
+  "requirements": [
+    [
+      "cutting_machine"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

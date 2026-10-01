@@ -1,0 +1,140 @@
+import groovy.json.JsonSlurper
+import java.security.MessageDigest
+import org.slf4j.event.Level
+
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '1.0.21'
+}
+
+version = mod_version
+group = 'com.saymayhem.advancedrocketry'
+base { archivesName = 'advancedrocketry-1.21.1' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    maven { url = 'https://cursemaven.com' }
+    maven {
+        url = 'https://maven.blamejared.com/'
+        content { includeGroup 'mezz.jei' }
+    }
+    maven {
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
+}
+
+configurations {
+    devRuntime
+    runtimeClasspath.extendsFrom devRuntime
+}
+
+dependencies {
+    compileOnly 'mezz.jei:jei-1.21.1-neoforge-api:19.27.0.340'
+    devRuntime 'mezz.jei:jei-1.21.1-neoforge:19.27.0.340'
+    compileOnly 'curse.maven:guideme-1173950:8897145'
+    compileOnly 'maven.modrinth:jade:15.10.6+neoforge'
+    devRuntime 'maven.modrinth:jade:15.10.6+neoforge'
+    if (providers.gradleProperty('withGuideMe').isPresent()) {
+        runtimeOnly 'curse.maven:guideme-1173950:8897145'
+    }
+}
+
+neoForge {
+    version = neo_version
+    parchment {
+        minecraftVersion = '1.21.1'
+        mappingsVersion = '2024.11.17'
+    }
+    runs {
+        client { client() }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+        gameTestServer {
+            type = 'gameTestServer'
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'adv_rocketry'
+        }
+        data {
+            data()
+            programArguments.addAll '--mod', 'adv_rocketry', '--all',
+                '--output', file('src/generated/resources').absolutePath,
+                '--existing', file('src/main/resources').absolutePath
+        }
+        configureEach { logLevel = Level.INFO }
+    }
+    mods {
+        adv_rocketry { sourceSet sourceSets.main }
+    }
+}
+
+if (providers.gradleProperty('processingTests').isPresent()) {
+    sourceSets.main.java.srcDir 'gametest/java'
+    sourceSets.main.resources.srcDir 'gametest/resources'
+    neoForge.runs.named('gameTestServer') { gameDirectory = file('run-gametest') }
+}
+
+var metadata = tasks.register('generateModMetadata', ProcessResources) {
+    inputs.property 'mod_version', project.version
+    from 'src/main/templates'
+    into 'build/generated/modMetadata'
+    expand mod_version: project.version
+}
+sourceSets.main.resources.srcDir metadata
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+    exclude '.cache/'
+}
+neoForge.ideSyncTask metadata
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('jar') {
+    from('LICENSE.md')
+    from('NOTICE.md')
+}
+
+def mainSourceDirectory = layout.projectDirectory.dir('src/main/java').asFile
+def sourceMarker = layout.buildDirectory.file('verifySources/verified.txt')
+def verifySources = tasks.register('verifySources') {
+    inputs.dir(mainSourceDirectory)
+    outputs.file(sourceMarker)
+    doLast {
+        mainSourceDirectory.eachFileRecurse { source ->
+            if (source.name.endsWith('.java')) {
+                def text = source.text
+                def stripped = new StringBuilder()
+                int state = 0
+                for (int index = 0; index < text.length(); index++) {
+                    int current = text.charAt(index)
+                    int next = index + 1 < text.length() ? text.charAt(index + 1) : -1
+                    if (state == 1 || state == 2) {
+                        if (current == 92) index++
+                        else if (current == (state == 1 ? 34 : 39)) state = 0
+                    } else if (state == 3) {
+                        if (current == 10) { state = 0; stripped.append('\n') }
+                    } else if (state == 4) {
+                        if (current == 42 && next == 47) { state = 0; index++ }
+                    } else if (current == 34 || current == 39) {
+                        state = current == 34 ? 1 : 2
+                        stripped.append(' ')
+                    } else if (current == 47 && (next == 47 || next == 42)) {
+                        state = next == 47 ? 3 : 4
+                        stripped.append(' '); index++
+                    } else stripped.append((char) current)
+                }
+                def code = stripped.toString().replaceAll(/(?m)^\s*(?:package|import)\s+[^\r\n;]+;/, '')
+                if (code =~ /\b(?:java|javax|net|org|com|advRocketry)\.[a-z]\w*(?:\.\w+)+/) {
+                    throw new GradleException("Use top-level imports instead of fully qualified names in $source")
+                }
+            }
+            if (source.name.endsWith('.java') && source.text =~ /(?m)^\s*(import|package)\s+(ARLib|arLib|dev\.galacticraft\.dynamicdimensions)\./) {
+                throw new GradleException("Excluded library source referenced by $source")
+            }
+        }
+        def marker = sourceMarker.get().asFile
+        marker.parentFile.mkdirs()
+        marker.text = 'verified'
+    }
+}
+tasks.named('compileJava') { dependsOn verifySources }

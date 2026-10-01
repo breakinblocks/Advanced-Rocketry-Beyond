@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "adv_rocketry:block/seat"
+    },
+    "facing=east": {
+      "model": "adv_rocketry:block/seat",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/seat"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/seat",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "adv_rocketry:block/seat"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/seat",
+      "y": 270
+    }
+  }
+}

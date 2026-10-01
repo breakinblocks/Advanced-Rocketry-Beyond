@@ -1,0 +1,33 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "adv_rocketry:battery"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:user_interface"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:basic_lens"
+    },
+    {
+      "count": 1,
+      "tag": "c:plates/tin"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:atm_analyzer"
+    }
+  ],
+  "ticks": 1000
+}

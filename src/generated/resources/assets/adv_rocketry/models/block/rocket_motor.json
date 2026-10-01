@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "automatic_culling": false,
+  "flip_v": true,
+  "loader": "neoforge:obj",
+  "model": "adv_rocketry:models/rocket/rocketmotor.obj",
+  "textures": {
+    "particle": "adv_rocketry:block/rocket/rocketmotor"
+  }
+}

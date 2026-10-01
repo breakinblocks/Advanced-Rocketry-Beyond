@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "adv_rocketry:block/force_field_projector",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "adv_rocketry:block/force_field_projector",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/force_field_projector"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/force_field_projector",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "adv_rocketry:block/force_field_projector",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/force_field_projector",
+      "y": 270
+    }
+  }
+}

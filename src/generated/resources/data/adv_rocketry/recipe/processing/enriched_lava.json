@@ -1,0 +1,75 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 10,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "adv_rocketry:enriched_lava"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 1000,
+      "id": "minecraft:lava"
+    }
+  ],
+  "machine": "centrifuge",
+  "rolls": 4,
+  "ticks": 200,
+  "weighted_outputs": [
+    {
+      "output": {
+        "tag": "c:nuggets/copper"
+      },
+      "weight": 100
+    },
+    {
+      "output": {
+        "tag": "c:nuggets/iron"
+      },
+      "weight": 100
+    },
+    {
+      "output": {
+        "tag": "c:nuggets/tin"
+      },
+      "weight": 100
+    },
+    {
+      "output": {
+        "tag": "c:nuggets/lead"
+      },
+      "weight": 100
+    },
+    {
+      "output": {
+        "tag": "c:nuggets/silver"
+      },
+      "weight": 100
+    },
+    {
+      "output": {
+        "tag": "c:nuggets/gold"
+      },
+      "weight": 75
+    },
+    {
+      "output": {
+        "tag": "c:nuggets/diamond"
+      },
+      "weight": 10
+    },
+    {
+      "output": {
+        "tag": "c:nuggets/uranium"
+      },
+      "weight": 10
+    },
+    {
+      "output": {
+        "tag": "c:nuggets/iridium"
+      },
+      "weight": 1
+    }
+  ]
+}

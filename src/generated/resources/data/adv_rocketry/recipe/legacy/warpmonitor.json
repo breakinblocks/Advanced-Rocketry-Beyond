@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "i": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "o": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "pip",
+    "obo",
+    "pcp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:warp_controller"
+  }
+}

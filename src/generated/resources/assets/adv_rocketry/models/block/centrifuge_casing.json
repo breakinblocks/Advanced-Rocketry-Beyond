@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "adv_rocketry:connected",
+  "textures": {
+    "base": "adv_rocketry:block/ctm/panelside/base",
+    "center": "adv_rocketry:block/ctm/panelside/center",
+    "corner": "adv_rocketry:block/ctm/panelside/corner",
+    "horizontal": "adv_rocketry:block/ctm/panelside/horizontal",
+    "particle": "adv_rocketry:block/ctm/panelside/base",
+    "vertical": "adv_rocketry:block/ctm/panelside/vertical"
+  }
+}

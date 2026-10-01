@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,state=false": {
+      "model": "adv_rocketry:block/lathe",
+      "y": 90
+    },
+    "facing=east,state=true": {
+      "model": "adv_rocketry:block/lathe_formed",
+      "y": 90
+    },
+    "facing=north,state=false": {
+      "model": "adv_rocketry:block/lathe"
+    },
+    "facing=north,state=true": {
+      "model": "adv_rocketry:block/lathe_formed"
+    },
+    "facing=south,state=false": {
+      "model": "adv_rocketry:block/lathe",
+      "y": 180
+    },
+    "facing=south,state=true": {
+      "model": "adv_rocketry:block/lathe_formed",
+      "y": 180
+    },
+    "facing=west,state=false": {
+      "model": "adv_rocketry:block/lathe",
+      "y": 270
+    },
+    "facing=west,state=true": {
+      "model": "adv_rocketry:block/lathe_formed",
+      "y": 270
+    }
+  }
+}

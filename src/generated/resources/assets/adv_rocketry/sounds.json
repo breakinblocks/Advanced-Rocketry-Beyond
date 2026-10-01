@@ -1,0 +1,98 @@
+{
+  "airhissloop": {
+    "sounds": [
+      "adv_rocketry:airhissloop"
+    ],
+    "subtitle": "subtitles.adv_rocketry.airhissloop"
+  },
+  "basic_laser_gun": {
+    "sounds": [
+      "adv_rocketry:basic_laser_gun"
+    ],
+    "subtitle": "subtitles.adv_rocketry.basic_laser_gun"
+  },
+  "buttonblipa": {
+    "sounds": [
+      "adv_rocketry:buttonblipa"
+    ],
+    "subtitle": "subtitles.adv_rocketry.buttonblipa"
+  },
+  "combustionrocket": {
+    "sounds": [
+      "adv_rocketry:combustionrocket"
+    ],
+    "subtitle": "subtitles.adv_rocketry.combustionrocket"
+  },
+  "crystallizer": {
+    "sounds": [
+      "adv_rocketry:crystallizer"
+    ],
+    "subtitle": "subtitles.adv_rocketry.crystallizer"
+  },
+  "cuttingmachine": {
+    "sounds": [
+      "adv_rocketry:cuttingmachine"
+    ],
+    "subtitle": "subtitles.adv_rocketry.cuttingmachine"
+  },
+  "electricarcfurnace": {
+    "sounds": [
+      "adv_rocketry:electricarcfurnace"
+    ],
+    "subtitle": "subtitles.adv_rocketry.electricarcfurnace"
+  },
+  "electricshocksmall": {
+    "sounds": [
+      "adv_rocketry:electricshocksmall"
+    ],
+    "subtitle": "subtitles.adv_rocketry.electricshocksmall"
+  },
+  "electrolyser": {
+    "sounds": [
+      "adv_rocketry:electrolyser"
+    ],
+    "subtitle": "subtitles.adv_rocketry.electrolyser"
+  },
+  "gravityohhh": {
+    "sounds": [
+      "adv_rocketry:gravityohhh"
+    ],
+    "subtitle": "subtitles.adv_rocketry.gravityohhh"
+  },
+  "laserdrill": {
+    "sounds": [
+      "adv_rocketry:laserdrill"
+    ],
+    "subtitle": "subtitles.adv_rocketry.laserdrill"
+  },
+  "lathe": {
+    "sounds": [
+      "adv_rocketry:lathe"
+    ],
+    "subtitle": "subtitles.adv_rocketry.lathe"
+  },
+  "machinelarge": {
+    "sounds": [
+      "adv_rocketry:machinelarge"
+    ],
+    "subtitle": "subtitles.adv_rocketry.machinelarge"
+  },
+  "precass": {
+    "sounds": [
+      "adv_rocketry:precass"
+    ],
+    "subtitle": "subtitles.adv_rocketry.precass"
+  },
+  "railgunbang": {
+    "sounds": [
+      "adv_rocketry:railgunbang"
+    ],
+    "subtitle": "subtitles.adv_rocketry.railgunbang"
+  },
+  "rollingmachine": {
+    "sounds": [
+      "adv_rocketry:rollingmachine"
+    ],
+    "subtitle": "subtitles.adv_rocketry.rollingmachine"
+  }
+}

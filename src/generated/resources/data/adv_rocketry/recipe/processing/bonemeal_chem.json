@@ -1,0 +1,24 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "fluid_inputs": [
+    {
+      "amount": 10,
+      "fluid": "adv_rocketry:nitrogen"
+    }
+  ],
+  "inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:bone"
+    }
+  ],
+  "machine": "chemical_reactor",
+  "outputs": [
+    {
+      "count": 8,
+      "id": "minecraft:bone_meal"
+    }
+  ],
+  "ticks": 100
+}

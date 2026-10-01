@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "tag": "c:plates/steel"
+    },
+    "r": {
+      "tag": "c:rods/steel"
+    }
+  },
+  "pattern": [
+    "p p",
+    " r ",
+    "p p"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:steel_fan"
+  }
+}

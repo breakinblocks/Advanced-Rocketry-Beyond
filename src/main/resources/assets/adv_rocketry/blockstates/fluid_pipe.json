@@ -1,0 +1,138 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "active": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core"
+      }
+    },
+    {
+      "when": {
+        "active": "false",
+        "north": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm"
+      }
+    },
+    {
+      "when": {
+        "active": "false",
+        "east": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "active": "false",
+        "south": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "active": "false",
+        "west": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "active": "false",
+        "up": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "active": "false",
+        "down": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "active": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core_active"
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "north": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active"
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "east": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "south": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "up": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "down": "true"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "x": 90
+      }
+    }
+  ]
+}

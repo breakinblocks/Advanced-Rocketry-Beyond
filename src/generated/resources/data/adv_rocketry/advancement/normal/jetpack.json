@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/suitedup",
+  "criteria": {
+    "jetpack": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:jetpack"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.rocketMan.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:jetpack"
+    },
+    "title": {
+      "translate": "advancement.rocketMan"
+    }
+  },
+  "requirements": [
+    [
+      "jetpack"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

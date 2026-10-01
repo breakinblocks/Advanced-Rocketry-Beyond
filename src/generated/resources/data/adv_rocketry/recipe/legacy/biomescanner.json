@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "tag": "c:batteries"
+    },
+    "l": {
+      "item": "adv_rocketry:satellite_biome_changer"
+    },
+    "p": {
+      "tag": "c:plates/tin"
+    },
+    "s": {
+      "item": "adv_rocketry:block_structure_block"
+    }
+  },
+  "pattern": [
+    "plp",
+    "bsb",
+    "ppp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:biome_scanner"
+  }
+}

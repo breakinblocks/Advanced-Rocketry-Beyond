@@ -1,0 +1,21 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "adv_rocketry:tracking_circuit"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:atmosphere_upgrade"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:beacon_finder"
+    }
+  ],
+  "ticks": 100
+}

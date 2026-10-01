@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "tag": "c:plates/steel"
+    },
+    "r": {
+      "tag": "c:ingots/steel"
+    },
+    "s": {
+      "tag": "c:rods/steel"
+    }
+  },
+  "pattern": [
+    "sps",
+    " r ",
+    "sps"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:steel_gear"
+  }
+}

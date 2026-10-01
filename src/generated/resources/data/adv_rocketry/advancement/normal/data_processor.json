@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/observatory",
+  "criteria": {
+    "astrobody_data_processor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:astrobody_data_processor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.numberCruncher.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:astrobody_data_processor"
+    },
+    "title": {
+      "translate": "advancement.numberCruncher"
+    }
+  },
+  "requirements": [
+    [
+      "astrobody_data_processor"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

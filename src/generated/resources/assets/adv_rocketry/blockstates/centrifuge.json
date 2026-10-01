@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,state=false": {
+      "model": "adv_rocketry:block/centrifuge",
+      "y": 90
+    },
+    "facing=east,state=true": {
+      "model": "adv_rocketry:block/centrifuge_formed",
+      "y": 90
+    },
+    "facing=north,state=false": {
+      "model": "adv_rocketry:block/centrifuge"
+    },
+    "facing=north,state=true": {
+      "model": "adv_rocketry:block/centrifuge_formed"
+    },
+    "facing=south,state=false": {
+      "model": "adv_rocketry:block/centrifuge",
+      "y": 180
+    },
+    "facing=south,state=true": {
+      "model": "adv_rocketry:block/centrifuge_formed",
+      "y": 180
+    },
+    "facing=west,state=false": {
+      "model": "adv_rocketry:block/centrifuge",
+      "y": 270
+    },
+    "facing=west,state=true": {
+      "model": "adv_rocketry:block/centrifuge_formed",
+      "y": 270
+    }
+  }
+}

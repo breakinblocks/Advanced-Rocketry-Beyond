@@ -1,0 +1,75 @@
+{
+  "controller": "adv_rocketry:observatory",
+  "keys": {
+    "*": {
+      "any": [
+        "minecraft:iron_block",
+        "#adv_rocketry:machine_ports"
+      ]
+    },
+    "M": {
+      "any": [
+        "#adv_rocketry:motors"
+      ]
+    },
+    "S": {
+      "any": [
+        "adv_rocketry:block_structure_block"
+      ]
+    },
+    "T": {
+      "any": [
+        "adv_rocketry:structure_tower"
+      ]
+    },
+    "a": {
+      "air": true
+    },
+    "n": {
+      "any": [
+        [
+          "minecraft:glass",
+          "adv_rocketry:lens_block"
+        ]
+      ]
+    }
+  },
+  "layers": [
+    [
+      "     ",
+      " SnS ",
+      " SSS ",
+      " SSS ",
+      "     "
+    ],
+    [
+      "     ",
+      " SSS ",
+      " SnS ",
+      " SSS ",
+      "     "
+    ],
+    [
+      " SSS ",
+      "SaaaS",
+      "SaaaS",
+      "SanaS",
+      " SSS "
+    ],
+    [
+      " *c* ",
+      "*SSS*",
+      "*SSS*",
+      "*SSS*",
+      " *** "
+    ],
+    [
+      " *** ",
+      "*TTT*",
+      "*TMT*",
+      "*TTT*",
+      " *** "
+    ]
+  ],
+  "order": 23
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:guidance_computer"
+    },
+    "c": {
+      "item": "adv_rocketry:tracking_circuit"
+    },
+    "l": {
+      "item": "minecraft:lever"
+    },
+    "o": {
+      "item": "adv_rocketry:composition_sensor"
+    },
+    "p": {
+      "item": "minecraft:stone_button"
+    }
+  },
+  "pattern": [
+    "cpc",
+    "lbl",
+    "coc"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:holographic_planet_selector"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "adv_rocketry:block/block_energy_output_block"
+    }
+  }
+}

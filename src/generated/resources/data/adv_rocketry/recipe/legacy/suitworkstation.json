@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "pattern": [
+    "c",
+    "b"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:suit_workstation"
+  }
+}

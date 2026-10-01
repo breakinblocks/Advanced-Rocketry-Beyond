@@ -1,0 +1,34 @@
+{
+  "parent": "adv_rocketry:normal/bipropellant",
+  "criteria": {
+    "nuclear_rocket_motor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:nuclear_rocket_motor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.atomicAge.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:nuclear_rocket_motor"
+    },
+    "title": {
+      "translate": "advancement.atomicAge"
+    }
+  },
+  "requirements": [
+    [
+      "nuclear_rocket_motor"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

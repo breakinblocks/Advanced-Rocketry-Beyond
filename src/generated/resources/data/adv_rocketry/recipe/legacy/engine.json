@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "tag": "c:ingots/steel"
+    },
+    "t": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "sss",
+    " t ",
+    "t t"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:rocket_motor"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:basic_satellite_solar_panel"
+    },
+    {
+      "item": "adv_rocketry:basic_satellite_solar_panel"
+    },
+    {
+      "item": "adv_rocketry:basic_satellite_solar_panel"
+    },
+    {
+      "item": "adv_rocketry:basic_satellite_solar_panel"
+    },
+    {
+      "item": "adv_rocketry:basic_satellite_solar_panel"
+    },
+    {
+      "item": "adv_rocketry:basic_satellite_solar_panel"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:large_satellite_solar_panel"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:repeater"
+    },
+    "b": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "c": {
+      "item": "minecraft:diamond"
+    },
+    "d": {
+      "item": "adv_rocketry:item_io_circuit_board"
+    },
+    "e": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "f": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "g": {
+      "item": "minecraft:furnace"
+    },
+    "h": {
+      "tag": "c:gears/steel"
+    },
+    "i": {
+      "item": "minecraft:dropper"
+    }
+  },
+  "pattern": [
+    "abc",
+    "def",
+    "ghi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:precision_assembler"
+  }
+}

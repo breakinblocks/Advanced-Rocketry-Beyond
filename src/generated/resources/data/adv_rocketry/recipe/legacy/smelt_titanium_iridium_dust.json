@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "tag": "c:dusts/titanium_iridium"
+  },
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:titanium_iridium_ingot"
+  }
+}

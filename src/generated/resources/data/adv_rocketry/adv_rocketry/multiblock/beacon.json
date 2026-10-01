@@ -1,0 +1,44 @@
+{
+  "controller": "adv_rocketry:beacon",
+  "keys": {
+    "R": {
+      "any": [
+        "minecraft:redstone_block"
+      ]
+    },
+    "S": {
+      "any": [
+        "adv_rocketry:block_structure_block"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "   ",
+      " R ",
+      "   "
+    ],
+    [
+      "   ",
+      " S ",
+      "   "
+    ],
+    [
+      "   ",
+      " S ",
+      "   "
+    ],
+    [
+      "   ",
+      " S ",
+      "   "
+    ],
+    [
+      " c ",
+      "SSS",
+      " S "
+    ]
+  ],
+  "order": 13,
+  "rotates": false
+}

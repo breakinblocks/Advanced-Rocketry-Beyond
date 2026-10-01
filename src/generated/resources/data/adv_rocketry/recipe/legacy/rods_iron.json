@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "x  ",
+    " x ",
+    "  x"
+  ],
+  "result": {
+    "count": 4,
+    "id": "adv_rocketry:iron_rod"
+  }
+}

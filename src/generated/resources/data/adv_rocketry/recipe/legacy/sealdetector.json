@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "minecraft:comparator"
+    },
+    "f": {
+      "tag": "c:fans/steel"
+    },
+    "g": {
+      "tag": "c:glass_panes"
+    },
+    "t": {
+      "item": "minecraft:redstone_torch"
+    }
+  },
+  "pattern": [
+    "tgt",
+    " f ",
+    " c "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:seal_detector"
+  }
+}

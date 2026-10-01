@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/space_station",
+  "criteria": {
+    "railgun": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:railgun"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.specialDelivery.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:railgun"
+    },
+    "title": {
+      "translate": "advancement.specialDelivery"
+    }
+  },
+  "requirements": [
+    [
+      "railgun"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

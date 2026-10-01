@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "g": {
+      "tag": "c:glass_panes"
+    },
+    "p": {
+      "tag": "c:plates/iron"
+    },
+    "r": {
+      "tag": "c:rods/iron"
+    },
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "prp",
+    "rgr",
+    "www"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:space_helmet"
+  }
+}

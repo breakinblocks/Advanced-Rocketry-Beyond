@@ -1,0 +1,18 @@
+{
+  "distance": 120,
+  "mass": 50,
+  "mass_variability": 0.5,
+  "ores": [
+    {
+      "item": "adv_rocketry:dilithium_ore",
+      "weight": 20.0
+    },
+    {
+      "item": "minecraft:emerald_ore",
+      "weight": 5.0
+    }
+  ],
+  "probability": 1.0,
+  "richness": 0.2,
+  "richness_variability": 0.5
+}

@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:anvil"
+    },
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:basic_circuit"
+    },
+    "d": {
+      "item": "adv_rocketry:item_data_storage"
+    },
+    "h": {
+      "item": "minecraft:hopper"
+    },
+    "m": {
+      "tag": "adv_rocketry:motors"
+    },
+    "s": {
+      "item": "adv_rocketry:saw_blade_assembly"
+    },
+    "t": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "dht",
+    "cbc",
+    "mas"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:satellite_builder"
+  }
+}

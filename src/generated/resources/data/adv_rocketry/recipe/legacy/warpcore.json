@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "tag": "c:coils/copper"
+    },
+    "c": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "g": {
+      "tag": "c:plates/titanium"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "gcg",
+    "pbp",
+    "gcg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:warp_core"
+  }
+}

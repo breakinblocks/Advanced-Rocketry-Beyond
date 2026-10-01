@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:block_energy_output_block"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:block_energy_input_block"
+  }
+}

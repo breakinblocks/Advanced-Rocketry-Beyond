@@ -1,0 +1,271 @@
+{
+  "controller": "adv_rocketry:atmosphere_terraformer",
+  "keys": {
+    "A": {
+      "any": [
+        "adv_rocketry:block_advanced_structure_block"
+      ]
+    },
+    "F": {
+      "any": [
+        "adv_rocketry:fuel_tank"
+      ]
+    },
+    "L": {
+      "any": [
+        "adv_rocketry:block_fluid_input_block"
+      ]
+    },
+    "P": {
+      "any": [
+        "adv_rocketry:block_energy_input_block"
+      ]
+    },
+    "k": {
+      "any": [
+        "adv_rocketry:concrete"
+      ]
+    },
+    "v": {
+      "any": [
+        "adv_rocketry:oxygen_vent"
+      ]
+    },
+    "y": {
+      "any": [
+        "minecraft:clay"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "        v        ",
+      "     vAAAAAv     ",
+      "     AAAAAAA     ",
+      "     AAAAAAA     ",
+      "    vAAAAAAAv    ",
+      "     AAAAAAA     ",
+      "     AAAAAAA     ",
+      "     vAAAAAv     ",
+      "        v        ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 "
+    ],
+    [
+      "                 ",
+      "                 ",
+      "                 ",
+      "        A        ",
+      "      AAAAA      ",
+      "     AAAAAAA     ",
+      "    AAAAAAAAA    ",
+      "    AAAAAAAAA    ",
+      "   AAAAAAAAAAA   ",
+      "    AAAAAAAAA    ",
+      "    AAAAAAAAA    ",
+      "     AAAAAAA     ",
+      "      AAAAA      ",
+      "        A        ",
+      "                 ",
+      "                 ",
+      "                 "
+    ],
+    [
+      "                 ",
+      "                 ",
+      "                 ",
+      "      AAAAA      ",
+      "     AAAAAAA     ",
+      "    AAAAAAAAA    ",
+      "   AAAAAAAAAAA   ",
+      "   AAAAAAAAAAA   ",
+      "   AAAAAAAAAAA   ",
+      "   AAAAAAAAAAA   ",
+      "   AAAAAAAAAAA   ",
+      "    AAAAAAAAA    ",
+      "     AAAAAAA     ",
+      "      AAAAA      ",
+      "                 ",
+      "                 ",
+      "                 "
+    ],
+    [
+      "                 ",
+      "       y y       ",
+      "       y y       ",
+      "      AyAyA      ",
+      "     AAAAAAA     ",
+      "    AAAAAAAAA    ",
+      "   AAAAAAAAAAA   ",
+      " yyyAAAAAAAAAyyy ",
+      "   AAAAAAAAAAA   ",
+      " yyyAAAAAAAAAyyy ",
+      "   AAAAAAAAAAA   ",
+      "    AAAAAAAAA    ",
+      "     AAAAAAA     ",
+      "      AyAyA      ",
+      "       y y       ",
+      "       y y       ",
+      "                 "
+    ],
+    [
+      "       y y       ",
+      "       y y       ",
+      "                 ",
+      "      AAAAA      ",
+      "     AAAAAAA     ",
+      "    AAAAAAAAA    ",
+      "   AAAAAAAAAAA   ",
+      "y      AAA      y",
+      "   AAAAAAAAAAA   ",
+      "y      AAA      y",
+      "   AAAAAAAAAAA   ",
+      "    AAAAAAAAA    ",
+      "     AAAAAAA     ",
+      "      AAAAA      ",
+      "                 ",
+      "       y y       ",
+      "       y y       "
+    ],
+    [
+      "       y y       ",
+      "       y y       ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "y      AAA      y",
+      "       AAA       ",
+      "y      AAA      y",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "       y y       ",
+      "       y y       "
+    ],
+    [
+      "       y y       ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "y      AAA      y",
+      "       AAA       ",
+      "y      AAA      y",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "       y y       "
+    ],
+    [
+      "       y y       ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "y      AAA      y",
+      "       AAA       ",
+      "y      AAA      y",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "       y y       "
+    ],
+    [
+      "       y y       ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "y      AAA      y",
+      "       PcP       ",
+      "y      APA      y",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "                 ",
+      "       y y       "
+    ],
+    [
+      "       y y       ",
+      "                 ",
+      "                 ",
+      "      kkkkk      ",
+      "     kkFFFkk     ",
+      "    kkkFFFkkk    ",
+      "   kkkkkkkkkkk   ",
+      "y  kFFkkkkkFFk  y",
+      "   kFFkkkkkFFk   ",
+      "y  kFFkkkkkFFk  y",
+      "   kkkkkkkkkkk   ",
+      "    kkkFFFkkk    ",
+      "     kkFFFkk     ",
+      "      kkkkk      ",
+      "                 ",
+      "                 ",
+      "       y y       "
+    ],
+    [
+      "       y y       ",
+      "       y y       ",
+      "       y y       ",
+      "      kkkkk      ",
+      "     kkFFFkk     ",
+      "    kkkFFFkkk    ",
+      "   kkkkkkkkkkk   ",
+      "yyykFFkkkkkFFkyyy",
+      "   kFFkkkkkFFk   ",
+      "yyykFFkkkkkFFkyyy",
+      "   kkkkkkkkkkk   ",
+      "    kkkFFFkkk    ",
+      "     kkFFFkk     ",
+      "      kkkkk      ",
+      "       y y       ",
+      "       y y       ",
+      "       y y       "
+    ],
+    [
+      "                 ",
+      "       y y       ",
+      "       y y       ",
+      "      kyLyk      ",
+      "     kkFFFkk     ",
+      "    kkkFFFkkk    ",
+      "   kkkkkkkkkkk   ",
+      " yyyFFkkkkkFFyyy ",
+      "   LFFkkkkkFFL   ",
+      " yyyFFkkkkkFFyyy ",
+      "   kkkkkkkkkkk   ",
+      "    kkkFFFkkk    ",
+      "     kkFFFkk     ",
+      "      kyLyk      ",
+      "       y y       ",
+      "       y y       ",
+      "                 "
+    ]
+  ],
+  "order": 20
+}

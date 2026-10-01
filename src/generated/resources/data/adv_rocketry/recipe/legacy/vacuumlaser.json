@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "adv_rocketry:ruby_crystal_block"
+    },
+    "l": {
+      "item": "adv_rocketry:lens_block"
+    },
+    "p": {
+      "tag": "c:plates/aluminum"
+    },
+    "s": {
+      "item": "adv_rocketry:block_structure_block"
+    }
+  },
+  "pattern": [
+    " l ",
+    "pcp",
+    "psp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:vacuum_laser"
+  }
+}

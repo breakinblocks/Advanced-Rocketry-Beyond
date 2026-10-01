@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/black_hole_generator"
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/black_hole_generator"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/black_hole_generator"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/black_hole_generator"
+    }
+  }
+}

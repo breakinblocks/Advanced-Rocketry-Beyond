@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "c:coils/titanium"
+    },
+    "p": {
+      "tag": "c:plates/iridium"
+    },
+    "r": {
+      "tag": "c:rods/iridium"
+    }
+  },
+  "pattern": [
+    " cp",
+    "rrp",
+    " cp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:elite_motor"
+  }
+}

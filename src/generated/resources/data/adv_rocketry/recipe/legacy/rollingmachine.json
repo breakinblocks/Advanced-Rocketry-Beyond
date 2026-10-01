@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:item_io_circuit_board"
+    },
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "i": {
+      "item": "minecraft:iron_block"
+    },
+    "p": {
+      "tag": "c:gears/steel"
+    },
+    "s": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "t": {
+      "item": "adv_rocketry:fluid_io_circuit_board"
+    }
+  },
+  "pattern": [
+    "psp",
+    "abc",
+    "iti"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:rolling_machine"
+  }
+}

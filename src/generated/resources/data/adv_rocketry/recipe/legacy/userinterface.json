@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "f": {
+      "tag": "c:dusts/glowstone"
+    },
+    "g": {
+      "item": "minecraft:glass_pane"
+    },
+    "l": {
+      "tag": "c:dyes/lime"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "   ",
+    "lrl",
+    "fgf"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:user_interface"
+  }
+}

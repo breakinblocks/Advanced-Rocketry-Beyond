@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "minecraft:clay_ball"
+    },
+    "s": {
+      "tag": "c:rods/iron"
+    }
+  },
+  "pattern": [
+    " c ",
+    "csc",
+    " c "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:pipe_sealer"
+  }
+}

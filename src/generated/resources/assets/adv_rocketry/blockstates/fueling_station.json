@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,powered=false": {
+      "model": "adv_rocketry:block/fueling_station",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "adv_rocketry:block/fueling_station",
+      "y": 90
+    },
+    "facing=north,powered=false": {
+      "model": "adv_rocketry:block/fueling_station"
+    },
+    "facing=north,powered=true": {
+      "model": "adv_rocketry:block/fueling_station"
+    },
+    "facing=south,powered=false": {
+      "model": "adv_rocketry:block/fueling_station",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "adv_rocketry:block/fueling_station",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "adv_rocketry:block/fueling_station",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "adv_rocketry:block/fueling_station",
+      "y": 270
+    }
+  }
+}

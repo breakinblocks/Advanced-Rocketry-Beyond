@@ -1,0 +1,13 @@
+{
+  "values": [
+    "adv_rocketry:block_item_input_block",
+    "adv_rocketry:block_item_output_block",
+    "adv_rocketry:block_fluid_input_block",
+    "adv_rocketry:block_fluid_output_block",
+    "adv_rocketry:block_energy_input_block",
+    "adv_rocketry:creative_energy_input",
+    "adv_rocketry:block_energy_output_block",
+    "adv_rocketry:solar_panel",
+    "adv_rocketry:data_bus"
+  ]
+}

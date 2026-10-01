@@ -1,0 +1,18 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 20,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/steel"
+    }
+  ],
+  "machine": "lathe",
+  "outputs": [
+    {
+      "count": 2,
+      "id": "adv_rocketry:steel_rod"
+    }
+  ],
+  "ticks": 300
+}

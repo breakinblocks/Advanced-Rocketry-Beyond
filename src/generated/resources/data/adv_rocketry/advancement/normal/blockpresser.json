@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/root",
+  "criteria": {
+    "warp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:plate_press"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.flattening.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:piston"
+    },
+    "title": {
+      "translate": "advancement.flattening"
+    }
+  },
+  "requirements": [
+    [
+      "warp"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,29 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 250,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "adv_rocketry:block_advanced_structure_block"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    {
+      "count": 8,
+      "tag": "c:plates/steel"
+    },
+    {
+      "count": 32,
+      "tag": "c:gems/dilithium"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:nuclear_core"
+    }
+  ],
+  "ticks": 2000
+}

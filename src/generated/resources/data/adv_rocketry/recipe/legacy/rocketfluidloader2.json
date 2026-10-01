@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:rocket_fluid_unloader"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:rocket_fluid_loader"
+  }
+}

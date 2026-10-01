@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "b": {
+      "tag": "c:batteries"
+    },
+    "g": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "i": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "l": {
+      "item": "minecraft:lever"
+    }
+  },
+  "pattern": [
+    "ial",
+    "bgb",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:ore_scanner"
+  }
+}

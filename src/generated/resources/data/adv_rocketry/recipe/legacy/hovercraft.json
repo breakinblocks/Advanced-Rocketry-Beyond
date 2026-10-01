@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:advanced_battery"
+    },
+    "c": {
+      "tag": "c:gems/dilithium"
+    },
+    "e": {
+      "item": "adv_rocketry:rocket_motor"
+    },
+    "i": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "s": {
+      "item": "adv_rocketry:structure_tower"
+    }
+  },
+  "pattern": [
+    "bib",
+    "csc",
+    "e e"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:hovercraft"
+  }
+}

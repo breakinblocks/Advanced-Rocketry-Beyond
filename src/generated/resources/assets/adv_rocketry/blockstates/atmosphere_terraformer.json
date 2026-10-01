@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/atmosphere_terraformer"
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/atmosphere_terraformer"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/atmosphere_terraformer"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/atmosphere_terraformer"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 10,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:ores/titanium"
+    }
+  ],
+  "machine": "electric_arc_furnace",
+  "outputs": [
+    {
+      "id": "adv_rocketry:titanium_ingot"
+    }
+  ],
+  "ticks": 100
+}

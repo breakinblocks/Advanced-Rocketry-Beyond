@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "item": "adv_rocketry:mass_detector"
+    },
+    "s": {
+      "tag": "c:sheets/titanium"
+    },
+    "w": {
+      "item": "adv_rocketry:warp_core"
+    }
+  },
+  "pattern": [
+    "sds",
+    "sws"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:area_gravity_controller"
+  }
+}

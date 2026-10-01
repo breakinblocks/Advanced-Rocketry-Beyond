@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/root",
+  "criteria": {
+    "coal_generator": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:coal_generator"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.powerUp.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:coal_generator"
+    },
+    "title": {
+      "translate": "advancement.powerUp"
+    }
+  },
+  "requirements": [
+    [
+      "coal_generator"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

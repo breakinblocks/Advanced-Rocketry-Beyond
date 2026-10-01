@@ -1,0 +1,30 @@
+{
+  "parent": "adv_rocketry:normal/station_builder",
+  "criteria": {
+    "space": {
+      "conditions": {
+        "to": "adv_rocketry:space"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.homeAwayFromHome.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:space_station"
+    },
+    "title": {
+      "translate": "advancement.homeAwayFromHome"
+    }
+  },
+  "requirements": [
+    [
+      "space"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/holographic",
+  "criteria": {
+    "warp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:crystallizer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.crystalline.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:crystallizer"
+    },
+    "title": {
+      "translate": "advancement.crystalline"
+    }
+  },
+  "requirements": [
+    [
+      "warp"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

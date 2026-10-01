@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "tag": "c:sheets/steel"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    },
+    "s": {
+      "tag": "c:rods/steel"
+    }
+  },
+  "pattern": [
+    "s s",
+    "pSp",
+    "s s"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:bipropellant_fuel_tank"
+  }
+}

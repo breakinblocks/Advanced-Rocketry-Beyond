@@ -1,0 +1,40 @@
+{
+  "parent": "adv_rocketry:normal/space_station",
+  "criteria": {
+    "elevator": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "vehicle": {
+                "type": "adv_rocketry:elevator_capsule"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:started_riding"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.goingUp.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:space_elevator"
+    },
+    "title": {
+      "translate": "advancement.goingUp"
+    }
+  },
+  "requirements": [
+    [
+      "elevator"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

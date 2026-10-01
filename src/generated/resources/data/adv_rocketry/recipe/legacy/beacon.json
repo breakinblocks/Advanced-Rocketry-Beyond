@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "tag": "c:coils/copper"
+    },
+    "d": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "s": {
+      "tag": "c:sheets/iron"
+    },
+    "t": {
+      "item": "adv_rocketry:tracking_circuit"
+    }
+  },
+  "pattern": [
+    " c ",
+    "dbt",
+    "scs"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:beacon"
+  }
+}

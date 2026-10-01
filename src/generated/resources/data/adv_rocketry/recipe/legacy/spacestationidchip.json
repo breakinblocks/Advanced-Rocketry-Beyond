@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:basic_circuit"
+    },
+    {
+      "item": "adv_rocketry:linker"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:station_id_chip"
+  }
+}

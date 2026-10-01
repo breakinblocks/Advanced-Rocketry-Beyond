@@ -1,0 +1,22 @@
+{
+  "distance": 60,
+  "mass": 200,
+  "mass_variability": 0.5,
+  "ores": [
+    {
+      "item": "adv_rocketry:aluminum_ore",
+      "weight": 20.0
+    },
+    {
+      "item": "adv_rocketry:titanium_ore",
+      "weight": 10.0
+    },
+    {
+      "item": "minecraft:quartz_block",
+      "weight": 5.0
+    }
+  ],
+  "probability": 15.0,
+  "richness": 0.2,
+  "richness_variability": 0.5
+}

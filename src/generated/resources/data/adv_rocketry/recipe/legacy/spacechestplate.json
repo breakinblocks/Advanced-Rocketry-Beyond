@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "f": {
+      "tag": "c:fans/steel"
+    },
+    "r": {
+      "tag": "c:rods/iron"
+    },
+    "t": {
+      "item": "adv_rocketry:fuel_tank"
+    },
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "wrw",
+    "wtw",
+    "wfw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:space_chestplate"
+  }
+}

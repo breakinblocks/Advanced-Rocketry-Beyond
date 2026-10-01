@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=east,powered=false": {
+      "model": "adv_rocketry:block/rocket_item_loader"
+    },
+    "facing=east,powered=true": {
+      "model": "adv_rocketry:block/rocket_item_loader"
+    },
+    "facing=north,powered=false": {
+      "model": "adv_rocketry:block/rocket_item_loader"
+    },
+    "facing=north,powered=true": {
+      "model": "adv_rocketry:block/rocket_item_loader"
+    },
+    "facing=south,powered=false": {
+      "model": "adv_rocketry:block/rocket_item_loader"
+    },
+    "facing=south,powered=true": {
+      "model": "adv_rocketry:block/rocket_item_loader"
+    },
+    "facing=west,powered=false": {
+      "model": "adv_rocketry:block/rocket_item_loader"
+    },
+    "facing=west,powered=true": {
+      "model": "adv_rocketry:block/rocket_item_loader"
+    }
+  }
+}

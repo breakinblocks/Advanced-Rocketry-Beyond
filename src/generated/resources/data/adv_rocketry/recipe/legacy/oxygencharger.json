@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "minecraft:heavy_weighted_pressure_plate"
+    },
+    "f": {
+      "tag": "c:fans/steel"
+    },
+    "i": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    },
+    "t": {
+      "item": "adv_rocketry:fuel_tank"
+    }
+  },
+  "pattern": [
+    "fif",
+    "tbt",
+    "pcp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:oxygen_charger"
+  }
+}

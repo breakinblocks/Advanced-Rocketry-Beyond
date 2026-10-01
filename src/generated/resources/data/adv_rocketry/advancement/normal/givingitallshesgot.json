@@ -1,0 +1,29 @@
+{
+  "parent": "adv_rocketry:normal/warp",
+  "criteria": {
+    "givingitallshesgot": {
+      "conditions": {
+        "milestone": "warp_flight"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.givingItAllShesGot.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:warp_core"
+    },
+    "title": {
+      "translate": "advancement.givingItAllShesGot"
+    }
+  },
+  "requirements": [
+    [
+      "givingitallshesgot"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

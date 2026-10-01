@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "adv_rocketry:tracking_circuit"
+    },
+    "r": {
+      "tag": "c:rods/copper"
+    },
+    "s": {
+      "tag": "c:sheets/iron"
+    },
+    "w": {
+      "item": "adv_rocketry:ore_scanner"
+    }
+  },
+  "pattern": [
+    " r ",
+    "sss",
+    "cwc"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:ore_mapper"
+  }
+}

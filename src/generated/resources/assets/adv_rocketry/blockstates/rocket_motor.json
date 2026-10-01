@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "adv_rocketry:block/rocket_motor"
+    },
+    "facing=east": {
+      "model": "adv_rocketry:block/rocket_motor",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/rocket_motor",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/rocket_motor",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "adv_rocketry:block/rocket_motor",
+      "x": 180
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/rocket_motor",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

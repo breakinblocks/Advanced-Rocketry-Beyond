@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "c:coils/copper"
+    },
+    "d": {
+      "tag": "c:gems/dilithium"
+    },
+    "p": {
+      "tag": "c:plates/aluminum"
+    },
+    "s": {
+      "item": "adv_rocketry:block_structure_block"
+    }
+  },
+  "pattern": [
+    " c ",
+    "pdp",
+    "psp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:force_field_projector"
+  }
+}

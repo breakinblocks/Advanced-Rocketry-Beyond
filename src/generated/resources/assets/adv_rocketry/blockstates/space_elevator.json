@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/space_elevator"
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/space_elevator"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/space_elevator"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/space_elevator"
+    }
+  }
+}

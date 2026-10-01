@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/precision_assembler",
+  "criteria": {
+    "basic_circuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:basic_circuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.integrated.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:basic_circuit"
+    },
+    "title": {
+      "translate": "advancement.integrated"
+    }
+  },
+  "requirements": [
+    [
+      "basic_circuit"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/holographic",
+  "criteria": {
+    "warp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:lathe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.spinDoctor.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:lathe"
+    },
+    "title": {
+      "translate": "advancement.spinDoctor"
+    }
+  },
+  "requirements": [
+    [
+      "warp"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

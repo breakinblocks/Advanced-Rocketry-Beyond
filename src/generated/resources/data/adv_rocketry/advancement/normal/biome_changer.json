@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/satellite_builder",
+  "criteria": {
+    "biome_changer_remote": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:biome_changer_remote"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.landscaping.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:biome_changer_remote"
+    },
+    "title": {
+      "translate": "advancement.landscaping"
+    }
+  },
+  "requirements": [
+    [
+      "biome_changer_remote"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

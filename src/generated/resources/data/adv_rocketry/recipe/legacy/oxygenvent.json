@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "minecraft:iron_bars"
+    },
+    "f": {
+      "tag": "c:fans/steel"
+    },
+    "m": {
+      "tag": "adv_rocketry:motors"
+    },
+    "t": {
+      "item": "adv_rocketry:fuel_tank"
+    }
+  },
+  "pattern": [
+    "bfb",
+    "bmb",
+    "btb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:oxygen_vent"
+  }
+}

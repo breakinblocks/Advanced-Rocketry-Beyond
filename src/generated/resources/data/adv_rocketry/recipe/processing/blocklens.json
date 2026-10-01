@@ -1,0 +1,25 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:rods/iron"
+    },
+    {
+      "count": 3,
+      "item": "adv_rocketry:basic_lens"
+    },
+    {
+      "count": 3,
+      "item": "minecraft:glass"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:lens_block"
+    }
+  ],
+  "ticks": 100
+}

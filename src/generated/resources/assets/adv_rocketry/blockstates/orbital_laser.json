@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/orbital_laser"
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/orbital_laser"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/orbital_laser"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/orbital_laser"
+    }
+  }
+}

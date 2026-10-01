@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:block/block",
+  "connect_with": [
+    "adv_rocketry:solar_array_panel"
+  ],
+  "loader": "adv_rocketry:connected",
+  "textures": {
+    "base": "adv_rocketry:block/ctm/solar/base",
+    "center": "adv_rocketry:block/ctm/solar/center",
+    "corner": "adv_rocketry:block/ctm/solar/corner",
+    "horizontal": "adv_rocketry:block/ctm/solar/horizontal",
+    "particle": "adv_rocketry:block/ctm/solar/base",
+    "vertical": "adv_rocketry:block/ctm/solar/vertical"
+  }
+}

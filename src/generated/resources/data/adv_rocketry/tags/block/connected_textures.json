@@ -1,0 +1,17 @@
+{
+  "values": [
+    "adv_rocketry:block_structure_block",
+    "adv_rocketry:block_advanced_structure_block",
+    "adv_rocketry:centrifuge_casing",
+    "adv_rocketry:block_coilcopper",
+    "adv_rocketry:aluminum_coil",
+    "adv_rocketry:copper_coil",
+    "adv_rocketry:gold_coil",
+    "adv_rocketry:iridium_coil",
+    "adv_rocketry:titanium_coil",
+    "adv_rocketry:solar_panel",
+    "adv_rocketry:solar_array_panel",
+    "adv_rocketry:landing_pad",
+    "adv_rocketry:circle_light"
+  ]
+}

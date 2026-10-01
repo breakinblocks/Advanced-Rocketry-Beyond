@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/blockpresser",
+  "criteria": {
+    "warp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:item_holoprojector"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.holographic.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:item_holoprojector"
+    },
+    "title": {
+      "translate": "advancement.holographic"
+    }
+  },
+  "requirements": [
+    [
+      "warp"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

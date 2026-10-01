@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "r": {
+      "tag": "c:rods/titanium"
+    },
+    "s": {
+      "tag": "c:sheets/aluminum"
+    }
+  },
+  "pattern": [
+    "sss",
+    "rcr",
+    "sss"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:satellite"
+  }
+}

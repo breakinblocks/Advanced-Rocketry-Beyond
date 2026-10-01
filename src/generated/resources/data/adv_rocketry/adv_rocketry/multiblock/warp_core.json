@@ -1,0 +1,43 @@
+{
+  "controller": "adv_rocketry:warp_core",
+  "keys": {
+    "I": {
+      "any": [
+        "adv_rocketry:block_item_input_block"
+      ]
+    },
+    "S": {
+      "any": [
+        "adv_rocketry:block_structure_block"
+      ]
+    },
+    "X": {
+      "any": [
+        "adv_rocketry:titanium_block"
+      ]
+    },
+    "g": {
+      "any": [
+        "minecraft:gold_block"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "XXX",
+      "XIX",
+      "XXX"
+    ],
+    [
+      " S ",
+      "SgS",
+      " S "
+    ],
+    [
+      "XcX",
+      "XgX",
+      "XXX"
+    ]
+  ],
+  "order": 14
+}

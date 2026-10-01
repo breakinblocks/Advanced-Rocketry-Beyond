@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "adv_rocketry:item_data_storage"
+    },
+    "m": {
+      "item": "adv_rocketry:block_structure_block"
+    }
+  },
+  "pattern": [
+    "m",
+    "c",
+    " "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:data_bus"
+  }
+}

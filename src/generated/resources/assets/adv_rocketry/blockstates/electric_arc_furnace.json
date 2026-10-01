@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,state=false": {
+      "model": "adv_rocketry:block/electric_arc_furnace",
+      "y": 90
+    },
+    "facing=east,state=true": {
+      "model": "adv_rocketry:block/electric_arc_furnace",
+      "y": 90
+    },
+    "facing=north,state=false": {
+      "model": "adv_rocketry:block/electric_arc_furnace"
+    },
+    "facing=north,state=true": {
+      "model": "adv_rocketry:block/electric_arc_furnace"
+    },
+    "facing=south,state=false": {
+      "model": "adv_rocketry:block/electric_arc_furnace",
+      "y": 180
+    },
+    "facing=south,state=true": {
+      "model": "adv_rocketry:block/electric_arc_furnace",
+      "y": 180
+    },
+    "facing=west,state=false": {
+      "model": "adv_rocketry:block/electric_arc_furnace",
+      "y": 270
+    },
+    "facing=west,state=true": {
+      "model": "adv_rocketry:block/electric_arc_furnace",
+      "y": 270
+    }
+  }
+}

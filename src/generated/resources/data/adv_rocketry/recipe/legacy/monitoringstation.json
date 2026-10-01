@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "tag": "c:rods/copper"
+    },
+    "o": {
+      "item": "adv_rocketry:optical_sensor"
+    },
+    "p": {
+      "tag": "c:batteries"
+    }
+  },
+  "pattern": [
+    "coc",
+    "cbc",
+    "cpc"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:monitoring_station"
+  }
+}

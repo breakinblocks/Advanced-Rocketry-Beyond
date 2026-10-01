@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:block_advanced_structure_block"
+    },
+    "b": {
+      "tag": "c:batteries"
+    },
+    "c": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "d": {
+      "tag": "c:gems/dilithium"
+    },
+    "g": {
+      "tag": "c:gears/titanium_aluminide"
+    },
+    "l": {
+      "item": "adv_rocketry:fluid_io_circuit_board"
+    }
+  },
+  "pattern": [
+    "gdg",
+    "lac",
+    "gbg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:atmosphere_terraformer"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "values": [
+    "minecraft:river",
+    "minecraft:frozen_river",
+    "minecraft:the_void",
+    "minecraft:nether_wastes",
+    "minecraft:crimson_forest",
+    "minecraft:warped_forest",
+    "minecraft:soul_sand_valley",
+    "minecraft:basalt_deltas",
+    "minecraft:the_end",
+    "minecraft:end_highlands",
+    "minecraft:end_midlands",
+    "minecraft:small_end_islands",
+    "minecraft:end_barrens",
+    "adv_rocketry:alien_forest",
+    "adv_rocketry:moon",
+    "adv_rocketry:moondark",
+    "adv_rocketry:hotdryrock",
+    "adv_rocketry:space",
+    "adv_rocketry:volcanic"
+  ]
+}

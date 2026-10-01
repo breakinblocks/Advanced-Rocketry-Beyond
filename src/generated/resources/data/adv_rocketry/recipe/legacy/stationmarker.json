@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "c:batteries"
+    },
+    {
+      "item": "adv_rocketry:tracking_circuit"
+    },
+    {
+      "item": "adv_rocketry:satellite_hatch"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:docking_port"
+  }
+}

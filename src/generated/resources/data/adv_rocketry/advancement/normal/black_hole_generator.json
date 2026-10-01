@@ -1,0 +1,34 @@
+{
+  "parent": "adv_rocketry:normal/space_station",
+  "criteria": {
+    "black_hole_generator": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:black_hole_generator"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.eventHorizon.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:black_hole_generator"
+    },
+    "title": {
+      "translate": "advancement.eventHorizon"
+    }
+  },
+  "requirements": [
+    [
+      "black_hole_generator"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

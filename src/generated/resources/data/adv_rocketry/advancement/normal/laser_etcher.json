@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/circuits",
+  "criteria": {
+    "precision_laser_etcher": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:precision_laser_etcher"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.etchASketch.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:precision_laser_etcher"
+    },
+    "title": {
+      "translate": "advancement.etchASketch"
+    }
+  },
+  "requirements": [
+    [
+      "precision_laser_etcher"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

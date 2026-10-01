@@ -1,0 +1,23 @@
+{
+  "controller": "adv_rocketry:satellite_builder",
+  "keys": {
+    "P": {
+      "any": [
+        [
+          "adv_rocketry:block_energy_input_block",
+          "adv_rocketry:creative_energy_input"
+        ]
+      ]
+    }
+  },
+  "layers": [
+    [
+      "c"
+    ],
+    [
+      "P"
+    ]
+  ],
+  "order": 15,
+  "rotates": false
+}

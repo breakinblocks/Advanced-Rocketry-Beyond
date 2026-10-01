@@ -1,0 +1,19 @@
+{
+  "values": {
+    "adv_rocketry:advanced_battery": {
+      "energy_storage": 40000
+    },
+    "adv_rocketry:basic_satellite_solar_panel": {
+      "power_generation": 4
+    },
+    "adv_rocketry:battery": {
+      "energy_storage": 10000
+    },
+    "adv_rocketry:item_data_storage": {
+      "data_storage": 1000
+    },
+    "adv_rocketry:large_satellite_solar_panel": {
+      "power_generation": 40
+    }
+  }
+}

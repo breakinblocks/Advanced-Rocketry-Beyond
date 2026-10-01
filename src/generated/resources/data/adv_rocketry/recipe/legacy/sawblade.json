@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:iron_saw_blade"
+    },
+    "p": {
+      "tag": "c:plates/iron"
+    },
+    "s": {
+      "tag": "c:rods/iron"
+    }
+  },
+  "pattern": [
+    "s s",
+    "pbp",
+    "p p"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:saw_blade_assembly"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:alien_log"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "adv_rocketry:alien_planks"
+  }
+}

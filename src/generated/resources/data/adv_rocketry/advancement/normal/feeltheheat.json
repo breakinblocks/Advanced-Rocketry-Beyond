@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/holographic",
+  "criteria": {
+    "warp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:electric_arc_furnace"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.feelTheHeat.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:electric_arc_furnace"
+    },
+    "title": {
+      "translate": "advancement.feelTheHeat"
+    }
+  },
+  "requirements": [
+    [
+      "warp"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

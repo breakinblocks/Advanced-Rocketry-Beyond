@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/observatory",
+  "criteria": {
+    "satellite_builder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:satellite_builder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.eyeInTheSky.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:satellite_builder"
+    },
+    "title": {
+      "translate": "advancement.eyeInTheSky"
+    }
+  },
+  "requirements": [
+    [
+      "satellite_builder"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

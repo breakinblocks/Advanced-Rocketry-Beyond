@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "o": {
+      "item": "adv_rocketry:basic_lens"
+    },
+    "p": {
+      "item": "adv_rocketry:basic_circuit"
+    },
+    "r": {
+      "item": "adv_rocketry:silicon_wafer"
+    },
+    "w": {
+      "item": "adv_rocketry:tracking_circuit"
+    }
+  },
+  "pattern": [
+    "owo",
+    "rpr"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:microwave_transmitter"
+  }
+}

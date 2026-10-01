@@ -1,0 +1,17 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 20,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/dilithium"
+    }
+  ],
+  "machine": "crystallizer",
+  "outputs": [
+    {
+      "id": "adv_rocketry:dilithium_crystal"
+    }
+  ],
+  "ticks": 300
+}

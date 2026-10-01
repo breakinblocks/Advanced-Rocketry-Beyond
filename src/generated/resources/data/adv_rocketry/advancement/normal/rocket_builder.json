@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/root",
+  "criteria": {
+    "rocket_builder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:rocket_builder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.rocketScience.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:rocket_builder"
+    },
+    "title": {
+      "translate": "advancement.rocketScience"
+    }
+  },
+  "requirements": [
+    [
+      "rocket_builder"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

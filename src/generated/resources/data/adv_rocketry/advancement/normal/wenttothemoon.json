@@ -1,0 +1,30 @@
+{
+  "parent": "adv_rocketry:normal/moonlanding",
+  "criteria": {
+    "wenttothemoon": {
+      "conditions": {
+        "milestone": "apollo_site"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.weReallyWentToTheMoon.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:space_boots"
+    },
+    "title": {
+      "translate": "advancement.weReallyWentToTheMoon"
+    }
+  },
+  "requirements": [
+    [
+      "wenttothemoon"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

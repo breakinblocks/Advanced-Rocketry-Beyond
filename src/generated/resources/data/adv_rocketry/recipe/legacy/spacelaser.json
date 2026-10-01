@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "b": {
+      "tag": "c:batteries"
+    },
+    "c": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "e": {
+      "tag": "c:gems/emerald"
+    },
+    "g": {
+      "tag": "c:gears/titanium"
+    },
+    "p": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "t": {
+      "item": "adv_rocketry:tracking_circuit"
+    }
+  },
+  "pattern": [
+    "ata",
+    "bec",
+    "gpg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:orbital_laser"
+  }
+}

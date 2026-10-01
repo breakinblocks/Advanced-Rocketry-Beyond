@@ -1,0 +1,6 @@
+{
+  "parent": "neoforge:item/bucket",
+  "flip_gas": true,
+  "fluid": "adv_rocketry:ammonia",
+  "loader": "neoforge:fluid_container"
+}

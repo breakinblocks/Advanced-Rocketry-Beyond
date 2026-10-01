@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "c:gems/dilithium"
+    },
+    "s": {
+      "tag": "c:ingots/titanium_iridium"
+    },
+    "t": {
+      "tag": "c:plates/titanium_aluminide"
+    }
+  },
+  "pattern": [
+    "sss",
+    "tdt",
+    "t t"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:nuclear_rocket_motor"
+  }
+}

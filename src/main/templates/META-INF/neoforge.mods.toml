@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+
+[[mods]]
+modId="adv_rocketry"
+version="${mod_version}"
+displayName="Advanced Rocketry"
+authors="Advanced Rocketry contributors, LibVulpes contributors, Saymayhem LLC"
+description='''Port of the original MIT Advanced Rocketry and LibVulpes sources.'''
+
+[[dependencies.adv_rocketry]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.209,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.adv_rocketry]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.21.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.adv_rocketry]]
+modId="guideme"
+type="optional"
+versionRange="[21.1.19,21.2)"
+ordering="AFTER"
+side="BOTH"

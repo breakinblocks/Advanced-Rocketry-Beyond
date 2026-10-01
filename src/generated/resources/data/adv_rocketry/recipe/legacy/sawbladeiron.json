@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "tag": "c:plates/iron"
+    },
+    "s": {
+      "tag": "c:rods/iron"
+    }
+  },
+  "pattern": [
+    " s ",
+    "sps",
+    " s "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:iron_saw_blade"
+  }
+}

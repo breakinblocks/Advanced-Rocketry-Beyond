@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "c:gems/diamond"
+    },
+    "i": {
+      "tag": "c:rods/iron"
+    },
+    "m": {
+      "tag": "adv_rocketry:motors"
+    },
+    "p": {
+      "tag": "c:plates/aluminum"
+    },
+    "t": {
+      "tag": "c:rods/titanium"
+    }
+  },
+  "pattern": [
+    " pt",
+    "imp",
+    "di "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:jackhammer"
+  }
+}

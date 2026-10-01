@@ -1,0 +1,18 @@
+// 1.21.1	2026-10-01T13:20:33.865163	Tags for minecraft:block mod id adv_rocketry
+05bcad46072bd41b72326a45840044ee1b8ef2cc data/adv_rocketry/tags/block/coils.json
+9d28af6772678a005d2f3e17479313af55b0f097 data/adv_rocketry/tags/block/connected_textures.json
+f120768024dbd469ba6842eb26509912611efffb data/adv_rocketry/tags/block/geode_ores.json
+1a72ad81f9637d54752fad6d7e0789307fbd1960 data/adv_rocketry/tags/block/machine_ports.json
+e2819bf7038fa36b87ce91cda6ca6103f04d1cbf data/adv_rocketry/tags/block/motors.json
+c8cdf7c3c967c102310b4943564449ff26022119 data/adv_rocketry/tags/block/rocket_blacklist.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/adv_rocketry/tags/block/sealable.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/adv_rocketry/tags/block/torches.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/adv_rocketry/tags/block/unsealable.json
+a4f6299a1bd54212780a6f55f699796b30c1bd2a data/c/tags/block/ores.json
+fa679b34793ba26e021a2314bf8f51b48bbb6a12 data/c/tags/block/ores/aluminum.json
+ccd5b5ad450b011b68097a53cb2aa22215060d5d data/c/tags/block/ores/dilithium.json
+1f506849aefdc2793db8fe695b0ebf99b54c0465 data/c/tags/block/ores/iridium.json
+482e2c3c2ed1b7bf710b77045ae10f710a2f96fc data/c/tags/block/ores/tin.json
+60f73e1f2be0657e9e7ca00c0d77f85caceda921 data/c/tags/block/ores/titanium.json
+4ecc0d629c6292ff2b502b788f98af6798b8b451 data/minecraft/tags/block/mineable/pickaxe.json
+cd0e9c5cec6c79cc396e7b91c1ef9dc12d3cddf0 data/minecraft/tags/block/needs_diamond_tool.json

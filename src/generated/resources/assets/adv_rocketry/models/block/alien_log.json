@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "adv_rocketry:legacy/advancedrocketry/blocks/log_blue_top",
+    "side": "adv_rocketry:legacy/advancedrocketry/blocks/log_blue"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "adv_rocketry:aluminum_ore",
+  "config": {
+    "discard_chance_on_air_exposure": 0.0,
+    "size": 16,
+    "targets": [
+      {
+        "state": {
+          "Name": "adv_rocketry:aluminum_ore",
+          "Properties": {
+            "assembled": "false"
+          }
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:stone_ore_replaceables"
+        }
+      },
+      {
+        "state": {
+          "Name": "adv_rocketry:aluminum_ore",
+          "Properties": {
+            "assembled": "false"
+          }
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:deepslate_ore_replaceables"
+        }
+      }
+    ]
+  }
+}

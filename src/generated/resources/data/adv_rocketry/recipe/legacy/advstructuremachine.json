@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "tag": "c:plates/titanium"
+    },
+    "x": {
+      "tag": "c:rods/titanium"
+    }
+  },
+  "pattern": [
+    "xpx",
+    "p p",
+    "xpx"
+  ],
+  "result": {
+    "count": 16,
+    "id": "adv_rocketry:block_advanced_structure_block"
+  }
+}

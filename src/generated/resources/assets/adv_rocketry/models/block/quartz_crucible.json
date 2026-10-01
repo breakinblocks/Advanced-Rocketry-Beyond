@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cauldron",
+  "ambientocclusion": false,
+  "textures": {
+    "bottom": "adv_rocketry:block/qcrucible_bottom",
+    "inside": "adv_rocketry:block/qcrucible_inner",
+    "particle": "adv_rocketry:block/qcrucible_side",
+    "side": "adv_rocketry:block/qcrucible_side",
+    "top": "adv_rocketry:block/qcrucible_top"
+  }
+}

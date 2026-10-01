@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "d": {
+      "tag": "c:dusts/dilithium"
+    },
+    "g": {
+      "tag": "c:gears/titanium"
+    },
+    "s": {
+      "item": "adv_rocketry:rocket_builder"
+    },
+    "u": {
+      "item": "adv_rocketry:user_interface"
+    }
+  },
+  "pattern": [
+    "udg",
+    "dsd",
+    "ada"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:station_builder"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:item_io_circuit_board"
+    },
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "d": {
+      "item": "adv_rocketry:fluid_io_circuit_board"
+    },
+    "p": {
+      "tag": "c:plates/gold"
+    },
+    "r": {
+      "item": "adv_rocketry:basic_circuit"
+    },
+    "s": {
+      "item": "adv_rocketry:user_interface"
+    }
+  },
+  "pattern": [
+    "psp",
+    "abc",
+    "rdr"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:chemical_reactor"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "assembled=false,facing=east": {
+      "model": "adv_rocketry:block/enhanced_motor",
+      "y": 90
+    },
+    "assembled=false,facing=north": {
+      "model": "adv_rocketry:block/enhanced_motor"
+    },
+    "assembled=false,facing=south": {
+      "model": "adv_rocketry:block/enhanced_motor",
+      "y": 180
+    },
+    "assembled=false,facing=west": {
+      "model": "adv_rocketry:block/enhanced_motor",
+      "y": 270
+    },
+    "assembled=true,facing=east": {
+      "model": "adv_rocketry:block/enhanced_motor",
+      "y": 90
+    },
+    "assembled=true,facing=north": {
+      "model": "adv_rocketry:block/enhanced_motor"
+    },
+    "assembled=true,facing=south": {
+      "model": "adv_rocketry:block/enhanced_motor",
+      "y": 180
+    },
+    "assembled=true,facing=west": {
+      "model": "adv_rocketry:block/enhanced_motor",
+      "y": 270
+    }
+  }
+}

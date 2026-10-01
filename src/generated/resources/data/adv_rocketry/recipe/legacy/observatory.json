@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "g": {
+      "tag": "c:glass_panes"
+    },
+    "r": {
+      "tag": "c:rods/iron"
+    },
+    "u": {
+      "item": "adv_rocketry:user_interface"
+    }
+  },
+  "pattern": [
+    "gug",
+    " b ",
+    "rrr"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:observatory"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/space_station",
+  "criteria": {
+    "orbital_laser": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:orbital_laser"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.laserFocus.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:orbital_laser"
+    },
+    "title": {
+      "translate": "advancement.laserFocus"
+    }
+  },
+  "requirements": [
+    [
+      "orbital_laser"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

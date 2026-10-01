@@ -1,0 +1,29 @@
+{
+  "controller": "adv_rocketry:area_gravity_controller",
+  "keys": {
+    "A": {
+      "any": [
+        "adv_rocketry:block_advanced_structure_block"
+      ]
+    },
+    "P": {
+      "any": [
+        "adv_rocketry:block_energy_input_block"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "   ",
+      " c ",
+      "   "
+    ],
+    [
+      " A ",
+      "APA",
+      " A "
+    ]
+  ],
+  "order": 11,
+  "rotates": false
+}

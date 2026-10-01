@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "c:gears/steel"
+    },
+    "b": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "c": {
+      "item": "adv_rocketry:item_io_circuit_board"
+    },
+    "d": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "e": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "o": {
+      "item": "minecraft:obsidian"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cde",
+    "opo"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:cutting_machine"
+  }
+}

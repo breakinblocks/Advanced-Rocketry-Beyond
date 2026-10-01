@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "adv_rocketry:block/rocketpad_",
+    "side": "adv_rocketry:block/rocketpad_xcross",
+    "top": "adv_rocketry:block/rocketpad_"
+  }
+}

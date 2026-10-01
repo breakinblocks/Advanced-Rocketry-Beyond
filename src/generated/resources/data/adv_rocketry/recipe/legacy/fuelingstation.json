@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "f": {
+      "tag": "c:fans/steel"
+    },
+    "g": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "l": {
+      "item": "adv_rocketry:fluid_io_circuit_board"
+    },
+    "p": {
+      "tag": "c:plates/tin"
+    }
+  },
+  "pattern": [
+    "bgb",
+    "lbf",
+    "ppp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:fueling_station"
+  }
+}

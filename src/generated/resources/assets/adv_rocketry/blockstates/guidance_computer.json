@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "adv_rocketry:block/guidance_computer"
+    },
+    "facing=east": {
+      "model": "adv_rocketry:block/guidance_computer",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/guidance_computer"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/guidance_computer",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "adv_rocketry:block/guidance_computer"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/guidance_computer",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "adv_rocketry:block/carbon_scrubber"
+    },
+    "powered=true": {
+      "model": "adv_rocketry:block/carbon_scrubber_active"
+    }
+  }
+}

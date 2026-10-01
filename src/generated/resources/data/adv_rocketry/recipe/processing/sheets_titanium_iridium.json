@@ -1,0 +1,23 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 200,
+  "fluid_inputs": [
+    {
+      "amount": 100,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:plates/titanium_iridium"
+    }
+  ],
+  "machine": "rolling_machine",
+  "outputs": [
+    {
+      "id": "adv_rocketry:titanium_iridium_sheet"
+    }
+  ],
+  "ticks": 300
+}

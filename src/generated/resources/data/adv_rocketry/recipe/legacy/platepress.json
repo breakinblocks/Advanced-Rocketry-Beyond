@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:piston"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "   ",
+    " a ",
+    "iii"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:plate_press"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "m": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "x": {
+      "item": "adv_rocketry:battery"
+    }
+  },
+  "pattern": [
+    " x ",
+    "xmx",
+    " x "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:block_energy_input_block"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "adv_rocketry:block/deployable_rocket_builder"
+    },
+    "facing=east": {
+      "model": "adv_rocketry:block/deployable_rocket_builder",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/deployable_rocket_builder"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/deployable_rocket_builder",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "adv_rocketry:block/deployable_rocket_builder"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/deployable_rocket_builder",
+      "y": 270
+    }
+  }
+}

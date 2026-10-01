@@ -1,0 +1,44 @@
+{
+  "controller": "adv_rocketry:black_hole_generator",
+  "keys": {
+    "#": {
+      "any": [
+        "adv_rocketry:block_advanced_structure_block",
+        "#adv_rocketry:machine_ports"
+      ]
+    },
+    "A": {
+      "any": [
+        "adv_rocketry:block_advanced_structure_block"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "   ",
+      " A ",
+      "   "
+    ],
+    [
+      "   ",
+      " A ",
+      "   "
+    ],
+    [
+      " A ",
+      " A ",
+      "   "
+    ],
+    [
+      " c ",
+      "#A#",
+      " # "
+    ],
+    [
+      "   ",
+      " A ",
+      "   "
+    ]
+  ],
+  "order": 10
+}

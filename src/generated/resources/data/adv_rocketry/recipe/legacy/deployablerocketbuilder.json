@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:rocket_builder"
+    },
+    "d": {
+      "tag": "c:dusts/dilithium"
+    },
+    "g": {
+      "tag": "c:gears/titanium_aluminide"
+    },
+    "r": {
+      "tag": "c:rods/titanium_aluminide"
+    }
+  },
+  "pattern": [
+    "gdg",
+    "dad",
+    "rdr"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:deployable_rocket_builder"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:charcoal"
+    },
+    {
+      "count": 1,
+      "tag": "c:ingots/iron"
+    }
+  ],
+  "machine": "electric_arc_furnace",
+  "outputs": [
+    {
+      "id": "adv_rocketry:steel_ingot"
+    }
+  ],
+  "ticks": 6000
+}

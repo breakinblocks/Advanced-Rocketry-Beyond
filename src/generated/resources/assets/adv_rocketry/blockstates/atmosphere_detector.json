@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "adv_rocketry:block/atmosphere_detector"
+    },
+    "powered=true": {
+      "model": "adv_rocketry:block/atmosphere_detector_active"
+    }
+  }
+}

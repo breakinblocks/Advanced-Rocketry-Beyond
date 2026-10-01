@@ -1,0 +1,29 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 2,
+      "tag": "c:rods/copper"
+    },
+    {
+      "count": 1,
+      "tag": "c:rods/titanium"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    {
+      "count": 2,
+      "item": "adv_rocketry:silicon_wafer"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:satellite_biome_changer"
+    }
+  ],
+  "ticks": 1000
+}

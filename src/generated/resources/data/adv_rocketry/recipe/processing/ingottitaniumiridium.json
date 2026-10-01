@@ -1,0 +1,22 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 20,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/iridium"
+    },
+    {
+      "count": 1,
+      "tag": "c:ingots/titanium"
+    }
+  ],
+  "machine": "electric_arc_furnace",
+  "outputs": [
+    {
+      "count": 2,
+      "id": "adv_rocketry:titanium_iridium_ingot"
+    }
+  ],
+  "ticks": 3000
+}

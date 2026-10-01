@@ -1,0 +1,30 @@
+{
+  "parent": "adv_rocketry:normal/rocket_builder",
+  "criteria": {
+    "launch": {
+      "conditions": {
+        "milestone": "rocket_launch"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.liftoff.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:rocket_motor"
+    },
+    "title": {
+      "translate": "advancement.liftoff"
+    }
+  },
+  "requirements": [
+    [
+      "launch"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

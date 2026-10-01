@@ -1,0 +1,32 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:directory",
+      "source": "legacy",
+      "prefix": "legacy/"
+    },
+    {
+      "type": "minecraft:filter",
+      "pattern": {
+        "namespace": "adv_rocketry",
+        "path": "legacy/(advancedrocketry/(env|planets|gui)|libvulpes/gui)/.*"
+      }
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "adv_rocketry:fluid/oxygen_still"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "adv_rocketry:fluid/oxygen_flow"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "adv_rocketry:fluid/lava_still"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "adv_rocketry:fluid/lava_flow"
+    }
+  ]
+}

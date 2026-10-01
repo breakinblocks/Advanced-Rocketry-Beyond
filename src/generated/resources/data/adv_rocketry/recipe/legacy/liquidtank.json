@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "g": {
+      "tag": "c:glass_panes"
+    },
+    "t": {
+      "item": "adv_rocketry:portable_pressure_tank_iridium"
+    }
+  },
+  "pattern": [
+    "tgt",
+    "tgt",
+    "tgt"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:liquid_tank"
+  }
+}

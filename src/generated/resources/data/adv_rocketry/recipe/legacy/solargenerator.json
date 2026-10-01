@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "c:batteries"
+    },
+    {
+      "item": "adv_rocketry:solar_cell"
+    },
+    {
+      "item": "adv_rocketry:block_energy_output_block"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:solar_panel"
+  }
+}

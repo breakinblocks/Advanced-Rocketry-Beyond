@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "adv_rocketry:block/machinegeneric",
+    "side": "adv_rocketry:block/machinegeneric",
+    "top": "adv_rocketry:block/solar"
+  }
+}

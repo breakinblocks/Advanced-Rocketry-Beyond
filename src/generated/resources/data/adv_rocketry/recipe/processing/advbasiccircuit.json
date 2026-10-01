@@ -1,0 +1,18 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 100,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "adv_rocketry:advanced_circuit_plate"
+    }
+  ],
+  "machine": "cutting_machine",
+  "outputs": [
+    {
+      "count": 4,
+      "id": "adv_rocketry:advanced_circuit"
+    }
+  ],
+  "ticks": 300
+}

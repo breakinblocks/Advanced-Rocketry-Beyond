@@ -1,0 +1,37 @@
+{
+  "parent": "adv_rocketry:normal/root",
+  "criteria": {
+    "dilithium": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "adv_rocketry:dilithium_ore",
+              "adv_rocketry:dilithium_dust",
+              "adv_rocketry:dilithium_crystal"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.dilithium.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:dilithium_crystal"
+    },
+    "title": {
+      "translate": "advancement.dilithium"
+    }
+  },
+  "requirements": [
+    [
+      "dilithium"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

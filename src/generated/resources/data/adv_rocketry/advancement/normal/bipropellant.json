@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/rocket_builder",
+  "criteria": {
+    "bipropellant_rocket_motor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:bipropellant_rocket_motor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.twiceTheThrust.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:bipropellant_rocket_motor"
+    },
+    "title": {
+      "translate": "advancement.twiceTheThrust"
+    }
+  },
+  "requirements": [
+    [
+      "bipropellant_rocket_motor"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

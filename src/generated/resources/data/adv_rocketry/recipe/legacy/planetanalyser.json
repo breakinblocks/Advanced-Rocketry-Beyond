@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:planet_id_chip"
+    },
+    "p": {
+      "tag": "c:plates/tin"
+    },
+    "s": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "t": {
+      "item": "adv_rocketry:tracking_circuit"
+    }
+  },
+  "pattern": [
+    "tst",
+    "pbp",
+    "cpc"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:astrobody_data_processor"
+  }
+}

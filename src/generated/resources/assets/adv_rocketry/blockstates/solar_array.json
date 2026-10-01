@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/solar_array"
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/solar_array"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/solar_array"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/solar_array"
+    }
+  }
+}

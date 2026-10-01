@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "tankstates=bottom": {
+      "model": "adv_rocketry:block/oxidizer_fuel_tank_bottom"
+    },
+    "tankstates=middle": {
+      "model": "adv_rocketry:block/oxidizer_fuel_tank_middle"
+    },
+    "tankstates=top": {
+      "model": "adv_rocketry:block/oxidizer_fuel_tank_top"
+    }
+  }
+}

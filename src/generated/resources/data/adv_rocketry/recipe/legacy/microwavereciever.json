@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "g": {
+      "tag": "c:plates/gold"
+    },
+    "o": {
+      "item": "adv_rocketry:optical_sensor"
+    },
+    "t": {
+      "item": "adv_rocketry:tracking_circuit"
+    }
+  },
+  "pattern": [
+    "ggg",
+    "tbc",
+    "aoa"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:microwave_receiver"
+  }
+}

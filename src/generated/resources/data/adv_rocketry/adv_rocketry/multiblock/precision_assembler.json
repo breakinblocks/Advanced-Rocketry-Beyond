@@ -1,0 +1,59 @@
+{
+  "controller": "adv_rocketry:precision_assembler",
+  "keys": {
+    "*": {
+      "any": [
+        [
+          "adv_rocketry:block_item_input_block",
+          "adv_rocketry:block_item_output_block",
+          "adv_rocketry:block_fluid_input_block",
+          "adv_rocketry:block_fluid_output_block",
+          "adv_rocketry:block_energy_input_block",
+          "adv_rocketry:creative_energy_input",
+          "adv_rocketry:block_structure_block"
+        ]
+      ]
+    },
+    "G": {
+      "any": [
+        "minecraft:glass"
+      ]
+    },
+    "K": {
+      "any": [
+        "#adv_rocketry:coils"
+      ]
+    },
+    "M": {
+      "any": [
+        "#adv_rocketry:motors"
+      ]
+    },
+    "S": {
+      "any": [
+        "adv_rocketry:block_structure_block"
+      ]
+    },
+    "a": {
+      "air": true
+    }
+  },
+  "layers": [
+    [
+      "SSSS",
+      "SSSS",
+      "SSSS"
+    ],
+    [
+      "SGGS",
+      "SaaS",
+      "SSSS"
+    ],
+    [
+      "c***",
+      "*KK*",
+      "*MM*"
+    ]
+  ],
+  "order": 6
+}

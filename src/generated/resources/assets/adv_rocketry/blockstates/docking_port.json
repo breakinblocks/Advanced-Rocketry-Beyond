@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "adv_rocketry:block/docking_port",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "adv_rocketry:block/docking_port",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/docking_port"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/docking_port",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "adv_rocketry:block/docking_port",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/docking_port",
+      "y": 270
+    }
+  }
+}

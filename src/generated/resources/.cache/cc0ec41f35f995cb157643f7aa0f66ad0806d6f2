@@ -1,0 +1,6 @@
+// 1.21.1	2026-10-01T13:20:33.8670861	Tags for minecraft:worldgen/biome mod id adv_rocketry
+37e471bb5e567744d5c61b362ff42c2cbbaaf839 data/adv_rocketry/tags/worldgen/biome/planet_biomes/airless.json
+116a48aa2b03d60e0fb4f3957de7dfc031accde8 data/adv_rocketry/tags/worldgen/biome/planet_biomes/excluded.json
+607230eb12739419298e542f7f35505955acc043 data/adv_rocketry/tags/worldgen/biome/planet_biomes/high_pressure.json
+533f179b29aefb7b3fbd49cc49e14d9d2dc8904d data/adv_rocketry/tags/worldgen/biome/planet_biomes/scorched.json
+d9952eb92e2108aa73f0803a640052a6eabe8fc5 data/adv_rocketry/tags/worldgen/biome/planet_biomes/single.json

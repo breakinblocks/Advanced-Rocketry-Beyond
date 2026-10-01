@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:quartz"
+    },
+    "b": {
+      "item": "minecraft:repeater"
+    },
+    "c": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "d": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "e": {
+      "item": "adv_rocketry:item_io_circuit_board"
+    },
+    "f": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "g": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "ada",
+    "ecf",
+    "bgb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:crystallizer"
+  }
+}

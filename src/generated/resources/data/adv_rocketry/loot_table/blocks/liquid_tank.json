@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "adv_rocketry:tank_content"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "adv_rocketry:liquid_tank"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "adv_rocketry:blocks/liquid_tank"
+}

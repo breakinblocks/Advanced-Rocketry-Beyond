@@ -1,0 +1,29 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:gems/diamond"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:fire_charge"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:flight_speed_upgrade"
+    }
+  ],
+  "ticks": 200
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "adv_rocketry:block/block_fluid_input_block"
+    }
+  }
+}

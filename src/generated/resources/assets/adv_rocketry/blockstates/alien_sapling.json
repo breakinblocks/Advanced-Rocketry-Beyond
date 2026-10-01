@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "stage=0": {
+      "model": "adv_rocketry:block/alien_sapling"
+    },
+    "stage=1": {
+      "model": "adv_rocketry:block/alien_sapling"
+    }
+  }
+}

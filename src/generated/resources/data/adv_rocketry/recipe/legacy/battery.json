@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "c:rods/iron"
+    },
+    "p": {
+      "tag": "c:plates/tin"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    " c ",
+    "prp",
+    "prp"
+  ],
+  "result": {
+    "count": 4,
+    "id": "adv_rocketry:battery"
+  }
+}

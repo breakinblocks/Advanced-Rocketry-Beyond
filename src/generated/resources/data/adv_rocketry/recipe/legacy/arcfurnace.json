@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:nether_brick"
+    },
+    "b": {
+      "tag": "c:ingots/copper"
+    },
+    "c": {
+      "item": "adv_rocketry:blast_brick"
+    },
+    "e": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "g": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "i": {
+      "item": "adv_rocketry:item_io_circuit_board"
+    }
+  },
+  "pattern": [
+    "aga",
+    "ice",
+    "aba"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:electric_arc_furnace"
+  }
+}

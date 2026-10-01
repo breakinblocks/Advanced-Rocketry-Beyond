@@ -1,0 +1,29 @@
+{
+  "values": {
+    "adv_rocketry:ammonia": {
+      "chance": 0.75,
+      "max_gravity": 1.24
+    },
+    "adv_rocketry:helium": {
+      "chance": 0.9,
+      "min_gravity": 1.25
+    },
+    "adv_rocketry:helium3": {
+      "chance": 0.2,
+      "min_gravity": 1.75
+    },
+    "adv_rocketry:hydrogen": {
+      "min_gravity": 1.25
+    },
+    "adv_rocketry:methane": {
+      "chance": 0.25,
+      "max_gravity": 1.24
+    },
+    "adv_rocketry:nitrogen": {
+      "max_gravity": 1.24
+    },
+    "adv_rocketry:oxygen": {
+      "max_gravity": 1.24
+    }
+  }
+}

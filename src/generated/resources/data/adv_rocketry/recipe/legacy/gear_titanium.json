@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "tag": "c:plates/titanium"
+    },
+    "r": {
+      "tag": "c:ingots/titanium"
+    },
+    "s": {
+      "tag": "c:rods/titanium"
+    }
+  },
+  "pattern": [
+    "sps",
+    " r ",
+    "sps"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:titanium_gear"
+  }
+}

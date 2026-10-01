@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "minecraft:iron_bars"
+    },
+    "x": {
+      "tag": "c:sheets/iron"
+    }
+  },
+  "pattern": [
+    "xix",
+    "xix",
+    "xix"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:carbon_scrubber_cartridge"
+  }
+}

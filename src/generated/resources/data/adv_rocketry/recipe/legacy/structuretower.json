@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:rods/steel"
+    }
+  },
+  "pattern": [
+    "xxx",
+    " x ",
+    "xxx"
+  ],
+  "result": {
+    "count": 8,
+    "id": "adv_rocketry:structure_tower"
+  }
+}

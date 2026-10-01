@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "r": {
+      "tag": "c:rods/iron"
+    },
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "wrw",
+    "w w",
+    "w w"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:space_leggings"
+  }
+}

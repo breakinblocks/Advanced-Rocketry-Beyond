@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/warp",
+  "criteria": {
+    "area_gravity_controller": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:area_gravity_controller"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.whatGoesUp.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:area_gravity_controller"
+    },
+    "title": {
+      "translate": "advancement.whatGoesUp"
+    }
+  },
+  "requirements": [
+    [
+      "area_gravity_controller"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "h": {
+      "item": "minecraft:hopper"
+    },
+    "r": {
+      "tag": "c:rods/titanium"
+    }
+  },
+  "pattern": [
+    "rhr",
+    "hbh",
+    "rhr"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:gas_intake"
+  }
+}

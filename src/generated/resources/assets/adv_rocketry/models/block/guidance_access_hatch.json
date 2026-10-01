@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "adv_rocketry:block/guidancecomputeraccesshatch",
+    "side": "adv_rocketry:block/guidancecomputeraccesshatch",
+    "top": "adv_rocketry:block/guidancecomputeraccesshatch"
+  }
+}

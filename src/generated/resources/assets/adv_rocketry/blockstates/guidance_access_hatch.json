@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,powered=false": {
+      "model": "adv_rocketry:block/guidance_access_hatch",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "adv_rocketry:block/guidance_access_hatch",
+      "y": 90
+    },
+    "facing=north,powered=false": {
+      "model": "adv_rocketry:block/guidance_access_hatch"
+    },
+    "facing=north,powered=true": {
+      "model": "adv_rocketry:block/guidance_access_hatch"
+    },
+    "facing=south,powered=false": {
+      "model": "adv_rocketry:block/guidance_access_hatch",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "adv_rocketry:block/guidance_access_hatch",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "adv_rocketry:block/guidance_access_hatch",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "adv_rocketry:block/guidance_access_hatch",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "controller": "adv_rocketry:electric_arc_furnace",
+  "keys": {
+    "*": {
+      "any": [
+        [
+          "adv_rocketry:block_item_input_block",
+          "adv_rocketry:block_item_output_block",
+          "adv_rocketry:block_fluid_input_block",
+          "adv_rocketry:block_fluid_output_block",
+          "adv_rocketry:block_energy_input_block",
+          "adv_rocketry:creative_energy_input",
+          "adv_rocketry:blast_brick"
+        ]
+      ]
+    },
+    "K": {
+      "any": [
+        "#adv_rocketry:coils"
+      ]
+    },
+    "P": {
+      "any": [
+        [
+          "adv_rocketry:block_energy_input_block",
+          "adv_rocketry:creative_energy_input"
+        ]
+      ]
+    },
+    "a": {
+      "air": true
+    },
+    "b": {
+      "any": [
+        "adv_rocketry:blast_brick"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "     ",
+      " PbP ",
+      " bbb ",
+      " bPb ",
+      "     "
+    ],
+    [
+      " bbb ",
+      "bKaKb",
+      "baaab",
+      "baKab",
+      " bbb "
+    ],
+    [
+      "bbbbb",
+      "baaab",
+      "baaab",
+      "baaab",
+      "bbbbb"
+    ],
+    [
+      "b*c*b",
+      "*bbb*",
+      "*bbb*",
+      "*bbb*",
+      "b***b"
+    ],
+    [
+      "bbbbb",
+      "bbbbb",
+      "bbbbb",
+      "bbbbb",
+      "bbbbb"
+    ]
+  ],
+  "order": 9
+}

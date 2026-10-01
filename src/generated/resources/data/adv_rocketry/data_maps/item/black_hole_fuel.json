@@ -1,0 +1,16 @@
+{
+  "values": {
+    "minecraft:cobblestone": {
+      "burn_time": 1
+    },
+    "minecraft:dirt": {
+      "burn_time": 1
+    },
+    "minecraft:netherrack": {
+      "burn_time": 1
+    },
+    "minecraft:stone": {
+      "burn_time": 1
+    }
+  }
+}

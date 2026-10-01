@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "adv_rocketry:block/pumpbottom",
+    "side": "adv_rocketry:block/pumpside",
+    "top": "adv_rocketry:block/machinegeneric"
+  }
+}

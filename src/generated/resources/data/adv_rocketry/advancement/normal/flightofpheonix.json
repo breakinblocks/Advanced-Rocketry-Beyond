@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/warp",
+  "criteria": {
+    "flightofpheonix": {
+      "conditions": {
+        "milestone": "first_warp_flight"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.flightOfThePhoenix.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:warp_core"
+    },
+    "title": {
+      "translate": "advancement.flightOfThePhoenix"
+    }
+  },
+  "requirements": [
+    [
+      "flightofpheonix"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}

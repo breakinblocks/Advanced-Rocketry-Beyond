@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/observatory"
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/observatory"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/observatory"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/observatory"
+    }
+  }
+}

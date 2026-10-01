@@ -1,0 +1,43 @@
+{
+  "controller": "adv_rocketry:solar_array",
+  "keys": {
+    "e": {
+      "any": [
+        "adv_rocketry:block_energy_output_block"
+      ]
+    },
+    "p": {
+      "air": true,
+      "any": [
+        "adv_rocketry:solar_array_panel"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "ece",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp",
+      "ppp"
+    ]
+  ],
+  "order": 16
+}

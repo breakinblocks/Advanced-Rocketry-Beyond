@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "adv_rocketry:block/forcefieldprojectorfront",
+    "side": "adv_rocketry:block/forcefieldprojector",
+    "top": "adv_rocketry:block/forcefieldprojector"
+  }
+}

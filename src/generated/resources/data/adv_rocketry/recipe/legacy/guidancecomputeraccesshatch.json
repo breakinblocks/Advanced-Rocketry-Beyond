@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "m": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "x": {
+      "tag": "c:rods/copper"
+    },
+    "z": {
+      "item": "adv_rocketry:control_circuit_board"
+    }
+  },
+  "pattern": [
+    " z ",
+    "xmx",
+    " z "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:guidance_access_hatch"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "minecraft:iron_bars"
+    },
+    "f": {
+      "tag": "c:fans/steel"
+    },
+    "m": {
+      "tag": "adv_rocketry:motors"
+    },
+    "t": {
+      "tag": "c:ingots/carbon"
+    }
+  },
+  "pattern": [
+    "bfb",
+    "bmb",
+    "btb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:carbon_scrubber"
+  }
+}

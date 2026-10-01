@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:item_io_circuit_board"
+    },
+    "d": {
+      "tag": "c:fans/steel"
+    },
+    "e": {
+      "tag": "c:coils/copper"
+    },
+    "t": {
+      "item": "adv_rocketry:tracking_circuit"
+    }
+  },
+  "pattern": [
+    " t ",
+    "abc",
+    "ded"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:railgun"
+  }
+}

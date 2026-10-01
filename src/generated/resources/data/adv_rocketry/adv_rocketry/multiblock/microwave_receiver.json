@@ -1,0 +1,21 @@
+{
+  "controller": "adv_rocketry:microwave_receiver",
+  "keys": {
+    "p": {
+      "any": [
+        "adv_rocketry:solar_panel"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "p   p",
+      " ppp ",
+      " pcp ",
+      " ppp ",
+      "p   p"
+    ]
+  ],
+  "order": 12,
+  "rotates": false
+}

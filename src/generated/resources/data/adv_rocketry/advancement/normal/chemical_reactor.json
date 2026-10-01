@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/electrifying",
+  "criteria": {
+    "chemical_reactor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:chemical_reactor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.madScientist.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:chemical_reactor"
+    },
+    "title": {
+      "translate": "advancement.madScientist"
+    }
+  },
+  "requirements": [
+    [
+      "chemical_reactor"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

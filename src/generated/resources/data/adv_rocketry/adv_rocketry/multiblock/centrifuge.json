@@ -1,0 +1,69 @@
+{
+  "controller": "adv_rocketry:centrifuge",
+  "keys": {
+    "L": {
+      "any": [
+        "adv_rocketry:block_fluid_input_block"
+      ]
+    },
+    "M": {
+      "any": [
+        "#adv_rocketry:motors"
+      ]
+    },
+    "O": {
+      "any": [
+        "adv_rocketry:block_item_output_block"
+      ]
+    },
+    "P": {
+      "any": [
+        [
+          "adv_rocketry:block_energy_input_block",
+          "adv_rocketry:creative_energy_input"
+        ]
+      ]
+    },
+    "S": {
+      "any": [
+        "adv_rocketry:block_structure_block"
+      ]
+    },
+    "U": {
+      "any": [
+        "adv_rocketry:centrifuge_casing"
+      ]
+    },
+    "a": {
+      "air": true
+    },
+    "l": {
+      "any": [
+        "adv_rocketry:block_fluid_output_block"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "aSl",
+      "UUS",
+      "UU "
+    ],
+    [
+      "aSl",
+      "UUS",
+      "UUl"
+    ],
+    [
+      "cSl",
+      "UUS",
+      "UUl"
+    ],
+    [
+      "PLl",
+      "MOS",
+      "SSl"
+    ]
+  ],
+  "order": 8
+}

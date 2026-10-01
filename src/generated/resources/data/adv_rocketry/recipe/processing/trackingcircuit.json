@@ -1,0 +1,25 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 50,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/redstone"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:ender_eye"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:basic_circuit_plate"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:tracking_circuit"
+    }
+  ],
+  "ticks": 900
+}

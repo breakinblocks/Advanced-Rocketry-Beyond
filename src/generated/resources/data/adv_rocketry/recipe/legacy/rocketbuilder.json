@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "c": {
+      "item": "adv_rocketry:control_circuit_board"
+    },
+    "d": {
+      "item": "adv_rocketry:concrete"
+    },
+    "g": {
+      "item": "adv_rocketry:user_interface"
+    },
+    "s": {
+      "tag": "c:rods/titanium"
+    },
+    "t": {
+      "tag": "c:gears/titanium"
+    }
+  },
+  "pattern": [
+    "sgs",
+    "cbc",
+    "tdt"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:rocket_builder"
+  }
+}

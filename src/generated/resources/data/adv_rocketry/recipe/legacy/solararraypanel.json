@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "item": "adv_rocketry:solar_cell"
+    },
+    "s": {
+      "item": "adv_rocketry:structure_tower"
+    }
+  },
+  "pattern": [
+    "ppp",
+    "psp",
+    "ppp"
+  ],
+  "result": {
+    "count": 8,
+    "id": "adv_rocketry:solar_array_panel"
+  }
+}

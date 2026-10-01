@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "adv_rocketry:block/alien_log",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "adv_rocketry:block/alien_log"
+    },
+    "axis=z": {
+      "model": "adv_rocketry:block/alien_log",
+      "x": 90
+    }
+  }
+}

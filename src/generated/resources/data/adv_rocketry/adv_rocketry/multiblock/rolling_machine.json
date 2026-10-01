@@ -1,0 +1,59 @@
+{
+  "controller": "adv_rocketry:rolling_machine",
+  "keys": {
+    "B": {
+      "any": [
+        "adv_rocketry:steel_block"
+      ]
+    },
+    "I": {
+      "any": [
+        "adv_rocketry:block_item_input_block"
+      ]
+    },
+    "L": {
+      "any": [
+        "adv_rocketry:block_fluid_input_block"
+      ]
+    },
+    "M": {
+      "any": [
+        "#adv_rocketry:motors"
+      ]
+    },
+    "O": {
+      "any": [
+        "adv_rocketry:block_item_output_block"
+      ]
+    },
+    "P": {
+      "any": [
+        [
+          "adv_rocketry:block_energy_input_block",
+          "adv_rocketry:creative_energy_input"
+        ]
+      ]
+    },
+    "S": {
+      "any": [
+        "adv_rocketry:block_structure_block"
+      ]
+    },
+    "a": {
+      "air": true
+    }
+  },
+  "layers": [
+    [
+      "aaaaa",
+      "SSSSS",
+      "SSSBS"
+    ],
+    [
+      "PcIaa",
+      "SMMBS",
+      "SLOBS"
+    ]
+  ],
+  "order": 1
+}

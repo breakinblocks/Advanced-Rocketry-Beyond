@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "c:pressure_tanks"
+    },
+    "f": {
+      "item": "minecraft:fire_charge"
+    },
+    "l": {
+      "item": "minecraft:lever"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    },
+    "s": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "cpc",
+    "lsl",
+    "f f"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:jetpack"
+  }
+}

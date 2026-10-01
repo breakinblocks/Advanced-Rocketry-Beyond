@@ -1,0 +1,17 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 1,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:sand"
+    }
+  ],
+  "machine": "electric_arc_furnace",
+  "outputs": [
+    {
+      "id": "adv_rocketry:silicon_ingot"
+    }
+  ],
+  "ticks": 12000
+}

@@ -1,0 +1,25 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 100,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/gold"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/redstone"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:silicon_wafer"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:basic_circuit_plate"
+    }
+  ],
+  "ticks": 900
+}

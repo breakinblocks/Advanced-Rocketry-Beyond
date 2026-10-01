@@ -1,0 +1,42 @@
+{
+  "parent": "adv_rocketry:normal/root",
+  "criteria": {
+    "suited": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:space_boots"
+          },
+          {
+            "items": "adv_rocketry:space_leggings"
+          },
+          {
+            "items": "adv_rocketry:space_helmet"
+          },
+          {
+            "items": "adv_rocketry:space_chestplate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.suitedUp.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:space_helmet"
+    },
+    "title": {
+      "translate": "advancement.suitedUp"
+    }
+  },
+  "requirements": [
+    [
+      "suited"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

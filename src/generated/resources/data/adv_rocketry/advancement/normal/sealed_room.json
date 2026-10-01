@@ -1,0 +1,30 @@
+{
+  "parent": "adv_rocketry:normal/oxygen_vent",
+  "criteria": {
+    "sealed_room": {
+      "conditions": {
+        "milestone": "sealed_room"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.airtight.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:airlock_door"
+    },
+    "title": {
+      "translate": "advancement.airtight"
+    }
+  },
+  "requirements": [
+    [
+      "sealed_room"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

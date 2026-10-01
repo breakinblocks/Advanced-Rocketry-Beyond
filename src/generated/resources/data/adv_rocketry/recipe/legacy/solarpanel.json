@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "g": {
+      "tag": "c:dusts/glowstone"
+    },
+    "p": {
+      "tag": "c:plates/gold"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "rrr",
+    "gbg",
+    "ppp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:solar_cell"
+  }
+}

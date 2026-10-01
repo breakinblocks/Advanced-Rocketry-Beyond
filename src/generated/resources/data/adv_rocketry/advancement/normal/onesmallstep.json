@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/moonlanding",
+  "criteria": {
+    "onesmallstep": {
+      "conditions": {
+        "milestone": "first_moon_landing"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.oneSmallStep.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:moon_turf"
+    },
+    "title": {
+      "translate": "advancement.oneSmallStep"
+    }
+  },
+  "requirements": [
+    [
+      "onesmallstep"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}

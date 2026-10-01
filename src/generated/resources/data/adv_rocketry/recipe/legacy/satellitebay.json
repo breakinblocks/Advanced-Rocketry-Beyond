@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "m": {
+      "item": "adv_rocketry:block_structure_block"
+    },
+    "x": {
+      "tag": "c:rods/titanium"
+    }
+  },
+  "pattern": [
+    " x ",
+    "xmx",
+    " x "
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:satellite_hatch"
+  }
+}

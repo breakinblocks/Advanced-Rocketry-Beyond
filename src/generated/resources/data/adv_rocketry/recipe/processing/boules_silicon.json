@@ -1,0 +1,21 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 20,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/silicon"
+    },
+    {
+      "count": 1,
+      "tag": "c:nuggets/silicon"
+    }
+  ],
+  "machine": "crystallizer",
+  "outputs": [
+    {
+      "id": "adv_rocketry:silicon_boule"
+    }
+  ],
+  "ticks": 300
+}

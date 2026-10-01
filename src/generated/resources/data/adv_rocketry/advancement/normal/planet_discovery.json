@@ -1,0 +1,30 @@
+{
+  "parent": "adv_rocketry:normal/space_station",
+  "criteria": {
+    "discovery": {
+      "conditions": {
+        "milestone": "planet_discovery"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.uncharted.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:planet_id_chip"
+    },
+    "title": {
+      "translate": "advancement.uncharted"
+    }
+  },
+  "requirements": [
+    [
+      "discovery"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

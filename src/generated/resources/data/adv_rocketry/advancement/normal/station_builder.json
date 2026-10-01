@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/rocket_builder",
+  "criteria": {
+    "station_builder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:station_builder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.someAssemblyRequired.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:station_builder"
+    },
+    "title": {
+      "translate": "advancement.someAssemblyRequired"
+    }
+  },
+  "requirements": [
+    [
+      "station_builder"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

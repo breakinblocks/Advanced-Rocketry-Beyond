@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "": {
+      "model": "adv_rocketry:block/plate_press",
+      "x": 180
+    }
+  }
+}

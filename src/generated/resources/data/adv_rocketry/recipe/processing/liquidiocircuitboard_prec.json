@@ -1,0 +1,25 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 10,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/redstone"
+    },
+    {
+      "count": 1,
+      "tag": "c:gems/lapis"
+    },
+    {
+      "count": 1,
+      "tag": "c:plates/steel"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:fluid_io_circuit_board"
+    }
+  ],
+  "ticks": 200
+}

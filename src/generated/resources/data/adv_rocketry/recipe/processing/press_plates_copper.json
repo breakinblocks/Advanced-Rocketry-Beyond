@@ -1,0 +1,18 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 0,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:storage_blocks/copper"
+    }
+  ],
+  "machine": "plate_press",
+  "outputs": [
+    {
+      "count": 4,
+      "id": "adv_rocketry:copper_plate"
+    }
+  ],
+  "ticks": 1
+}

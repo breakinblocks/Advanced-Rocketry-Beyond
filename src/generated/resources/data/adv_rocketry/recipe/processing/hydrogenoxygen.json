@@ -1,0 +1,22 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 20,
+  "fluid_inputs": [
+    {
+      "amount": 10,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 100,
+      "id": "adv_rocketry:hydrogen"
+    },
+    {
+      "amount": 100,
+      "id": "adv_rocketry:oxygen"
+    }
+  ],
+  "machine": "electrolyzer",
+  "ticks": 100
+}

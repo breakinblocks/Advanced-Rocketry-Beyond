@@ -1,0 +1,33 @@
+{
+  "parent": "adv_rocketry:normal/root",
+  "criteria": {
+    "observatory": {
+      "conditions": {
+        "items": [
+          {
+            "items": "adv_rocketry:observatory"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.stargazer.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "adv_rocketry:observatory"
+    },
+    "title": {
+      "translate": "advancement.stargazer"
+    }
+  },
+  "requirements": [
+    [
+      "observatory"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

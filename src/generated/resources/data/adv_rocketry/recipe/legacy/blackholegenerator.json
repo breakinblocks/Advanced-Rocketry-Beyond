@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:advanced_battery"
+    },
+    "c": {
+      "item": "adv_rocketry:block_advanced_structure_block"
+    },
+    "g": {
+      "item": "adv_rocketry:structure_tower"
+    },
+    "m": {
+      "tag": "adv_rocketry:motors"
+    },
+    "p": {
+      "tag": "c:plates/titanium_aluminide"
+    },
+    "s": {
+      "item": "adv_rocketry:user_interface"
+    }
+  },
+  "pattern": [
+    "bgb",
+    "pcp",
+    "msm"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:black_hole_generator"
+  }
+}

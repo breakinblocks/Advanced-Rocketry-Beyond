@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/railgun"
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/railgun"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/railgun"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/railgun"
+    }
+  }
+}

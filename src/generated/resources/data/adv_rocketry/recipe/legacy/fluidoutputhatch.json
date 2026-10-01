@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "item": "minecraft:bucket"
+    },
+    "y": {
+      "item": "adv_rocketry:block_structure_block"
+    }
+  },
+  "pattern": [
+    "y",
+    "x"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:block_fluid_output_block"
+  }
+}

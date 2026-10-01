@@ -1,0 +1,30 @@
+{
+  "parent": "adv_rocketry:normal/root",
+  "criteria": {
+    "beer": {
+      "conditions": {
+        "milestone": "seat_on_tnt"
+      },
+      "trigger": "adv_rocketry:milestone"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.beerOnTheSun.desc"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:tnt"
+    },
+    "title": {
+      "translate": "advancement.beerOnTheSun"
+    }
+  },
+  "requirements": [
+    [
+      "beer"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

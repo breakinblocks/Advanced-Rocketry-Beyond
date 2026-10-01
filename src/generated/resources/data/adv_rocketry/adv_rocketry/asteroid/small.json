@@ -1,0 +1,22 @@
+{
+  "distance": 10,
+  "mass": 200,
+  "mass_variability": 0.5,
+  "ores": [
+    {
+      "item": "minecraft:iron_ore",
+      "weight": 15.0
+    },
+    {
+      "item": "minecraft:gold_ore",
+      "weight": 10.0
+    },
+    {
+      "item": "minecraft:redstone_ore",
+      "weight": 10.0
+    }
+  ],
+  "probability": 20.0,
+  "richness": 0.3,
+  "richness_variability": 0.5
+}

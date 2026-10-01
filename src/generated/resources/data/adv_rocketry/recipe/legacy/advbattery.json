@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "adv_rocketry:battery"
+    },
+    "p": {
+      "tag": "c:plates/copper"
+    }
+  },
+  "pattern": [
+    "   ",
+    "bpb",
+    "bpb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:advanced_battery"
+  }
+}

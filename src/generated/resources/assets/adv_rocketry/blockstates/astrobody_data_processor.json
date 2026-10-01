@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "adv_rocketry:block/astrobody_data_processor"
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/astrobody_data_processor"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/astrobody_data_processor"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/astrobody_data_processor"
+    }
+  }
+}

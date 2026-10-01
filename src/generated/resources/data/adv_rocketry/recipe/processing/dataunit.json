@@ -1,0 +1,25 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 60,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/redstone"
+    },
+    {
+      "count": 1,
+      "tag": "c:gems/emerald"
+    },
+    {
+      "count": 1,
+      "item": "adv_rocketry:basic_circuit"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:item_data_storage"
+    }
+  ],
+  "ticks": 500
+}

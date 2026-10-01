@@ -1,0 +1,24 @@
+{
+  "parent": "adv_rocketry:earth",
+  "atmosphere": 0,
+  "biomes": [
+    {
+      "biome": "adv_rocketry:moon"
+    },
+    {
+      "biome": "adv_rocketry:moondark"
+    }
+  ],
+  "caves": true,
+  "craters": true,
+  "fog_color": "#000000",
+  "gravity": 0.166,
+  "name": "Luna",
+  "orbital_distance": 150,
+  "oxygen": false,
+  "rotation_period": 128000,
+  "sky_color": "#000000",
+  "star": "adv_rocketry:sol",
+  "temperature": 200,
+  "terrain": "moon"
+}

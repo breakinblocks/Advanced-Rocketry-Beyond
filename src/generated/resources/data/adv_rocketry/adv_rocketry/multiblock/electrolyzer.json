@@ -1,0 +1,44 @@
+{
+  "controller": "adv_rocketry:electrolyzer",
+  "keys": {
+    "K": {
+      "any": [
+        "#adv_rocketry:coils"
+      ]
+    },
+    "L": {
+      "any": [
+        "adv_rocketry:block_fluid_input_block"
+      ]
+    },
+    "P": {
+      "any": [
+        [
+          "adv_rocketry:block_energy_input_block",
+          "adv_rocketry:creative_energy_input"
+        ]
+      ]
+    },
+    "S": {
+      "any": [
+        "adv_rocketry:block_structure_block"
+      ]
+    },
+    "l": {
+      "any": [
+        "adv_rocketry:block_fluid_output_block"
+      ]
+    }
+  },
+  "layers": [
+    [
+      "   ",
+      "PKP"
+    ],
+    [
+      "lcl",
+      "SLS"
+    ]
+  ],
+  "order": 3
+}
