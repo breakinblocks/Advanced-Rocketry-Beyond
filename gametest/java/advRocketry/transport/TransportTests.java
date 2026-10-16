@@ -25,6 +25,30 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder("adv_rocketry")
 @PrefixGameTestTemplate(false)
 public final class TransportTests {
+  @GameTest(template = "empty", timeoutTicks = 200)
+  public static void oversizedDiscoveryIsBoundedAndNeverSplits(GameTestHelper h) {
+    var level = h.getLevel();
+    BlockPos origin = new BlockPos(9200000, 100, 9200000);
+    var state = TransportRegistry.ALL.get(TransportRegistry.Kind.ENERGY).get().defaultBlockState();
+    for (int x = 0; x < 17; x++) for (int z = 0; z < 17; z++) {
+      level.getChunkAt(origin.offset(x, 0, z));
+      for (int y = 0; y < 15; y++) level.setBlock(origin.offset(x, y, z), state, 18);
+    }
+    try {
+      var first = (TransportBlockEntity) level.getBlockEntity(origin);
+      var far = (TransportBlockEntity) level.getBlockEntity(origin.offset(16, 14, 16));
+      var a = TransportNetworks.network(first);
+      var b = TransportNetworks.network(far);
+      h.assertTrue(a.oversized && b.oversized, "Oversized component exposed a working subnet");
+      h.assertTrue(a.members.size() <= TransportNetworks.MAX_NODES + 1
+          && b.members.size() <= TransportNetworks.MAX_NODES + 1, "Discovery exceeded its member bound");
+    } finally {
+      for (int x = 0; x < 17; x++) for (int z = 0; z < 17; z++)
+        for (int y = 0; y < 15; y++) level.setBlock(origin.offset(x, y, z), Blocks.AIR.defaultBlockState(), 18);
+      TransportNetworks.invalidate(level);
+    }
+    h.succeed();
+  }
   @GameTest(template="empty",timeoutTicks=80)
   public static void capabilityInvalidationWakesPassiveEndpoint(GameTestHelper h) {
     var pipe=pipe(h,TransportRegistry.Kind.ENERGY,2);var sourcePos=pipe.getBlockPos().west();var targetPos=pipe.getBlockPos().east();

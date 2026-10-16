@@ -7,6 +7,7 @@ import advRocketry.util.Texts;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,8 +38,16 @@ public final class TransportNetworks {
   public static final int MAX_NODES = 4096;
   private static final Map<Level, Map<BlockPos, Network>> CACHE = new WeakHashMap<>();
   private static final Map<Level, Set<BlockPos>> DIRTY = new WeakHashMap<>();
+  private static final Map<Level, DiscoveryBudget> BUDGETS = new WeakHashMap<>();
+  private static final Set<Level> OVERSIZED = Collections.newSetFromMap(new WeakHashMap<>());
+
+  private static final class DiscoveryBudget {
+    long tick = Long.MIN_VALUE;
+    int remaining;
+  }
 
   public static void capabilityChanged(TransportBlockEntity pipe) {
+    if (!(pipe.getLevel() instanceof ServerLevel)) return;
     invalidate(pipe.getLevel(), pipe.getBlockPos());
     DIRTY.computeIfAbsent(pipe.getLevel(), level -> new HashSet<>()).add(pipe.getBlockPos());
   }
@@ -109,15 +118,24 @@ public final class TransportNetworks {
     if (event.getLevel() instanceof Level level && !level.isClientSide) {
       invalidate(level);
       DIRTY.remove(level);
+      BUDGETS.remove(level);
     }
   }
 
   public static void invalidate(Level level) {
-    if (level != null && !level.isClientSide) CACHE.remove(level);
+    if (level != null && !level.isClientSide) {
+      CACHE.remove(level);
+      OVERSIZED.remove(level);
+    }
   }
 
   public static void invalidate(Level level, BlockPos pos) {
     if (level == null || level.isClientSide) return;
+    // Oversized components are cached in bounded fragments; a topology change must clear all.
+    if (OVERSIZED.contains(level)) {
+      invalidate(level);
+      return;
+    }
     var cache = CACHE.get(level);
     if (cache == null) return;
     forget(cache, cache.get(pos));
@@ -144,15 +162,31 @@ public final class TransportNetworks {
 
   public static Network network(TransportBlockEntity start) {
     Level level = start.getLevel();
+    if (!(level instanceof ServerLevel)) {
+      Network unavailable = new Network();
+      unavailable.oversized = true;
+      return unavailable;
+    }
     var cache = CACHE.computeIfAbsent(level, key -> new HashMap<>());
     Network cached = cache.get(start.getBlockPos());
     if (cached != null) return cached;
     Network network = new Network();
+    DiscoveryBudget budget = BUDGETS.computeIfAbsent(level, ignored -> new DiscoveryBudget());
+    if (budget.tick != level.getGameTime()) {
+      budget.tick = level.getGameTime();
+      budget.remaining = MAX_NODES * 4;
+    }
+    // Incomplete discovery never exposes a functioning subnet or enters the cache.
+    if (budget.remaining < MAX_NODES + 1) {
+      network.oversized = true;
+      return network;
+    }
     var seen = network.members;
     var queue = new ArrayDeque<TransportBlockEntity>();
     queue.add(start);
     seen.add(start.getBlockPos());
     while (!queue.isEmpty()) {
+      budget.remaining--;
       var pipe = queue.remove();
       if (!network.oversized) {
         network.nodes.add(pipe);
@@ -165,10 +199,22 @@ public final class TransportNetworks {
         if (level.getBlockEntity(next) instanceof TransportBlockEntity other) {
           if (other.kind() == start.kind()
               && other.modes[side.getOpposite().ordinal()] != TransportBlockEntity.DISABLED
-              && seen.add(next)) queue.add(other);
+              && seen.add(next)) {
+            if (seen.size() > MAX_NODES || (cache.get(next) != null && cache.get(next).oversized)) {
+              network.oversized = true;
+              break;
+            }
+            queue.add(other);
+          }
         } else if (!network.oversized && capability(pipe, side) != null)
           network.ends.add(new End(pipe, side));
       }
+      if (network.oversized) break;
+    }
+    if (network.oversized) {
+      OVERSIZED.add(level);
+      for (BlockPos member : seen) cache.put(member, network);
+      return network;
     }
     network.nodes.sort(Comparator.comparing(TransportBlockEntity::getBlockPos));
     var endpointPositions = new HashSet<BlockPos>();
