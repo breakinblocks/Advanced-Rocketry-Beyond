@@ -5,6 +5,7 @@ package advRocketry.processing;
 
 import advRocketry.AdvancedRocketryConfig;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public record ProcessingRecipe(
     int rolls)
     implements Recipe<ProcessingInput> {
   public static final MapCodec<ProcessingRecipe> MAP_CODEC =
-      RecordCodecBuilder.mapCodec(
+      RecordCodecBuilder.<ProcessingRecipe>mapCodec(
           instance ->
               instance
                   .group(
@@ -58,7 +59,7 @@ public record ProcessingRecipe(
                           .optionalFieldOf("fluid_inputs", List.of())
                           .forGetter(ProcessingRecipe::fluidInputs),
                       ProcessingOutput.CODEC
-                          .listOf()
+                          .listOf(0, 256)
                           .optionalFieldOf("outputs", List.of())
                           .forGetter(ProcessingRecipe::outputs),
                       FluidStack.CODEC
@@ -66,13 +67,21 @@ public record ProcessingRecipe(
                           .optionalFieldOf("fluid_outputs", List.of())
                           .forGetter(ProcessingRecipe::fluidOutputs),
                       WeightedOutput.CODEC
-                          .listOf()
+                          .listOf(0, 256)
                           .optionalFieldOf("weighted_outputs", List.of())
                           .forGetter(ProcessingRecipe::weightedOutputs),
                       Codec.intRange(0, 64)
                           .optionalFieldOf("rolls", 0)
                           .forGetter(ProcessingRecipe::rolls))
-                  .apply(instance, ProcessingRecipe::new));
+                  .apply(instance, ProcessingRecipe::new))
+          .validate(recipe -> {
+            long maximum = recipe.outputs.stream().mapToLong(ProcessingOutput::count).sum()
+                + (long) recipe.rolls * recipe.weightedOutputs.stream()
+                    .mapToInt(entry -> entry.output().count()).max().orElse(0);
+            return maximum <= ProcessingOutput.MAX_COUNT
+                ? DataResult.success(recipe)
+                : DataResult.error(() -> "Recipe produces more than 4096 items per operation");
+          });
   public static final Codec<ProcessingRecipe> CODEC = MAP_CODEC.codec();
 
   public ProcessingRecipe(
@@ -99,6 +108,16 @@ public record ProcessingRecipe(
   }
 
   public record Rolled(List<ItemStack> items, List<FluidStack> fluids) {
+    public Rolled {
+      List<ItemStack> split = new ArrayList<>();
+      for (ItemStack item : items) {
+        int limit = Math.max(1, Math.min(99, item.getMaxStackSize()));
+        for (int remaining = item.getCount(); remaining > 0; remaining -= Math.min(limit, remaining))
+          split.add(item.copyWithCount(Math.min(limit, remaining)));
+      }
+      items = List.copyOf(split);
+      fluids = fluids.stream().map(FluidStack::copy).toList();
+    }
     public static final Rolled EMPTY = new Rolled(List.of(), List.of());
     public static final Codec<Rolled> CODEC =
         RecordCodecBuilder.create(
@@ -124,8 +143,9 @@ public record ProcessingRecipe(
   public Rolled roll(RandomSource random) {
     List<ItemStack> items = new ArrayList<>();
     for (var output : outputs) {
-      int count = 0;
-      for (int i = 0; i < output.count(); i++) if (random.nextFloat() < output.chance()) count++;
+      int count = output.chance() == 1 ? output.count() : 0;
+      if (output.chance() > 0 && output.chance() < 1)
+        for (int i = 0; i < output.count(); i++) if (random.nextFloat() < output.chance()) count++;
       if (count > 0) items.add(output.stack(count));
     }
     List<WeightedOutput> pool = weightedPool();

@@ -10,14 +10,18 @@ import advRocketry.orbit.OrbitalRegistry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
@@ -47,6 +51,29 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 @GameTestHolder("adv_rocketry")
 @PrefixGameTestTemplate(false)
 public final class ProcessingTests {
+  @GameTest(template = "empty")
+  public static void largeTaggedOutputsPreserveComponentsAndSave(GameTestHelper helper) {
+    var patch = DataComponentPatch.builder()
+        .set(DataComponents.CUSTOM_NAME, Component.literal("Reviewed output")).build();
+    var output = new ProcessingOutput(Optional.empty(),
+        Optional.of(TagKey.create(Registries.ITEM, ResourceLocation.parse("c:ingots/iron"))),
+        100, patch, 1);
+    var recipe = new ProcessingRecipe(MachineType.ROLLING_MACHINE, 100, 20,
+        List.of(), List.of(), List.of(output));
+    var rolled = recipe.roll(RandomSource.create(1));
+    var ops = helper.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE);
+    var saved = ProcessingRecipe.Rolled.CODEC.encodeStart(ops, rolled).getOrThrow();
+    var restored = ProcessingRecipe.Rolled.CODEC.parse(ops, saved).getOrThrow();
+    helper.assertTrue(restored.items().stream().mapToInt(ItemStack::getCount).sum() == 100,
+        "Large output lost items during persistence");
+    helper.assertTrue(restored.items().stream().allMatch(stack -> stack.getCount() <= 64
+        && Component.literal("Reviewed output").equals(stack.get(DataComponents.CUSTOM_NAME))),
+        "Output stacks lost their limits or components");
+    helper.assertTrue(output.displayStacks().stream().allMatch(stack ->
+        stack.has(DataComponents.CUSTOM_NAME)), "Recipe display lost output components");
+    helper.succeed();
+  }
+
   private static final BlockPos ANCHOR = new BlockPos(8, 6, 8);
 
   @GameTest(template = "empty")

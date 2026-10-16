@@ -21,6 +21,7 @@ public record ProcessingOutput(
     int count,
     DataComponentPatch components,
     float chance) {
+  public static final int MAX_COUNT = 4096;
   public static final Codec<ProcessingOutput> CODEC =
       RecordCodecBuilder.<ProcessingOutput>create(
               instance ->
@@ -32,7 +33,7 @@ public record ProcessingOutput(
                           TagKey.codec(Registries.ITEM)
                               .optionalFieldOf("tag")
                               .forGetter(ProcessingOutput::tag),
-                          Codec.intRange(1, Integer.MAX_VALUE)
+                          Codec.intRange(1, MAX_COUNT)
                               .optionalFieldOf("count", 1)
                               .forGetter(ProcessingOutput::count),
                           DataComponentPatch.CODEC
@@ -70,7 +71,7 @@ public record ProcessingOutput(
     if (amount <= 0) return ItemStack.EMPTY;
     if (item.isPresent()) return new ItemStack(item.get(), amount, components);
     ItemStack first = TagItems.representative(tag.orElseThrow());
-    return first.isEmpty() ? first : first.copyWithCount(amount);
+    return first.isEmpty() ? first : new ItemStack(first.getItemHolder(), amount, components);
   }
 
   public ItemStack stack() {
@@ -85,7 +86,7 @@ public record ProcessingOutput(
     if (item.isPresent()) return List.of(stack());
     List<ItemStack> stacks = new ArrayList<>();
     for (var holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag.orElseThrow()))
-      stacks.add(new ItemStack(holder, count));
+      stacks.add(new ItemStack(holder, count, components));
     return stacks;
   }
 
