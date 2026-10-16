@@ -24,6 +24,33 @@ condition.
 A tag output gives the tag's first item. Weighted outputs whose tag is empty are
 skipped.
 
+Outputs preserve their component patches when resolved through tags. Each operation
+may produce at most 4096 items, including weighted rolls; output pools have at most
+256 entries. Large results are split into stacks before saving.
+
+### Armor sealing
+
+`adv_rocketry:armor_sealing` recipes select an `armor_type` (`helmet`, `chestplate`,
+`leggings`, `boots`, or `body`) and specify `materials` (NeoForge sized ingredients),
+`ticks`, and `energy` per tick. The chemical reactor preserves the armor's components
+and adds the airtight enchantment. Override `adv_rocketry:sealing/<armor_type>` to
+change a default recipe, or disable it with a `neoforge:false` condition.
+
+### Coil timing
+
+The block data map `adv_rocketry:processing_time` assigns a duration multiplier to
+coils in multiblock `K` positions. Values range from 0.001 to 1000 and multiply
+together. Override `data/adv_rocketry/data_maps/block/processing_time.json`; blocks
+without an entry use a multiplier of 1.
+
+### Multiblock validation
+
+Definitions require exactly one `c` controller, defined symbols, and no more than
+16384 occupied cells. Each dimension is limited to 64. Orbital lasers require two
+`O` output hatches and a `P` energy input; railguns and astrobody processors require
+`I`, `O`, and `P`; satellite builders require `P`. These roles must resolve to the
+corresponding port blocks. Biome source weights must match their biome list.
+
 ## Stars
 
 `data/<namespace>/adv_rocketry/star/`: `name`, `temperature`, `size`, map
