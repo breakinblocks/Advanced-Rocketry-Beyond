@@ -5,12 +5,10 @@ package advRocketry.rocket;
 
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.ModTags;
-import advRocketry.processing.MachinePorts;
 import advRocketry.processing.ProcessingRegistry;
 import advRocketry.space.GalaxyData;
 import advRocketry.util.AssemblyFailure;
 import advRocketry.util.Texts;
-import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -38,59 +36,9 @@ public final class RocketAssembly {
     if (!(builder.getLevel() instanceof ServerLevel level)) return;
     builder.ready = false;
     try {
-      BlockPos pad = null;
-      for (Direction direction : Direction.Plane.HORIZONTAL) {
-        BlockPos candidate = builder.getBlockPos().relative(direction).below();
-        if (level.getBlockState(candidate).is(RocketRegistry.PARTS.get("launch_pad").get())) {
-          pad = candidate;
-          break;
-        }
-      }
-      if (pad == null)
-        throw new AssemblyFailure(
-            Component.translatable(
-                "message.adv_rocketry.rocket_assembly.place_the_builder_beside_a_launch"));
-      Set<BlockPos> pads = new HashSet<>();
-      ArrayDeque<BlockPos> pending = new ArrayDeque<>();
-      pending.add(pad);
-      while (!pending.isEmpty()) {
-        BlockPos position = pending.removeFirst();
-        if (pads.contains(position)
-            || !level.getBlockState(position).is(RocketRegistry.PARTS.get("launch_pad").get()))
-          continue;
-        pads.add(position);
-        if (pads.size() > 256)
-          throw new AssemblyFailure(
-              Component.translatable(
-                  "message.adv_rocketry.rocket_assembly.launch_pad_exceeds_16_by_16"));
-        for (Direction direction : Direction.Plane.HORIZONTAL)
-          pending.add(position.relative(direction));
-      }
-      int minX = pads.stream().mapToInt(BlockPos::getX).min().orElseThrow(),
-          maxX = pads.stream().mapToInt(BlockPos::getX).max().orElseThrow();
-      int minZ = pads.stream().mapToInt(BlockPos::getZ).min().orElseThrow(),
-          maxZ = pads.stream().mapToInt(BlockPos::getZ).max().orElseThrow();
-      int width = maxX - minX + 1, depth = maxZ - minZ + 1;
-      if (width > 16 || depth > 16 || pads.size() != width * depth)
-        throw new AssemblyFailure(
-            Component.translatable(
-                "message.adv_rocketry.rocket_assembly.launch_pad_must_be_a_solid"));
-      int height = 0;
-      for (int x = minX - 1; x <= maxX + 1; x++)
-        for (int z = minZ - 1; z <= maxZ + 1; z++) {
-          if (x >= minX && x <= maxX && z >= minZ && z <= maxZ) continue;
-          int tower = 0;
-          while (tower < 64
-              && level
-                  .getBlockState(new BlockPos(x, pad.getY() + 1 + tower, z))
-                  .is(MachinePorts.STRUCTURE_TOWER.get())) tower++;
-          height = Math.max(height, tower);
-        }
-      if (height < 4)
-        throw new AssemblyFailure(
-            Component.translatable(
-                "message.adv_rocketry.rocket_assembly.a_structure_tower_at_least_four"));
-      BlockPos origin = new BlockPos(minX, pad.getY() + 1, minZ);
+      LaunchPad bounds = LaunchPad.scan(level, builder.getBlockPos());
+      int width = bounds.width(), depth = bounds.depth(), height = bounds.height();
+      BlockPos origin = bounds.origin();
       RocketStructure structure = new RocketStructure();
       structure.width = width;
       structure.depth = depth;
@@ -269,6 +217,8 @@ public final class RocketAssembly {
       BlockPos origin,
       Consumer<RocketEntity> setup,
       Component name) {
+    AssemblyAccess.checkBreak(level, structure.cells.stream()
+        .map(cell -> origin.offset(cell.position())).toList(), builder.assemblyPlayer(level));
     RocketEntity rocket = RocketRegistry.ROCKET.get().create(level);
     if (rocket == null) throw new IllegalStateException("Rocket entity registration failed");
     setup.accept(rocket);

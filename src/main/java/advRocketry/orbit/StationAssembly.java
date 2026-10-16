@@ -4,20 +4,17 @@
 package advRocketry.orbit;
 
 import advRocketry.ModComponents;
-import advRocketry.processing.MachinePorts;
 import advRocketry.rocket.RocketBlockEntity;
+import advRocketry.rocket.LaunchPad;
+import advRocketry.rocket.AssemblyAccess;
 import advRocketry.rocket.RocketRegistry;
 import advRocketry.rocket.RocketStructure;
 import advRocketry.space.GalaxyData;
 import advRocketry.util.AssemblyFailure;
 import advRocketry.util.Texts;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -25,8 +22,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.BlockEvent;
 
 /** Original station-assembler pad bounds, converted to a packed native block palette. */
 public final class StationAssembly {
@@ -35,59 +30,9 @@ public final class StationAssembly {
   public static void pack(RocketBlockEntity builder, ServerPlayer player) {
     if (!(builder.getLevel() instanceof ServerLevel level)) return;
     try {
-      BlockPos pad = null;
-      for (Direction direction : Direction.Plane.HORIZONTAL) {
-        BlockPos candidate = builder.getBlockPos().relative(direction).below();
-        if (level.getBlockState(candidate).is(RocketRegistry.PARTS.get("launch_pad").get())) {
-          pad = candidate;
-          break;
-        }
-      }
-      if (pad == null)
-        throw new AssemblyFailure(
-            Component.translatable(
-                "message.adv_rocketry.station_assembly.place_the_station_builder_beside_a"));
-      Set<BlockPos> pads = new HashSet<>();
-      ArrayDeque<BlockPos> pending = new ArrayDeque<>();
-      pending.add(pad);
-      while (!pending.isEmpty()) {
-        BlockPos position = pending.removeFirst();
-        if (pads.contains(position)
-            || !level.getBlockState(position).is(RocketRegistry.PARTS.get("launch_pad").get()))
-          continue;
-        pads.add(position);
-        if (pads.size() > 256)
-          throw new AssemblyFailure(
-              Component.translatable(
-                  "message.adv_rocketry.station_assembly.launch_pad_exceeds_16_by_16"));
-        for (Direction direction : Direction.Plane.HORIZONTAL)
-          pending.add(position.relative(direction));
-      }
-      int minX = pads.stream().mapToInt(BlockPos::getX).min().orElseThrow();
-      int maxX = pads.stream().mapToInt(BlockPos::getX).max().orElseThrow();
-      int minZ = pads.stream().mapToInt(BlockPos::getZ).min().orElseThrow();
-      int maxZ = pads.stream().mapToInt(BlockPos::getZ).max().orElseThrow();
-      int width = maxX - minX + 1, depth = maxZ - minZ + 1;
-      if (width > 16 || depth > 16 || pads.size() != width * depth)
-        throw new AssemblyFailure(
-            Component.translatable(
-                "message.adv_rocketry.station_assembly.launch_pad_must_be_a_solid"));
-      int height = 0;
-      for (int x = minX - 1; x <= maxX + 1; x++)
-        for (int z = minZ - 1; z <= maxZ + 1; z++) {
-          if (x >= minX && x <= maxX && z >= minZ && z <= maxZ) continue;
-          int tower = 0;
-          while (tower < 64
-              && level
-                  .getBlockState(new BlockPos(x, pad.getY() + 1 + tower, z))
-                  .is(MachinePorts.STRUCTURE_TOWER.get())) tower++;
-          height = Math.max(height, tower);
-        }
-      if (height < 4)
-        throw new AssemblyFailure(
-            Component.translatable(
-                "message.adv_rocketry.station_assembly.a_structure_tower_at_least_four"));
-      BlockPos origin = new BlockPos(minX, pad.getY() + 1, minZ);
+      LaunchPad bounds = LaunchPad.scan(level, builder.getBlockPos());
+      int width = bounds.width(), depth = bounds.depth(), height = bounds.height();
+      BlockPos origin = bounds.origin();
       List<BlockPos> captured = new ArrayList<>();
       boolean hatch = false;
       for (int y = 0; y < height; y++)
@@ -123,18 +68,7 @@ public final class StationAssembly {
         throw new AssemblyFailure(
             Component.translatable(
                 "message.adv_rocketry.station_assembly.station_packing_requires_1_000_fe"));
-      for (BlockPos position : captured) {
-        if (!level.mayInteract(player, position)
-            || NeoForge.EVENT_BUS
-                .post(
-                    new BlockEvent.BreakEvent(
-                        level, position, level.getBlockState(position), player))
-                .isCanceled())
-          throw new AssemblyFailure(
-              Texts.translate(
-                  "message.adv_rocketry.station_assembly.station_packing_is_not_allowed_at",
-                  position.toShortString()));
-      }
+      AssemblyAccess.checkBreak(level, captured, player);
       for (BlockPos position : captured) {
         var entity = level.getBlockEntity(position);
         if (entity instanceof OrbitalBlockEntity orbital) OrbitalBlock.cleanup(orbital);

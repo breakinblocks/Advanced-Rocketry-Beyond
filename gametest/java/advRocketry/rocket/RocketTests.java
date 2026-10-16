@@ -34,10 +34,43 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import advRocketry.util.AssemblyFailure;
+import java.util.function.Consumer;
+import net.minecraft.network.chat.Component;
 
 @GameTestHolder("adv_rocketry")
 @PrefixGameTestTemplate(false)
 public final class RocketTests {
+  @GameTest(template = "empty")
+  public static void assemblyHonorsProtectionBeforeRemovingBlocks(GameTestHelper helper) {
+    var level = helper.getLevel();
+    BlockPos origin = helper.absolutePos(new BlockPos(2, 3, 2));
+    level.setBlock(origin, Blocks.STONE.defaultBlockState(), 3);
+    var builder = new RocketBlockEntity(origin.below(), RocketRegistry.PARTS.get("rocket_builder").get().defaultBlockState());
+    builder.setLevel(level);
+    RocketStructure structure = new RocketStructure();
+    structure.cells.add(new RocketStructure.Cell(BlockPos.ZERO, Blocks.STONE.defaultBlockState(), new CompoundTag()));
+    Consumer<BlockEvent.BreakEvent> deny = event -> {
+      if (event.getLevel() == level && event.getPos().equals(origin)) event.setCanceled(true);
+    };
+    NeoForge.EVENT_BUS.addListener(deny);
+    try {
+      boolean denied = false;
+      try {
+        RocketAssembly.commit(builder, level, structure, origin, rocket -> rocket.initialize(structure, origin), Component.literal("Rocket"));
+      } catch (AssemblyFailure expected) {
+        denied = true;
+      }
+      helper.assertTrue(denied && level.getBlockState(origin).is(Blocks.STONE)
+          && builder.lastAssembledRocket == null, "Protected assembly removed blocks or spawned a rocket");
+    } finally {
+      NeoForge.EVENT_BUS.unregister(deny);
+    }
+    helper.succeed();
+  }
+
   @GameTest(template = "empty", timeoutTicks = 40)
   public static void placedSeatMountReleasesRiderWhenBroken(GameTestHelper helper) {
     var level = helper.getLevel();

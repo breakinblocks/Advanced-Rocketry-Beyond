@@ -11,12 +11,16 @@ import advRocketry.orbit.StationLink;
 import advRocketry.space.GalaxyData;
 import advRocketry.util.ComponentText;
 import advRocketry.util.MachineEnergy;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 
 public final class RocketBlockEntity extends BlockEntity implements MenuProvider {
   public int destination = 1;
@@ -41,8 +46,32 @@ public final class RocketBlockEntity extends BlockEntity implements MenuProvider
   public int buildTotal;
   public boolean ready;
   RocketEntity lastAssembledRocket;
+  private UUID assemblyOwner;
+  private static final Map<ServerPlayer, Long> SCAN_REQUESTS = new WeakHashMap<>();
+  private long lastScanRequest = Long.MIN_VALUE;
+
+  public boolean allowScan(ServerPlayer player) {
+    if (!(level instanceof ServerLevel server)) return false;
+    long now = server.getGameTime();
+    long previous = SCAN_REQUESTS.getOrDefault(player, Long.MIN_VALUE);
+    if ((lastScanRequest != Long.MIN_VALUE && now >= lastScanRequest && now - lastScanRequest < 20)
+        || (previous != Long.MIN_VALUE && now >= previous && now - previous < 20)) return false;
+    lastScanRequest = now;
+    SCAN_REQUESTS.put(player, now);
+    return true;
+  }
+
+  ServerPlayer assemblyPlayer(ServerLevel server) {
+    // Automated builders use NeoForge's standard fake player so protection mods can deny them.
+    return assemblyOwner == null ? FakePlayerFactory.getMinecraft(server)
+        : server.getServer().getPlayerList().getPlayer(assemblyOwner);
+  }
 
   public void beginAssembly() {
+    beginAssembly(null);
+  }
+
+  public void beginAssembly(ServerPlayer player) {
     if (!(level instanceof ServerLevel server)) return;
     if (buildRemaining > 0) return;
     if (kind() == RocketPartBlock.Kind.DEPLOYABLE_BUILDER) DeployableAssembly.scan(this);
@@ -59,6 +88,7 @@ public final class RocketBlockEntity extends BlockEntity implements MenuProvider
         Math.max(
             1, (int) Math.round(scannedVolume * AdvancedRocketryConfig.buildSpeedMultiplier()));
     buildRemaining = buildTotal;
+    assemblyOwner = player == null ? null : player.getUUID();
     status = Component.translatable("status.adv_rocketry.rocket.assembling_rocket");
     setChanged();
     server.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
@@ -72,6 +102,7 @@ public final class RocketBlockEntity extends BlockEntity implements MenuProvider
     if (buildRemaining == 0) {
       if (kind() == RocketPartBlock.Kind.DEPLOYABLE_BUILDER) DeployableAssembly.assemble(this);
       else RocketAssembly.assemble(this);
+      assemblyOwner = null;
     }
     if (buildRemaining == 0 || buildRemaining % 20 == 0) setChanged();
   }
@@ -190,6 +221,7 @@ public final class RocketBlockEntity extends BlockEntity implements MenuProvider
     tag.putInt("scanned_volume", scannedVolume);
     tag.putInt("build_remaining", buildRemaining);
     tag.putInt("build_total", buildTotal);
+    if (assemblyOwner != null) tag.putUUID("assembly_owner", assemblyOwner);
     tag.putInt("energy", energy.getEnergyStored());
     tag.put("tank", tank.writeToNBT(registries, new CompoundTag()));
     tag.put("station_inventory", stationInventory.serializeNBT(registries));
@@ -210,6 +242,7 @@ public final class RocketBlockEntity extends BlockEntity implements MenuProvider
     scannedVolume = tag.getInt("scanned_volume");
     buildRemaining = Math.max(0, tag.getInt("build_remaining"));
     buildTotal = Math.max(buildRemaining, tag.getInt("build_total"));
+    assemblyOwner = tag.hasUUID("assembly_owner") ? tag.getUUID("assembly_owner") : null;
     energy.setEnergy(tag.getInt("energy"));
     tank.readFromNBT(registries, tag.getCompound("tank"));
     if (tag.contains("station_inventory"))

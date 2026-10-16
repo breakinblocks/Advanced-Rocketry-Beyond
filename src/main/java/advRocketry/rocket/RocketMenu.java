@@ -108,17 +108,19 @@ public final class RocketMenu extends ModMenu {
     if (button == 4
         && entity.kind() == RocketPartBlock.Kind.STATION_BUILDER
         && player instanceof ServerPlayer serverPlayer) {
+      if (!entity.allowScan(serverPlayer)) return false;
       StationAssembly.pack(entity, serverPlayer);
       return true;
     }
     if (entity.kind() != RocketPartBlock.Kind.BUILDER
         && entity.kind() != RocketPartBlock.Kind.DEPLOYABLE_BUILDER) return false;
     if (button == 0 || button == 1) {
+      if (!(player instanceof ServerPlayer serverPlayer) || !entity.allowScan(serverPlayer)) return false;
       if (entity.kind() == RocketPartBlock.Kind.DEPLOYABLE_BUILDER) {
         if (button == 0) DeployableAssembly.scan(entity);
-        else entity.beginAssembly();
+        else entity.beginAssembly(serverPlayer);
       } else if (button == 0) RocketAssembly.scan(entity);
-      else entity.beginAssembly();
+      else entity.beginAssembly(serverPlayer);
       return true;
     }
     if (button == 2) {
