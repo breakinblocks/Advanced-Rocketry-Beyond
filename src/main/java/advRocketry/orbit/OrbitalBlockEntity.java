@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class OrbitalBlockEntity extends BlockEntity implements MenuProvider {
   public final LaserState laser = new LaserState();
   public final ObservationState observation = new ObservationState();
+  public final HologramState hologram = new HologramState();
   public final OrbitalInventory inventory = new OrbitalInventory(this);
   public final MachineEnergy energy =
       new MachineEnergy(100000, 100000, 100000, this::setChanged) {
@@ -45,13 +46,6 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   public Component status = Component.translatable("status.adv_rocketry.orbital.ready");
   public int builderProgress;
   public int warpDestination;
-  public int holoTarget = -1;
-  public int holoSelectedStar = -1;
-  final List<HologramBodyEntity> holograms = new ArrayList<>();
-  public int holoCenter = -1;
-  public int holoStar;
-  public int holoSize = 20;
-  public int holoRedstone;
   public int powerMadeLastTick;
   public long blackHoleBurnUntil;
   public String elevatorDimension = "";
@@ -338,11 +332,11 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     tag.putString("status", Component.Serializer.toJson(status, registries));
     tag.putInt("builder_progress", builderProgress);
     tag.putInt("warp_destination", warpDestination);
-    tag.putInt("holo_target", holoTarget);
-    tag.putInt("holo_center", holoCenter);
-    tag.putInt("holo_star", holoStar);
-    tag.putInt("holo_size", holoSize);
-    tag.putInt("holo_redstone", holoRedstone);
+    tag.putInt("holo_target", hologram.target);
+    tag.putInt("holo_center", hologram.center);
+    tag.putInt("holo_star", hologram.star);
+    tag.putInt("holo_size", hologram.size);
+    tag.putInt("holo_redstone", hologram.redstone);
     tag.putInt("power_last_tick", powerMadeLastTick);
     tag.putLong("black_hole_burn_until", blackHoleBurnUntil);
     tag.putInt("observation_ticks", observation.ticks);
@@ -394,11 +388,11 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     status = ComponentText.read(tag.getString("status"), registries);
     builderProgress = Math.clamp(tag.getInt("builder_progress"), 0, 100);
     warpDestination = tag.getInt("warp_destination");
-    holoTarget = tag.contains("holo_target") ? tag.getInt("holo_target") : -1;
-    holoCenter = tag.contains("holo_center") ? tag.getInt("holo_center") : -1;
-    holoStar = tag.getInt("holo_star");
-    holoSize = tag.contains("holo_size") ? Math.clamp(tag.getInt("holo_size"), 0, 100) : 20;
-    holoRedstone = Math.floorMod(tag.getInt("holo_redstone"), 3);
+    hologram.target = tag.contains("holo_target") ? tag.getInt("holo_target") : -1;
+    hologram.center = tag.contains("holo_center") ? tag.getInt("holo_center") : -1;
+    hologram.star = tag.getInt("holo_star");
+    hologram.size = tag.contains("holo_size") ? Math.clamp(tag.getInt("holo_size"), 0, 100) : 20;
+    hologram.redstone = Math.floorMod(tag.getInt("holo_redstone"), 3);
     powerMadeLastTick = tag.getInt("power_last_tick");
     blackHoleBurnUntil = tag.getLong("black_hole_burn_until");
     observation.ticks = tag.getInt("observation_ticks");

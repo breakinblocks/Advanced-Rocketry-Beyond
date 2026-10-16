@@ -21,9 +21,9 @@ public final class HolographicSelectorLogic {
   public static boolean enabled(OrbitalBlockEntity selector) {
     if (selector.getLevel() == null) return false;
     boolean powered = selector.getLevel().hasNeighborSignal(selector.getBlockPos());
-    return selector.holoRedstone == 0
-        || selector.holoRedstone == 1 && powered
-        || selector.holoRedstone == 2 && !powered;
+    return selector.hologram.redstone == 0
+        || selector.hologram.redstone == 1 && powered
+        || selector.hologram.redstone == 2 && !powered;
   }
 
   public static List<Planet> planets(GalaxyData galaxy, OrbitalBlockEntity selector) {
@@ -31,9 +31,9 @@ public final class HolographicSelectorLogic {
         .filter(
             planet ->
                 planet.id >= 0
-                    && (selector.holoCenter >= 0
-                        ? planet.id == selector.holoCenter || planet.parent == selector.holoCenter
-                        : planet.star == selector.holoStar && planet.parent < 0))
+                    && (selector.hologram.center >= 0
+                        ? planet.id == selector.hologram.center || planet.parent == selector.hologram.center
+                        : planet.star == selector.hologram.star && planet.parent < 0))
         .sorted(Comparator.comparingInt(planet -> planet.id))
         .toList();
   }
@@ -52,10 +52,10 @@ public final class HolographicSelectorLogic {
   public static List<Body> bodies(GalaxyData galaxy, OrbitalBlockEntity selector) {
     if (!enabled(selector) || !selector.holographicSelector()) return List.of();
     List<Body> result = new ArrayList<>();
-    float scale = .8f + selector.holoSize / 20f;
-    if (selector.holoStar < 0) {
+    float scale = .8f + selector.hologram.size / 20f;
+    if (selector.hologram.star < 0) {
       for (Star star : galaxy.stars.values()) {
-        boolean selected = star.id() == selector.holoSelectedStar;
+        boolean selected = star.id() == selector.hologram.selectedStar;
         result.add(
             new Body(
                 Kind.STAR,
@@ -67,8 +67,8 @@ public final class HolographicSelectorLogic {
                 selected));
       }
     } else {
-      Star star = galaxy.stars.get(selector.holoStar);
-      if (selector.holoCenter < 0 && star != null)
+      Star star = galaxy.stars.get(selector.hologram.star);
+      if (selector.hologram.center < 0 && star != null)
         result.add(
             new Body(
                 Kind.STAR,
@@ -78,7 +78,7 @@ public final class HolographicSelectorLogic {
                 .35f * scale,
                 starColor(star.temperature(), star.blackHole()),
                 false));
-      if (selector.holoCenter < 0 && star != null) {
+      if (selector.hologram.center < 0 && star != null) {
         for (int index = 0; index < star.companions().size(); index++) {
           Star.Companion companion = star.companions().get(index);
           double phase = index * Math.PI * 2 / star.companions().size();
@@ -96,13 +96,13 @@ public final class HolographicSelectorLogic {
       }
       for (Planet planet : planets(galaxy, selector)) {
         double distance =
-            planet.id == selector.holoCenter ? 0 : scale * (.1 + planet.orbitalDistance / 100d);
+            planet.id == selector.hologram.center ? 0 : scale * (.1 + planet.orbitalDistance / 100d);
         double angle =
             planet.orbitalAngle(
                 selector.getLevel().getGameTime(),
                 galaxy.stars.get(planet.star),
                 galaxy.planets.get(planet.parent));
-        boolean selected = planet.id == selector.holoTarget;
+        boolean selected = planet.id == selector.hologram.target;
         result.add(
             new Body(
                 Kind.PLANET,
@@ -120,7 +120,7 @@ public final class HolographicSelectorLogic {
               Kind.BACK,
               0,
               Component.translatable("gui.adv_rocketry.orbital.selector.back"),
-              new Vec3(0, .45 + selector.holoSize / 10d, 0),
+              new Vec3(0, .45 + selector.hologram.size / 10d, 0),
               .15f,
               0xd07feaff,
               true));
@@ -140,7 +140,7 @@ public final class HolographicSelectorLogic {
   public static void tick(OrbitalBlockEntity selector) {
     if (!(selector.getLevel() instanceof ServerLevel level)) return;
     List<Body> visible = bodies(GalaxyData.get(level.getServer()), selector);
-    selector.holograms.removeIf(
+    selector.hologram.bodies.removeIf(
         entity -> {
           boolean obsolete = entity.isRemoved() || visible.stream().noneMatch(entity::matches);
           if (obsolete && !entity.isRemoved()) entity.discard();
@@ -148,14 +148,14 @@ public final class HolographicSelectorLogic {
         });
     for (Body body : visible) {
       HologramBodyEntity entity =
-          selector.holograms.stream()
+          selector.hologram.bodies.stream()
               .filter(candidate -> candidate.matches(body))
               .findFirst()
               .orElse(null);
       if (entity == null) {
         entity = new HologramBodyEntity(OrbitalRegistry.HOLOGRAM_BODY.get(), level);
         entity.update(selector, body);
-        if (level.addFreshEntity(entity)) selector.holograms.add(entity);
+        if (level.addFreshEntity(entity)) selector.hologram.bodies.add(entity);
       } else entity.update(selector, body);
     }
   }
@@ -169,21 +169,21 @@ public final class HolographicSelectorLogic {
     if (kind == Kind.BACK) {
       control(selector, 44);
     } else if (kind == Kind.STAR) {
-      if (selector.holoStar >= 0) return false;
-      if (selector.holoSelectedStar == id) {
-        selector.holoStar = id;
-        selector.holoCenter = -1;
-        selector.holoTarget = -1;
-        selector.holoSelectedStar = -1;
-      } else selector.holoSelectedStar = id;
+      if (selector.hologram.star >= 0) return false;
+      if (selector.hologram.selectedStar == id) {
+        selector.hologram.star = id;
+        selector.hologram.center = -1;
+        selector.hologram.target = -1;
+        selector.hologram.selectedStar = -1;
+      } else selector.hologram.selectedStar = id;
       selector.status =
           Texts.translate(
               "status.adv_rocketry.holographic_selector.selected", galaxy.stars.get(id).name());
     } else if (kind == Kind.PLANET) {
-      if (selector.holoTarget == id) {
+      if (selector.hologram.target == id) {
         control(selector, 43);
       } else {
-        selector.holoTarget = id;
+        selector.hologram.target = id;
         selector.status =
             Texts.translate(
                 "status.adv_rocketry.holographic_selector.selected", galaxy.planets.get(id).name);
@@ -206,50 +206,50 @@ public final class HolographicSelectorLogic {
         List<Planet> visible = planets(galaxy, selector);
         int index = -1;
         for (int i = 0; i < visible.size(); i++)
-          if (visible.get(i).id == selector.holoTarget) index = i;
+          if (visible.get(i).id == selector.hologram.target) index = i;
         if (!visible.isEmpty()) {
           Planet next = visible.get((index + 1) % visible.size());
-          selector.holoTarget = next.id;
+          selector.hologram.target = next.id;
           selector.status =
               Texts.translate("status.adv_rocketry.holographic_selector.selected", next.name);
         }
       }
       case 42 -> target(selector, galaxy);
       case 43 -> {
-        if (selector.holoTarget >= 0 && galaxy.planets.containsKey(selector.holoTarget)) {
-          selector.holoCenter = selector.holoTarget;
-          selector.holoStar = galaxy.planets.get(selector.holoTarget).star;
-          selector.holoTarget = -1;
+        if (selector.hologram.target >= 0 && galaxy.planets.containsKey(selector.hologram.target)) {
+          selector.hologram.center = selector.hologram.target;
+          selector.hologram.star = galaxy.planets.get(selector.hologram.target).star;
+          selector.hologram.target = -1;
           selector.status =
               Component.translatable(
                   "status.adv_rocketry.holographic_selector.showing_planet_and_moons");
         }
       }
       case 44 -> {
-        selector.holoSelectedStar = -1;
-        if (selector.holoCenter >= 0) selector.holoCenter = -1;
-        else selector.holoStar = selector.holoStar < 0 ? 0 : -1;
-        selector.holoTarget = -1;
+        selector.hologram.selectedStar = -1;
+        if (selector.hologram.center >= 0) selector.hologram.center = -1;
+        else selector.hologram.star = selector.hologram.star < 0 ? 0 : -1;
+        selector.hologram.target = -1;
         selector.status =
-            selector.holoStar < 0
+            selector.hologram.star < 0
                 ? Component.translatable("status.adv_rocketry.holographic_selector.showing_stars")
                 : Component.translatable(
                     "status.adv_rocketry.holographic_selector.showing_star_system");
       }
       case 45 -> {
-        selector.holoSelectedStar = -1;
+        selector.hologram.selectedStar = -1;
         List<Integer> stars = galaxy.stars.keySet().stream().sorted().toList();
-        int index = stars.indexOf(selector.holoStar);
-        if (!stars.isEmpty()) selector.holoStar = stars.get((index + 1) % stars.size());
-        selector.holoCenter = -1;
-        selector.holoTarget = -1;
+        int index = stars.indexOf(selector.hologram.star);
+        if (!stars.isEmpty()) selector.hologram.star = stars.get((index + 1) % stars.size());
+        selector.hologram.center = -1;
+        selector.hologram.target = -1;
         selector.status =
             Texts.translate(
-                "status.adv_rocketry.holographic_selector.showing_star", selector.holoStar);
+                "status.adv_rocketry.holographic_selector.showing_star", selector.hologram.star);
       }
-      case 46 -> selector.holoSize = Math.min(100, selector.holoSize + 10);
-      case 47 -> selector.holoSize = Math.max(0, selector.holoSize - 10);
-      case 48 -> selector.holoRedstone = (selector.holoRedstone + 1) % 3;
+      case 46 -> selector.hologram.size = Math.min(100, selector.hologram.size + 10);
+      case 47 -> selector.hologram.size = Math.max(0, selector.hologram.size - 10);
+      case 48 -> selector.hologram.redstone = (selector.hologram.redstone + 1) % 3;
       default -> {
         return;
       }
@@ -260,7 +260,7 @@ public final class HolographicSelectorLogic {
   }
 
   private static void target(OrbitalBlockEntity selector, GalaxyData galaxy) {
-    Planet selected = galaxy.planets.get(selector.holoTarget);
+    Planet selected = galaxy.planets.get(selector.hologram.target);
     if (selected == null || !selected.landable()) {
       selector.status =
           Component.translatable(

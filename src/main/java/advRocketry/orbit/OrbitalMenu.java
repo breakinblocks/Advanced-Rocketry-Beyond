@@ -112,11 +112,11 @@ public final class OrbitalMenu extends ModMenu {
           entity.stationOrientationController()
               ? StationMotionLogic.targetRotation(entity, index - 23)
               : 0;
-      case 27 -> entity.holoTarget;
-      case 28 -> entity.holoStar;
-      case 29 -> entity.holoCenter;
-      case 30 -> entity.holoSize;
-      case 31 -> entity.holoRedstone;
+      case 27 -> entity.hologram.target;
+      case 28 -> entity.hologram.star;
+      case 29 -> entity.hologram.center;
+      case 30 -> entity.hologram.size;
+      case 31 -> entity.hologram.redstone;
       case 32 -> entity.warpCore() ? WarpCoreLogic.stationFuel(entity) : 0;
       case 33 -> entity.warpCore() && WarpCoreLogic.complete(entity) ? 1 : 0;
       case 34 -> entity.builderProgress;

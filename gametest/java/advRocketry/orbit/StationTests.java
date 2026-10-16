@@ -50,11 +50,11 @@ public final class StationTests {
     space.setBlock(pos, OrbitalRegistry.HOLOGRAPHIC_SELECTOR.get().defaultBlockState(), 2);
     OrbitalBlockEntity selector = (OrbitalBlockEntity) space.getBlockEntity(pos);
     HolographicSelectorLogic.control(selector, 41);
-    helper.assertTrue(selector.holoTarget >= 0, "Hologram found no planet in Sol");
+    helper.assertTrue(selector.hologram.target >= 0, "Hologram found no planet in Sol");
     HolographicSelectorLogic.control(selector, 43);
     HolographicSelectorLogic.control(selector, 41);
     HolographicSelectorLogic.control(selector, 41);
-    helper.assertTrue(selector.holoTarget == 1, "Hologram did not navigate from Earth to Luna");
+    helper.assertTrue(selector.hologram.target == 1, "Hologram did not navigate from Earth to Luna");
     HolographicSelectorLogic.control(selector, 42);
     helper.assertTrue(station.warpTarget == 1, "Hologram did not set the station's warp target");
     space.setBlock(pos.east(), OrbitalRegistry.WARP_CONTROLLER.get().defaultBlockState(), 2);
@@ -88,8 +88,8 @@ public final class StationTests {
         panel.selectorControls() && !panel.holographicSelector(),
         "Standalone planet selector was not registered separately from the hologram");
     HolographicSelectorLogic.control(panel, 41);
-    helper.assertTrue(panel.holoTarget >= 0, "Planet selector could not navigate the star system");
-    panel.holoTarget = 0;
+    helper.assertTrue(panel.hologram.target >= 0, "Planet selector could not navigate the star system");
+    panel.hologram.target = 0;
     HolographicSelectorLogic.control(panel, 42);
     helper.assertTrue(
         galaxy.stations.get(stationId).warpTarget == 0,

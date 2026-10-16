@@ -35,7 +35,7 @@ public final class HologramTests {
             .findFirst()
             .orElseThrow();
     var earth =
-        selector.holograms.stream()
+        selector.hologram.bodies.stream()
             .filter(entity -> entity.matches(earthBody))
             .findFirst()
             .orElseThrow();
@@ -44,35 +44,35 @@ public final class HologramTests {
         earth.interact(player, InteractionHand.MAIN_HAND) == InteractionResult.CONSUME,
         "Native entity interaction failed");
     helper.assertTrue(
-        selector.holoTarget == 0 && selector.holoCenter == -1,
+        selector.hologram.target == 0 && selector.hologram.center == -1,
         "First click must select without changing the system");
     helper.assertTrue(
         earth.selected() && earth.getBoundingBox().contains(earth.position()),
         "Selection or interaction bounds did not match the rendered body");
     earth.interact(player, InteractionHand.MAIN_HAND);
     helper.assertTrue(
-        selector.holoCenter == 0 && selector.holoTarget == -1,
+        selector.hologram.center == 0 && selector.hologram.target == -1,
         "Second click did not focus Earth and its moons");
     helper.assertTrue(
         HolographicSelectorLogic.select(selector, HolographicSelectorLogic.Kind.PLANET, 1),
         "Luna was not selectable after focusing Earth");
     HolographicSelectorLogic.select(selector, HolographicSelectorLogic.Kind.BACK, 0);
     helper.assertTrue(
-        selector.holoCenter == -1 && selector.holoStar == 0, "Back did not restore Sol");
+        selector.hologram.center == -1 && selector.hologram.star == 0, "Back did not restore Sol");
     HolographicSelectorLogic.select(selector, HolographicSelectorLogic.Kind.BACK, 0);
     helper.assertTrue(
-        selector.holoStar == -1 && earth.isRemoved(), "Back did not remove the old planet bodies");
+        selector.hologram.star == -1 && earth.isRemoved(), "Back did not remove the old planet bodies");
     helper.assertTrue(
         !HolographicSelectorLogic.select(selector, HolographicSelectorLogic.Kind.PLANET, 0),
         "A stale planet click changed the galaxy view");
     HolographicSelectorLogic.select(selector, HolographicSelectorLogic.Kind.STAR, 0);
     helper.assertTrue(
-        selector.holoStar == -1 && selector.holoSelectedStar == 0,
+        selector.hologram.star == -1 && selector.hologram.selectedStar == 0,
         "First star click did not select the star");
     HolographicSelectorLogic.select(selector, HolographicSelectorLogic.Kind.STAR, 0);
-    helper.assertTrue(selector.holoStar == 0, "Second star click did not open Sol");
+    helper.assertTrue(selector.hologram.star == 0, "Second star click did not open Sol");
     var body =
-        selector.holograms.stream()
+        selector.hologram.bodies.stream()
             .filter(entity -> entity.matches(earthBody))
             .findFirst()
             .orElseThrow();
@@ -82,9 +82,9 @@ public final class HologramTests {
         "Out-of-reach interaction was accepted");
     helper.assertTrue(!body.save(new CompoundTag()), "UI entity would be saved into world chunks");
     level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-    for (var entity : selector.holograms) entity.tick();
+    for (var entity : selector.hologram.bodies) entity.tick();
     helper.assertTrue(
-        selector.holograms.stream().allMatch(HologramBodyEntity::isRemoved),
+        selector.hologram.bodies.stream().allMatch(HologramBodyEntity::isRemoved),
         "Breaking the controller left orphaned UI entities");
     helper.succeed();
   }
@@ -97,24 +97,24 @@ public final class HologramTests {
     level.setBlock(pos, OrbitalRegistry.HOLOGRAPHIC_SELECTOR.get().defaultBlockState(), 3);
     var selector = (OrbitalBlockEntity) level.getBlockEntity(pos);
     selector.tick();
-    int count = selector.holograms.size();
-    var body = selector.holograms.getFirst();
+    int count = selector.hologram.bodies.size();
+    var body = selector.hologram.bodies.getFirst();
     selector.tick();
     helper.assertTrue(
-        count > 1 && selector.holograms.size() == count && selector.holograms.contains(body),
+        count > 1 && selector.hologram.bodies.size() == count && selector.hologram.bodies.contains(body),
         "Normal ticks recreated the hologram or duplicated its entities");
-    selector.holoRedstone = 1;
+    selector.hologram.redstone = 1;
     helper.assertTrue(
         !HolographicSelectorLogic.select(selector, HolographicSelectorLogic.Kind.PLANET, 0),
         "Disabled hologram accepted interaction");
     selector.tick();
     helper.assertTrue(
-        body.isRemoved() && selector.holograms.isEmpty(), "Redstone off left clickable bodies");
+        body.isRemoved() && selector.hologram.bodies.isEmpty(), "Redstone off left clickable bodies");
     level.setBlock(pos.west(), Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
     selector.tick();
-    helper.assertTrue(selector.holograms.size() == count, "Power did not restore hologram");
+    helper.assertTrue(selector.hologram.bodies.size() == count, "Power did not restore hologram");
     level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-    for (var entity : selector.holograms) entity.tick();
+    for (var entity : selector.hologram.bodies) entity.tick();
     helper.succeed();
   }
 
@@ -141,7 +141,7 @@ public final class HologramTests {
         .getLevel()
         .setBlock(pos, OrbitalRegistry.HOLOGRAPHIC_SELECTOR.get().defaultBlockState(), 3);
     var selector = (OrbitalBlockEntity) helper.getLevel().getBlockEntity(pos);
-    selector.holoStar = starId;
+    selector.hologram.star = starId;
     try {
       selector.tick();
       var companions =
@@ -149,7 +149,7 @@ public final class HologramTests {
               .filter(body -> body.kind() == HolographicSelectorLogic.Kind.COMPANION)
               .toList();
       helper.assertTrue(
-          companions.size() == 2 && selector.holograms.size() == 4,
+          companions.size() == 2 && selector.hologram.bodies.size() == 4,
           "System hologram omitted companion stars or its back control");
       helper.assertTrue(
           companions.get(0).offset().x > 0 && companions.get(1).offset().x < 0,
@@ -158,7 +158,7 @@ public final class HologramTests {
           companions.get(1).radius() > companions.get(0).radius()
               && companions.get(0).color() != companions.get(1).color(),
           "Companion size and black-hole appearance were collapsed");
-      selector.holoStar = -1;
+      selector.hologram.star = -1;
       selector.tick();
       helper.assertTrue(
           HolographicSelectorLogic.bodies(galaxy, selector).stream()
@@ -168,7 +168,7 @@ public final class HologramTests {
       if (original == null) galaxy.stars.remove(starId);
       else galaxy.stars.put(starId, original);
       helper.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-      for (var entity : selector.holograms) entity.discard();
+      for (var entity : selector.hologram.bodies) entity.discard();
     }
     helper.succeed();
   }
