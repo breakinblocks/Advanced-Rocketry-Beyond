@@ -66,9 +66,10 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
   public PlanetTerrain(
       BiomeSource source, Holder<NoiseGeneratorSettings> settings, Planet planet, long seed) {
     super(source, PlanetOres.noiseSettings(settings, planet));
-    this.planet = planet;
+    // Worldgen workers only see this private snapshot, never live terraforming state.
+    this.planet = Planet.load(planet.save());
     this.seed = seed;
-    generationSettingsGetter = PlanetOres.settings(planet);
+    generationSettingsGetter = PlanetOres.settings(this.planet);
   }
 
   @Override

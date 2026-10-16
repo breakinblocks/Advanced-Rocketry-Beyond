@@ -20,6 +20,7 @@ import advRocketry.orbit.MiningMission;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.StationChipAction;
 import advRocketry.orbit.WarpLogic;
+import advRocketry.orbit.WirelessTransceiverBlockEntity;
 import advRocketry.processing.LaserBeamSync;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.ProcessingFluids;
@@ -110,6 +111,7 @@ public final class Main {
     ServerSchedule.every(20, GalaxySync::syncStations);
     ServerSchedule.every(40, BeaconLogic::sendFinders);
     NeoForge.EVENT_BUS.addListener(ElevatorCapsule::serverStopped);
+    NeoForge.EVENT_BUS.addListener(WirelessTransceiverBlockEntity::stopped);
     bus.addListener(RocketControl::register);
     bus.addListener(SpaceFlightControl::register);
     bus.addListener(ProjectorSelection::register);

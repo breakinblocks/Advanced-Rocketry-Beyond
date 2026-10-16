@@ -17,7 +17,9 @@ import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,10 +34,21 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
   }
 
   private static final List<ResearchType> TYPES = ResearchType.TRANSCEIVER_TYPES;
-  private static final Set<WirelessTransceiverBlockEntity> LOADED =
-      Collections.newSetFromMap(new WeakHashMap<>());
-  private static long generation;
-  private static Map<Long, List<WirelessTransceiverBlockEntity>> sources;
+  private static final Map<MinecraftServer, Networks> NETWORKS = new WeakHashMap<>();
+
+  private static final class Networks {
+    final Set<WirelessTransceiverBlockEntity> loaded = Collections.newSetFromMap(new WeakHashMap<>());
+    long generation;
+    Map<Long, List<WirelessTransceiverBlockEntity>> sources;
+  }
+
+  public static void stopped(ServerStoppedEvent event) {
+    NETWORKS.remove(event.getServer());
+  }
+
+  private Networks networks() {
+    return NETWORKS.computeIfAbsent(((ServerLevel) level).getServer(), ignored -> new Networks());
+  }
   private final Map<ResearchType, Integer> data = new LinkedHashMap<>();
   private Mode mode = Mode.OFF;
   private long cachedNetwork;
@@ -50,14 +63,19 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
   }
 
   public void cycleMode() {
+    if (!(level instanceof ServerLevel)) return;
     mode = Mode.values()[(mode.ordinal() + 1) % Mode.values().length];
     invalidate();
     setChanged();
   }
 
-  private static void invalidate() {
-    generation++;
-    sources = null;
+  private void invalidate() {
+    if (!(level instanceof ServerLevel serverLevel)) return;
+    serverLevel.getServer().execute(() -> {
+      Networks state = networks();
+      state.generation++;
+      state.sources = null;
+    });
   }
 
   public String positionKey() {
@@ -66,21 +84,24 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
 
   public long network() {
     if (!(level instanceof ServerLevel serverLevel)) return 0;
-    if (cachedGeneration != generation) {
+    Networks state = networks();
+    if (cachedGeneration != state.generation) {
       cachedNetwork = GalaxyData.get(serverLevel.getServer()).wirelessNetwork(positionKey());
-      cachedGeneration = generation;
+      cachedGeneration = state.generation;
     }
     return cachedNetwork;
   }
 
-  private static List<WirelessTransceiverBlockEntity> sources(long network) {
-    if (sources == null) {
-      sources = new HashMap<>();
-      for (WirelessTransceiverBlockEntity entity : LOADED)
+  private List<WirelessTransceiverBlockEntity> sources(long network) {
+    Networks state = networks();
+    if (state.sources == null) {
+      Map<Long, List<WirelessTransceiverBlockEntity>> rebuilt = new HashMap<>();
+      for (WirelessTransceiverBlockEntity entity : state.loaded)
         if (!entity.isRemoved() && entity.mode == Mode.SOURCE && entity.network() != 0)
-          sources.computeIfAbsent(entity.network(), key -> new ArrayList<>()).add(entity);
+          rebuilt.computeIfAbsent(entity.network(), key -> new ArrayList<>()).add(entity);
+      state.sources = rebuilt;
     }
-    return sources.getOrDefault(network, List.of());
+    return state.sources.getOrDefault(network, List.of());
   }
 
   public static boolean link(
@@ -90,9 +111,9 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
         || !(second.level instanceof ServerLevel right)
         || left.getServer() != right.getServer()) return false;
     GalaxyData.get(left.getServer()).linkWireless(first.positionKey(), second.positionKey());
-    LOADED.add(first);
-    LOADED.add(second);
-    invalidate();
+    first.networks().loaded.add(first);
+    first.networks().loaded.add(second);
+    first.invalidate();
     return true;
   }
 
@@ -105,22 +126,31 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
   @Override
   public void onLoad() {
     super.onLoad();
-    if (level instanceof ServerLevel) LOADED.add(this);
-    invalidate();
+    if (level instanceof ServerLevel serverLevel)
+      serverLevel.getServer().execute(() -> {
+        if (!isRemoved()) networks().loaded.add(this);
+        invalidate();
+      });
   }
 
   @Override
   public void onChunkUnloaded() {
-    LOADED.remove(this);
-    invalidate();
+    unloadNetwork();
     super.onChunkUnloaded();
   }
 
   @Override
   public void setRemoved() {
-    LOADED.remove(this);
-    invalidate();
+    unloadNetwork();
     super.setRemoved();
+  }
+
+  private void unloadNetwork() {
+    if (level instanceof ServerLevel serverLevel)
+      serverLevel.getServer().execute(() -> {
+        networks().loaded.remove(this);
+        invalidate();
+      });
   }
 
   private ItemStackHandler adjacentData() {

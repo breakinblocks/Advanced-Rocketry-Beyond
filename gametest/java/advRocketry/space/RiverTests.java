@@ -6,17 +6,40 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @GameTestHolder("adv_rocketry")
 @PrefixGameTestTemplate(false)
 public final class RiverTests {
+  @GameTest(template = "empty")
+  public static void terrainKeepsPrivatePlanetSnapshot(GameTestHelper helper) {
+    var registries = helper.getLevel().registryAccess();
+    var biomes = registries.registryOrThrow(Registries.BIOME);
+    var plains = biomes.getHolderOrThrow(ResourceKey.create(Registries.BIOME,
+        ResourceLocation.withDefaultNamespace("plains")));
+    Planet planet = new Planet(9088, "Snapshot");
+    planet.biomes.add(ResourceLocation.withDefaultNamespace("plains"));
+    var generator = new PlanetTerrain(new PlanetBiomeSource(List.of(plains), 1),
+        registries.registryOrThrow(Registries.NOISE_SETTINGS)
+            .getHolderOrThrow(NoiseGeneratorSettings.OVERWORLD), planet, 1);
+    planet.atmosphere = 0;
+    planet.biomes.clear();
+    var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+    var saved = (CompoundTag) PlanetTerrain.CODEC.codec().encodeStart(ops, generator).getOrThrow();
+    var snapshot = Planet.load(saved.getCompound("planet"));
+    helper.assertTrue(snapshot.atmosphere == 100 && snapshot.biomes.size() == 1,
+        "Worldgen retained mutable gameplay planet state");
+    helper.succeed();
+  }
+
   @GameTest(template = "empty")
   public static void originalRiverClimateRulesAndNativeValleys(GameTestHelper helper) {
     Planet planet = new Planet(1004, "River rules");

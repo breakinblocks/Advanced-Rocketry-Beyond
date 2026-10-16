@@ -14,6 +14,7 @@ import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -40,19 +41,22 @@ public final class SealedRooms {
   private SealedRooms() {}
 
   public static void unload(LevelEvent.Unload event) {
-    VENTS.remove(event.getLevel());
+    if (event.getLevel() instanceof ServerLevel) VENTS.remove(event.getLevel());
   }
 
   public static void register(OxygenBlockEntity vent) {
+    if (!(vent.getLevel() instanceof ServerLevel)) return;
     VENTS.computeIfAbsent(vent.getLevel(), level -> new HashMap<>()).put(vent.getBlockPos(), vent);
   }
 
   public static void remove(OxygenBlockEntity vent) {
+    if (!(vent.getLevel() instanceof ServerLevel)) return;
     var vents = VENTS.get(vent.getLevel());
     if (vents != null) vents.remove(vent.getBlockPos());
   }
 
   public static boolean breathable(Level level, BlockPos pos) {
+    if (!(level instanceof ServerLevel)) return false;
     var vents = VENTS.get(level);
     if (vents == null) return false;
     for (OxygenBlockEntity vent : vents.values())
@@ -70,10 +74,12 @@ public final class SealedRooms {
   }
 
   public static void chunkLoaded(ChunkEvent.Load event) {
-    var vents = VENTS.get(event.getLevel());
-    if (vents == null) return;
+    if (!(event.getLevel() instanceof ServerLevel level)) return;
     ChunkPos chunk = event.getChunk().getPos();
-    for (OxygenBlockEntity vent : vents.values()) vent.chunkLoaded(chunk);
+    level.getServer().execute(() -> {
+      var vents = VENTS.get(level);
+      if (vents != null) for (OxygenBlockEntity vent : vents.values()) vent.chunkLoaded(chunk);
+    });
   }
 
   private static void changed(LevelAccessor level, BlockPos pos) {
