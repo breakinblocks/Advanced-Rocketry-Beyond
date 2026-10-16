@@ -14,10 +14,14 @@ public final class AssemblyAccess {
 
   public static void checkBreak(ServerLevel level, List<BlockPos> positions, ServerPlayer player) {
     for (BlockPos pos : positions)
-      if (player == null || !level.hasChunkAt(pos) || !level.mayInteract(player, pos)
+      if (player == null
+          || !level.hasChunkAt(pos)
+          || !level.mayInteract(player, pos)
           || !player.mayBuild()
-          || NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, level.getBlockState(pos), player)).isCanceled())
-        throw new AssemblyFailure(Component.translatable(
-            "message.adv_rocketry.station_assembly.station_packing_is_not_allowed_at", pos.toShortString()));
+          || NeoForge.EVENT_BUS
+              .post(new BlockEvent.BreakEvent(level, pos, level.getBlockState(pos), player))
+              .isCanceled())
+        throw new AssemblyFailure(
+            Component.translatable("message.adv_rocketry.assembly.protected", pos.toShortString()));
   }
 }

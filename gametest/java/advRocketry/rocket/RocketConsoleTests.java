@@ -11,6 +11,8 @@ import advRocketry.orbit.OrbitalMenu;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.Station;
 import advRocketry.orbit.StationLink;
+import advRocketry.orbit.StationDestinations;
+import advRocketry.orbit.StationChipLocations;
 import advRocketry.processing.CoalGeneratorMenu;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.ProcessingRegistry;
@@ -18,11 +20,14 @@ import advRocketry.space.GalaxyData;
 import advRocketry.space.PlanetRuntime;
 import advRocketry.util.SplitIntData;
 import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.DecoderException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -35,6 +40,37 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 @GameTestHolder("adv_rocketry")
 @PrefixGameTestTemplate(false)
 public final class RocketConsoleTests {
+  @GameTest(template = "empty")
+  public static void stationDestinationsRejectOversizeNetworkCounts(GameTestHelper helper) {
+    var buffer = Unpooled.buffer();
+    try {
+      ByteBufCodecs.VAR_INT.encode(buffer, StationDestinations.MAX_PLANETS + 1);
+      boolean rejected = false;
+      try {
+        StationDestinations.STREAM_CODEC.decode(buffer);
+      } catch (DecoderException expected) {
+        rejected = true;
+      }
+      helper.assertTrue(rejected, "Oversized planet map was accepted");
+      buffer.clear();
+      ByteBufCodecs.VAR_INT.encode(buffer, StationChipLocations.LIMIT + 1);
+      rejected = false;
+      try {
+        StationDestinations.Route.STREAM_CODEC.decode(buffer);
+      } catch (DecoderException expected) {
+        rejected = true;
+      }
+      helper.assertTrue(rejected, "Oversized destination list was accepted");
+      CompoundTag location = new CompoundTag();
+      location.putString("name", "x".repeat(33));
+      location.putIntArray("position", new int[] {0, 0, 0});
+      helper.assertTrue(StationChipLocations.Location.CODEC.parse(NbtOps.INSTANCE, location).error().isPresent(),
+          "Oversized destination name was accepted by the persistent codec");
+    } finally {
+      buffer.release();
+    }
+    helper.succeed();
+  }
   @GameTest(template = "empty")
   public static void packedChestsClearEmptyContentsAndRollLootOnlyOnce(GameTestHelper helper) {
     var level = helper.getLevel();

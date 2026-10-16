@@ -27,6 +27,7 @@ final class ModLanguage extends LanguageProvider {
 
   @Override
   protected void addTranslations() {
+    add("message.adv_rocketry.assembly.protected", "Assembly is not allowed at %s");
     addItem();
     addBlock();
     addFluidType();

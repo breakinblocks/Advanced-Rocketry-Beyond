@@ -1,4 +1,5 @@
 {
+  "message.adv_rocketry.assembly.protected": "Assembly is not allowed at %s",
   "adv_rocketry.guide_name": "Advanced Rocketry Field Guide",
   "adv_rocketry.guide_tooltip": "Machines, life support, space travel and automation.",
   "advancement.advancedRocketry": "Advanced Rocketry",

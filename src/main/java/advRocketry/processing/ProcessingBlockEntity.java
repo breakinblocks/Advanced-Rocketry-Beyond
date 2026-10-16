@@ -5,14 +5,12 @@ package advRocketry.processing;
 
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.DataMaps;
-import advRocketry.life.SpaceBreathing;
 import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.space.GalaxyData;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
@@ -25,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -256,10 +255,7 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
       activeSealing = recipe;
       sealingInput = armor.copyWithCount(1);
     }
-    ItemStack sealed = armor.copyWithCount(1);
-    sealed.enchant(
-        level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(SpaceBreathing.KEY),
-        1);
+    ItemStack sealed = recipe.assemble(new SingleRecipeInput(armor), level.registryAccess());
     updateDuration(
         new ProcessingRecipe(
             MachineType.CHEMICAL_REACTOR,

@@ -134,6 +134,7 @@ public final class DeployableAssembly {
   }
 
   private static boolean tower(ServerLevel level, BlockPos position) {
-    return level.getBlockState(position).is(MachinePorts.STRUCTURE_TOWER.get());
+    return level.hasChunkAt(position)
+        && level.getBlockState(position).is(MachinePorts.STRUCTURE_TOWER.get());
   }
 }
