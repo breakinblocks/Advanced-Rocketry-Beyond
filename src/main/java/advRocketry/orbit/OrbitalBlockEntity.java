@@ -9,7 +9,6 @@ import advRocketry.util.ComponentText;
 import advRocketry.util.MachineEnergy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -28,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Original satellite builder and launch hatch roles, backed by native inventory and FE storage. */
 public final class OrbitalBlockEntity extends BlockEntity implements MenuProvider {
+  public final LaserState laser = new LaserState();
   public final OrbitalInventory inventory = new OrbitalInventory(this);
   public final MachineEnergy energy =
       new MachineEnergy(100000, 100000, 100000, this::setChanged) {
@@ -67,17 +67,6 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   public int areaDirection = Direction.DOWN.ordinal();
   public float areaCurrentGravity;
   float areaSyncedGravity = Float.NaN;
-  public int laserX;
-  public int laserZ;
-  public int laserMode;
-  public int laserTicks;
-  public int laserDepth;
-  public UUID laserNodeId;
-  public LaserNodeEntity laserNode;
-  public int laserTargetPlanet = Integer.MIN_VALUE;
-  public boolean laserTerrain;
-  public boolean laserRunning;
-  public boolean laserJammed;
   public boolean beaconEnabled = true;
   public String dockingId = "";
   public String dockingTarget = "";
@@ -98,7 +87,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
 
   public OrbitalBlockEntity(BlockPos pos, BlockState state) {
     super(OrbitalRegistry.BLOCK_ENTITY.get(), pos, state);
-    laserTerrain = AdvancedRocketryConfig.laserDrillPlanet();
+    laser.terrain = AdvancedRocketryConfig.laserDrillPlanet();
   }
 
   public OrbitalBlock.Kind kind() {
@@ -375,16 +364,16 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     tag.putInt("area_radius", areaRadius);
     tag.putInt("area_direction", areaDirection);
     tag.putFloat("area_current_gravity", areaCurrentGravity);
-    tag.putInt("laser_x", laserX);
-    tag.putInt("laser_z", laserZ);
-    tag.putInt("laser_mode", laserMode);
-    tag.putInt("laser_ticks", laserTicks);
-    tag.putInt("laser_depth", laserDepth);
-    if (laserNodeId != null) tag.putUUID("laser_node_id", laserNodeId);
-    tag.putInt("laser_target_planet", laserTargetPlanet);
-    tag.putBoolean("laser_terrain", laserTerrain);
-    tag.putBoolean("laser_running", laserRunning);
-    tag.putBoolean("laser_jammed", laserJammed);
+    tag.putInt("laser_x", laser.x);
+    tag.putInt("laser_z", laser.z);
+    tag.putInt("laser_mode", laser.mode);
+    tag.putInt("laser_ticks", laser.ticks);
+    tag.putInt("laser_depth", laser.depth);
+    if (laser.nodeId != null) tag.putUUID("laser_node_id", laser.nodeId);
+    tag.putInt("laser_target_planet", laser.targetPlanet);
+    tag.putBoolean("laser_terrain", laser.terrain);
+    tag.putBoolean("laser_running", laser.running);
+    tag.putBoolean("laser_jammed", laser.jammed);
     tag.putBoolean("beacon_enabled", beaconEnabled);
     tag.putString("docking_id", dockingId);
     tag.putString("docking_target", dockingTarget);
@@ -437,18 +426,18 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
             ? Math.floorMod(tag.getInt("area_direction"), Direction.values().length)
             : Direction.DOWN.ordinal();
     areaCurrentGravity = tag.getFloat("area_current_gravity");
-    laserX = tag.getInt("laser_x");
-    laserZ = tag.getInt("laser_z");
-    laserMode = Math.floorMod(tag.getInt("laser_mode"), 4);
-    laserTicks = tag.getInt("laser_ticks");
-    laserDepth = tag.getInt("laser_depth");
-    laserNodeId = tag.hasUUID("laser_node_id") ? tag.getUUID("laser_node_id") : null;
-    laserNode = null;
-    laserTargetPlanet =
+    laser.x = tag.getInt("laser_x");
+    laser.z = tag.getInt("laser_z");
+    laser.mode = Math.floorMod(tag.getInt("laser_mode"), 4);
+    laser.ticks = tag.getInt("laser_ticks");
+    laser.depth = tag.getInt("laser_depth");
+    laser.nodeId = tag.hasUUID("laser_node_id") ? tag.getUUID("laser_node_id") : null;
+    laser.node = null;
+    laser.targetPlanet =
         tag.contains("laser_target_planet") ? tag.getInt("laser_target_planet") : Integer.MIN_VALUE;
-    if (tag.contains("laser_terrain")) laserTerrain = tag.getBoolean("laser_terrain");
-    laserRunning = tag.getBoolean("laser_running");
-    laserJammed = tag.getBoolean("laser_jammed");
+    if (tag.contains("laser_terrain")) laser.terrain = tag.getBoolean("laser_terrain");
+    laser.running = tag.getBoolean("laser_running");
+    laser.jammed = tag.getBoolean("laser_jammed");
     beaconEnabled = !tag.contains("beacon_enabled") || tag.getBoolean("beacon_enabled");
     dockingId = tag.getString("docking_id");
     dockingTarget = tag.getString("docking_target");

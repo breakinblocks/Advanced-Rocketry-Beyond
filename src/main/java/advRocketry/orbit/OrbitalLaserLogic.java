@@ -7,6 +7,7 @@ import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
 import advRocketry.ModTags;
 import advRocketry.multiblock.PlacedMultiblock;
+import advRocketry.processing.OutputSimulation;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.space.GalaxyData;
 import advRocketry.space.Planet;
@@ -41,7 +42,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import advRocketry.processing.OutputSimulation;
 
 /** Original orbital laser footprint and default 10,000-FE void-drill ore table. */
 @EventBusSubscriber(modid = Main.MODID)
@@ -65,40 +65,40 @@ public final class OrbitalLaserLogic {
   public static void control(OrbitalBlockEntity controller, int button) {
     if (!controller.orbitalLaser()) return;
     if (button == 13) {
-      if (controller.laserRunning) {
-        controller.laserRunning = false;
+      if (controller.laser.running) {
+        controller.laser.running = false;
         clearLights(controller);
         controller.status =
             Component.translatable("status.adv_rocketry.orbital_laser.orbital_laser_stopped");
       } else start(controller);
     } else if (button == 19) {
-      controller.laserJammed = false;
+      controller.laser.jammed = false;
       controller.status =
           Component.translatable("status.adv_rocketry.orbital_laser.output_jam_cleared");
-    } else if (button == 18 && !controller.laserRunning) {
-      controller.laserTerrain = !controller.laserTerrain;
-      controller.laserDepth = 0;
+    } else if (button == 18 && !controller.laser.running) {
+      controller.laser.terrain = !controller.laser.terrain;
+      controller.laser.depth = 0;
       controller.status =
-          controller.laserTerrain
+          controller.laser.terrain
               ? Component.translatable("status.adv_rocketry.orbital_laser.terrain_mining_selected")
               : Component.translatable("status.adv_rocketry.orbital_laser.void_drilling_selected");
-    } else if (!controller.laserRunning) {
+    } else if (!controller.laser.running) {
       switch (button) {
-        case 14 -> controller.laserX -= 16;
-        case 15 -> controller.laserX += 16;
-        case 16 -> controller.laserZ -= 16;
-        case 17 -> controller.laserZ += 16;
+        case 14 -> controller.laser.x -= 16;
+        case 15 -> controller.laser.x += 16;
+        case 16 -> controller.laser.z -= 16;
+        case 17 -> controller.laser.z += 16;
         default -> {
           return;
         }
       }
-      controller.laserDepth = 0;
+      controller.laser.depth = 0;
       ServerLevel target = targetLevel(controller);
       if (target != null) clampTarget(controller, target);
       else if (controller.getLevel() != null) clampTarget(controller, controller.getLevel());
       controller.status =
           Texts.translate(
-              "status.adv_rocketry.orbital_laser.target", controller.laserX, controller.laserZ);
+              "status.adv_rocketry.orbital_laser.target", controller.laser.x, controller.laser.z);
     }
     controller.setChanged();
     if (controller.getLevel() instanceof ServerLevel level)
@@ -118,14 +118,14 @@ public final class OrbitalLaserLogic {
 
   private static void clampTarget(OrbitalBlockEntity controller, Level target) {
     WorldBorder border = target.getWorldBorder();
-    controller.laserX =
+    controller.laser.x =
         Mth.clamp(
-            controller.laserX,
+            controller.laser.x,
             (int) Math.ceil(border.getMinX()) + 1,
             (int) Math.floor(border.getMaxX()) - 2);
-    controller.laserZ =
+    controller.laser.z =
         Mth.clamp(
-            controller.laserZ,
+            controller.laser.z,
             (int) Math.ceil(border.getMinZ()) + 1,
             (int) Math.floor(border.getMaxZ()) - 2);
   }
@@ -165,11 +165,11 @@ public final class OrbitalLaserLogic {
               "status.adv_rocketry.orbital_laser.orbital_laser_needs_fe", operationEnergy);
       return;
     }
-    controller.laserRunning = true;
-    controller.laserJammed = false;
-    controller.laserTargetPlanet = planet.id;
+    controller.laser.running = true;
+    controller.laser.jammed = false;
+    controller.laser.targetPlanet = planet.id;
     clampTarget(controller, target);
-    if (controller.laserTerrain && controller.laserDepth == 0) {
+    if (controller.laser.terrain && controller.laser.depth == 0) {
       int top = target.getMinBuildHeight();
       for (int x = -1; x <= 1; x++)
         for (int z = -1; z <= 1; z++)
@@ -178,9 +178,9 @@ public final class OrbitalLaserLogic {
                   top,
                   target.getHeight(
                       Heightmap.Types.MOTION_BLOCKING,
-                      controller.laserX + x,
-                      controller.laserZ + z));
-      controller.laserDepth = top - 1;
+                      controller.laser.x + x,
+                      controller.laser.z + z));
+      controller.laser.depth = top - 1;
     }
     controller.status =
         Texts.translate(
@@ -190,8 +190,8 @@ public final class OrbitalLaserLogic {
   public static void tick(OrbitalBlockEntity controller) {
     if (!(controller.getLevel() instanceof ServerLevel level)) return;
     if (!complete(controller)) {
-      if (controller.laserRunning) {
-        controller.laserRunning = false;
+      if (controller.laser.running) {
+        controller.laser.running = false;
         clearLights(controller);
         controller.status =
             Component.translatable(
@@ -203,15 +203,15 @@ public final class OrbitalLaserLogic {
     for (PortBlockEntity port :
         PlacedMultiblock.of(controller, "orbital_laser").entities('P', PortBlockEntity.class))
       controller.pullFrom(port, 1000);
-    if (!controller.laserRunning || controller.laserJammed) return;
+    if (!controller.laser.running || controller.laser.jammed) return;
     GalaxyData galaxy = GalaxyData.get(level.getServer());
     var station = StationLogic.at(galaxy, level, controller.getBlockPos());
     Planet target = station == null ? null : galaxy.planets.get(station.orbitPlanet);
     if (target == null
         || !target.laserDrillable
-        || controller.laserTargetPlanet != Integer.MIN_VALUE
-            && target.id != controller.laserTargetPlanet) {
-      controller.laserRunning = false;
+        || controller.laser.targetPlanet != Integer.MIN_VALUE
+            && target.id != controller.laser.targetPlanet) {
+      controller.laser.running = false;
       clearLights(controller);
       controller.status =
           Component.translatable(
@@ -219,22 +219,22 @@ public final class OrbitalLaserLogic {
       controller.setChanged();
       return;
     }
-    if (controller.laserTerrain)
+    if (controller.laser.terrain)
       refreshNode(controller, PlanetRuntime.create(level.getServer(), target));
-    controller.laserTicks++;
+    controller.laser.ticks++;
     int stored = controller.energy.getEnergyStored();
     int operationEnergy = AdvancedRocketryConfig.laserDrillEnergy();
     if (stored < operationEnergy
-        || controller.laserTicks <= 3 * controller.energy.getMaxEnergyStored() / stored) return;
+        || controller.laser.ticks <= 3 * controller.energy.getMaxEnergyStored() / stored) return;
     boolean produced;
-    if (controller.laserTerrain) produced = mineTerrain(controller, level);
+    if (controller.laser.terrain) produced = mineTerrain(controller, level);
     else {
       ItemStack yield = output(level, target);
       produced = canInsertOutput(controller, List.of(yield)) && insertOutput(controller, yield);
     }
     if (!produced) {
-      controller.laserJammed = true;
-      controller.laserRunning = false;
+      controller.laser.jammed = true;
+      controller.laser.running = false;
       clearLights(controller);
       controller.status =
           Component.translatable("status.adv_rocketry.orbital_laser.orbital_laser_output_jammed");
@@ -242,50 +242,51 @@ public final class OrbitalLaserLogic {
       return;
     }
     controller.energy.consume(operationEnergy, false);
-    controller.laserTicks = 0;
+    controller.laser.ticks = 0;
     controller.setChanged();
   }
 
   public static void clearLights(OrbitalBlockEntity controller) {
-    if (!controller.laserTerrain || !(controller.getLevel() instanceof ServerLevel stationLevel))
+    if (!controller.laser.terrain || !(controller.getLevel() instanceof ServerLevel stationLevel))
       return;
     GalaxyData galaxy = GalaxyData.get(stationLevel.getServer());
     var station = StationLogic.at(galaxy, stationLevel, controller.getBlockPos());
     Planet planet =
-        controller.laserTargetPlanet == Integer.MIN_VALUE
+        controller.laser.targetPlanet == Integer.MIN_VALUE
             ? station == null ? null : galaxy.planets.get(station.orbitPlanet)
-            : galaxy.planets.get(controller.laserTargetPlanet);
-    controller.laserTargetPlanet = Integer.MIN_VALUE;
+            : galaxy.planets.get(controller.laser.targetPlanet);
+    controller.laser.targetPlanet = Integer.MIN_VALUE;
     if (planet == null || !planet.landable()) return;
     ServerLevel target = PlanetRuntime.create(stationLevel.getServer(), planet);
-    if (controller.laserNode != null) controller.laserNode.discard();
-    else if (controller.laserNodeId != null
-        && target.getEntity(controller.laserNodeId) instanceof LaserNodeEntity node) node.discard();
-    controller.laserNode = null;
-    controller.laserNodeId = null;
-    clearLights(target, controller.laserX, controller.laserZ);
+    if (controller.laser.node != null) controller.laser.node.discard();
+    else if (controller.laser.nodeId != null
+        && target.getEntity(controller.laser.nodeId) instanceof LaserNodeEntity node)
+      node.discard();
+    controller.laser.node = null;
+    controller.laser.nodeId = null;
+    clearLights(target, controller.laser.x, controller.laser.z);
   }
 
   private static void refreshNode(OrbitalBlockEntity controller, ServerLevel target) {
     LaserNodeEntity node =
-        controller.laserNode != null && !controller.laserNode.isRemoved()
-            ? controller.laserNode
-            : controller.laserNodeId == null
+        controller.laser.node != null && !controller.laser.node.isRemoved()
+            ? controller.laser.node
+            : controller.laser.nodeId == null
                 ? null
-                : target.getEntity(controller.laserNodeId) instanceof LaserNodeEntity existing
+                : target.getEntity(controller.laser.nodeId) instanceof LaserNodeEntity existing
                     ? existing
                     : null;
     if (node == null) {
       node = OrbitalRegistry.LASER_NODE.get().create(target);
       if (node == null) return;
-      controller.laserNodeId = node.getUUID();
-      controller.laserNode = node;
-      node.refresh(controller.laserX + .5, controller.laserDepth + .5, controller.laserZ + .5);
+      controller.laser.nodeId = node.getUUID();
+      controller.laser.node = node;
+      node.refresh(controller.laser.x + .5, controller.laser.depth + .5, controller.laser.z + .5);
       target.addFreshEntity(node);
       controller.setChanged();
     } else {
-      controller.laserNode = node;
-      node.refresh(controller.laserX + .5, controller.laserDepth + .5, controller.laserZ + .5);
+      controller.laser.node = node;
+      node.refresh(controller.laser.x + .5, controller.laser.depth + .5, controller.laser.z + .5);
     }
   }
 
@@ -304,7 +305,7 @@ public final class OrbitalLaserLogic {
     var station = StationLogic.at(galaxy, stationLevel, controller.getBlockPos());
     Planet planet = station == null ? null : galaxy.planets.get(station.orbitPlanet);
     if (planet == null || !planet.landable()) {
-      controller.laserRunning = false;
+      controller.laser.running = false;
       clearLights(controller);
       controller.status =
           Component.translatable(
@@ -312,7 +313,7 @@ public final class OrbitalLaserLogic {
       return true;
     }
     if (!planet.laserDrillable) {
-      controller.laserRunning = false;
+      controller.laser.running = false;
       clearLights(controller);
       controller.status =
           Component.translatable(
@@ -320,19 +321,19 @@ public final class OrbitalLaserLogic {
       return true;
     }
     ServerLevel target = PlanetRuntime.create(stationLevel.getServer(), planet);
-    if (controller.laserDepth <= target.getMinBuildHeight()) {
-      controller.laserRunning = false;
+    if (controller.laser.depth <= target.getMinBuildHeight()) {
+      controller.laser.running = false;
       clearLights(controller);
-      controller.laserDepth = 0;
+      controller.laser.depth = 0;
       controller.status =
           Component.translatable("status.adv_rocketry.orbital_laser.terrain_shaft_complete");
       return true;
     }
-    int y = controller.laserDepth;
+    int y = controller.laser.depth;
     ItemStack tool = new ItemStack(Items.NETHERITE_PICKAXE);
     for (int x = -1; x <= 1; x++)
       for (int z = -1; z <= 1; z++) {
-        BlockPos pos = new BlockPos(controller.laserX + x, y, controller.laserZ + z);
+        BlockPos pos = new BlockPos(controller.laser.x + x, y, controller.laser.z + z);
         BlockState state = target.getBlockState(pos);
         if (state.isAir()) {
           target.setBlock(pos, OrbitalRegistry.LASER_LIGHT.get().defaultBlockState(), 3);
@@ -352,14 +353,15 @@ public final class OrbitalLaserLogic {
         target.setBlock(pos, OrbitalRegistry.LASER_LIGHT.get().defaultBlockState(), 3);
         for (ItemStack drop : drops) insertOutput(controller, drop);
       }
-    controller.laserDepth--;
+    controller.laser.depth--;
     return true;
   }
 
   private static boolean canInsertOutput(OrbitalBlockEntity controller, List<ItemStack> drops) {
     List<PortBlockEntity> outputs = outputs(controller);
-    return outputs.size() >= 2 && OutputSimulation.canInsertAllItems(
-        outputs.stream().map(port -> port.inventory).toList(), drops);
+    return outputs.size() >= 2
+        && OutputSimulation.canInsertAllItems(
+            outputs.stream().map(port -> port.inventory).toList(), drops);
   }
 
   private static ItemStack output(ServerLevel level, Planet planet) {

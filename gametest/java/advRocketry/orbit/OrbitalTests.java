@@ -650,7 +650,7 @@ public final class OrbitalTests {
     input.energyStorage.receiveEnergy(100000, false);
     for (int tick = 0; tick < 20; tick++) laser.tick();
     OrbitalLaserLogic.control(laser, 13);
-    helper.assertTrue(laser.laserRunning, "Powered orbital laser could not start over Earth");
+    helper.assertTrue(laser.laser.running, "Powered orbital laser could not start over Earth");
     for (int tick = 0; tick < 20; tick++) laser.tick();
     PortBlockEntity output =
         (PortBlockEntity)
@@ -666,21 +666,21 @@ public final class OrbitalTests {
         hatch.inventory.setStackInSlot(slot, new ItemStack(Items.DIAMOND, 64));
     for (int tick = 0; tick < 20; tick++) laser.tick();
     helper.assertTrue(
-        laser.laserJammed && !laser.laserRunning, "Full output hatches did not stop laser");
+        laser.laser.jammed && !laser.laser.running, "Full output hatches did not stop laser");
     for (PortBlockEntity hatch : new PortBlockEntity[] {output, otherOutput})
       for (int slot = 0; slot < hatch.inventory.getSlots(); slot++)
         hatch.inventory.setStackInSlot(slot, ItemStack.EMPTY);
     ServerLevel planet =
         PlanetRuntime.create(space.getServer(), galaxy.planets.get(GalaxyData.EARTH_ID));
-    laser.laserX = 320;
-    laser.laserZ = 320;
+    laser.laser.x = 320;
+    laser.laser.z = 320;
     for (int x = -1; x <= 1; x++)
       for (int z = -1; z <= 1; z++)
         planet.setBlock(new BlockPos(320 + x, 200, 320 + z), Blocks.STONE.defaultBlockState(), 2);
     OrbitalLaserLogic.control(laser, 19);
     OrbitalLaserLogic.control(laser, 18);
     OrbitalLaserLogic.control(laser, 13);
-    helper.assertTrue(laser.laserTerrain && laser.laserRunning, "Terrain drill could not start");
+    helper.assertTrue(laser.laser.terrain && laser.laser.running, "Terrain drill could not start");
     for (int tick = 0; tick < 20; tick++) laser.tick();
     helper.assertTrue(
         planet.getBlockState(new BlockPos(320, 200, 320)).is(OrbitalRegistry.LASER_LIGHT.get())
@@ -689,16 +689,16 @@ public final class OrbitalTests {
             && output.inventory.getStackInSlot(0).getCount() >= 9,
         "Terrain drill did not mine the original 3x3 shaft into output hatches");
     helper.assertTrue(
-        laser.laserNodeId != null && laser.laserNode != null && !laser.laserNode.isRemoved(),
-        "Terrain drill did not keep its target node: " + laser.laserNodeId);
+        laser.laser.nodeId != null && laser.laser.node != null && !laser.laser.node.isRemoved(),
+        "Terrain drill did not keep its target node: " + laser.laser.nodeId);
     BlockPos untouched = new BlockPos(322, 200, 322);
     planet.setBlock(untouched, Blocks.STONE.defaultBlockState(), 2);
     OrbitalLaserLogic.control(laser, 13);
     helper.assertTrue(
         planet.getBlockState(new BlockPos(320, 200, 320)).isAir()
             && planet.getBlockState(untouched).is(Blocks.STONE)
-            && laser.laserNodeId == null
-            && laser.laserNode == null,
+            && laser.laser.nodeId == null
+            && laser.laser.node == null,
         "Stopping the terrain drill left light markers or removed other blocks");
     helper.succeed();
   }

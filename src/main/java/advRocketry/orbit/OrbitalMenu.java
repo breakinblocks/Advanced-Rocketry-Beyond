@@ -89,11 +89,11 @@ public final class OrbitalMenu extends ModMenu {
       case 5 -> entity.areaGravity;
       case 6 -> entity.areaRadius;
       case 7 -> entity.areaDirection;
-      case 8 -> entity.laserX;
-      case 9 -> entity.laserZ;
-      case 10 -> entity.laserRunning ? 1 : 0;
-      case 11 -> entity.laserJammed ? 1 : 0;
-      case 12 -> entity.laserTerrain ? 1 : 0;
+      case 8 -> entity.laser.x;
+      case 9 -> entity.laser.z;
+      case 10 -> entity.laser.running ? 1 : 0;
+      case 11 -> entity.laser.jammed ? 1 : 0;
+      case 12 -> entity.laser.terrain ? 1 : 0;
       case 13 -> entity.biomeScanner() ? BiomeScannerLogic.scannedPlanet(entity) : -3;
       case 14 -> entity.beaconEnabled ? 1 : 0;
       case 15 -> entity.railgunMinimum;

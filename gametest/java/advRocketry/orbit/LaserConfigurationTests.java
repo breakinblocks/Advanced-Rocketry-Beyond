@@ -52,14 +52,14 @@ public final class LaserConfigurationTests {
       var controller =
           new OrbitalBlockEntity(
               BlockPos.ZERO, OrbitalRegistry.ORBITAL_LASER.get().defaultBlockState());
-      helper.assertTrue(controller.laserTerrain, "New controller ignored terrain default");
+      helper.assertTrue(controller.laser.terrain, "New controller ignored terrain default");
       var saved = controller.saveWithoutMetadata(helper.getLevel().registryAccess());
       terrain.set(false);
       controller =
           new OrbitalBlockEntity(
               BlockPos.ZERO, OrbitalRegistry.ORBITAL_LASER.get().defaultBlockState());
       controller.loadWithComponents(saved, helper.getLevel().registryAccess());
-      helper.assertTrue(controller.laserTerrain, "Changed default overwrote saved drill mode");
+      helper.assertTrue(controller.laser.terrain, "Changed default overwrote saved drill mode");
     } finally {
       terrain.set(oldTerrain);
     }
