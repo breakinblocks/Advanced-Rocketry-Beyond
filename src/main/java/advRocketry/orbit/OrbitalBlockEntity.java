@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 /** Original satellite builder and launch hatch roles, backed by native inventory and FE storage. */
 public final class OrbitalBlockEntity extends BlockEntity implements MenuProvider {
   public final LaserState laser = new LaserState();
+  public final ObservationState observation = new ObservationState();
   public final OrbitalInventory inventory = new OrbitalInventory(this);
   public final MachineEnergy energy =
       new MachineEnergy(100000, 100000, 100000, this::setChanged) {
@@ -53,13 +54,6 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   public int holoRedstone;
   public int powerMadeLastTick;
   public long blackHoleBurnUntil;
-  public int observationTicks;
-  public int observatoryOpenProgress;
-  public int asteroidCandidate = -1;
-  public int[] asteroidOptions = new int[0];
-  public int asteroidOptionIndex = -1;
-  public int asteroidCatalogHash;
-  public long asteroidSeed;
   public String elevatorDimension = "";
   public long elevatorPosition;
   public int areaGravity = 15;
@@ -351,13 +345,13 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     tag.putInt("holo_redstone", holoRedstone);
     tag.putInt("power_last_tick", powerMadeLastTick);
     tag.putLong("black_hole_burn_until", blackHoleBurnUntil);
-    tag.putInt("observation_ticks", observationTicks);
-    tag.putInt("observatory_open_progress", observatoryOpenProgress);
-    tag.putInt("asteroid_candidate", asteroidCandidate);
-    tag.putIntArray("asteroid_options", asteroidOptions);
-    tag.putInt("asteroid_option_index", asteroidOptionIndex);
-    tag.putInt("asteroid_catalog_hash", asteroidCatalogHash);
-    tag.putLong("asteroid_seed", asteroidSeed);
+    tag.putInt("observation_ticks", observation.ticks);
+    tag.putInt("observatory_open_progress", observation.openProgress);
+    tag.putInt("asteroid_candidate", observation.candidate);
+    tag.putIntArray("asteroid_options", observation.options);
+    tag.putInt("asteroid_option_index", observation.optionIndex);
+    tag.putInt("asteroid_catalog_hash", observation.catalogHash);
+    tag.putLong("asteroid_seed", observation.seed);
     tag.putString("elevator_dimension", elevatorDimension);
     tag.putLong("elevator_position", elevatorPosition);
     tag.putInt("area_gravity", areaGravity);
@@ -407,16 +401,16 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     holoRedstone = Math.floorMod(tag.getInt("holo_redstone"), 3);
     powerMadeLastTick = tag.getInt("power_last_tick");
     blackHoleBurnUntil = tag.getLong("black_hole_burn_until");
-    observationTicks = tag.getInt("observation_ticks");
-    observatoryOpenProgress = Math.clamp(tag.getInt("observatory_open_progress"), 0, 100);
-    asteroidCandidate = tag.contains("asteroid_candidate") ? tag.getInt("asteroid_candidate") : -1;
-    asteroidOptions = tag.getIntArray("asteroid_options");
-    asteroidCatalogHash = tag.getInt("asteroid_catalog_hash");
-    asteroidOptionIndex =
+    observation.ticks = tag.getInt("observation_ticks");
+    observation.openProgress = Math.clamp(tag.getInt("observatory_open_progress"), 0, 100);
+    observation.candidate = tag.contains("asteroid_candidate") ? tag.getInt("asteroid_candidate") : -1;
+    observation.options = tag.getIntArray("asteroid_options");
+    observation.catalogHash = tag.getInt("asteroid_catalog_hash");
+    observation.optionIndex =
         tag.contains("asteroid_option_index")
-            ? Math.clamp(tag.getInt("asteroid_option_index"), -1, asteroidOptions.length - 1)
+            ? Math.clamp(tag.getInt("asteroid_option_index"), -1, observation.options.length - 1)
             : -1;
-    asteroidSeed = tag.getLong("asteroid_seed");
+    observation.seed = tag.getLong("asteroid_seed");
     elevatorDimension = tag.getString("elevator_dimension");
     elevatorPosition = tag.getLong("elevator_position");
     areaGravity = tag.contains("area_gravity") ? tag.getInt("area_gravity") : 15;
@@ -464,9 +458,9 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     tag.putFloat("area_current_gravity", areaCurrentGravity);
     tag.putString("elevator_dimension", elevatorDimension);
     tag.putInt("power_last_tick", powerMadeLastTick);
-    tag.putInt("observatory_open_progress", observatoryOpenProgress);
+    tag.putInt("observatory_open_progress", observation.openProgress);
     tag.putBoolean("terraformer_running", terraformerRunning);
-    tag.putLong("asteroid_seed", asteroidSeed);
+    tag.putLong("asteroid_seed", observation.seed);
     tag.putString("docking_id", dockingId);
     tag.putString("docking_target", dockingTarget);
     tag.putBoolean("formed", formed);

@@ -38,7 +38,7 @@ public final class OrbitalMenu extends ModMenu {
         existing instanceof OrbitalBlockEntity orbital && orbital.getBlockState().equals(state)
             ? orbital
             : new OrbitalBlockEntity(pos, state);
-    entity.asteroidSeed = buffer.readLong();
+    entity.observation.seed = buffer.readLong();
     entity.dockingId = buffer.readUtf(32);
     entity.dockingTarget = buffer.readUtf(32);
     return entity;
@@ -47,7 +47,7 @@ public final class OrbitalMenu extends ModMenu {
   public static void writeOpeningData(RegistryFriendlyByteBuf buffer, OrbitalBlockEntity entity) {
     buffer.writeBlockPos(entity.getBlockPos());
     buffer.writeVarInt(Block.getId(entity.getBlockState()));
-    buffer.writeLong(entity.asteroidSeed);
+    buffer.writeLong(entity.observation.seed);
     buffer.writeUtf(entity.dockingId, 32);
     buffer.writeUtf(entity.dockingTarget, 32);
   }
@@ -55,8 +55,8 @@ public final class OrbitalMenu extends ModMenu {
   public long asteroidSeed() {
     var current = level.getBlockEntity(entity.getBlockPos());
     return current instanceof OrbitalBlockEntity orbital
-        ? orbital.asteroidSeed
-        : entity.asteroidSeed;
+        ? orbital.observation.seed
+        : entity.observation.seed;
   }
 
   public OrbitalMenu(int id, Inventory inventory, OrbitalBlockEntity entity) {
@@ -84,8 +84,8 @@ public final class OrbitalMenu extends ModMenu {
               ? StationMotionLogic.targetGravity(entity)
               : entity.warpDestination;
       case 2 -> entity.stationGravityController() ? StationMotionLogic.currentGravity(entity) : 100;
-      case 3 -> entity.observationTicks;
-      case 4 -> entity.asteroidCandidate;
+      case 3 -> entity.observation.ticks;
+      case 4 -> entity.observation.candidate;
       case 5 -> entity.areaGravity;
       case 6 -> entity.areaRadius;
       case 7 -> entity.areaDirection;
@@ -120,8 +120,8 @@ public final class OrbitalMenu extends ModMenu {
       case 32 -> entity.warpCore() ? WarpCoreLogic.stationFuel(entity) : 0;
       case 33 -> entity.warpCore() && WarpCoreLogic.complete(entity) ? 1 : 0;
       case 34 -> entity.builderProgress;
-      case 35 -> entity.asteroidOptions.length;
-      case 36 -> entity.asteroidOptionIndex;
+      case 35 -> entity.observation.options.length;
+      case 36 -> entity.observation.optionIndex;
       case 37 ->
           entity.observatory()
               ? ObservatoryLogic.researchData(entity, ResearchType.COMPOSITION)

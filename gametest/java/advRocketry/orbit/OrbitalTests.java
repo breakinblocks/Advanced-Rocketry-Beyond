@@ -116,16 +116,16 @@ public final class OrbitalTests {
     BlockPos pos = helper.absolutePos(new BlockPos(4, 4, 4));
     helper.getLevel().setBlock(pos, OrbitalRegistry.OBSERVATORY.get().defaultBlockState(), 2);
     OrbitalBlockEntity observatory = (OrbitalBlockEntity) helper.getLevel().getBlockEntity(pos);
-    observatory.observatoryOpenProgress = 100;
+    observatory.observation.openProgress = 100;
     observatory.tick();
     helper.assertTrue(
-        observatory.observatoryOpenProgress == 99,
+        observatory.observation.openProgress == 99,
         "Incomplete observatory did not close its original moving casing");
     CompoundTag saved = observatory.saveWithFullMetadata(helper.getLevel().registryAccess());
-    observatory.observatoryOpenProgress = 0;
+    observatory.observation.openProgress = 0;
     observatory.loadWithComponents(saved, helper.getLevel().registryAccess());
     helper.assertTrue(
-        observatory.observatoryOpenProgress == 99,
+        observatory.observation.openProgress == 99,
         "Observatory casing position was lost on reload");
     helper.succeed();
   }
@@ -1004,22 +1004,22 @@ public final class OrbitalTests {
     helper.assertTrue(
         observatory.startObservation(), "Observatory did not accept distance data from its bus");
     helper.assertTrue(
-        observatory.asteroidCandidate == -1
-            && observatory.asteroidOptions.length == 10
+        observatory.observation.candidate == -1
+            && observatory.observation.options.length == 10
             && powerPort.energyStorage.getEnergyStored() == 500,
         "Scan did not produce selectable targets at the original data-only cost");
     helper.assertTrue(
         !observatory.programAsteroidChip(), "Observatory programmed an unselected target");
     ObservatoryLogic.selectNext(observatory);
     CompoundTag savedScan = observatory.saveWithFullMetadata(space.registryAccess());
-    observatory.asteroidOptions = new int[0];
+    observatory.observation.options = new int[0];
     observatory.loadWithComponents(savedScan, space.registryAccess());
-    helper.assertTrue(observatory.asteroidOptions.length == 10, "Scan results were lost on reload");
+    helper.assertTrue(observatory.observation.options.length == 10, "Scan results were lost on reload");
     for (int tick = 0; tick < 100; tick++) observatory.tick();
     helper.assertTrue(
-        observatory.asteroidCandidate >= 0
+        observatory.observation.candidate >= 0
             && AsteroidCatalog.types(space.registryAccess())
-                .get(observatory.asteroidCandidate)
+                .get(observatory.observation.candidate)
                 .id()
                 .equals("adv_rocketry:small"),
         "Observatory did not discover the visible original asteroid type");

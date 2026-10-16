@@ -97,12 +97,12 @@ public final class ObservatoryLogic {
       return false;
     }
     data(controller, ResearchType.DISTANCE, 100, true);
-    controller.asteroidSeed = level.getGameTime() / 100;
+    controller.observation.seed = level.getGameTime() / 100;
     findAsteroids(controller);
     controller.status =
         Texts.translate(
             "status.adv_rocketry.observatory.found_asteroid_targets",
-            controller.asteroidOptions.length);
+            controller.observation.options.length);
     synchronize(controller);
     return true;
   }
@@ -114,7 +114,7 @@ public final class ObservatoryLogic {
     float total = 0;
     for (AsteroidCatalog.Asteroid type : types)
       if (type.distance() <= range) total += type.probability();
-    Random random = new Random(controller.asteroidSeed);
+    Random random = new Random(controller.observation.seed);
     List<Integer> options = new ArrayList<>();
     if (total > 0)
       for (int index = 0; index < types.size(); index++) {
@@ -123,18 +123,18 @@ public final class ObservatoryLogic {
         for (int trial = 0; trial < 10; trial++)
           if (type.probability() / total >= random.nextFloat()) options.add(index);
       }
-    controller.asteroidOptions = options.stream().mapToInt(Integer::intValue).toArray();
-    controller.asteroidCatalogHash = types.hashCode();
-    controller.asteroidOptionIndex = -1;
-    controller.asteroidCandidate = -1;
+    controller.observation.options = options.stream().mapToInt(Integer::intValue).toArray();
+    controller.observation.catalogHash = types.hashCode();
+    controller.observation.optionIndex = -1;
+    controller.observation.candidate = -1;
   }
 
   public static void selectNext(OrbitalBlockEntity controller) {
     validateScan(controller);
-    if (!controller.observatory() || controller.asteroidOptions.length == 0) return;
-    controller.asteroidOptionIndex =
-        (controller.asteroidOptionIndex + 1) % controller.asteroidOptions.length;
-    controller.asteroidCandidate = controller.asteroidOptions[controller.asteroidOptionIndex];
+    if (!controller.observatory() || controller.observation.options.length == 0) return;
+    controller.observation.optionIndex =
+        (controller.observation.optionIndex + 1) % controller.observation.options.length;
+    controller.observation.candidate = controller.observation.options[controller.observation.optionIndex];
     synchronize(controller);
   }
 
@@ -142,16 +142,16 @@ public final class ObservatoryLogic {
     if (!(controller.getLevel() instanceof ServerLevel level)) return;
     validateScan(controller);
     boolean open = controller.observatoryStructure() && clearSky(controller);
-    int previous = controller.observatoryOpenProgress;
-    controller.observatoryOpenProgress = Math.clamp(previous + (open ? 1 : -1), 0, 100);
-    if (previous != controller.observatoryOpenProgress) {
+    int previous = controller.observation.openProgress;
+    controller.observation.openProgress = Math.clamp(previous + (open ? 1 : -1), 0, 100);
+    if (previous != controller.observation.openProgress) {
       controller.setChanged();
       level.sendBlockUpdated(
           controller.getBlockPos(), controller.getBlockState(), controller.getBlockState(), 2);
     }
-    if (controller.observationTicks > 0 && ObservatoryStructure.complete(controller)) {
-      controller.observationTicks = 0;
-      controller.asteroidSeed = level.getGameTime() / 100;
+    if (controller.observation.ticks > 0 && ObservatoryStructure.complete(controller)) {
+      controller.observation.ticks = 0;
+      controller.observation.seed = level.getGameTime() / 100;
       findAsteroids(controller);
       controller.setChanged();
     }
@@ -163,19 +163,19 @@ public final class ObservatoryLogic {
         || !(controller.getLevel() instanceof ServerLevel)
         || !controller.observatoryStructure()
         || !clearSky(controller)
-        || controller.observatoryOpenProgress == 0
-        || controller.asteroidCandidate < 0
-        || controller.asteroidCandidate
+        || controller.observation.openProgress == 0
+        || controller.observation.candidate < 0
+        || controller.observation.candidate
             >= AsteroidCatalog.types(controller.getLevel().registryAccess()).size()
         || !controller.inventory.getStackInSlot(0).is(OrbitalRegistry.ASTEROID_CHIP.get())
         || !controller.inventory.getStackInSlot(4).isEmpty()
         || power(controller, 500, true) < 500) return false;
     AsteroidCatalog.Asteroid asteroid =
         AsteroidCatalog.types(controller.getLevel().registryAccess())
-            .get(controller.asteroidCandidate);
+            .get(controller.observation.candidate);
     if (asteroid.distance() > controller.observatoryRange()) return false;
     ItemStack chip = controller.inventory.extractItem(0, 1, false);
-    AsteroidChipItem.program(chip, asteroid.id(), controller.asteroidSeed);
+    AsteroidChipItem.program(chip, asteroid.id(), controller.observation.seed);
     data(controller, ResearchType.COMPOSITION, 1000, true);
     data(controller, ResearchType.MASS, 1000, true);
     power(controller, 500, false);
@@ -189,11 +189,11 @@ public final class ObservatoryLogic {
   private static void validateScan(OrbitalBlockEntity controller) {
     if (!(controller.getLevel() instanceof ServerLevel)) return;
     int current = AsteroidCatalog.types(controller.getLevel().registryAccess()).hashCode();
-    if (controller.asteroidCatalogHash == current) return;
-    controller.asteroidCatalogHash = current;
-    controller.asteroidOptions = new int[0];
-    controller.asteroidOptionIndex = -1;
-    controller.asteroidCandidate = -1;
+    if (controller.observation.catalogHash == current) return;
+    controller.observation.catalogHash = current;
+    controller.observation.options = new int[0];
+    controller.observation.optionIndex = -1;
+    controller.observation.candidate = -1;
     controller.setChanged();
   }
 }

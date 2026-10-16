@@ -432,7 +432,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     pose.translate(2, -1, 0);
     var vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(OBSERVATORY_TEXTURE));
     observatoryModel.renderPart("Base", pose, vertices, light, overlay);
-    float opening = entity.observatoryOpenProgress / 100f;
+    float opening = entity.observation.openProgress / 100f;
     if (opening > 0) {
       observatoryModel.renderPart("Axis", pose, vertices, light, overlay);
       observatoryModel.renderPart("Scope", pose, vertices, light, overlay);

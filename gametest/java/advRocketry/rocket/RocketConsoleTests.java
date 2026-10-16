@@ -81,7 +81,7 @@ public final class RocketConsoleTests {
     var pos = helper.absolutePos(new BlockPos(5, 4, 5));
     var orbital =
         new OrbitalBlockEntity(pos, OrbitalRegistry.OBSERVATORY.get().defaultBlockState());
-    orbital.asteroidSeed = 123456789123L;
+    orbital.observation.seed = 123456789123L;
     orbital.dockingId = "Alpha";
     orbital.dockingTarget = "Beta";
     var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), level.registryAccess());
@@ -97,7 +97,7 @@ public final class RocketConsoleTests {
     buffer.release();
     level.setBlock(pos, OrbitalRegistry.OBSERVATORY.get().defaultBlockState(), 3);
     var live = (OrbitalBlockEntity) level.getBlockEntity(pos);
-    live.asteroidSeed = 987654321987L;
+    live.observation.seed = 987654321987L;
     helper.assertTrue(
         client.asteroidSeed() == 987654321987L,
         "Late chunk update did not refresh observatory survey seed");
