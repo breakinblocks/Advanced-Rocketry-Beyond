@@ -6,6 +6,8 @@ package advRocketry.space;
 import advRocketry.Main;
 import advRocketry.orbit.Station;
 import advRocketry.orbit.StationLogic;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -32,6 +36,20 @@ public final class GalaxySync {
   private static final Map<Long, Station> CLIENT_STATIONS = new ConcurrentHashMap<>();
 
   private static final Map<MinecraftServer, CompoundTag> LAST_STATIONS = new WeakHashMap<>();
+  private static final Codec<CompoundTag> STATIONS_CODEC =
+      CompoundTag.CODEC.validate(
+          tag ->
+              tag.size() <= 4096
+                  ? DataResult.success(tag)
+                  : DataResult.error(() -> "Too many station snapshots"));
+  private static final Codec<CompoundTag> GALAXY_CODEC =
+      CompoundTag.CODEC.validate(
+          tag ->
+              tag.getList("planets", Tag.TAG_COMPOUND).size() <= 4096
+                      && tag.getList("stars", Tag.TAG_COMPOUND).size() <= 1024
+                      && tag.getCompound("stations").size() <= 4096
+                  ? DataResult.success(tag)
+                  : DataResult.error(() -> "Galaxy snapshot exceeds collection limits"));
 
   private GalaxySync() {}
 
@@ -39,7 +57,8 @@ public final class GalaxySync {
     public static final Type<StationPayload> TYPE =
         new Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "station_visuals"));
     public static final StreamCodec<ByteBuf, StationPayload> CODEC =
-        ByteBufCodecs.COMPOUND_TAG.map(StationPayload::new, StationPayload::data);
+        ByteBufCodecs.fromCodec(STATIONS_CODEC, () -> NbtAccounter.create(64L * 1024 * 1024))
+            .map(StationPayload::new, StationPayload::data);
 
     @Override
     public Type<StationPayload> type() {
@@ -68,15 +87,18 @@ public final class GalaxySync {
 
   private static void installStations(CompoundTag stations) {
     CLIENT_STATIONS.clear();
-    for (String key : stations.getAllKeys())
-      CLIENT_STATIONS.put(Long.parseLong(key), Station.load(stations.getCompound(key)));
+    for (String key : stations.getAllKeys()) {
+      Station station = Station.load(stations.getCompound(key));
+      CLIENT_STATIONS.put(station.id, station);
+    }
   }
 
   public record Payload(CompoundTag data) implements CustomPacketPayload {
     public static final Type<Payload> TYPE =
         new Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "galaxy"));
     public static final StreamCodec<ByteBuf, Payload> CODEC =
-        ByteBufCodecs.COMPOUND_TAG.map(Payload::new, Payload::data);
+        ByteBufCodecs.fromCodec(GALAXY_CODEC, () -> NbtAccounter.create(64L * 1024 * 1024))
+            .map(Payload::new, Payload::data);
 
     @Override
     public Type<Payload> type() {
@@ -86,13 +108,13 @@ public final class GalaxySync {
 
   public static void register(RegisterPayloadHandlersEvent event) {
     event
-        .registrar("1")
+        .registrar("2")
         .playToClient(
             StationPayload.TYPE,
             StationPayload.CODEC,
             (payload, context) -> installStations(payload.data()));
     event
-        .registrar("1")
+        .registrar("2")
         .playToClient(
             Payload.TYPE,
             Payload.CODEC,
@@ -103,7 +125,8 @@ public final class GalaxySync {
                 CLIENT_STARS.put(star.id(), star);
               }
               for (Tag entry : payload.data().getList("planets", Tag.TAG_COMPOUND)) {
-                Planet planet = Planet.load((CompoundTag) entry);
+                Planet planet =
+                    PlanetSnapshot.CODEC.parse(NbtOps.INSTANCE, entry).getOrThrow().planet();
                 CLIENT_PLANETS.put(planet.dimension, planet);
               }
               installStations(payload.data().getCompound("stations"));
@@ -154,7 +177,15 @@ public final class GalaxySync {
     galaxy.stars.values().forEach(star -> stars.add(star.save()));
     data.put("stars", stars);
     ListTag planets = new ListTag();
-    galaxy.planets.values().forEach(planet -> planets.add(planet.save()));
+    galaxy
+        .planets
+        .values()
+        .forEach(
+            planet ->
+                planets.add(
+                    PlanetSnapshot.CODEC
+                        .encodeStart(NbtOps.INSTANCE, PlanetSnapshot.of(planet))
+                        .getOrThrow()));
     data.put("planets", planets);
     data.put("stations", stationSnapshot(galaxy));
     PacketDistributor.sendToPlayer(player, new Payload(data));

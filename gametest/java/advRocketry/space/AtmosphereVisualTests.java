@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -20,6 +21,19 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder("adv_rocketry")
 @PrefixGameTestTemplate(false)
 public final class AtmosphereVisualTests {
+  @GameTest(template = "empty")
+  public static void planetSnapshotContainsOnlyClientData(GameTestHelper helper) {
+    Planet planet = GalaxyData.get(helper.getLevel().getServer()).planets.get(1);
+    var snapshot = PlanetSnapshot.of(planet);
+    var encoded = PlanetSnapshot.CODEC.encodeStart(NbtOps.INSTANCE, snapshot).getOrThrow();
+    Planet copy = PlanetSnapshot.CODEC.parse(NbtOps.INSTANCE, encoded).getOrThrow().planet();
+    helper.assertTrue(copy.id == planet.id && copy.dimension.equals(planet.dimension)
+        && copy.biomes.equals(planet.biomes) && copy.atmosphere == planet.atmosphere,
+        "Client snapshot lost navigation or visual fields");
+    helper.assertTrue(copy.ores.isEmpty() && copy.spawns.isEmpty() && copy.laserOres.isEmpty()
+        && !encoded.toString().contains("crater_biome_weights"), "Snapshot leaked server-only data");
+    helper.succeed();
+  }
   @GameTest(template = "empty")
   public static void originalPressureFogAndAltitudeDensityBoundaries(GameTestHelper helper) {
     var vacuum = AtmosphereVisuals.fog(0, false, 100);
