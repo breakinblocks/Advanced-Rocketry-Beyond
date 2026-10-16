@@ -41,7 +41,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import advRocketry.processing.OutputSimulation;
 
 /** Original orbital laser footprint and default 10,000-FE void-drill ore table. */
 @EventBusSubscriber(modid = Main.MODID)
@@ -357,21 +357,9 @@ public final class OrbitalLaserLogic {
   }
 
   private static boolean canInsertOutput(OrbitalBlockEntity controller, List<ItemStack> drops) {
-    ItemStackHandler simulated = new ItemStackHandler(8);
-    int offset = 0;
     List<PortBlockEntity> outputs = outputs(controller);
-    if (outputs.size() < 2) return false;
-    for (PortBlockEntity port : outputs) {
-      for (int slot = 0; slot < port.inventory.getSlots(); slot++)
-        simulated.setStackInSlot(offset++, port.inventory.getStackInSlot(slot).copy());
-    }
-    for (ItemStack drop : drops) {
-      ItemStack remaining = drop.copy();
-      for (int slot = 0; slot < offset && !remaining.isEmpty(); slot++)
-        remaining = simulated.insertItem(slot, remaining, false);
-      if (!remaining.isEmpty()) return false;
-    }
-    return true;
+    return outputs.size() >= 2 && OutputSimulation.canInsertAllItems(
+        outputs.stream().map(port -> port.inventory).toList(), drops);
   }
 
   private static ItemStack output(ServerLevel level, Planet planet) {

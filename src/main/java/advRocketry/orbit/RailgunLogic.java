@@ -7,6 +7,8 @@ import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.processing.ProcessingRegistry;
 import advRocketry.space.GalaxyData;
+import advRocketry.processing.OutputSimulation;
+import java.util.List;
 import advRocketry.space.Planet;
 import advRocketry.util.Texts;
 import net.minecraft.core.BlockPos;
@@ -110,13 +112,7 @@ public final class RailgunLogic {
   }
 
   private static boolean canReceive(ItemStackHandler inventory, ItemStack stack) {
-    ItemStackHandler simulated = new ItemStackHandler(inventory.getSlots());
-    for (int slot = 0; slot < inventory.getSlots(); slot++)
-      simulated.setStackInSlot(slot, inventory.getStackInSlot(slot).copy());
-    ItemStack remaining = stack.copy();
-    for (int slot = 0; slot < simulated.getSlots() && !remaining.isEmpty(); slot++)
-      remaining = simulated.insertItem(slot, remaining, false);
-    return remaining.isEmpty();
+    return OutputSimulation.canInsertAllItems(List.of(inventory), List.of(stack));
   }
 
   private static boolean sameSystem(

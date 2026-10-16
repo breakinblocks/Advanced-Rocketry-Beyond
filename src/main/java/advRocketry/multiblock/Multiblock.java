@@ -1,5 +1,8 @@
 package advRocketry.multiblock;
 
+import advRocketry.orbit.OrbitalBlock;
+import advRocketry.processing.PortBlock;
+import advRocketry.processing.MachinePorts;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -74,9 +77,9 @@ public final class Multiblock {
                               .optionalFieldOf("rotates", true)
                               .forGetter(Multiblock::rotates),
                           Codec.INT.optionalFieldOf("order", 1000).forGetter(Multiblock::order),
-                          Codec.STRING
-                              .listOf()
-                              .listOf()
+                          Codec.string(1, 64)
+                              .listOf(1, 64)
+                              .listOf(1, 64)
                               .fieldOf("layers")
                               .forGetter(Multiblock::layers),
                           Codec.unboundedMap(SYMBOL, Key.CODEC)
@@ -122,11 +125,36 @@ public final class Multiblock {
   }
 
   private static DataResult<Multiblock> validate(Multiblock multiblock) {
-    if (multiblock.origin == null)
-      return DataResult.error(() -> "Multiblock has no controller cell 'c'");
+    if (multiblock.cells.stream().filter(cell -> cell.symbol() == CONTROLLER).count() != 1)
+      return DataResult.error(() -> "Multiblock must have exactly one controller cell 'c'");
+    if (multiblock.cells.size() > 16384)
+      return DataResult.error(() -> "Multiblock exceeds 16384 cells");
     for (Cell cell : multiblock.cells)
       if (cell.symbol() != CONTROLLER && !multiblock.keys.containsKey(cell.symbol()))
         return DataResult.error(() -> "Multiblock uses undefined key '" + cell.symbol() + "'");
+    if (multiblock.controller instanceof OrbitalBlock orbital) {
+      String roles = switch (orbital.kind) {
+        case ORBITAL_LASER -> "POO";
+        case RAILGUN, ASTROBODY_PROCESSOR -> "PIO";
+        case BUILDER -> "P";
+        default -> "";
+      };
+      for (char symbol : roles.toCharArray()) {
+        long required = roles.chars().filter(value -> value == symbol).count();
+        if (multiblock.cells.stream().filter(cell -> cell.symbol() == symbol).count() < required)
+          return DataResult.error(() -> "Missing required machine role '" + symbol + "'");
+        MachinePorts.Kind kind = switch (symbol) {
+          case 'P' -> MachinePorts.Kind.ENERGY_INPUT;
+          case 'I' -> MachinePorts.Kind.ITEM_INPUT;
+          default -> MachinePorts.Kind.ITEM_OUTPUT;
+        };
+        Key key = multiblock.keys.get(symbol);
+        if (key.air() || key.blocks().isEmpty() || key.blocks().stream().anyMatch(
+            block -> !(block instanceof PortBlock port) || (port.kind() != kind
+                && !(kind == MachinePorts.Kind.ENERGY_INPUT && port.kind() == MachinePorts.Kind.CREATIVE_ENERGY_INPUT))))
+          return DataResult.error(() -> "Machine role '" + symbol + "' requires " + kind);
+      }
+    }
     return DataResult.success(multiblock);
   }
 

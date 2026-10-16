@@ -717,6 +717,14 @@ public final class ProcessingTests {
             List.of(new ItemStack(Items.IRON_INGOT, 40), new ItemStack(Items.IRON_INGOT, 40))),
         "Overbooked output slot");
     helper.assertTrue(slots.getStackInSlot(0).isEmpty(), "Simulation changed inventory");
+    helper.assertTrue(OutputSimulation.canInsertAllItems(
+        List.of(new ItemStackHandler(4), new ItemStackHandler(4), new ItemStackHandler(4)),
+        List.of(new ItemStack(Items.IRON_INGOT, 700))), "Simulation failed with more than eight slots");
+    var rejecting = new ItemStackHandler(1) {
+      @Override public boolean isItemValid(int slot, ItemStack stack) { return false; }
+    };
+    helper.assertTrue(!OutputSimulation.canInsertAllItems(List.of(rejecting),
+        List.of(new ItemStack(Items.IRON_INGOT))), "Simulation ignored slot restrictions");
     var tank = new FluidTank(1000);
     var hydrogen = new FluidStack(ProcessingFluids.DEFINITIONS.get("hydrogen").source.get(), 500);
     var oxygen = new FluidStack(ProcessingFluids.DEFINITIONS.get("oxygen").source.get(), 500);
