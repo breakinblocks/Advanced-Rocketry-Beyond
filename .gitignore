@@ -27,5 +27,6 @@ repo
 run-gametest
 run-guide-export
 /art/
-/gametest/
 /tools/
+/gametest/
+/src/generated/resources/.cache/

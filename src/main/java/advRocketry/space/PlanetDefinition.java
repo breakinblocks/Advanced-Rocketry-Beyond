@@ -172,6 +172,7 @@ public record PlanetDefinition(
       boolean caves,
       boolean structures,
       boolean forceRivers,
+      boolean biomeFeatures,
       List<WeightedBiome> biomes,
       Map<ResourceLocation, Integer> craterBiomes) {
     static final MapCodec<Terrain> CODEC =
@@ -200,6 +201,9 @@ public record PlanetDefinition(
                         Codec.BOOL
                             .optionalFieldOf("force_rivers", false)
                             .forGetter(Terrain::forceRivers),
+                        Codec.BOOL
+                            .optionalFieldOf("biome_features", false)
+                            .forGetter(Terrain::biomeFeatures),
                         WeightedBiome.CODEC
                             .listOf()
                             .optionalFieldOf("biomes", List.of())
@@ -330,6 +334,7 @@ public record PlanetDefinition(
     planet.caves = terrain.caves();
     planet.structures = terrain.structures();
     planet.forceRivers = terrain.forceRivers();
+    planet.biomeFeatures = terrain.biomeFeatures();
     for (WeightedBiome biome : terrain.biomes()) {
       if (!planet.biomes.contains(biome.biome())) planet.biomes.add(biome.biome());
       biome

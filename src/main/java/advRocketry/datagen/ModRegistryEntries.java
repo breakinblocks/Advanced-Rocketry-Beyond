@@ -341,6 +341,7 @@ final class ModRegistryEntries {
                 true,
                 true,
                 false,
+                false,
                 List.of(),
                 Map.of()),
             new PlanetDefinition.Features(false, 1, false, 1, false, 1),
@@ -364,6 +365,7 @@ final class ModRegistryEntries {
                 ResourceLocation.withDefaultNamespace("stone"),
                 ResourceLocation.withDefaultNamespace("water"),
                 true,
+                false,
                 false,
                 false,
                 List.of(

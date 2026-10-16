@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -886,14 +887,14 @@ public final class RocketEntity extends Entity {
     BlockPos origin =
         BlockPos.containing(centerX - structure.width / 2d, 0, centerZ - structure.depth / 2d);
     for (int x = 0; x < structure.width; x++)
-      for (int z = 0; z < structure.depth; z++)
+      for (int z = 0; z < structure.depth; z++) {
+        int blockX = origin.getX() + x, blockZ = origin.getZ() + z;
+        level.getChunk(
+            SectionPos.blockToSectionCoord(blockX), SectionPos.blockToSectionCoord(blockZ));
         top =
             Math.max(
-                top,
-                level.getHeight(
-                    Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                    origin.getX() + x,
-                    origin.getZ() + z));
+                top, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockX, blockZ));
+      }
     return top;
   }
 

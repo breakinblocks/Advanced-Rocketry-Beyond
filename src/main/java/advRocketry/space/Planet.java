@@ -52,6 +52,7 @@ public final class Planet {
   public boolean skyRenderOverride;
   public boolean colorOverride;
   public boolean forceRivers;
+  public boolean biomeFeatures;
   public Boolean shading;
   public String customIcon = "";
   public int skyColor = 0xffffff;
@@ -181,6 +182,7 @@ public final class Planet {
     tag.putBoolean("sky_render_override", skyRenderOverride);
     tag.putBoolean("color_override", colorOverride);
     tag.putBoolean("force_rivers", forceRivers);
+    tag.putBoolean("biome_features", biomeFeatures);
     if (shading != null) tag.putBoolean("shading", shading);
     tag.putString("custom_icon", customIcon);
     tag.putInt("sky_color", skyColor);
@@ -247,6 +249,7 @@ public final class Planet {
     if (tag.contains("shading")) planet.shading = tag.getBoolean("shading");
     planet.customIcon = tag.getString("custom_icon");
     planet.forceRivers = tag.getBoolean("force_rivers");
+    planet.biomeFeatures = tag.getBoolean("biome_features");
     planet.skyColor = tag.getInt("sky_color");
     planet.fogColor = tag.getInt("fog_color");
     planet.ringColor = tag.getInt("ring_color");

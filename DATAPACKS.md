@@ -71,7 +71,8 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   `ring_color`, `sky_render_override`, `color_override`, `shading`.
 - **Terrain:** `terrain` (`terrestrial`, `asteroid`, `cave`, `moon`,
   `volcanic`), `sea_level`, `filler_block`, `ocean_block`, `caves`,
-  `structures`, `force_rivers`.
+  `structures`, `force_rivers`, and `biome_features`, which runs the biomes'
+  own features (and biome modifiers) on a planet that is not breathable.
 - **Biomes:** `biomes`, optionally weighted, e.g.
   `[{"biome": "minecraft:plains", "weight": 9}]`. `crater_biomes` limits craters
   to listed biomes.

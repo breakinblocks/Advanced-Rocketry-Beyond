@@ -169,7 +169,7 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
   public void applyBiomeDecoration(
       WorldGenLevel level, ChunkAccess chunk, StructureManager structures) {
     if (planet.terrain == TerrainType.SPACE) return;
-    boolean decorated = planet.breathable();
+    boolean decorated = planet.breathable() || planet.biomeFeatures;
     if (decorated) super.applyBiomeDecoration(level, chunk, structures);
     if (!PlanetOres.generate(level, chunk, this, planet, seed))
       PlanetDecorations.ores(chunk, planet, seed, decorated ? biomeOres(level, chunk) : Set.of());

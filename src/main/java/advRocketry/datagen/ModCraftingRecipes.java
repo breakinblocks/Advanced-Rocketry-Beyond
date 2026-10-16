@@ -1820,6 +1820,13 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
         0f,
         200);
     smelting(
+        output,
+        "legacy/smelt_dilithium_ore",
+        tag("c:ores/dilithium"),
+        "adv_rocketry:dilithium_dust",
+        0f,
+        200);
+    smelting(
         output, "legacy/smelt_gold_dust", tag("c:dusts/gold"), "minecraft:gold_ingot", 0f, 200);
     smelting(
         output,
