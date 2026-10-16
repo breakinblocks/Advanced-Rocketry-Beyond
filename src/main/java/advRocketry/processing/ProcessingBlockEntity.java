@@ -4,8 +4,8 @@
 package advRocketry.processing;
 
 import advRocketry.AdvancedRocketryConfig;
+import advRocketry.DataMaps;
 import advRocketry.life.SpaceBreathing;
-import advRocketry.life.SpaceSuitItem;
 import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.space.GalaxyData;
 import java.util.ArrayList;
@@ -23,7 +23,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
@@ -35,8 +34,8 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public final class ProcessingBlockEntity extends MultiblockMachine implements MenuProvider {
-  public static final ProcessingRecipe SEALING_RECIPE =
-      new ProcessingRecipe(MachineType.CHEMICAL_REACTOR, 100, 10, List.of(), List.of(), List.of());
+  private ArmorSealingRecipe activeSealing;
+  private ItemStack sealingInput = ItemStack.EMPTY;
   private ResourceLocation recipeId;
   private ProcessingRecipe dynamicRecipe;
   private ProcessingRecipe.Rolled pendingOutputs = ProcessingRecipe.Rolled.EMPTY;
@@ -218,25 +217,33 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
     ItemStackHandler armorHandler = null;
     int armorSlot = -1;
     ItemStack armor = ItemStack.EMPTY;
+    ArmorSealingRecipe recipe = null;
     List<SizedIngredient> materials = List.of();
     for (var port : getItemInTiles()) {
       for (int slot = 0; slot < port.inventory.getSlots(); slot++) {
         ItemStack candidate = port.inventory.getStackInSlot(slot);
-        if (candidate.getItem() instanceof ArmorItem
-            && !(candidate.getItem() instanceof SpaceSuitItem)
-            && !SpaceBreathing.sealed(level, candidate)
-            && ProcessingRecipe.available(
-                sealingMaterials(candidate), List.of(), itemContents(), List.of())) {
+        ArmorSealingRecipe found = ArmorSealingRecipe.find(level, candidate);
+        List<ItemStack> available = new ArrayList<>();
+        for (ItemStack stack : itemContents()) {
+          ItemStack copy = stack.copy();
+          if (stack == candidate) copy.shrink(1);
+          available.add(copy);
+        }
+        if (found != null
+            && ProcessingRecipe.available(found.materials(), List.of(), available, List.of())) {
           armorHandler = port.inventory;
           armorSlot = slot;
           armor = candidate;
-          materials = sealingMaterials(candidate);
+          materials = found.materials();
+          recipe = found;
           break;
         }
       }
       if (armorHandler != null) break;
     }
     if (armorHandler == null) {
+      activeSealing = null;
+      sealingInput = ItemStack.EMPTY;
       if (progress > 0) {
         progress = 0;
         renderChanged = true;
@@ -244,20 +251,32 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
       }
       return false;
     }
+    if (activeSealing != recipe || !ItemStack.isSameItemSameComponents(sealingInput, armor)) {
+      progress = 0;
+      activeSealing = recipe;
+      sealingInput = armor.copyWithCount(1);
+    }
     ItemStack sealed = armor.copyWithCount(1);
     sealed.enchant(
         level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(SpaceBreathing.KEY),
         1);
-    updateDuration(SEALING_RECIPE);
+    updateDuration(
+        new ProcessingRecipe(
+            MachineType.CHEMICAL_REACTOR,
+            recipe.ticks(),
+            recipe.energy(),
+            List.of(),
+            List.of(),
+            List.of()));
     if (!OutputSimulation.canInsertAllItems(
             getItemOutTiles().stream().map(port -> port.inventory).toList(), List.of(sealed))
-        || getTotalEnergyStored(getEnergyInputTiles()) < SEALING_RECIPE.energy()) return true;
-    consumeEnergy(SEALING_RECIPE.energy(), getEnergyInputTiles());
+        || getTotalEnergyStored(getEnergyInputTiles()) < recipe.energy()) return true;
+    consumeEnergy(recipe.energy(), getEnergyInputTiles());
     running = true;
     progress++;
     if (progress >= duration) {
-      consume(materials, List.of());
       armorHandler.extractItem(armorSlot, 1, false);
+      consume(materials, List.of());
       for (var port : getItemOutTiles())
         for (int slot = 0; slot < port.inventory.getSlots(); slot++)
           sealed = port.inventory.insertItem(slot, sealed, false);
@@ -266,16 +285,6 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
     }
     setChanged();
     return true;
-  }
-
-  public static List<SizedIngredient> sealingMaterials(ItemStack armor) {
-    List<SizedIngredient> materials = new ArrayList<>();
-    materials.add(SizedIngredient.of(ProcessingRegistry.item("pipe_sealer"), 1));
-    materials.add(SizedIngredient.of(ProcessingRegistry.item("titanium_aluminide_sheet"), 4));
-    if (((ArmorItem) armor.getItem()).getType() == ArmorItem.Type.CHESTPLATE)
-      materials.add(
-          SizedIngredient.of(ProcessingRegistry.item("portable_pressure_tank_iridium"), 1));
-    return materials;
   }
 
   int modifiedDuration(ProcessingRecipe recipe) {
@@ -287,10 +296,8 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
           multiplier *= motor.timeMultiplier();
       for (BlockPos pos : structure.positions('K')) {
         Block actual = level.getBlockState(pos).getBlock();
-        if (actual == ProcessingRegistry.part("gold_coil")) multiplier *= .9;
-        else if (actual == ProcessingRegistry.part("aluminum_coil")) multiplier *= .8;
-        else if (actual == ProcessingRegistry.part("titanium_coil")) multiplier *= .75;
-        else if (actual == ProcessingRegistry.part("iridium_coil")) multiplier *= .5;
+        var modifier = actual.builtInRegistryHolder().getData(DataMaps.PROCESSING_TIME);
+        if (modifier != null) multiplier *= modifier;
       }
     }
     return Math.max(1, (int) (recipe.ticks() * multiplier));

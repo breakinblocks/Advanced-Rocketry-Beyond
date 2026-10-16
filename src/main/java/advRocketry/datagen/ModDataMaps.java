@@ -19,6 +19,11 @@ final class ModDataMaps extends DataMapProvider {
 
   @Override
   protected void gather() {
+    builder(DataMaps.PROCESSING_TIME)
+        .add(id("adv_rocketry:gold_coil"), .9f, false)
+        .add(id("adv_rocketry:aluminum_coil"), .8f, false)
+        .add(id("adv_rocketry:titanium_coil"), .75f, false)
+        .add(id("adv_rocketry:iridium_coil"), .5f, false);
     var fuel = builder(DataMaps.BLACK_HOLE_FUEL);
     for (String item :
         new String[] {

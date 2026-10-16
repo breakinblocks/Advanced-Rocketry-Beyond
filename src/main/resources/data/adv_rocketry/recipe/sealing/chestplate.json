@@ -1,0 +1,20 @@
+{
+  "type": "adv_rocketry:armor_sealing",
+  "armor_type": "chestplate",
+  "materials": [
+    {
+      "item": "adv_rocketry:pipe_sealer",
+      "count": 1
+    },
+    {
+      "item": "adv_rocketry:titanium_aluminide_sheet",
+      "count": 4
+    },
+    {
+      "item": "adv_rocketry:portable_pressure_tank_iridium",
+      "count": 1
+    }
+  ],
+  "ticks": 100,
+  "energy": 10
+}

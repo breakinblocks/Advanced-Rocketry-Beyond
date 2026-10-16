@@ -51,6 +51,18 @@ public final class ProcessingRegistry {
       DeferredRegister.create(Registries.RECIPE_TYPE, Main.MODID);
   private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
       DeferredRegister.create(Registries.RECIPE_SERIALIZER, Main.MODID);
+  public static final Supplier<RecipeType<ArmorSealingRecipe>> SEALING_TYPE =
+      TYPES.register(
+          "armor_sealing",
+          () ->
+              new RecipeType<>() {
+                @Override
+                public String toString() {
+                  return "adv_rocketry:armor_sealing";
+                }
+              });
+  public static final Supplier<RecipeSerializer<ArmorSealingRecipe>> SEALING_SERIALIZER =
+      SERIALIZERS.register("armor_sealing", ArmorSealingRecipe.Serializer::new);
   private static final DeferredRegister<MenuType<?>> MENUS =
       DeferredRegister.create(Registries.MENU, Main.MODID);
   private static final DeferredRegister<SoundEvent> SOUNDS =

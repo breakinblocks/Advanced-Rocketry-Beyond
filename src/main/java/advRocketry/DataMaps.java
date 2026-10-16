@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
@@ -100,6 +101,8 @@ public final class DataMaps {
       type("gas_giant_gas", Registries.FLUID, GasGiantGas.CODEC);
   public static final DataMapType<Item, SatelliteModule> SATELLITE_MODULE =
       type("satellite_module", Registries.ITEM, SatelliteModule.CODEC);
+  public static final DataMapType<Block, Float> PROCESSING_TIME =
+      type("processing_time", Registries.BLOCK, Codec.floatRange(.001f, 1000f));
 
   private DataMaps() {}
 
@@ -120,5 +123,6 @@ public final class DataMaps {
     event.register(ROCKET_PROPELLANT);
     event.register(GAS_GIANT_GAS);
     event.register(SATELLITE_MODULE);
+    event.register(PROCESSING_TIME);
   }
 }

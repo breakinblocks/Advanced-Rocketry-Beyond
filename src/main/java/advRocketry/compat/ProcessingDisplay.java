@@ -7,9 +7,9 @@ import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
 import advRocketry.life.SpaceBreathing;
 import advRocketry.life.SpaceSuitItem;
+import advRocketry.processing.ArmorSealingRecipe;
 import advRocketry.processing.MachineType;
 import advRocketry.processing.MaterialRecipes;
-import advRocketry.processing.ProcessingBlockEntity;
 import advRocketry.processing.ProcessingOutput;
 import advRocketry.processing.ProcessingRecipe;
 import advRocketry.processing.ProcessingRegistry;
@@ -190,11 +190,12 @@ public record ProcessingDisplay(
         var itemId = BuiltInRegistries.ITEM.getKey(item);
         List<SizedIngredient> inputs = new ArrayList<>();
         inputs.add(SizedIngredient.of(item, 1));
-        inputs.addAll(ProcessingBlockEntity.sealingMaterials(input));
-        var sealing = ProcessingBlockEntity.SEALING_RECIPE;
+        var sealing = ArmorSealingRecipe.find(level, input);
+        if (sealing == null) continue;
+        inputs.addAll(sealing.materials());
         var recipe =
             new ProcessingRecipe(
-                sealing.machine(),
+                MachineType.CHEMICAL_REACTOR,
                 sealing.ticks(),
                 sealing.energy(),
                 inputs,

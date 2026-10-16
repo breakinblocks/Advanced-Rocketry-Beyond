@@ -1,0 +1,16 @@
+{
+  "type": "adv_rocketry:armor_sealing",
+  "armor_type": "boots",
+  "materials": [
+    {
+      "item": "adv_rocketry:pipe_sealer",
+      "count": 1
+    },
+    {
+      "item": "adv_rocketry:titanium_aluminide_sheet",
+      "count": 4
+    }
+  ],
+  "ticks": 100,
+  "energy": 10
+}
