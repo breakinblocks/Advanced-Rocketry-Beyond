@@ -27,12 +27,12 @@ public final class AreaGravityLogic {
 
   public static void adjust(OrbitalBlockEntity controller, int button) {
     if (!controller.areaGravityController()) return;
-    switch (button) {
-      case 9 -> controller.areaGravity = Math.max(0, controller.areaGravity - 10);
-      case 10 -> controller.areaGravity = Math.min(200, controller.areaGravity + 10);
-      case 11 ->
+    switch (OrbitalAction.fromId(button)) {
+      case AREA_GRAVITY_DOWN -> controller.areaGravity = Math.max(0, controller.areaGravity - 10);
+      case AREA_GRAVITY_UP -> controller.areaGravity = Math.min(200, controller.areaGravity + 10);
+      case AREA_RADIUS ->
           controller.areaRadius = controller.areaRadius == 25 ? 15 : controller.areaRadius + 5;
-      case 12 ->
+      case AREA_DIRECTION ->
           controller.areaDirection = (controller.areaDirection + 1) % Direction.values().length;
       default -> {
         return;

@@ -359,42 +359,62 @@ public final class OrbitalMenu extends ModMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
-    if (button == 0 && entity.builder()) SatelliteBuilderLogic.build(entity);
-    else if (button == 1 && entity.terminal()) SatelliteTerminalLogic.transferData(entity);
-    else if (button == 2 && entity.warpController()) WarpLogic.cycleDestination(entity);
-    else if (button == 3 && entity.warpController()) WarpLogic.warp(entity);
-    else if (button == 4 && entity.stationGravityController())
+    if (button == OrbitalAction.BUILD.id() && entity.builder()) SatelliteBuilderLogic.build(entity);
+    else if (button == OrbitalAction.TRANSFER_DATA.id() && entity.terminal())
+      SatelliteTerminalLogic.transferData(entity);
+    else if (button == OrbitalAction.NEXT_WARP_TARGET.id() && entity.warpController())
+      WarpLogic.cycleDestination(entity);
+    else if (button == OrbitalAction.WARP.id() && entity.warpController()) WarpLogic.warp(entity);
+    else if (button == OrbitalAction.GRAVITY_DOWN.id() && entity.stationGravityController())
       StationMotionLogic.adjustGravity(entity, -10);
-    else if (button == 5 && entity.stationGravityController())
+    else if (button == OrbitalAction.GRAVITY_UP.id() && entity.stationGravityController())
       StationMotionLogic.adjustGravity(entity, 10);
-    else if (button == 6 && entity.observatory()) entity.startObservation();
-    else if (button == 7 && entity.observatory()) entity.programAsteroidChip();
-    else if (button == 8 && entity.spaceElevator() && player instanceof ServerPlayer passenger) {
+    else if (button == OrbitalAction.OBSERVE.id() && entity.observatory())
+      entity.startObservation();
+    else if (button == OrbitalAction.PROGRAM_ASTEROID.id() && entity.observatory())
+      entity.programAsteroidChip();
+    else if (button == OrbitalAction.TRAVEL.id()
+        && entity.spaceElevator()
+        && player instanceof ServerPlayer passenger) {
       if (SpaceElevatorLogic.travel(entity, passenger)) passenger.closeContainer();
-    } else if (button >= 9 && button <= 12 && entity.areaGravityController())
-      AreaGravityLogic.adjust(entity, button);
-    else if ((button >= 13 && button <= 19) && entity.orbitalLaser())
-      OrbitalLaserLogic.control(entity, button);
-    else if (button == 20 && entity.beacon()) entity.toggleBeacon();
-    else if (button >= 21 && button <= 23 && entity.railgun()) RailgunLogic.control(entity, button);
-    else if (button >= 24 && button <= 26 && entity.astrobodyProcessor())
-      AstrobodyProcessorLogic.control(entity, button);
-    else if (button == 27 && entity.warpController()) PlanetDiscoveryLogic.start(entity);
-    else if (button == 28 && entity.warpController()) PlanetDiscoveryLogic.importChip(entity);
-    else if (button >= 29 && button <= 31 && entity.atmosphereTerraformer())
-      TerraformerLogic.control(entity, button);
-    else if (button == 32 && entity.stationAltitudeController())
+    } else if (button >= OrbitalAction.AREA_GRAVITY_DOWN.id()
+        && button <= OrbitalAction.AREA_DIRECTION.id()
+        && entity.areaGravityController()) AreaGravityLogic.adjust(entity, button);
+    else if ((button >= OrbitalAction.LASER_TOGGLE.id()
+            && button <= OrbitalAction.LASER_CLEAR_JAM.id())
+        && entity.orbitalLaser()) OrbitalLaserLogic.control(entity, button);
+    else if (button == OrbitalAction.BEACON_TOGGLE.id() && entity.beacon()) entity.toggleBeacon();
+    else if (button >= OrbitalAction.RAILGUN_MINIMUM_DOWN.id()
+        && button <= OrbitalAction.RAILGUN_REDSTONE.id()
+        && entity.railgun()) RailgunLogic.control(entity, button);
+    else if (button >= OrbitalAction.RESEARCH_COMPOSITION.id()
+        && button <= OrbitalAction.RESEARCH_MASS.id()
+        && entity.astrobodyProcessor()) AstrobodyProcessorLogic.control(entity, button);
+    else if (button == OrbitalAction.DISCOVER.id() && entity.warpController())
+      PlanetDiscoveryLogic.start(entity);
+    else if (button == OrbitalAction.IMPORT_PLANET.id() && entity.warpController())
+      PlanetDiscoveryLogic.importChip(entity);
+    else if (button >= OrbitalAction.TERRAFORM_INCREASE.id()
+        && button <= OrbitalAction.TERRAFORM_TOGGLE.id()
+        && entity.atmosphereTerraformer()) TerraformerLogic.control(entity, button);
+    else if (button == OrbitalAction.ALTITUDE_DOWN.id() && entity.stationAltitudeController())
       StationMotionLogic.adjustAltitude(entity, -10);
-    else if (button == 33 && entity.stationAltitudeController())
+    else if (button == OrbitalAction.ALTITUDE_UP.id() && entity.stationAltitudeController())
       StationMotionLogic.adjustAltitude(entity, 10);
-    else if (button >= 34 && button <= 39 && entity.stationOrientationController())
-      StationMotionLogic.adjustRotation(entity, (button - 34) / 2, button % 2 == 0 ? -10 : 10);
-    else if (button == 40 && entity.stationOrientationController())
+    else if (button >= OrbitalAction.ROTATION_X_DOWN.id()
+        && button <= OrbitalAction.ROTATION_Z_UP.id()
+        && entity.stationOrientationController())
+      StationMotionLogic.adjustRotation(
+          entity, (button - OrbitalAction.ROTATION_X_DOWN.id()) / 2, button % 2 == 0 ? -10 : 10);
+    else if (button == OrbitalAction.ROTATION_RESET.id() && entity.stationOrientationController())
       StationMotionLogic.resetRotation(entity);
-    else if (button >= 41 && button <= 48 && entity.selectorControls())
-      HolographicSelectorLogic.control(entity, button);
-    else if (button == 49 && entity.builder()) SatelliteBuilderLogic.copyChip(entity);
-    else if (button == 50 && entity.observatory()) ObservatoryLogic.selectNext(entity);
+    else if (button >= OrbitalAction.SELECTOR_NEXT.id()
+        && button <= OrbitalAction.SELECTOR_REDSTONE.id()
+        && entity.selectorControls()) HolographicSelectorLogic.control(entity, button);
+    else if (button == OrbitalAction.COPY_CHIP.id() && entity.builder())
+      SatelliteBuilderLogic.copyChip(entity);
+    else if (button == OrbitalAction.NEXT_ASTEROID.id() && entity.observatory())
+      ObservatoryLogic.selectNext(entity);
     else return false;
     player.displayClientMessage(entity.status, false);
     return true;

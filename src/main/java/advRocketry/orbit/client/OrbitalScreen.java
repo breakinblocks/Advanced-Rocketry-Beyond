@@ -10,6 +10,7 @@ import advRocketry.client.ui.UiTheme;
 import advRocketry.orbit.AsteroidCatalog;
 import advRocketry.orbit.BeaconLogic;
 import advRocketry.orbit.DockingPortConfig;
+import advRocketry.orbit.OrbitalAction;
 import advRocketry.orbit.OrbitalMenu;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.WarpCoreLogic;
@@ -67,25 +68,33 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.next_target"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 2))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.NEXT_WARP_TARGET.id()))
               .bounds(leftPos + 8, topPos + 94, 76, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.warp"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 3))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.WARP.id()))
               .bounds(leftPos + 96, topPos + 94, 72, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.discover"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 27))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.DISCOVER.id()))
               .bounds(leftPos + 8, topPos + 118, 76, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.import_chip"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 28))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.IMPORT_PLANET.id()))
               .bounds(leftPos + 96, topPos + 118, 72, 20)
               .build());
     } else if (menu.entity.selectorControls()) {
@@ -99,7 +108,16 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
         "gui.adv_rocketry.orbital.selector.size_down",
         "gui.adv_rocketry.orbital.selector.size_up"
       };
-      int[] ids = {41, 42, 43, 44, 45, 48, 47, 46};
+      int[] ids = {
+        OrbitalAction.SELECTOR_NEXT.id(),
+        OrbitalAction.SELECTOR_TARGET.id(),
+        OrbitalAction.SELECTOR_CENTER.id(),
+        OrbitalAction.SELECTOR_BACK.id(),
+        OrbitalAction.SELECTOR_STAR.id(),
+        OrbitalAction.SELECTOR_REDSTONE.id(),
+        OrbitalAction.SELECTOR_SIZE_DOWN.id(),
+        OrbitalAction.SELECTOR_SIZE_UP.id()
+      };
       for (int index = 0; index < labels.length; index++) {
         int buttonId = ids[index];
         addRenderableWidget(
@@ -115,37 +133,47 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.increase"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 29))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.TERRAFORM_INCREASE.id()))
               .bounds(leftPos + 8, topPos + 75, 76, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.decrease"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 30))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.TERRAFORM_DECREASE.id()))
               .bounds(leftPos + 96, topPos + 75, 72, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.pause_resume"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 31))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.TERRAFORM_TOGGLE.id()))
               .bounds(leftPos + 42, topPos + 101, 92, 20)
               .build());
     } else if (menu.entity.stationAltitudeController()) {
       addRenderableWidget(
           UiButton.builder(
                   Component.literal("-10"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 32))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.ALTITUDE_DOWN.id()))
               .bounds(leftPos + 8, topPos + 72, 48, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.literal("+10"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 33))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.ALTITUDE_UP.id()))
               .bounds(leftPos + 60, topPos + 72, 48, 20)
               .build());
     } else if (menu.entity.stationOrientationController()) {
       for (int axis = 0; axis < 3; axis++) {
-        int down = 34 + axis * 2, up = down + 1;
+        int down = OrbitalAction.ROTATION_X_DOWN.id() + axis * 2, up = down + 1;
         int y = topPos + 50 + axis * 24;
         addRenderableWidget(
             UiButton.builder(
@@ -163,80 +191,104 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.reset"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 40))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.ROTATION_RESET.id()))
               .bounds(leftPos + 70, topPos + 125, 92, 20)
               .build());
     } else if (menu.entity.observatory()) {
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.observe"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 6))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.OBSERVE.id()))
               .bounds(leftPos + 8, topPos + 80, 76, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.program_chip"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 7))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.PROGRAM_ASTEROID.id()))
               .bounds(leftPos + 96, topPos + 80, 72, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.next_target"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 50))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.NEXT_ASTEROID.id()))
               .bounds(leftPos + 8, topPos + 105, 76, 20)
               .build());
     } else if (menu.entity.spaceElevator()) {
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.travel"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 8))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.TRAVEL.id()))
               .bounds(leftPos + 50, topPos + 70, 76, 20)
               .build());
     } else if (menu.entity.areaGravityController()) {
       addRenderableWidget(
           UiButton.builder(
                   Component.literal("−10%"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 9))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.AREA_GRAVITY_DOWN.id()))
               .bounds(leftPos + 8, topPos + 72, 48, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.literal("+10%"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 10))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.AREA_GRAVITY_UP.id()))
               .bounds(leftPos + 60, topPos + 72, 48, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.radius_2"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 11))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.AREA_RADIUS.id()))
               .bounds(leftPos + 8, topPos + 96, 80, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.direction"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 12))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.AREA_DIRECTION.id()))
               .bounds(leftPos + 92, topPos + 96, 76, 20)
               .build());
     } else if (menu.entity.orbitalLaser()) {
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.start_stop"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 13))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.LASER_TOGGLE.id()))
               .bounds(leftPos + 8, topPos + 72, 78, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.clear_jam"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 19))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.LASER_CLEAR_JAM.id()))
               .bounds(leftPos + 92, topPos + 72, 76, 20)
               .build());
-      for (int buttonId = 14; buttonId <= 17; buttonId++) {
+      for (int buttonId = OrbitalAction.LASER_X_DOWN.id();
+          buttonId <= OrbitalAction.LASER_Z_UP.id();
+          buttonId++) {
         int selected = buttonId;
         String label =
-            switch (selected) {
-              case 14 -> "X-";
-              case 15 -> "X+";
-              case 16 -> "Z-";
+            switch (OrbitalAction.fromId(selected)) {
+              case LASER_X_DOWN -> "X-";
+              case LASER_X_UP -> "X+";
+              case LASER_Z_DOWN -> "Z-";
               default -> "Z+";
             };
         addRenderableWidget(
@@ -244,13 +296,19 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
                     Component.literal(label),
                     button ->
                         minecraft.gameMode.handleInventoryButtonClick(menu.containerId, selected))
-                .bounds(leftPos + 8 + (buttonId - 14) * 42, topPos + 96, 38, 20)
+                .bounds(
+                    leftPos + 8 + (buttonId - OrbitalAction.LASER_X_DOWN.id()) * 42,
+                    topPos + 96,
+                    38,
+                    20)
                 .build());
       }
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.void_terrain"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 18))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.LASER_TERRAIN.id()))
               .bounds(leftPos + 8, topPos + 120, 160, 14)
               .build());
     } else if (menu.entity.biomeScanner()) {
@@ -279,7 +337,7 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
                     Component.translatable(label),
                     button ->
                         minecraft.gameMode.handleInventoryButtonClick(
-                            menu.containerId, 24 + selected))
+                            menu.containerId, OrbitalAction.RESEARCH_COMPOSITION.id() + selected))
                 .bounds(leftPos + 8 + channel * 54, topPos + 82, 52, 20)
                 .build());
       }
@@ -287,19 +345,25 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.min"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 21))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.RAILGUN_MINIMUM_DOWN.id()))
               .bounds(leftPos + 8, topPos + 72, 48, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.min_2"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 22))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.RAILGUN_MINIMUM_UP.id()))
               .bounds(leftPos + 60, topPos + 72, 48, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.signal"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 23))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.RAILGUN_REDSTONE.id()))
               .bounds(leftPos + 112, topPos + 72, 56, 20)
               .build());
     } else if (menu.entity.dockingPort()) {
@@ -340,41 +404,53 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.toggle_beacon"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 20))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.BEACON_TOGGLE.id()))
               .bounds(leftPos + 8, topPos + 70, 160, 20)
               .build());
     } else if (menu.entity.stationGravityController()) {
       addRenderableWidget(
           UiButton.builder(
                   Component.literal("−10%"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 4))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.GRAVITY_DOWN.id()))
               .bounds(leftPos + 8, topPos + 70, 76, 20)
               .build());
       addRenderableWidget(
           UiButton.builder(
                   Component.literal("+10%"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 5))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.GRAVITY_UP.id()))
               .bounds(leftPos + 96, topPos + 70, 72, 20)
               .build());
     } else if (menu.entity.terminal())
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.download"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 1))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.TRANSFER_DATA.id()))
               .bounds(leftPos + 100, topPos + 70, 68, 20)
               .build());
     else if (menu.entity.builder())
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.build"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 0))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.BUILD.id()))
               .bounds(leftPos + 104, topPos + 70, 62, 20)
               .build());
     if (menu.entity.builder())
       addRenderableWidget(
           UiButton.builder(
                   Component.translatable("gui.adv_rocketry.orbital.copy_chip"),
-                  button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 49))
+                  button ->
+                      minecraft.gameMode.handleInventoryButtonClick(
+                          menu.containerId, OrbitalAction.COPY_CHIP.id()))
               .bounds(leftPos + 8, topPos + 95, 78, 20)
               .build());
   }

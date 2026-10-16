@@ -64,18 +64,18 @@ public final class OrbitalLaserLogic {
 
   public static void control(OrbitalBlockEntity controller, int button) {
     if (!controller.orbitalLaser()) return;
-    if (button == 13) {
+    if (button == OrbitalAction.LASER_TOGGLE.id()) {
       if (controller.laser.running) {
         controller.laser.running = false;
         clearLights(controller);
         controller.status =
             Component.translatable("status.adv_rocketry.orbital_laser.orbital_laser_stopped");
       } else start(controller);
-    } else if (button == 19) {
+    } else if (button == OrbitalAction.LASER_CLEAR_JAM.id()) {
       controller.laser.jammed = false;
       controller.status =
           Component.translatable("status.adv_rocketry.orbital_laser.output_jam_cleared");
-    } else if (button == 18 && !controller.laser.running) {
+    } else if (button == OrbitalAction.LASER_TERRAIN.id() && !controller.laser.running) {
       controller.laser.terrain = !controller.laser.terrain;
       controller.laser.depth = 0;
       controller.status =
@@ -83,11 +83,11 @@ public final class OrbitalLaserLogic {
               ? Component.translatable("status.adv_rocketry.orbital_laser.terrain_mining_selected")
               : Component.translatable("status.adv_rocketry.orbital_laser.void_drilling_selected");
     } else if (!controller.laser.running) {
-      switch (button) {
-        case 14 -> controller.laser.x -= 16;
-        case 15 -> controller.laser.x += 16;
-        case 16 -> controller.laser.z -= 16;
-        case 17 -> controller.laser.z += 16;
+      switch (OrbitalAction.fromId(button)) {
+        case LASER_X_DOWN -> controller.laser.x -= 16;
+        case LASER_X_UP -> controller.laser.x += 16;
+        case LASER_Z_DOWN -> controller.laser.z -= 16;
+        case LASER_Z_UP -> controller.laser.z += 16;
         default -> {
           return;
         }

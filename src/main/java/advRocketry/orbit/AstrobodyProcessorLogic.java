@@ -29,8 +29,10 @@ public final class AstrobodyProcessorLogic {
   }
 
   public static void control(OrbitalBlockEntity controller, int button) {
-    if (!controller.astrobodyProcessor() || button < 24 || button > 26) return;
-    controller.researchChannels ^= 1 << (button - 24);
+    if (!controller.astrobodyProcessor()
+        || button < OrbitalAction.RESEARCH_COMPOSITION.id()
+        || button > OrbitalAction.RESEARCH_MASS.id()) return;
+    controller.researchChannels ^= 1 << (button - OrbitalAction.RESEARCH_COMPOSITION.id());
     controller.status =
         Texts.translate(
             "status.adv_rocketry.astrobody_processor.research_channels",

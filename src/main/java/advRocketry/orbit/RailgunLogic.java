@@ -4,13 +4,13 @@
 package advRocketry.orbit;
 
 import advRocketry.multiblock.PlacedMultiblock;
+import advRocketry.processing.OutputSimulation;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.processing.ProcessingRegistry;
 import advRocketry.space.GalaxyData;
-import advRocketry.processing.OutputSimulation;
-import java.util.List;
 import advRocketry.space.Planet;
 import advRocketry.util.Texts;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -29,10 +29,12 @@ public final class RailgunLogic {
 
   public static void control(OrbitalBlockEntity controller, int button) {
     if (!controller.railgun()) return;
-    switch (button) {
-      case 21 -> controller.railgunMinimum = Math.max(1, controller.railgunMinimum - 1);
-      case 22 -> controller.railgunMinimum = Math.min(64, controller.railgunMinimum + 1);
-      case 23 -> controller.railgunRedstone = (controller.railgunRedstone + 1) % 3;
+    switch (OrbitalAction.fromId(button)) {
+      case RAILGUN_MINIMUM_DOWN ->
+          controller.railgunMinimum = Math.max(1, controller.railgunMinimum - 1);
+      case RAILGUN_MINIMUM_UP ->
+          controller.railgunMinimum = Math.min(64, controller.railgunMinimum + 1);
+      case RAILGUN_REDSTONE -> controller.railgunRedstone = (controller.railgunRedstone + 1) % 3;
       default -> {
         return;
       }

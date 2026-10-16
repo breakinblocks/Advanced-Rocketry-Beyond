@@ -32,7 +32,8 @@ public final class HolographicSelectorLogic {
             planet ->
                 planet.id >= 0
                     && (selector.hologram.center >= 0
-                        ? planet.id == selector.hologram.center || planet.parent == selector.hologram.center
+                        ? planet.id == selector.hologram.center
+                            || planet.parent == selector.hologram.center
                         : planet.star == selector.hologram.star && planet.parent < 0))
         .sorted(Comparator.comparingInt(planet -> planet.id))
         .toList();
@@ -96,7 +97,9 @@ public final class HolographicSelectorLogic {
       }
       for (Planet planet : planets(galaxy, selector)) {
         double distance =
-            planet.id == selector.hologram.center ? 0 : scale * (.1 + planet.orbitalDistance / 100d);
+            planet.id == selector.hologram.center
+                ? 0
+                : scale * (.1 + planet.orbitalDistance / 100d);
         double angle =
             planet.orbitalAngle(
                 selector.getLevel().getGameTime(),
@@ -167,7 +170,7 @@ public final class HolographicSelectorLogic {
     if (bodies(galaxy, selector).stream().noneMatch(body -> body.kind() == kind && body.id() == id))
       return false;
     if (kind == Kind.BACK) {
-      control(selector, 44);
+      control(selector, OrbitalAction.SELECTOR_BACK.id());
     } else if (kind == Kind.STAR) {
       if (selector.hologram.star >= 0) return false;
       if (selector.hologram.selectedStar == id) {
@@ -181,7 +184,7 @@ public final class HolographicSelectorLogic {
               "status.adv_rocketry.holographic_selector.selected", galaxy.stars.get(id).name());
     } else if (kind == Kind.PLANET) {
       if (selector.hologram.target == id) {
-        control(selector, 43);
+        control(selector, OrbitalAction.SELECTOR_CENTER.id());
       } else {
         selector.hologram.target = id;
         selector.status =
@@ -201,8 +204,8 @@ public final class HolographicSelectorLogic {
   public static void control(OrbitalBlockEntity selector, int button) {
     if (!selector.selectorControls() || !(selector.getLevel() instanceof ServerLevel level)) return;
     GalaxyData galaxy = GalaxyData.get(level.getServer());
-    switch (button) {
-      case 41 -> {
+    switch (OrbitalAction.fromId(button)) {
+      case SELECTOR_NEXT -> {
         List<Planet> visible = planets(galaxy, selector);
         int index = -1;
         for (int i = 0; i < visible.size(); i++)
@@ -214,8 +217,8 @@ public final class HolographicSelectorLogic {
               Texts.translate("status.adv_rocketry.holographic_selector.selected", next.name);
         }
       }
-      case 42 -> target(selector, galaxy);
-      case 43 -> {
+      case SELECTOR_TARGET -> target(selector, galaxy);
+      case SELECTOR_CENTER -> {
         if (selector.hologram.target >= 0 && galaxy.planets.containsKey(selector.hologram.target)) {
           selector.hologram.center = selector.hologram.target;
           selector.hologram.star = galaxy.planets.get(selector.hologram.target).star;
@@ -225,7 +228,7 @@ public final class HolographicSelectorLogic {
                   "status.adv_rocketry.holographic_selector.showing_planet_and_moons");
         }
       }
-      case 44 -> {
+      case SELECTOR_BACK -> {
         selector.hologram.selectedStar = -1;
         if (selector.hologram.center >= 0) selector.hologram.center = -1;
         else selector.hologram.star = selector.hologram.star < 0 ? 0 : -1;
@@ -236,7 +239,7 @@ public final class HolographicSelectorLogic {
                 : Component.translatable(
                     "status.adv_rocketry.holographic_selector.showing_star_system");
       }
-      case 45 -> {
+      case SELECTOR_STAR -> {
         selector.hologram.selectedStar = -1;
         List<Integer> stars = galaxy.stars.keySet().stream().sorted().toList();
         int index = stars.indexOf(selector.hologram.star);
@@ -247,9 +250,9 @@ public final class HolographicSelectorLogic {
             Texts.translate(
                 "status.adv_rocketry.holographic_selector.showing_star", selector.hologram.star);
       }
-      case 46 -> selector.hologram.size = Math.min(100, selector.hologram.size + 10);
-      case 47 -> selector.hologram.size = Math.max(0, selector.hologram.size - 10);
-      case 48 -> selector.hologram.redstone = (selector.hologram.redstone + 1) % 3;
+      case SELECTOR_SIZE_UP -> selector.hologram.size = Math.min(100, selector.hologram.size + 10);
+      case SELECTOR_SIZE_DOWN -> selector.hologram.size = Math.max(0, selector.hologram.size - 10);
+      case SELECTOR_REDSTONE -> selector.hologram.redstone = (selector.hologram.redstone + 1) % 3;
       default -> {
         return;
       }

@@ -43,17 +43,17 @@ public final class TerraformerLogic {
 
   public static void control(OrbitalBlockEntity controller, int button) {
     if (!controller.atmosphereTerraformer()) return;
-    if (button == 29) {
+    if (button == OrbitalAction.TERRAFORM_INCREASE.id()) {
       controller.terraformingDirection = 1;
       controller.terraformingEnabled = true;
       controller.status =
           Component.translatable("status.adv_rocketry.terraformer.increasing_atmospheric_pressure");
-    } else if (button == 30) {
+    } else if (button == OrbitalAction.TERRAFORM_DECREASE.id()) {
       controller.terraformingDirection = -1;
       controller.terraformingEnabled = true;
       controller.status =
           Component.translatable("status.adv_rocketry.terraformer.decreasing_atmospheric_pressure");
-    } else if (button == 31) {
+    } else if (button == OrbitalAction.TERRAFORM_TOGGLE.id()) {
       controller.terraformingEnabled = !controller.terraformingEnabled;
       if (!controller.terraformingEnabled) controller.setTerraformerRunning(false);
       controller.status =
