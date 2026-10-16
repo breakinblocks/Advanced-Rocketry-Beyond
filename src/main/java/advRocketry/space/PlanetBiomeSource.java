@@ -4,6 +4,7 @@
 package advRocketry.space;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
@@ -21,14 +22,17 @@ import net.minecraft.world.level.biome.Climate;
 
 /** Seeded biome regions for the original configurable planet biome lists. */
 public final class PlanetBiomeSource extends BiomeSource {
+  private record Definition(List<Holder<Biome>> biomes, List<Integer> weights, long seed,
+      Optional<Holder<Biome>> river, Optional<Holder<Biome>> frozenRiver) {}
+
   public static final MapCodec<PlanetBiomeSource> CODEC =
-      RecordCodecBuilder.mapCodec(
+      RecordCodecBuilder.<Definition>mapCodec(
           instance ->
               instance
                   .group(
-                      Biome.CODEC.listOf().fieldOf("biomes").forGetter(source -> source.biomes),
+                      Biome.CODEC.listOf(1, 1024).fieldOf("biomes").forGetter(source -> source.biomes),
                       Codec.intRange(1, 1000000)
-                          .listOf()
+                          .listOf(0, 1024)
                           .optionalFieldOf("weights", List.of())
                           .forGetter(source -> source.weights),
                       Codec.LONG.fieldOf("seed").forGetter(source -> source.seed),
@@ -36,7 +40,14 @@ public final class PlanetBiomeSource extends BiomeSource {
                       Biome.CODEC
                           .optionalFieldOf("frozen_river")
                           .forGetter(source -> source.frozenRiver))
-                  .apply(instance, PlanetBiomeSource::new));
+                  .apply(instance, Definition::new))
+          .flatXmap(definition -> {
+            if (!definition.weights.isEmpty() && definition.weights.size() != definition.biomes.size())
+              return DataResult.error(() -> "Planet biome weights must match the biome list");
+            return DataResult.success(new PlanetBiomeSource(definition.biomes, definition.weights,
+                definition.seed, definition.river, definition.frozenRiver));
+          }, source -> DataResult.success(new Definition(source.biomes, source.weights, source.seed,
+              source.river, source.frozenRiver)));
   private final List<Holder<Biome>> biomes;
   private final List<Integer> weights;
   private final long totalWeight;

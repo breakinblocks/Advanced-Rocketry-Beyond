@@ -24,12 +24,12 @@ public final class StationChipLocations {
             instance ->
                 instance
                     .group(
-                        Codec.STRING.fieldOf("name").forGetter(Location::name),
+                        Codec.string(0, 32).fieldOf("name").forGetter(Location::name),
                         BlockPos.CODEC.fieldOf("position").forGetter(Location::pos))
                     .apply(instance, Location::new));
     public static final StreamCodec<ByteBuf, Location> STREAM_CODEC =
         StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8,
+            ByteBufCodecs.stringUtf8(32),
             Location::name,
             BlockPos.STREAM_CODEC,
             Location::pos,
@@ -92,6 +92,7 @@ public final class StationChipLocations {
   }
 
   public static boolean add(ItemStack chip, int planet, BlockPos pos, String name) {
+    if (!destinations(chip).canStore(planet)) return false;
     var locations = list(chip, planet);
     if (locations.size() >= LIMIT) return false;
     // A chip used before its first flight still needs a protected Last entry.
