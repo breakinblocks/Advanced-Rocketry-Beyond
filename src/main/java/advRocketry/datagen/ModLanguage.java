@@ -1381,6 +1381,7 @@ final class ModLanguage extends LanguageProvider {
 
   private void addJadeText() {
     add("config.jade.plugin_adv_rocketry.machine_status", "Advanced Rocketry machine status");
+    add("config.jade.plugin_adv_rocketry.transport_status", "Advanced Rocketry pipe status");
     add("jade.adv_rocketry.unformed", "Structure incomplete");
     add("jade.adv_rocketry.running", "Running");
     add("jade.adv_rocketry.idle", "Idle");
