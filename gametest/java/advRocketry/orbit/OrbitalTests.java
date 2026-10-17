@@ -822,8 +822,7 @@ public final class OrbitalTests {
     ground.addFreshEntity(capsule);
     for (int tick = 0; tick < 400 && !capsule.isRemoved(); tick++) capsule.tick();
     helper.assertTrue(capsule.isRemoved(), "Capsule did not reach orbital transfer height");
-    AABB arrivalColumn =
-        new AABB(pos.getX() - 3, 0, pos.getZ() - 3, pos.getX() + 3, 1000, pos.getZ() + 3);
+    AABB arrivalColumn = new AABB(SpaceElevatorLogic.tetherBase(stationAnchor)).inflate(3, 1000, 3);
     helper.assertTrue(
         !space.getEntitiesOfClass(ElevatorCapsule.class, arrivalColumn).isEmpty(),
         "Capsule did not spawn in station dimension");
@@ -1014,7 +1013,8 @@ public final class OrbitalTests {
     CompoundTag savedScan = observatory.saveWithFullMetadata(space.registryAccess());
     observatory.observation.options = new int[0];
     observatory.loadWithComponents(savedScan, space.registryAccess());
-    helper.assertTrue(observatory.observation.options.length == 10, "Scan results were lost on reload");
+    helper.assertTrue(
+        observatory.observation.options.length == 10, "Scan results were lost on reload");
     for (int tick = 0; tick < 100; tick++) observatory.tick();
     helper.assertTrue(
         observatory.observation.candidate >= 0
