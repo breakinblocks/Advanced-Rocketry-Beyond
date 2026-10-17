@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -33,6 +34,40 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder("adv_rocketry")
 @PrefixGameTestTemplate(false)
 public final class PlanetTests {
+  @GameTest(template = "empty")
+  public static void unknownDimensionsDoNotInheritEarthSolarPower(GameTestHelper helper) {
+    var nether = helper.getLevel().getServer().getLevel(Level.NETHER);
+    helper.assertTrue(nether != null, "Nether unavailable");
+    helper.assertTrue(
+        GalaxyData.get(nether.getServer()).find(nether) == null,
+        "Test needs an unregistered dimension");
+    helper.assertTrue(
+        SolarPower.perPanel(nether, BlockPos.ZERO) == 0,
+        "Unregistered dimension inherited Earth insolation");
+    helper.succeed();
+  }
+
+  @GameTest(template = "empty")
+  public static void planetDayChangesPersistWithoutChangingOtherWorlds(GameTestHelper helper) {
+    var world = helper.getLevel().getServer().getWorldData();
+    long original = world.overworldData().getDayTime();
+    var planet = new Planet(8101, "Local clock");
+    planet.rotationPeriod = 48000;
+    boolean[] changed = {false};
+    var data = new PlanetLevelData(world, planet, () -> changed[0] = true);
+    long morning = (data.getDayTime() / 24000 + 1) * 24000;
+    data.setDayTime(morning);
+    helper.assertTrue(data.getDayTime() == morning, "Sleep did not advance local time");
+    helper.assertTrue(changed[0], "Clock change was not marked for saving");
+    helper.assertTrue(world.overworldData().getDayTime() == original, "Changed overworld time");
+    var loaded = Planet.load(planet.save());
+    var restored = new PlanetLevelData(world, loaded, () -> {});
+    helper.assertTrue(restored.getDayTime() == morning, "Local clock lost after reload");
+    data.setDayTime(6000);
+    helper.assertTrue(data.getDayTime() == 6000, "Explicit time change ignored");
+    helper.succeed();
+  }
+
   @GameTest(template = "empty")
   public static void originalAtmospherePressureBoundaries(GameTestHelper helper) {
     Planet planet = new Planet(81, "Atmosphere classes");

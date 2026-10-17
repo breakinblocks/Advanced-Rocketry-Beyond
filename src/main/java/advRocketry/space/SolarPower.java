@@ -26,7 +26,8 @@ public final class SolarPower {
 
   public static double insolationMultiplier(ServerLevel level, BlockPos pos) {
     GalaxyData galaxy = GalaxyData.get(level.getServer());
-    Planet world = galaxy.planet(level);
+    Planet world = galaxy.find(level);
+    if (world == null) return 0;
     boolean stationOrbit = world.id == GalaxyData.SPACE_ID;
     Planet planet = world;
     if (stationOrbit) {

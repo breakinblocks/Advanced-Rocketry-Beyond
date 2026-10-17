@@ -43,6 +43,7 @@ public final class Planet {
   public double orbitalTheta;
   public double orbitalPhi;
   public long rotationPeriod = 24000;
+  public long dayTimeOffset;
   public int seaLevel = 63;
   public boolean oxygen = true;
   public boolean gasGiant;
@@ -173,6 +174,7 @@ public final class Planet {
     tag.putDouble("orbital_theta", orbitalTheta);
     tag.putDouble("orbital_phi", orbitalPhi);
     tag.putLong("rotation_period", rotationPeriod);
+    tag.putLong("day_time_offset", dayTimeOffset);
     tag.putInt("sea_level", seaLevel);
     tag.putBoolean("oxygen", oxygen);
     tag.putBoolean("gas_giant", gasGiant);
@@ -238,6 +240,7 @@ public final class Planet {
     planet.orbitalTheta = tag.getDouble("orbital_theta");
     planet.orbitalPhi = tag.getDouble("orbital_phi");
     planet.rotationPeriod = Math.max(1, tag.getLong("rotation_period"));
+    planet.dayTimeOffset = tag.getLong("day_time_offset");
     planet.seaLevel = tag.getInt("sea_level");
     planet.oxygen = tag.getBoolean("oxygen");
     planet.gasGiant = tag.getBoolean("gas_giant");

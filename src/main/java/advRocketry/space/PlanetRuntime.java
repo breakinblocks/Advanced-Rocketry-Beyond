@@ -173,7 +173,7 @@ public final class PlanetRuntime {
             server,
             Util.backgroundExecutor(),
             server.storageSource,
-            new PlanetLevelData(server.getWorldData(), planet),
+            new PlanetLevelData(server.getWorldData(), planet, GalaxyData.get(server)::setDirty),
             planet.key(),
             new LevelStem(type, terrain),
             LoggerChunkProgressListener.createCompleted(),

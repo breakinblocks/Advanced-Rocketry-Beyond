@@ -12,18 +12,30 @@ import net.minecraft.world.level.storage.WorldData;
 public final class PlanetLevelData extends DerivedLevelData {
   private final Planet planet;
   private final ServerLevelData base;
+  private final Runnable changed;
   private BlockPos spawn = new BlockPos(0, 80, 0);
   private float angle;
 
-  public PlanetLevelData(WorldData world, Planet planet) {
+  public PlanetLevelData(WorldData world, Planet planet, Runnable changed) {
     super(world, world.overworldData());
     this.planet = planet;
     base = world.overworldData();
+    this.changed = changed;
   }
 
   @Override
   public long getDayTime() {
+    return scaledDayTime() + planet.dayTimeOffset;
+  }
+
+  private long scaledDayTime() {
     return (long) (base.getDayTime() * 24000d / planet.rotationPeriod);
+  }
+
+  @Override
+  public void setDayTime(long time) {
+    planet.dayTimeOffset = time - scaledDayTime();
+    changed.run();
   }
 
   @Override
