@@ -77,11 +77,11 @@ public final class TransportNetworks {
       if (conflictingLocks) return true;
       Fluid known = configuredFluid;
       for (var pipe : workers) {
-        for (Fluid fluid : new Fluid[] {pipe.pendingFluid.getFluid()})
-          if (fluid != Fluids.EMPTY) {
-            if (known != Fluids.EMPTY && known != fluid) return true;
-            known = fluid;
-          }
+        Fluid fluid = pipe.pendingFluid.getFluid();
+        if (fluid != Fluids.EMPTY) {
+          if (known != Fluids.EMPTY && known != fluid) return true;
+          known = fluid;
+        }
       }
       return false;
     }
@@ -94,9 +94,9 @@ public final class TransportNetworks {
     }
   }
 
-  private record End(TransportBlockEntity pipe, Direction side) {
-    BlockPos target() {
-      return pipe.getBlockPos().relative(side);
+  private record End(TransportBlockEntity pipe, Direction side, BlockPos target) {
+    End(TransportBlockEntity pipe, Direction side) {
+      this(pipe, side, pipe.getBlockPos().relative(side));
     }
 
     boolean sameTarget(End other) {
@@ -239,8 +239,9 @@ public final class TransportNetworks {
     if (!(endpoint.getLevel() instanceof ServerLevel level)) return;
     Network network = network(endpoint);
     long now = level.getGameTime();
-    if (network.lastTick == now || network.oversized || network.conflicted()) return;
+    if (network.lastTick == now || network.oversized) return;
     network.lastTick = now;
+    if (endpoint.kind() == TransportRegistry.Kind.FLUID && network.conflicted()) return;
     if (endpoint.kind() == TransportRegistry.Kind.ITEM && now % 20 != 0) return;
     int used = 0;
     for (var pipe : network.workers) {
@@ -262,7 +263,7 @@ public final class TransportNetworks {
       if (budget <= 0) break;
       if (pipe.pendingItem.isEmpty() && pipe.pendingFluid.isEmpty() && pipe.pendingEnergy == 0)
         continue;
-      int moved = deliver(network, pipe, null, budget);
+      int moved = deliver(network, pipe, destinations(network, null), budget);
       budget -= moved;
       pipe.refreshConnections();
     }
@@ -274,12 +275,14 @@ public final class TransportNetworks {
       if (!source.pipe.pendingItem.isEmpty()
           || !source.pipe.pendingFluid.isEmpty()
           || source.pipe.pendingEnergy > 0) continue;
+      var targets = destinations(network, source);
+      if (targets.isEmpty()) continue;
       Object handler = source.handler();
       int moved =
           switch (endpoint.kind()) {
-            case ENERGY -> energy(network, source, handler, budget);
-            case FLUID -> fluid(network, source, handler, budget);
-            case ITEM -> item(network, source, handler, budget);
+            case ENERGY -> energy(network, source, handler, targets, budget);
+            case FLUID -> fluid(network, source, handler, targets, budget);
+            case ITEM -> item(network, source, handler, targets, budget);
           };
       budget -= moved;
       if (moved > 0) {
@@ -305,7 +308,7 @@ public final class TransportNetworks {
     }
   }
 
-  private static List<End> destinations(Network network, TransportBlockEntity pipe, End source) {
+  private static List<End> destinations(Network network, End source) {
     var result = new ArrayList<End>();
     for (var end : network.ends)
       if (end.mode() == TransportBlockEntity.INSERT && (source == null || !end.sameTarget(source)))
@@ -313,7 +316,7 @@ public final class TransportNetworks {
     return result;
   }
 
-  private static int energy(Network network, End source, Object handler, int budget) {
+  private static int energy(Network network, End source, Object handler, List<End> targets, int budget) {
     if (!(handler instanceof IEnergyStorage input) || !input.canExtract()) return 0;
     source.pipe.resetEnergyBudget();
     int available =
@@ -321,7 +324,7 @@ public final class TransportNetworks {
             Math.min(budget, 5000 - source.pipe.energyIn[source.side.ordinal()]), true);
     if (available <= 0) return 0;
     int accepted = 0;
-    for (var target : destinations(network, source.pipe, source))
+    for (var target : targets)
       if (target.handler() instanceof IEnergyStorage output
           && output != input
           && output.canReceive()) {
@@ -336,10 +339,10 @@ public final class TransportNetworks {
     source.pipe.pendingEnergy = input.extractEnergy(Math.min(available, accepted), false);
     source.pipe.energyIn[source.side.ordinal()] += source.pipe.pendingEnergy;
     source.pipe.setChanged();
-    return deliver(network, source.pipe, source, budget);
+    return deliver(network, source.pipe, targets, budget);
   }
 
-  private static int fluid(Network network, End source, Object handler, int budget) {
+  private static int fluid(Network network, End source, Object handler, List<End> targets, int budget) {
     if (!(handler instanceof IFluidHandler input)) return 0;
     Fluid lock = network.acceptedFluid();
     for (int tank = 0; tank < input.getTanks(); tank++) {
@@ -349,7 +352,7 @@ public final class TransportNetworks {
       candidate = input.drain(candidate, FluidAction.SIMULATE);
       if (candidate.isEmpty()) continue;
       int accepted = 0;
-      for (var target : destinations(network, source.pipe, source))
+      for (var target : targets)
         if (target.handler() instanceof IFluidHandler output && output != input) {
           accepted +=
               output.fill(
@@ -362,19 +365,19 @@ public final class TransportNetworks {
               candidate.copyWithAmount(Math.min(accepted, candidate.getAmount())),
               FluidAction.EXECUTE);
       source.pipe.setChanged();
-      return deliver(network, source.pipe, source, budget);
+      return deliver(network, source.pipe, targets, budget);
     }
     return 0;
   }
 
-  private static int item(Network network, End source, Object handler, int budget) {
+  private static int item(Network network, End source, Object handler, List<End> targets, int budget) {
     if (!(handler instanceof IItemHandler input)) return 0;
-    var leader = network.nodes.getFirst();
+    int total = 0;
     for (int slot = 0; slot < input.getSlots(); slot++) {
       ItemStack candidate = input.extractItem(slot, network.roundRobin ? 1 : budget, true);
       if (candidate.isEmpty() || !source.pipe.accepts(candidate)) continue;
       int accepted = 0;
-      for (var target : destinations(network, source.pipe, source))
+      for (var target : targets)
         if (target.pipe.accepts(candidate)
             && target.handler() instanceof IItemHandler output
             && output != input) {
@@ -390,16 +393,18 @@ public final class TransportNetworks {
       source.pipe.pendingItem =
           input.extractItem(slot, Math.min(accepted, candidate.getCount()), false);
       source.pipe.setChanged();
-      int moved = deliver(network, source.pipe, source, budget);
-      if (network.roundRobin && moved > 0 && moved < budget && source.pipe.pendingItem.isEmpty())
-        return moved + item(network, source, handler, budget - moved);
-      return moved;
+      int moved = deliver(network, source.pipe, targets, budget);
+      total += moved;
+      budget -= moved;
+      if (!network.roundRobin || moved == 0 || budget == 0 || !source.pipe.pendingItem.isEmpty())
+        return total;
+      // Preserve legacy slot order while bounding work by successful transfers.
+      slot = -1;
     }
-    return 0;
+    return total;
   }
 
-  private static int deliver(Network network, TransportBlockEntity pipe, End source, int budget) {
-    var targets = destinations(network, pipe, source);
+  private static int deliver(Network network, TransportBlockEntity pipe, List<End> targets, int budget) {
     if (targets.isEmpty()) return 0;
     var leader = network.nodes.getFirst();
     int start = network.roundRobin ? Math.floorMod(leader.cursor, targets.size()) : 0;
