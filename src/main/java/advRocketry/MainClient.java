@@ -1,6 +1,7 @@
 package advRocketry;
 
 import advRocketry.client.model.ConnectedModelLoader;
+import advRocketry.client.effects.EffectProfiles;
 import advRocketry.compat.guideme.RocketryGuide;
 import advRocketry.life.LifeSupportRegistry;
 import advRocketry.life.SuitMenu;
@@ -110,6 +111,7 @@ public final class MainClient {
   }
 
   private static void reloadListeners(RegisterClientReloadListenersEvent event) {
+    event.registerReloadListener(new EffectProfiles());
     event.registerReloadListener(
         (ResourceManagerReloadListener)
             manager -> {

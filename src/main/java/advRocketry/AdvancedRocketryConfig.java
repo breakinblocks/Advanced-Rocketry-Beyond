@@ -78,6 +78,7 @@ public final class AdvancedRocketryConfig {
   private static final ModConfigSpec.BooleanValue STATION_SKY_OVERRIDE;
   private static final ModConfigSpec.BooleanValue OVERWORLD_SKY_OVERRIDE;
   private static final ModConfigSpec.BooleanValue ADVANCED_VFX;
+  private static final ModConfigSpec.BooleanValue REDUCED_MOTION;
   private static final ModConfigSpec.BooleanValue DROP_EXTINGUISHED_TORCHES;
   private static final ModConfigSpec.IntValue SPACE_SUIT_OXYGEN_TIME;
   private static final ModConfigSpec.IntValue VACUUM_DAMAGE;
@@ -205,6 +206,7 @@ public final class AdvancedRocketryConfig {
     STATION_SKY_OVERRIDE = client.define("StationSkyOverride", true);
     OVERWORLD_SKY_OVERRIDE = client.define("overworldSkyOverride", true);
     ADVANCED_VFX = client.define("advancedVFX", true);
+    REDUCED_MOTION = client.define("reducedMotion", false);
     client.pop();
     CLIENT_SPEC = client.build();
   }
@@ -339,6 +341,10 @@ public final class AdvancedRocketryConfig {
 
   public static boolean advancedVfx() {
     return client(ADVANCED_VFX);
+  }
+
+  public static boolean reducedMotion() {
+    return client(REDUCED_MOTION);
   }
 
   public static int solarGeneratorMultiplier() {
