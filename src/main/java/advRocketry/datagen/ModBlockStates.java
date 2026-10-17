@@ -681,17 +681,6 @@ final class ModBlockStates extends ModBlockStateHelpers {
     model("block/oxygen_vent", "minecraft:block/cube_all", null, true, "all", "block/machinevent");
     model("block/pipe_sealer", "minecraft:block/cube_all", null, true, "all", "block/seal");
     model(
-        "block/planet_selector",
-        "minecraft:block/orientable",
-        null,
-        true,
-        "top",
-        "block/machinegeneric",
-        "side",
-        "block/machinegeneric",
-        "front",
-        "block/guidancecomputer");
-    model(
         "block/plate_press",
         "minecraft:block/piston",
         null,
@@ -921,13 +910,6 @@ final class ModBlockStates extends ModBlockStateHelpers {
         true,
         "all",
         "block/vacuumlaserfront");
-    model(
-        "block/vitrified_sand",
-        "minecraft:block/cube_all",
-        null,
-        true,
-        "all",
-        "legacy/advancedrocketry/blocks/vitrifiedsand");
     model(
         "block/warp_controller",
         "minecraft:block/cube_all",
@@ -1177,7 +1159,6 @@ final class ModBlockStates extends ModBlockStateHelpers {
     states("oxygen_charger", NONE, "", "block/oxygen_charger");
     states("oxygen_vent", NONE, "", "block/oxygen_vent");
     states("pipe_sealer", NONE, "", "block/pipe_sealer");
-    states("planet_selector", NONE, "", "block/planet_selector");
     states("plate_press", UPSIDE_DOWN, "", "block/plate_press");
     states(
         "precision_assembler",
@@ -1298,7 +1279,6 @@ final class ModBlockStates extends ModBlockStateHelpers {
     states("unlit_torch", NONE, "", "block/unlit_torch");
     states("unlit_wall_torch", HORIZONTAL, "", "block/unlit_wall_torch");
     states("vacuum_laser", NONE, "", "block/vacuum_laser");
-    states("vitrified_sand", NONE, "", "block/vitrified_sand");
     states("warp_controller", NONE, "", "block/warp_controller");
     states("warp_core", HORIZONTAL, "", "block/warp_core");
     states("wireless_transceiver", HORIZONTAL, "", "block/wireless_transceiver");

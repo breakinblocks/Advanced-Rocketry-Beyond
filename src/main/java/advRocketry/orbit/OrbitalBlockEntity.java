@@ -305,7 +305,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   }
 
   public boolean selectorControls() {
-    return holographicSelector() || kind() == OrbitalBlock.Kind.PLANET_SELECTOR;
+    return holographicSelector();
   }
 
   public boolean stationAltitudeController() {

@@ -149,8 +149,6 @@ public final class OrbitalRegistry {
       horizontal("warp_core", OrbitalBlock.Kind.WARP_CORE, 4);
   public static final Supplier<OrbitalBlock> WARP_CONTROLLER =
       block("warp_controller", OrbitalBlock.Kind.WARP_CONTROLLER);
-  public static final Supplier<OrbitalBlock> PLANET_SELECTOR =
-      block("planet_selector", OrbitalBlock.Kind.PLANET_SELECTOR);
   public static final Supplier<OrbitalBlock> HOLOGRAPHIC_SELECTOR =
       block(
           "holographic_planet_selector",
@@ -229,7 +227,6 @@ public final class OrbitalRegistry {
                       STATION_GRAVITY_CONTROLLER.get(),
                       WARP_CORE.get(),
                       WARP_CONTROLLER.get(),
-                      PLANET_SELECTOR.get(),
                       HOLOGRAPHIC_SELECTOR.get(),
                       STATION_ALTITUDE_CONTROLLER.get(),
                       STATION_ORIENTATION_CONTROLLER.get(),
@@ -384,7 +381,6 @@ public final class OrbitalRegistry {
     event.accept(SOLAR_ARRAY_PANEL.get());
     event.accept(WARP_CORE.get());
     event.accept(WARP_CONTROLLER.get());
-    event.accept(PLANET_SELECTOR.get());
     event.accept(HOLOGRAPHIC_SELECTOR.get());
     event.accept(STATION_ALTITUDE_CONTROLLER.get());
     event.accept(STATION_ORIENTATION_CONTROLLER.get());

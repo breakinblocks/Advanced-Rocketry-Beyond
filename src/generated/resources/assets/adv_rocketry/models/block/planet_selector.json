@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "adv_rocketry:block/guidancecomputer",
-    "side": "adv_rocketry:block/machinegeneric",
-    "top": "adv_rocketry:block/machinegeneric"
-  }
-}

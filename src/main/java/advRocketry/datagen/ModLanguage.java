@@ -194,7 +194,6 @@ final class ModLanguage extends LanguageProvider {
     add("item.adv_rocketry.ore_scanner", "Ore Scanner");
     add("item.adv_rocketry.planet_id_chip", "Planet Id Chip");
     add("item.adv_rocketry.satellite", "Satellite");
-    add("item.adv_rocketry.satellite_data_unit", "Satellite Data Unit");
     add("item.adv_rocketry.seal_detector", "Seal Detector");
     add("item.adv_rocketry.space_boots", "Space Boots");
     add("item.adv_rocketry.space_chestplate", "Space Chestplate");
@@ -239,7 +238,6 @@ final class ModLanguage extends LanguageProvider {
     add("block.adv_rocketry.moon_turf_dark", "Moon Turf Dark");
     add("block.adv_rocketry.hot_turf", "Hot Turf");
     add("block.adv_rocketry.basalt", "Basalt");
-    add("block.adv_rocketry.vitrified_sand", "Vitrified Sand");
     add("block.adv_rocketry.charcoal_log", "Charcoal Log");
     add("block.adv_rocketry.alien_leaves", "Alien Leaves");
     add("block.adv_rocketry.amethyst_crystal_block", "Amethyst Crystal Block");
@@ -287,7 +285,6 @@ final class ModLanguage extends LanguageProvider {
     add("gui.adv_rocketry.liquid_fuel.duration", "%s ticks (%s s)");
     add("gui.adv_rocketry.liquid_fuel.total", "%s FE total");
     add("block.adv_rocketry.creative_energy_input", "Creative Power Input");
-    add("block.adv_rocketry.planet_selector", "Planet Selector");
     add("block.adv_rocketry.landing_float", "Landing Float");
     add("block.adv_rocketry.deployable_rocket_builder", "Deployable Rocket Assembler");
     add("block.adv_rocketry.holographic_planet_selector", "Holographic Planet Selector");

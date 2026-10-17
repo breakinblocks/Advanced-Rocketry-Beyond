@@ -43,7 +43,6 @@ public class OrbitalBlock extends Block implements EntityBlock {
     FORCE_FIELD_PROJECTOR,
     WARP_CORE,
     WARP_CONTROLLER,
-    PLANET_SELECTOR,
     HOLOGRAPHIC_SELECTOR
   }
 

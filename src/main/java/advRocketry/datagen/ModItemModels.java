@@ -381,7 +381,6 @@ final class ModItemModels extends ModItemModelHelpers {
         true,
         "layer0",
         "item/planetidchip");
-    model("item/planet_selector", "block/planet_selector", null, true);
     model("item/plate_press", "block/plate_press", null, true);
     model(
         "item/portable_pressure_tank_aluminum",
@@ -434,13 +433,6 @@ final class ModItemModels extends ModItemModelHelpers {
         "layer0",
         "item/satelliteprimaryfunction5");
     model("item/satellite_builder", "block/satellite_builder", null, true);
-    model(
-        "item/satellite_data_unit",
-        "minecraft:item/generated",
-        null,
-        true,
-        "layer0",
-        "item/datastorageunit");
     model("item/satellite_hatch", "block/satellite_hatch", null, true);
     model(
         "item/satellite_id_chip",
@@ -669,7 +661,6 @@ final class ModItemModels extends ModItemModelHelpers {
         "layer0",
         "item/userinterface");
     model("item/vacuum_laser", "block/vacuum_laser", null, true);
-    model("item/vitrified_sand", "block/vitrified_sand", null, true);
     model("item/warp_controller", "block/warp_controller", null, true);
     model("item/warp_core", "block/warp_core", null, true);
     model("item/wireless_transceiver", "block/wireless_transceiver", null, true);

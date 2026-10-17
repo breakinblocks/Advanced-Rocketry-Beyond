@@ -150,7 +150,6 @@ final class LegacyContent {
     ProcessingRegistry.registerPartBlock("titanium_coil", 13420794);
     ProcessingRegistry.registerPartBlock("titanium_iridium_block", 14147556);
     ProcessingRegistry.registerPartBlock("titanium_ore", -1);
-    ProcessingRegistry.registerPartBlock("vitrified_sand", -1);
     ProcessingRegistry.registerPartBlock("wulfentite_crystal_block", 16749568);
   }
 }
