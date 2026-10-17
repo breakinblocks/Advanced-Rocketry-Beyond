@@ -35,21 +35,18 @@ public final class OrbitalEffects {
     pose.translate(.5, .5, .5);
     var vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
     if (entity.atmosphereTerraformer() && entity.terraformerRunning) {
-      EffectGeometry.beam(
-          pose, vertices, new Vec3(0, 8, 0), new Vec3(0, 13.5, 0), .08, profile.argb(.16f));
-      for (int strand = 0; strand < 3; strand++) {
-        for (int i = 0; i < 24; i++) {
-          double y = 8 + (i * .25 + time * .025) % 6;
-          double a = y * 2 + strand * Math.PI * 2 / 3 + time * .03;
-          Vec3 point = new Vec3(Math.cos(a) * .9, y, Math.sin(a) * .9);
-          EffectGeometry.beam(
-              pose,
-              vertices,
-              point,
-              new Vec3(Math.cos(a + .4) * .9, y + .2, Math.sin(a + .4) * .9),
-              .045,
-              profile.argb((float) ((14 - y) / 6)));
-        }
+      // Broad, slowly expanding ripples rise clear of the tower's emitter.
+      for (int ripple = 0; ripple < 5; ripple++) {
+        double phase = (time / 160 + ripple / 5d) % 1;
+        float strength = (float) (Math.sin(phase * Math.PI) * .65);
+        EffectGeometry.ring(
+            pose,
+            vertices,
+            1.2 + phase * 3.8,
+            8.2 + phase * 5,
+            .045,
+            profile.argb(strength),
+            EffectGeometry.segments(profile));
       }
     } else if (entity.areaGravityController() && entity.areaCurrentGravity > .02f) {
       for (int i = 0; i < 4; i++) {
@@ -58,7 +55,7 @@ public final class OrbitalEffects {
             pose,
             vertices,
             .6 + phase * 2,
-            .15 + i * .2,
+            .65 + i * .25,
             .025,
             profile.argb((float) (1 - phase) * .7f),
             EffectGeometry.segments(profile));
