@@ -21,6 +21,7 @@ public final class TransportRenderer implements BlockEntityRenderer<TransportBlo
     var profile = EffectProfiles.get("transport");
     if (pipe.getLevel() == null || !pipe.getBlockState().getValue(TransportBlock.ACTIVE)
         || !EffectGeometry.visible(Vec3.atCenterOf(pipe.getBlockPos()), profile)) return;
+    if (!EffectGeometry.reserve()) return;
     double time = EffectGeometry.time(pipe.getLevel(), partialTick, profile);
     double phase = (time * .04 + Math.floorMod(pipe.getBlockPos().hashCode(), 16) / 16d) % 1;
     pose.pushPose();

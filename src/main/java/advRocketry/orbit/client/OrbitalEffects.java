@@ -23,6 +23,7 @@ public final class OrbitalEffects {
         : entity.blackHoleGenerator() ? "blackhole" : entity.railgun() ? "railgun" : "materials";
     var profile = EffectProfiles.get(id);
     if (!EffectGeometry.visible(Vec3.atCenterOf(entity.getBlockPos()), profile)) return;
+    if (!EffectGeometry.reserve()) return;
     double time = EffectGeometry.time(entity.getLevel(), partialTick, profile);
     pose.pushPose();
     pose.translate(.5, .5, .5);

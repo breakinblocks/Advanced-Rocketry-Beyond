@@ -13,6 +13,7 @@ public final class MachineIndicators {
       boolean active, float progress, Vec3 position) {
     var profile = EffectProfiles.get("materials");
     if (!EffectGeometry.visible(position, profile)) return;
+    if (!EffectGeometry.reserve()) return;
     var glow = buffers.getBuffer(RenderType.lightning());
     Vec3 center = new Vec3(.5 + front.getStepX() * .505, .78, .5 + front.getStepZ() * .505);
     Vec3 tangent = new Vec3(front.getStepZ(), 0, -front.getStepX());

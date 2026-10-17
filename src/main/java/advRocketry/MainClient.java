@@ -2,6 +2,7 @@ package advRocketry;
 
 import advRocketry.client.model.ConnectedModelLoader;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.SingularityLens;
 import advRocketry.compat.guideme.RocketryGuide;
 import advRocketry.life.LifeSupportRegistry;
@@ -79,6 +80,7 @@ public final class MainClient {
     bus.addListener(ProcessingClient::registerReloadListener);
     bus.addListener(ProcessingClient::registerFluidExtensions);
     NeoForge.EVENT_BUS.addListener(LaserBeamRenderer::render);
+    NeoForge.EVENT_BUS.addListener(EffectGeometry::beginFrame);
     NeoForge.EVENT_BUS.addListener(SingularityLens::render);
     NeoForge.EVENT_BUS.addListener(SingularityLens::logout);
     NeoForge.EVENT_BUS.addListener(RocketClient::controls);

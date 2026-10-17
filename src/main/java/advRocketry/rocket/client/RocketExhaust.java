@@ -25,6 +25,7 @@ public final class RocketExhaust {
       MultiBufferSource buffers) {
     var profile = EffectProfiles.get("rocket");
     if (!rocket.enginesActive() || !EffectGeometry.visible(rocket.position(), profile)) return;
+    if (!EffectGeometry.reserve()) return;
     var planet = GalaxySync.clientPlanet(rocket.level().dimension().location());
     double spread = planet == null ? .2 : .15 + .45 * (1 - Math.clamp(planet.atmosphere / 100d, 0, 1));
     double time = EffectGeometry.time(rocket.level(), partialTick, profile);

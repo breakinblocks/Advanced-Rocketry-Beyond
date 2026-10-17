@@ -23,6 +23,7 @@ import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL11;
 
 /** 1.21.1 port of Nautec's bounded, depth-aware scene lens. Render-thread owned. */
 public final class SingularityLens {
@@ -110,6 +111,10 @@ public final class SingularityLens {
       }
       shader.safeGetUniform("Lens" + i).set(lens);
     }
+    boolean depthTest = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
+    boolean blend = GL11.glIsEnabled(GL11.GL_BLEND);
+    boolean depthWrite = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
+    ShaderInstance previousShader = RenderSystem.getShader();
     RenderSystem.disableDepthTest();
     RenderSystem.depthMask(false);
     RenderSystem.disableBlend();
@@ -122,9 +127,10 @@ public final class SingularityLens {
       quad.addVertex(-1, 1, 0).setUv(0, 1);
       BufferUploader.drawWithShader(quad.buildOrThrow());
     } finally {
-      RenderSystem.depthMask(true);
-      RenderSystem.enableDepthTest();
-      RenderSystem.defaultBlendFunc();
+      RenderSystem.depthMask(depthWrite);
+      if (depthTest) RenderSystem.enableDepthTest();
+      if (blend) RenderSystem.enableBlend();
+      RenderSystem.setShader(() -> previousShader);
     }
   }
 }

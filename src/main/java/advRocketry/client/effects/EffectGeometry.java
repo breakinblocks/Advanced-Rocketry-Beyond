@@ -6,10 +6,20 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 /** Small shared geometry primitives for POSITION_COLOR quad buffers. */
 public final class EffectGeometry {
+  private static int remaining = 256;
   private EffectGeometry() {}
+
+  public static void beginFrame(RenderLevelStageEvent event) {
+    if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) remaining = 256;
+  }
+
+  public static boolean reserve() {
+    return remaining-- > 0;
+  }
 
   public static double time(Level level, float partialTick, EffectProfile profile) {
     return AdvancedRocketryConfig.reducedMotion() ? 0

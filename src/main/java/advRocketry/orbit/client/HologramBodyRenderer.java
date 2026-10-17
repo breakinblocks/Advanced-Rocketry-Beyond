@@ -69,6 +69,7 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
       PoseStack pose, MultiBufferSource buffers) {
     var profile = EffectProfiles.get("hologram");
     if (!EffectGeometry.visible(entity.position(), profile)) return;
+    if (!EffectGeometry.reserve()) return;
     double time = EffectGeometry.time(entity.level(), partialTick, profile);
     double radius = Math.clamp(entity.radius(), .05, 8);
     var vertices = buffers.getBuffer(RenderType.lightning());
