@@ -384,6 +384,13 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
         tag("c:batteries"),
         'b',
         item("minecraft:furnace"));
+    shaped(output, "fuel_generator", "adv_rocketry:fuel_generator", 1,
+        List.of("iri", "tgt", "imi"),
+        'i', tag("c:plates/iron"),
+        'r', item("adv_rocketry:fluid_io_circuit_board"),
+        't', item("adv_rocketry:liquid_tank"),
+        'g', item("adv_rocketry:coal_generator"),
+        'm', item("adv_rocketry:block_motor_block"));
     shaped(
         output,
         "legacy/coil_aluminum",

@@ -51,6 +51,12 @@ public final class ProcessingRegistry {
       DeferredRegister.create(Registries.RECIPE_TYPE, Main.MODID);
   private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
       DeferredRegister.create(Registries.RECIPE_SERIALIZER, Main.MODID);
+  public static final Supplier<RecipeType<LiquidFuelRecipe>> LIQUID_FUEL_TYPE =
+      TYPES.register("liquid_fuel", () -> new RecipeType<>() {
+        @Override public String toString() { return "adv_rocketry:liquid_fuel"; }
+      });
+  public static final Supplier<RecipeSerializer<LiquidFuelRecipe>> LIQUID_FUEL_SERIALIZER =
+      SERIALIZERS.register("liquid_fuel", LiquidFuelRecipe.Serializer::new);
   public static final Supplier<RecipeType<ArmorSealingRecipe>> SEALING_TYPE =
       TYPES.register(
           "armor_sealing",

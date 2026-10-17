@@ -382,8 +382,8 @@ public final class ProcessingTests {
         generator.burnTime() == 1599 && generator.fuel.getStackInSlot(0).isEmpty(),
         "Generator did not consume one coal and retain its burn time");
     helper.assertTrue(
-        input.energyStorage.getEnergyStored() == 40,
-        "Generator did not export its original 40 FE per tick");
+        input.energyStorage.getEnergyStored() == 80,
+        "Generator did not export 80 FE per tick");
     helper.assertTrue(
         level
             .getRecipeManager()

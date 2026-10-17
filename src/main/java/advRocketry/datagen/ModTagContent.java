@@ -122,6 +122,7 @@ final class ModTagContent {
         "adv_rocketry:electric_arc_furnace",
         "adv_rocketry:electrolyzer",
         "adv_rocketry:energy_cable",
+        "adv_rocketry:fuel_generator",
         "adv_rocketry:fluid_pipe",
         "adv_rocketry:item_conduit",
         "adv_rocketry:lathe",

@@ -1,0 +1,6 @@
+{
+  "type": "adv_rocketry:liquid_fuel",
+  "fuel": { "fluid": "minecraft:lava", "amount": 1000 },
+  "ticks": 1000,
+  "fe_per_tick": 160
+}

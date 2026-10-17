@@ -262,6 +262,15 @@ final class ModLanguage extends LanguageProvider {
     add("block.adv_rocketry.enhanced_motor", "Enhanced Motor");
     add("block.adv_rocketry.elite_motor", "Elite Motor");
     add("block.adv_rocketry.coal_generator", "Coal Generator");
+    add("block.adv_rocketry.fuel_generator", "Fuel Generator");
+    add("gui.adv_rocketry.fuel_generator.empty", "Empty tank");
+    add("gui.adv_rocketry.fuel_generator.tank", "%s / 16,000 mB");
+    add("gui.adv_rocketry.fuel_generator.energy", "%s / 1,000,000 FE");
+    add("gui.adv_rocketry.fuel_generator.burn", "%s FE/t | %s ticks left");
+    add("gui.adv_rocketry.liquid_fuel.amount", "%s mB fuel");
+    add("gui.adv_rocketry.liquid_fuel.rate", "%s FE/t");
+    add("gui.adv_rocketry.liquid_fuel.duration", "%s ticks (%s s)");
+    add("gui.adv_rocketry.liquid_fuel.total", "%s FE total");
     add("block.adv_rocketry.creative_energy_input", "Creative Power Input");
     add("block.adv_rocketry.planet_selector", "Planet Selector");
     add("block.adv_rocketry.landing_float", "Landing Float");

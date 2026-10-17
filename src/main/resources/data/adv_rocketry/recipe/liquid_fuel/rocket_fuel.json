@@ -1,0 +1,6 @@
+{
+  "type": "adv_rocketry:liquid_fuel",
+  "fuel": { "fluid": "adv_rocketry:rocket_fuel", "amount": 1000 },
+  "ticks": 1200,
+  "fe_per_tick": 360
+}

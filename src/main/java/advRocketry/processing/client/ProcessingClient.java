@@ -29,6 +29,7 @@ public final class ProcessingClient {
   public static void registerScreens(RegisterMenuScreensEvent event) {
     event.register(ProcessingRegistry.MENU.get(), MachineScreen::new);
     event.register(MachinePorts.COAL_GENERATOR_MENU.get(), CoalGeneratorScreen::new);
+    event.register(MachinePorts.FUEL_GENERATOR_MENU.get(), FuelGeneratorScreen::new);
   }
 
   public static void registerFluidExtensions(RegisterClientExtensionsEvent event) {

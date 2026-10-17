@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "g": {
+      "item": "adv_rocketry:coal_generator"
+    },
+    "i": {
+      "tag": "c:plates/iron"
+    },
+    "m": {
+      "item": "adv_rocketry:block_motor_block"
+    },
+    "r": {
+      "item": "adv_rocketry:fluid_io_circuit_board"
+    },
+    "t": {
+      "item": "adv_rocketry:liquid_tank"
+    }
+  },
+  "pattern": [
+    "iri",
+    "tgt",
+    "imi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:fuel_generator"
+  }
+}

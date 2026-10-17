@@ -11,7 +11,7 @@ item_ids:
 
 # Coal Generator
 
-Supply furnace fuel manually or with an item conduit. The generator produces **40 FE/t**, stores **10,000 FE**, and exports to adjacent consumers. Use cables to reach distant machines.
+Supply furnace fuel manually or with an item conduit. The generator produces **80 FE/t**, stores **10,000 FE**, and exports to adjacent consumers. Use cables to reach distant machines.
 
 Thermite burns for **6,000 ticks** in the generator or a furnace. High-power machinery may need stored energy or more than one generator.
 

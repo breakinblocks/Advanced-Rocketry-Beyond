@@ -74,6 +74,18 @@ public final class MachinePorts {
   public static final Supplier<Block> STRUCTURE_TOWER = part("structure_tower");
   public static final Supplier<Block> VACUUM_LASER = part("vacuum_laser");
   public static final Supplier<CoalGeneratorBlock> COAL_GENERATOR = coalGenerator();
+  public static final Supplier<FuelGeneratorBlock> FUEL_GENERATOR =
+      register(
+          "fuel_generator",
+          () -> new FuelGeneratorBlock(BlockBehaviour.Properties.of().strength(3)));
+  public static final Supplier<MenuType<FuelGeneratorMenu>> FUEL_GENERATOR_MENU =
+      MENUS.register("fuel_generator", () -> IMenuTypeExtension.create(FuelGeneratorMenu::new));
+  public static final Supplier<BlockEntityType<FuelGeneratorBlockEntity>> FUEL_GENERATOR_ENTITY =
+      ENTITIES.register(
+          "fuel_generator",
+          () ->
+              BlockEntityType.Builder.of(FuelGeneratorBlockEntity::new, FUEL_GENERATOR.get())
+                  .build(null));
   public static final Supplier<MenuType<CoalGeneratorMenu>> COAL_GENERATOR_MENU =
       MENUS.register("coal_generator", () -> IMenuTypeExtension.create(CoalGeneratorMenu::new));
 
@@ -149,6 +161,14 @@ public final class MachinePorts {
   }
 
   public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+    event.registerBlockEntity(
+        Capabilities.FluidHandler.BLOCK,
+        FUEL_GENERATOR_ENTITY.get(),
+        (generator, side) -> generator.tank);
+    event.registerBlockEntity(
+        Capabilities.EnergyStorage.BLOCK,
+        FUEL_GENERATOR_ENTITY.get(),
+        (generator, side) -> generator.output);
     event.registerBlockEntity(
         Capabilities.ItemHandler.BLOCK,
         ENTITY.get(),

@@ -5,9 +5,11 @@ package advRocketry.compat.jei;
 
 import advRocketry.Main;
 import advRocketry.compat.ProcessingDisplay;
+import advRocketry.processing.MachinePorts;
 import advRocketry.processing.MachineType;
 import advRocketry.processing.ProcessingBlockEntity;
 import advRocketry.processing.ProcessingRegistry;
+import advRocketry.processing.client.FuelGeneratorScreen;
 import advRocketry.processing.client.MachineScreen;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -39,6 +41,8 @@ public final class ProcessingJeiPlugin implements IModPlugin {
 
   @Override
   public void registerCategories(IRecipeCategoryRegistration registration) {
+    registration.addRecipeCategories(
+        new LiquidFuelCategory(registration.getJeiHelpers().getGuiHelper()));
     recipes = ProcessingDisplay.collect();
     types.clear();
     for (MachineType machine : MachineType.values()) {
@@ -62,6 +66,16 @@ public final class ProcessingJeiPlugin implements IModPlugin {
 
   @Override
   public void registerRecipes(IRecipeRegistration registration) {
+    var level = Minecraft.getInstance().level;
+    if (level != null)
+      registration.addRecipes(
+          LiquidFuelCategory.TYPE,
+          level
+              .getRecipeManager()
+              .getAllRecipesFor(ProcessingRegistry.LIQUID_FUEL_TYPE.get())
+              .stream()
+              .map(LiquidFuelCategory.Display::new)
+              .toList());
     types.forEach(
         (machine, type) ->
             registration.addRecipes(
@@ -73,11 +87,15 @@ public final class ProcessingJeiPlugin implements IModPlugin {
 
   @Override
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+    registration.addRecipeCatalyst(
+        new ItemStack(MachinePorts.FUEL_GENERATOR.get()), LiquidFuelCategory.TYPE);
     types.forEach((machine, type) -> registration.addRecipeCatalyst(catalyst(machine), type));
   }
 
   @Override
   public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+    registration.addRecipeClickArea(
+        FuelGeneratorScreen.class, 8, 78, 160, 18, LiquidFuelCategory.TYPE);
     registration.addGuiContainerHandler(
         MachineScreen.class,
         new IGuiContainerHandler<MachineScreen>() {

@@ -166,6 +166,7 @@ final class ModItemModels extends ModItemModelHelpers {
     model("item/circle_light", "block/circle_light", null, true);
     model("item/citrine_crystal_block", "block/citrine_crystal_block", null, true);
     model("item/coal_generator", "block/coal_generator", null, true);
+    model("item/fuel_generator", "block/fuel_generator", null, true);
     model(
         "item/composition_sensor",
         "minecraft:item/generated",

@@ -51,6 +51,35 @@ Definitions require exactly one `c` controller, defined symbols, and no more tha
 `I`, `O`, and `P`; satellite builders require `P`. These roles must resolve to the
 corresponding port blocks. Biome source weights must match their biome list.
 
+## Liquid generator fuels
+
+Recipe type `adv_rocketry:liquid_fuel`, under `data/<namespace>/recipe/`.
+The Fuel Generator consumes the specified fluid amount once, then generates
+`fe_per_tick` for `ticks` active ticks. Burning pauses when its energy buffer is
+full. JEI shows all loaded fuel recipes and their total energy.
+
+```json
+{
+  "type": "adv_rocketry:liquid_fuel",
+  "fuel": { "fluid": "adv_rocketry:rocket_fuel", "amount": 1000 },
+  "ticks": 1200,
+  "fe_per_tick": 360
+}
+```
+
+`fuel` is a NeoForge sized fluid ingredient; use `"tag": "yourpack:generator_fuels"`
+instead of `"fluid"` to match a fluid tag. Amount must be 1–16,000 mB, duration
+1–1,000,000 ticks, and output 1–1,000,000 FE/t. Total energy is amount-independent:
+`ticks × fe_per_tick` per consumed batch. Keep amounts within the tank capacity.
+
+Override `adv_rocketry:liquid_fuel/rocket_fuel` or `adv_rocketry:liquid_fuel/lava`
+to change the shipped fuels. Add recipe files for other liquids, including modded
+ones. Overlapping matching recipes use the lowest recipe ID in lexical order.
+Recipes and tags reload with `/reload`; a batch already consumed keeps its saved
+duration/output, and subsequent batches use the new recipes. Unsupported fluid
+remains recoverable from the tank. A recipe can be disabled with a `neoforge:false`
+condition as with other recipes.
+
 ## Stars
 
 `data/<namespace>/adv_rocketry/star/`: `name`, `temperature`, `size`, map

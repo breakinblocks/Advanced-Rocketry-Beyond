@@ -19,8 +19,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-/** Native 10,000 FE buffer and 40 FE/t burn cadence from TileCoalGenerator. */
+/** Solid-fuel generator with a 10,000 FE buffer. */
 public final class CoalGeneratorBlockEntity extends BlockEntity implements MenuProvider {
+  public static final int FE_PER_TICK = 80;
   private int energy;
   private int burnTime;
   public final ItemStackHandler fuel =
@@ -109,7 +110,7 @@ public final class CoalGeneratorBlockEntity extends BlockEntity implements MenuP
 
   public void tick() {
     if (level == null || level.isClientSide) return;
-    if (burnTime == 0 && energy <= 9960 && !fuel.getStackInSlot(0).isEmpty()) {
+    if (burnTime == 0 && energy <= 10000 - FE_PER_TICK && !fuel.getStackInSlot(0).isEmpty()) {
       ItemStack stack = fuel.getStackInSlot(0);
       int duration = stack.getBurnTime(RecipeType.SMELTING);
       if (duration > 0) {
@@ -122,9 +123,9 @@ public final class CoalGeneratorBlockEntity extends BlockEntity implements MenuP
         }
       }
     }
-    if (burnTime > 0 && energy <= 9960) {
+    if (burnTime > 0 && energy <= 10000 - FE_PER_TICK) {
       burnTime--;
-      energy += 40;
+      energy += FE_PER_TICK;
       setChanged();
     }
     neighbours.push(output);
