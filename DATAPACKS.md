@@ -186,7 +186,7 @@ Under `data/<namespace>/data_maps/<registry>/`:
 Visual profiles belong in resource packs at `assets/adv_rocketry/effects/<effect>.json`.
 They reload with client resources and do not change server gameplay. Supported IDs are
 `hologram`, `rocket`, `laser`, `railgun`, `blackhole`, `terraformer`, `gravity`, `etcher`,
-`planet`, `celestial`, `elevator`, `materials`, `diagnostics`, `hud`, `transport`, and `audio`.
+`planet`, `celestial`, `elevator`, `materials`, `diagnostics`, `hud`, `transport`, `audio`, and `solar_array`.
 
 | Field | Default | Bounds |
 |---|---|---|
@@ -197,6 +197,9 @@ They reload with client resources and do not change server gameplay. Supported I
 | `segments` | `32` | 8–64 |
 
 Color, opacity and speed apply to procedural visuals; audio currently uses `enabled`.
+The solar array pulses its green output indicators and sends a cyan sweep along the
+connecting bar while generating power. Its profile color controls the bar; reduced
+motion freezes both animations, and disabling advanced VFX removes the overlays.
 Client configuration offers `advancedVFX`, `reducedMotion`, `singularityDistortion`, and
 `effectDetail` (0 = low, 1 = medium, 2 = high). Low detail disables procedural clouds;
 scene distortion requires high detail. Shared effect geometry allows up to 64, 128, or 256

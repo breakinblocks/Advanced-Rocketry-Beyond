@@ -280,6 +280,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     model(MODEL)
         .renderAll(
             pose, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), light, overlay, -1);
+    SolarArrayEffects.render(entity, partialTick, pose, buffers);
     pose.popPose();
   }
 

@@ -15,7 +15,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 public final class EffectProfiles implements ResourceManagerReloadListener {
   private static final String[] IDS = {
     "hologram", "rocket", "laser", "railgun", "blackhole", "terraformer", "gravity", "etcher",
-    "planet", "celestial", "elevator", "materials", "diagnostics", "hud", "transport", "audio"
+    "planet", "celestial", "elevator", "materials", "diagnostics", "hud", "transport", "audio", "solar_array"
   };
   private static volatile Map<String, EffectProfile> profiles = Map.of();
 
