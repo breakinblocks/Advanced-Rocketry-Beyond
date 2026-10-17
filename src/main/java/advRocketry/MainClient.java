@@ -43,6 +43,7 @@ import advRocketry.space.client.PlanetEffects;
 import advRocketry.transport.TransportRegistry;
 import advRocketry.transport.client.TransportRenderer;
 import advRocketry.transport.client.TransportScreen;
+import advRocketry.transport.client.TransportTerminalScreen;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -109,6 +110,7 @@ public final class MainClient {
 
   private static void screens(RegisterMenuScreensEvent event) {
     event.register(TransportRegistry.MENU.get(), TransportScreen::new);
+    event.register(TransportRegistry.TERMINAL.get(), TransportTerminalScreen::new);
     event.register(OrbitalRegistry.MENU.get(), OrbitalScreen::new);
     event.register(OrbitalRegistry.ORE_SCAN_MENU.get(), OreScanScreen::new);
     event.register(OrbitalRegistry.STATION_CHIP_MENU.get(), StationChipScreen::new);

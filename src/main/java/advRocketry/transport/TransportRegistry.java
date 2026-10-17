@@ -68,10 +68,14 @@ public final class TransportRegistry {
   public static final Supplier<MenuType<TransportMenu>> MENU =
       MENUS.register("transport", () -> IMenuTypeExtension.create(TransportMenu::new));
 
+  public static final Supplier<MenuType<TransportTerminalMenu>> TERMINAL =
+      MENUS.register("transport_terminal", () -> IMenuTypeExtension.create(TransportTerminalMenu::new));
+
   private TransportRegistry() {}
 
   public static void register(IEventBus bus) {
     bus.addListener(TransportTagEdit::register);
+    bus.addListener(TransportGhostEdit::register);
     BLOCKS.register(bus);
     ITEMS.register(bus);
     ENTITIES.register(bus);

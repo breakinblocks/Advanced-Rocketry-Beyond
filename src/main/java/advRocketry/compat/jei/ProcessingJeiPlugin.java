@@ -4,6 +4,7 @@
 package advRocketry.compat.jei;
 
 import advRocketry.Main;
+import advRocketry.transport.client.TransportScreen;
 import advRocketry.compat.ProcessingDisplay;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.MachineType;
@@ -94,6 +95,7 @@ public final class ProcessingJeiPlugin implements IModPlugin {
 
   @Override
   public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+    registration.addGhostIngredientHandler(TransportScreen.class, new TransportGhostHandler());
     registration.addRecipeClickArea(
         FuelGeneratorScreen.class, 8, 78, 160, 18, LiquidFuelCategory.TYPE);
     registration.addGuiContainerHandler(

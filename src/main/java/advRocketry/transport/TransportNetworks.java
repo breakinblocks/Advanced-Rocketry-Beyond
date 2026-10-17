@@ -309,6 +309,14 @@ public final class TransportNetworks {
         source.pipe.blockedReason = 2;
         continue;
       }
+      if (endpoint.kind() == TransportRegistry.Kind.ENERGY) {
+        boolean capacity = false;
+        for (var target : targets) {
+          target.pipe.resetEnergyBudget();
+          capacity |= target.pipe.energyOut[target.side.ordinal()] < 5000;
+        }
+        if (!capacity) continue;
+      }
       Object handler = source.handler();
       if (handler == null) continue;
       int allowance = Math.min(budget, config.extractionLimit);
@@ -668,6 +676,25 @@ public final class TransportNetworks {
         node.setChanged();
       }
     }
+  }
+
+  public record StorageAccess(TransportBlockEntity pipe, Direction side, IItemHandler handler) {
+    public boolean accepts(ItemStack stack) { return pipe.accepts(side, stack); }
+  }
+
+  /** Fresh sided access; callers must still validate each actual handler result. */
+  public static List<StorageAccess> storage(TransportBlockEntity pipe, boolean insert) {
+    if (pipe.kind() != TransportRegistry.Kind.ITEM) return List.of();
+    var network = network(pipe);
+    if (network.oversized) return List.of();
+    var result = new ArrayList<StorageAccess>();
+    for (var end : insert ? network.outputs : network.ends) {
+      if (insert ? end.mode() != TransportBlockEntity.INSERT || !end.pipe.inserting(end.side)
+          : end.mode() != TransportBlockEntity.EXTRACT || !end.pipe.extracting(end.side)) continue;
+      if (!end.pipe.getLevel().hasChunkAt(end.target) || end.pipe.isRemoved()) continue;
+      if (end.handler() instanceof IItemHandler handler) result.add(new StorageAccess(end.pipe, end.side, handler));
+    }
+    return result;
   }
 
   private static void message(Player player, Component text) {

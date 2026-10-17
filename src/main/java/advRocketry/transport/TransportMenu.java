@@ -18,6 +18,8 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -55,7 +57,7 @@ public final class TransportMenu extends ModMenu {
     if (pipe != null) filter.setStackInSlot(0, pipe.filter.copy());
     if (kind == TransportRegistry.Kind.ITEM)
       addSlot(
-          new SlotItemHandler(filter, 0, 260, 118) {
+          new SlotItemHandler(filter, 0, 350, 63) {
             @Override
             public boolean mayPickup(Player player) {
               return false;
@@ -63,7 +65,7 @@ public final class TransportMenu extends ModMenu {
           });
     for (int i = 0; i < 9; i++)
       addSlot(
-          new SlotItemHandler(ghosts, i, 69 + i * 18, 218) {
+          new SlotItemHandler(ghosts, i, 8 + i * 18, 182) {
             @Override
             public boolean mayPickup(Player player) {
               return false;
@@ -75,7 +77,7 @@ public final class TransportMenu extends ModMenu {
             }
           });
     refreshGhosts();
-    addPlayerInventory(inventory, 69, 280);
+    addPlayerInventory(inventory, 109, 228);
     data =
         pipe == null
             ? SplitIntData.client(27)
@@ -139,6 +141,15 @@ public final class TransportMenu extends ModMenu {
     }
   }
 
+  public void setGhost(Player player, int side, int slot, ItemStack item, FluidStack fluid) {
+    if (pipe == null || !stillValid(player) || !player.mayBuild() || player.isSpectator() || side != selected || slot < 0 || slot >= 9 || kind == TransportRegistry.Kind.ENERGY) return;
+    var config = pipe.sides[selected]; config.configured = true;
+    config.entries[slot] = !fluid.isEmpty() && kind == TransportRegistry.Kind.FLUID
+        ? new TransportSideConfig.Entry(new ItemStack(fluid.getFluid().getBucket()), fluid.copyWithAmount(1000), null)
+        : item.isEmpty() ? null : TransportSideConfig.Entry.stack(item);
+    pipe.changed(); refreshGhosts(); broadcastChanges();
+  }
+
   public void setTag(Player player, int side, int slot, String text) {
     if (pipe == null
         || !stillValid(player)
@@ -173,6 +184,10 @@ public final class TransportMenu extends ModMenu {
   public boolean clickMenuButton(Player player, int id) {
     if (pipe == null || !stillValid(player) || !player.mayBuild() || player.isSpectator())
       return false;
+    if (id == 40 && kind == TransportRegistry.Kind.ITEM && player instanceof ServerPlayer server) {
+      server.openMenu(new SimpleMenuProvider((menuId, inventory, owner) -> new TransportTerminalMenu(menuId, inventory, pipe), Component.literal("Pipe storage terminal")), buf -> buf.writeBlockPos(pos));
+      return true;
+    }
     if (id >= 0 && id < 6) {
       pipe.modes[id] = (pipe.modes[id] + 1) % 3;
       pipe.changed();
