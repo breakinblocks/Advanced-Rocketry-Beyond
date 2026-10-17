@@ -35,6 +35,8 @@ public final class OrbitalEffects {
     pose.translate(.5, .5, .5);
     var vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
     if (entity.atmosphereTerraformer() && entity.terraformerRunning) {
+      EffectGeometry.beam(
+          pose, vertices, new Vec3(0, 8, 0), new Vec3(0, 13.5, 0), .08, profile.argb(.16f));
       for (int strand = 0; strand < 3; strand++) {
         for (int i = 0; i < 24; i++) {
           double y = 8 + (i * .25 + time * .025) % 6;
@@ -44,8 +46,8 @@ public final class OrbitalEffects {
               pose,
               vertices,
               point,
-              point.add(0, .1, 0),
-              .025,
+              new Vec3(Math.cos(a + .4) * .9, y + .2, Math.sin(a + .4) * .9),
+              .045,
               profile.argb((float) ((14 - y) / 6)));
         }
       }
@@ -57,8 +59,8 @@ public final class OrbitalEffects {
             vertices,
             .6 + phase * 2,
             .15 + i * .2,
-            .012,
-            profile.argb((float) (1 - phase) * .45f),
+            .025,
+            profile.argb((float) (1 - phase) * .7f),
             EffectGeometry.segments(profile));
       }
     } else if (entity.blackHoleGenerator() && entity.powerMadeLastTick > 0) {

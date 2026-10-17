@@ -168,7 +168,10 @@ They reload with client resources and do not change server gameplay. Supported I
 | `segments` | `32` | 8–64 |
 
 Color, opacity and speed apply to procedural visuals; audio currently uses `enabled`.
-Client configuration offers `advancedVFX`, `reducedMotion`, and `singularityDistortion`.
+Client configuration offers `advancedVFX`, `reducedMotion`, `singularityDistortion`, and
+`effectDetail` (0 = low, 1 = medium, 2 = high). Low detail disables procedural clouds;
+scene distortion requires high detail. Shared effect geometry allows up to 64, 128, or 256
+draw reservations per frame and caps ring segments at 16, 32, or 64 respectively.
 Reduced motion freezes procedural movement and suppresses exhaust particles and lens distortion.
 The singularity lens handles at most four nearby sources and uses scene depth to retain foreground
 occlusion. With Iris installed, it retains the geometry effect and skips scene distortion.

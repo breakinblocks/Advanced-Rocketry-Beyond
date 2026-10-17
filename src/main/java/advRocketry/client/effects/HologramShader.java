@@ -29,7 +29,10 @@ public final class HologramShader extends RenderType {
                         if (shader != null)
                           shader
                               .safeGetUniform("Motion")
-                              .set(AdvancedRocketryConfig.reducedMotion() ? 0f : 1f);
+                              .set(
+                                  AdvancedRocketryConfig.reducedMotion()
+                                      ? 0f
+                                      : EffectProfiles.get("hologram").speed());
                         return shader;
                       }))
               .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -50,7 +53,9 @@ public final class HologramShader extends RenderType {
   }
 
   public static RenderType surface(ResourceLocation fallback) {
-    return shader == null || !AdvancedRocketryConfig.advancedVfx()
+    return shader == null
+            || !AdvancedRocketryConfig.advancedVfx()
+            || !EffectProfiles.get("hologram").enabled()
         ? RenderType.entityTranslucent(fallback)
         : SURFACE;
   }
