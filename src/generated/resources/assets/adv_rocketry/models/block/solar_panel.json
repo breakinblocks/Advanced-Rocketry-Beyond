@@ -3,6 +3,7 @@
   "connect_with": [
     "adv_rocketry:solar_array_panel"
   ],
+  "height": 2.0,
   "loader": "adv_rocketry:connected",
   "textures": {
     "base": "adv_rocketry:block/ctm/solar/base",

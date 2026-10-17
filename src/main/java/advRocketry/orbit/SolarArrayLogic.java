@@ -11,6 +11,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
 
 public final class SolarArrayLogic {
   private SolarArrayLogic() {}
@@ -20,21 +21,18 @@ public final class SolarArrayLogic {
     GalaxyData galaxy = GalaxyData.get(serverLevel.getServer());
     Planet planet =
         galaxy.planets.get(StationLogic.orbitPlanet(galaxy, serverLevel, entity.getBlockPos()));
-    boolean stationOrbit = StationLogic.inSpace(galaxy, serverLevel);
     if (planet == null
-        || !(stationOrbit
-            ? serverLevel.canSeeSky(entity.getBlockPos().below())
-            : serverLevel.canSeeSky(entity.getBlockPos().above()))) {
+        || !SolarPower.daylight(serverLevel, entity.getBlockPos())
+        || panels(entity) < 0) {
       entity.powerMadeLastTick = 0;
       return;
     }
-    int panels = panels(entity);
-    if (panels < 0 || !serverLevel.isDay() && !stationOrbit) {
-      entity.powerMadeLastTick = 0;
-      return;
-    }
+    int exposedPanels = 0;
+    for (BlockPos pos : PlacedMultiblock.of(entity, "solar_array").positions('p'))
+      if (serverLevel.getBlockState(pos).is(OrbitalRegistry.SOLAR_ARRAY_PANEL.get())
+          && SolarPower.canSeeSkyThroughWater(serverLevel, pos.above())) exposedPanels++;
     int generated =
-        Math.min(100000, panels * SolarPower.perPanel(serverLevel, entity.getBlockPos()));
+        Math.min(100000, exposedPanels * SolarPower.perPanel(serverLevel, entity.getBlockPos()));
     entity.powerMadeLastTick = entity.addGeneratedEnergy(generated);
     List<PortBlockEntity> outputs =
         PlacedMultiblock.of(entity, "solar_array").entities('e', PortBlockEntity.class);
@@ -62,7 +60,8 @@ public final class SolarArrayLogic {
       }
       if (entity.getLevel().getBlockState(pos).is(OrbitalRegistry.SOLAR_ARRAY_PANEL.get())) {
         panels++;
-      } else if (!entity.getLevel().isEmptyBlock(pos)) {
+      } else if (!entity.getLevel().isEmptyBlock(pos)
+          && !entity.getLevel().getBlockState(pos).is(Blocks.WATER)) {
         entity.status =
             Texts.translate(
                 "status.adv_rocketry.orbital.array_lane_is_obstructed_at", pos.toShortString());

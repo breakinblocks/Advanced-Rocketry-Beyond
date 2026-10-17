@@ -7,6 +7,7 @@ import advRocketry.DataMaps;
 import advRocketry.Main;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.ProcessingRegistry;
+import advRocketry.processing.SolarPanelBlock;
 import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
@@ -131,7 +132,9 @@ public final class OrbitalRegistry {
   public static final Supplier<HorizontalOrbitalBlock> ATMOSPHERE_TERRAFORMER =
       horizontal("atmosphere_terraformer", OrbitalBlock.Kind.ATMOSPHERE_TERRAFORMER, 4);
   public static final Supplier<Block> SOLAR_ARRAY_PANEL =
-      block("solar_array_panel", () -> new Block(BlockBehaviour.Properties.of().strength(3)));
+      block(
+          "solar_array_panel",
+          () -> new SolarPanelBlock(BlockBehaviour.Properties.of().strength(3)));
   public static final Supplier<LaserLightBlock> LASER_LIGHT =
       BLOCKS.register(
           "laser_light",

@@ -8,10 +8,31 @@ import advRocketry.orbit.Station;
 import advRocketry.orbit.StationLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 /** Original stellar brightness and atmosphere attenuation for solar generators. */
 public final class SolarPower {
   private SolarPower() {}
+
+  /** Uses the dimension's own sky clock, including planet rotation periods and fixed times. */
+  public static boolean daylight(ServerLevel level, BlockPos pos) {
+    GalaxyData galaxy = GalaxyData.get(level.getServer());
+    if (StationLogic.inSpace(galaxy, level)) return true;
+    return level.dimensionType().hasSkyLight() && Math.cos(level.getSunAngle(1)) > 0;
+  }
+
+  /** Water is transparent to solar collection; solid waterlogged blocks still obstruct it. */
+  public static boolean canSeeSkyThroughWater(ServerLevel level, BlockPos pos) {
+    int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX(), pos.getZ());
+    BlockPos.MutableBlockPos cursor = pos.mutable();
+    for (int y = pos.getY(); y < top; y++) {
+      cursor.setY(y);
+      var state = level.getBlockState(cursor);
+      if (!state.is(Blocks.WATER) && state.getLightBlock(level, cursor) > 0) return false;
+    }
+    return true;
+  }
 
   public static int perPanel(ServerLevel level, BlockPos pos) {
     double insolation = insolationMultiplier(level, pos);

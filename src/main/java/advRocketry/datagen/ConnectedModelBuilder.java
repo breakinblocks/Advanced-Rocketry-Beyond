@@ -10,6 +10,12 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 final class ConnectedModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
   private final JsonArray connectWith = new JsonArray();
   private int tint = -1;
+  private float height = 16;
+
+  ConnectedModelBuilder<T> height(float value) {
+    height = value;
+    return this;
+  }
 
   private ConnectedModelBuilder(T parent, ExistingFileHelper files) {
     super(ConnectedModelLoader.ID, parent, files, false);
@@ -33,6 +39,7 @@ final class ConnectedModelBuilder<T extends ModelBuilder<T>> extends CustomLoade
   @Override
   public JsonObject toJson(JsonObject json) {
     json = super.toJson(json);
+    if (height != 16) json.addProperty("height", height);
     if (tint >= 0) json.addProperty("tint_index", tint);
     if (!connectWith.isEmpty()) json.add("connect_with", connectWith);
     return json;

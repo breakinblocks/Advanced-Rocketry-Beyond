@@ -187,8 +187,8 @@ public final class PortBlockEntity extends BlockEntity implements MenuProvider {
     if (hasFluid()) FluidContainers.process(inventory, myTank);
     if (kind() == MachinePorts.Kind.SOLAR
         && level instanceof ServerLevel serverLevel
-        && level.isDay()
-        && level.canSeeSky(worldPosition.above())) {
+        && SolarPower.daylight(serverLevel, worldPosition)
+        && SolarPower.canSeeSkyThroughWater(serverLevel, worldPosition.above())) {
       energyStorage.generate(SolarPower.perPanel(serverLevel, worldPosition), false);
     }
     if (kind() == MachinePorts.Kind.SOLAR

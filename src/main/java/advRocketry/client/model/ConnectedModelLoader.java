@@ -40,10 +40,13 @@ public final class ConnectedModelLoader implements IGeometryLoader<ConnectedMode
       for (JsonElement element : json.getAsJsonArray("connect_with"))
         connectWith.add(ResourceLocation.parse(element.getAsString()));
     int tint = json.has("tint_index") ? json.get("tint_index").getAsInt() : -1;
-    return new Geometry(Set.copyOf(connectWith), tint);
+    float height = json.has("height") ? json.get("height").getAsFloat() : 16;
+    if (!Float.isFinite(height) || height <= 0 || height > 16)
+      throw new IllegalArgumentException("Connected model height must be in (0,16]");
+    return new Geometry(Set.copyOf(connectWith), tint, height);
   }
 
-  public record Geometry(Set<ResourceLocation> connectWith, int tint)
+  public record Geometry(Set<ResourceLocation> connectWith, int tint, float height)
       implements IUnbakedGeometry<Geometry> {
     @Override
     public BakedModel bake(
@@ -63,13 +66,14 @@ public final class ConnectedModelLoader implements IGeometryLoader<ConnectedMode
       RenderTypeGroup renderTypes =
           hint == null ? RenderTypeGroup.EMPTY : context.getRenderType(hint);
       return new ConnectedBakedModel(
-          ConnectedBakedModel.bake(variants, state, tint),
+          ConnectedBakedModel.bake(variants, state, tint, height),
           particle,
           context.getTransforms(),
           context.useAmbientOcclusion(),
           context.useBlockLight(),
           renderTypes,
-          connectWith);
+          connectWith,
+          height < 16);
     }
   }
 }

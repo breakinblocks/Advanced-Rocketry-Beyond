@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
-public final class PortBlock extends MachinePartBlock implements EntityBlock {
+public class PortBlock extends MachinePartBlock implements EntityBlock {
   private final MachinePorts.Kind kind;
 
   public PortBlock(MachinePorts.Kind kind, Properties properties) {

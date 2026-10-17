@@ -60,6 +60,8 @@ abstract class ModBlockStateHelpers extends BlockStateProvider {
       builder.texture(variant, location(folder + "/" + variant));
     ConnectedModelBuilder<BlockModelBuilder> loader =
         builder.customLoader(ConnectedModelBuilder::begin).tint(tint);
+    if (path.equals("block/solar_panel") || path.equals("block/solar_array_panel"))
+      loader.height(2);
     for (String block : connectWith) loader.connectWith(block);
   }
 

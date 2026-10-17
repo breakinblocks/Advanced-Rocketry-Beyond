@@ -130,7 +130,12 @@ public final class MachinePorts {
   }
 
   private static Supplier<Block> port(String name, Kind kind) {
-    return register(name, () -> new PortBlock(kind, BlockBehaviour.Properties.of().strength(3)));
+    return register(
+        name,
+        () ->
+            kind == Kind.SOLAR
+                ? new SolarPortBlock(BlockBehaviour.Properties.of().strength(3))
+                : new PortBlock(kind, BlockBehaviour.Properties.of().strength(3)));
   }
 
   private static Supplier<Block> part(String name) {

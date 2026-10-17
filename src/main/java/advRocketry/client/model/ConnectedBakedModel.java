@@ -47,6 +47,7 @@ public final class ConnectedBakedModel implements IDynamicBakedModel {
   private final boolean blockLight;
   private final RenderTypeGroup renderTypes;
   private final Set<ResourceLocation> connectWith;
+  private final boolean insetTop;
 
   ConnectedBakedModel(
       BakedQuad[][][] quads,
@@ -55,7 +56,9 @@ public final class ConnectedBakedModel implements IDynamicBakedModel {
       boolean ambientOcclusion,
       boolean blockLight,
       RenderTypeGroup renderTypes,
-      Set<ResourceLocation> connectWith) {
+      Set<ResourceLocation> connectWith,
+      boolean insetTop) {
+    this.insetTop = insetTop;
     this.quads = quads;
     this.particle = particle;
     this.transforms = transforms;
@@ -70,20 +73,33 @@ public final class ConnectedBakedModel implements IDynamicBakedModel {
     DOWN[face.ordinal()] = down;
   }
 
-  static BakedQuad[][][] bake(TextureAtlasSprite[] sprites, ModelState state, int tint) {
+  static BakedQuad[][][] bake(
+      TextureAtlasSprite[] sprites, ModelState state, int tint, float height) {
     FaceBakery bakery = new FaceBakery();
     BakedQuad[][][] result = new BakedQuad[6][4][sprites.length];
     for (Direction face : Direction.values())
       for (int quadrant = 0; quadrant < 4; quadrant++) {
         float u0 = (quadrant & 1) * 8, v0 = (quadrant >> 1) * 8, u1 = u0 + 8, v1 = v0 + 8;
         Vector3f[] box = box(face, u0, v0, u1, v1);
+        box[0].y *= height / 16;
+        box[1].y *= height / 16;
         for (int variant = 0; variant < sprites.length; variant++)
           result[face.ordinal()][quadrant][variant] =
               bakery.bakeQuad(
                   box[0],
                   box[1],
                   new BlockElementFace(
-                      face, tint, "", new BlockFaceUV(new float[] {u0, v0, u1, v1}, 0)),
+                      face,
+                      tint,
+                      "",
+                      new BlockFaceUV(
+                          new float[] {
+                            u0,
+                            face.getAxis().isHorizontal() ? v0 * height / 16 : v0,
+                            u1,
+                            face.getAxis().isHorizontal() ? v1 * height / 16 : v1
+                          },
+                          0)),
                   sprites[variant],
                   face,
                   state,
@@ -139,7 +155,11 @@ public final class ConnectedBakedModel implements IDynamicBakedModel {
   @Override
   public List<BakedQuad> getQuads(
       BlockState state, Direction side, RandomSource random, ModelData data, RenderType type) {
-    if (side == null) return List.of();
+    if (insetTop && side == Direction.UP) return List.of();
+    if (side == null) {
+      if (!insetTop) return List.of();
+      side = Direction.UP;
+    }
     byte[] variants = data.get(VARIANTS);
     List<BakedQuad> result = new ArrayList<>(4);
     for (int quadrant = 0; quadrant < 4; quadrant++)

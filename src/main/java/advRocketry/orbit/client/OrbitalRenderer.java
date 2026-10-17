@@ -274,7 +274,9 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     pose.pushPose();
     pose.translate(.5, 0, .5);
     pose.mulPose(Axis.YP.rotationDegrees(yaw(front(entity)) + 180));
-    pose.translate(-.5, 0, .5);
+    pose.translate(-.5, .002, .5);
+    // Keep the controller trim clear of the output-port faces underneath it.
+    pose.scale(1.002f, 1.002f, 1.002f);
     model(MODEL)
         .renderAll(
             pose, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), light, overlay, -1);
