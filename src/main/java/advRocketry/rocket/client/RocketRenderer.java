@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -20,6 +21,14 @@ public final class RocketRenderer extends EntityRenderer<RocketEntity> {
   public RocketRenderer(EntityRendererProvider.Context context) {
     super(context);
     blocks = context.getBlockRenderDispatcher();
+  }
+
+  @Override
+  public boolean shouldRender(RocketEntity rocket, Frustum frustum, double x, double y, double z) {
+    if (super.shouldRender(rocket, frustum, x, y, z)) return true;
+    return rocket.enginesActive()
+        && rocket.shouldRender(x, y, z)
+        && frustum.isVisible(rocket.getBoundingBoxForCulling().expandTowards(0, -4, 0).inflate(.5));
   }
 
   @Override

@@ -71,6 +71,8 @@ public final class RocketExhaust {
       for (var cell : rocket.structure().cells) {
         if (!(cell.state().getBlock() instanceof RocketPartBlock part)
             || part.kind != RocketPartBlock.Kind.ENGINE) continue;
+        // Stagger emissions so smoke does not hide the hot core or form a solid column.
+        if ((client.level.getGameTime() + cell.position().hashCode()) % 4 != 0) continue;
         if (--budget < 0) return;
         Vec3 nozzle =
             rocket
@@ -81,14 +83,18 @@ public final class RocketExhaust {
                     cell.position().getZ() + .5 - rocket.structure().depth / 2d);
         var planet = GalaxySync.clientPlanet(client.level.dimension().location());
         if (planet != null && planet.atmosphere <= 0) continue;
-        client.level.addParticle(
-            ParticleTypes.CAMPFIRE_COSY_SMOKE, nozzle.x, nozzle.y - .5, nozzle.z, 0, -.08, 0);
         Vec3 end = nozzle.add(0, -8, 0);
         if (!client.level.hasChunkAt(BlockPos.containing(end))) continue;
         var hit =
             client.level.clip(
                 new ClipContext(
                     nozzle, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, rocket));
+        double smokeY =
+            hit.getType() == HitResult.Type.BLOCK
+                ? Math.max(nozzle.y - 2.5, hit.getLocation().y + .3)
+                : nozzle.y - 2.5;
+        client.level.addParticle(
+            ParticleTypes.CAMPFIRE_COSY_SMOKE, nozzle.x, smokeY, nozzle.z, 0, -.12, 0);
         if (hit.getType() == HitResult.Type.BLOCK) {
           double angle = client.level.random.nextDouble() * Math.PI * 2;
           Vec3 point = hit.getLocation().add(0, .15, 0);

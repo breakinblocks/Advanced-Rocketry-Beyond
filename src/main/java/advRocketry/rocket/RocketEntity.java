@@ -31,7 +31,6 @@ import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -585,24 +584,7 @@ public final class RocketEntity extends Entity {
   @Override
   public void tick() {
     super.tick();
-    if (level().isClientSide) {
-      if (enginesActive())
-        for (var cell : structure.cells)
-          if (cell.state().getBlock() instanceof RocketPartBlock part
-              && part.kind == RocketPartBlock.Kind.ENGINE) {
-            BlockPos engine = cell.position();
-            level()
-                .addParticle(
-                    ParticleTypes.FLAME,
-                    getX() - structure.width / 2d + engine.getX() + .5,
-                    getY() + engine.getY(),
-                    getZ() - structure.depth / 2d + engine.getZ() + .5,
-                    0,
-                    -.2,
-                    0);
-          }
-      return;
-    }
+    if (level().isClientSide) return;
     if (!(level() instanceof ServerLevel serverLevel)) return;
     transit.ticked(serverLevel);
     transit.update();
