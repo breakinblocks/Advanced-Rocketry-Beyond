@@ -28,7 +28,7 @@ public final class RocketRenderer extends EntityRenderer<RocketEntity> {
     if (super.shouldRender(rocket, frustum, x, y, z)) return true;
     return rocket.enginesActive()
         && rocket.shouldRender(x, y, z)
-        && frustum.isVisible(rocket.getBoundingBoxForCulling().expandTowards(0, -4, 0).inflate(.5));
+        && frustum.isVisible(rocket.getBoundingBoxForCulling().expandTowards(0, -10, 0).inflate(2.5));
   }
 
   @Override

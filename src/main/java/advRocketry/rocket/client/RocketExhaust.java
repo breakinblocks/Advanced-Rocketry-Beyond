@@ -3,15 +3,14 @@ package advRocketry.rocket.client;
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
-import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.rocket.RocketEntity;
 import advRocketry.rocket.RocketPartBlock;
 import advRocketry.space.GalaxySync;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -26,11 +25,13 @@ public final class RocketExhaust {
     var profile = EffectProfiles.get("rocket");
     if (!rocket.enginesActive() || !EffectGeometry.visible(rocket.position(), profile)) return;
     if (!EffectGeometry.reserve()) return;
-    var planet = GalaxySync.clientPlanet(rocket.level().dimension().location());
-    double spread =
-        planet == null ? .2 : .15 + .45 * (1 - Math.clamp(planet.atmosphere / 100d, 0, 1));
+    if (!RocketEffectShader.ready()) return;
+    var vertices = buffers.getBuffer(RocketEffectShader.PLUME);
     double time = EffectGeometry.time(rocket.level(), partialTick, profile);
-    var vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
+    int color =
+        ((int) (profile.opacity() * 255) << 24)
+            | ((int) ((Math.sin(time * .2) * .5 + .5) * 255) << 16)
+            | 0xffff;
     int engines = 0;
     for (var cell : rocket.structure().cells) {
       if (!(cell.state().getBlock() instanceof RocketPartBlock part)
@@ -39,22 +40,9 @@ public final class RocketExhaust {
       pose.pushPose();
       pose.translate(
           cell.position().getX() + .5, cell.position().getY(), cell.position().getZ() + .5);
-      for (int jet = 0; jet < 3; jet++) {
-        Vec3 previous = new Vec3(Math.cos(jet * 2.094) * .12, 0, Math.sin(jet * 2.094) * .12);
-        for (int step = 1; step <= 12; step++) {
-          double f = step / 12d, angle = time * .4 + jet * 2.094 + step * .7;
-          Vec3 next = new Vec3(Math.cos(angle) * spread * f, -f * 4, Math.sin(angle) * spread * f);
-          EffectGeometry.beam(
-              pose,
-              vertices,
-              previous,
-              next,
-              .13 * (1 - f) + .025,
-              profile.argb((float) (1 - f) * .65f));
-          previous = next;
-        }
-      }
-      EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, -.8, 0), .09, 0xc0fff1d5);
+      RocketSmoke.quad(pose, vertices, 2.5f, 0, -10, color);
+      pose.mulPose(Axis.YP.rotationDegrees(90));
+      RocketSmoke.quad(pose, vertices, 2.5f, 0, -10, color);
       pose.popPose();
     }
   }
@@ -62,6 +50,7 @@ public final class RocketExhaust {
   public static void tick(ClientTickEvent.Post event) {
     var client = Minecraft.getInstance();
     var profile = EffectProfiles.get("rocket");
+    RocketSmoke.tick(client.level);
     if (client.level == null || client.isPaused() || AdvancedRocketryConfig.reducedMotion()) return;
     int budget = 16;
     for (var entity : client.level.entitiesForRendering()) {
@@ -71,7 +60,7 @@ public final class RocketExhaust {
       for (var cell : rocket.structure().cells) {
         if (!(cell.state().getBlock() instanceof RocketPartBlock part)
             || part.kind != RocketPartBlock.Kind.ENGINE) continue;
-        // Stagger emissions so smoke does not hide the hot core or form a solid column.
+        // Spread emission work across ticks; smoke remains in world space.
         if ((client.level.getGameTime() + cell.position().hashCode()) % 4 != 0) continue;
         if (--budget < 0) return;
         Vec3 nozzle =
@@ -83,30 +72,15 @@ public final class RocketExhaust {
                     cell.position().getZ() + .5 - rocket.structure().depth / 2d);
         var planet = GalaxySync.clientPlanet(client.level.dimension().location());
         if (planet != null && planet.atmosphere <= 0) continue;
-        Vec3 end = nozzle.add(0, -8, 0);
+        Vec3 end = nozzle.add(0, -12, 0);
         if (!client.level.hasChunkAt(BlockPos.containing(end))) continue;
         var hit =
             client.level.clip(
                 new ClipContext(
                     nozzle, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, rocket));
-        double smokeY =
-            hit.getType() == HitResult.Type.BLOCK
-                ? Math.max(nozzle.y - 2.5, hit.getLocation().y + .3)
-                : nozzle.y - 2.5;
-        client.level.addParticle(
-            ParticleTypes.CAMPFIRE_COSY_SMOKE, nozzle.x, smokeY, nozzle.z, 0, -.12, 0);
-        if (hit.getType() == HitResult.Type.BLOCK) {
-          double angle = client.level.random.nextDouble() * Math.PI * 2;
-          Vec3 point = hit.getLocation().add(0, .15, 0);
-          client.level.addParticle(
-              ParticleTypes.CLOUD,
-              point.x,
-              point.y,
-              point.z,
-              Math.cos(angle) * .3,
-              .03,
-              Math.sin(angle) * .3);
-        }
+        boolean ground = hit.getType() == HitResult.Type.BLOCK;
+        Vec3 point = ground ? hit.getLocation().add(0, 1.1, 0) : nozzle.add(0, -7, 0);
+        RocketSmoke.emit(point, ground);
       }
     }
   }

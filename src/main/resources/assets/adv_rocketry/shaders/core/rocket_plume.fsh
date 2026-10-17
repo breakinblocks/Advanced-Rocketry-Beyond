@@ -1,0 +1,19 @@
+#version 150
+in vec2 uv;
+in vec4 tint;
+out vec4 fragColor;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+float noise(vec2 p) { vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y); }
+float fbm(vec2 p) { return .57*noise(p)+.28*noise(p*2.03)+.15*noise(p*4.07); }
+void main() {
+ float y=uv.y;
+ float width=.10+.75*pow(y,.7);
+ float turbulence=fbm(vec2(uv.x*12.0,y*24.0+tint.r*20.0));
+ float x=abs(uv.x*2.0-1.0);
+ float shape=1.0-smoothstep(width*.45,width+(turbulence-.5)*.13,x);
+ float tail=1.0-smoothstep(.62,1.0,y);
+ vec3 heat=mix(vec3(1.0,.35,.065),vec3(1.0,.97,.78),pow(shape,2.0));
+ float alpha=shape*tail*tint.a;
+ if(alpha<.005) discard;
+ fragColor=vec4(heat,alpha);
+}
