@@ -55,7 +55,10 @@ public record PlanetSkyState(
             case FROZEN -> .35f;
             default -> .48f;
           };
-    coverage = Math.clamp(coverage + weather * (1 - coverage) * .7f, 0, 1);
+    coverage =
+        planet.sky.clouds().coverage() == 0
+            ? 0
+            : Math.clamp(coverage + weather * (1 - coverage) * .7f, 0, 1);
     coverage *=
         Math.min(1, density)
             * (1
@@ -73,6 +76,19 @@ public record PlanetSkyState(
               default -> new Vec3(.93, .95, 1);
             };
     return new PlanetSkyState(density, day, twilight, 1 - day, coverage, weather, cloud, profile);
+  }
+
+  public PlanetSkyState litBy(double illumination) {
+    float light = (float) Math.clamp(illumination, 0, 1);
+    return new PlanetSkyState(
+        density,
+        daylight * light,
+        twilight * light,
+        Math.max(night, (1 - light) * daylight),
+        coverage,
+        weather,
+        cloudColor,
+        profile);
   }
 
   public static float smooth(float low, float high, float value) {

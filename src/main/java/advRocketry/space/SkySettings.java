@@ -3,6 +3,7 @@ package advRocketry.space;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.HexFormat;
 import java.util.Locale;
 import net.minecraft.util.StringRepresentable;
 
@@ -41,6 +42,23 @@ public record SkySettings(
                     () -> "Sky value must be finite and between " + min + " and " + max));
   }
 
+  private static Codec<Integer> color() {
+    return Codec.withAlternative(
+        Codec.intRange(-1, 0xffffff),
+        Codec.STRING.comapFlatMap(
+            text -> {
+              String hex = text.startsWith("#") ? text.substring(1) : text;
+              try {
+                return hex.length() == 6
+                    ? DataResult.success(HexFormat.fromHexDigits(hex))
+                    : DataResult.error(() -> "Cloud color must be #RRGGBB");
+              } catch (IllegalArgumentException invalid) {
+                return DataResult.error(() -> "Cloud color must be #RRGGBB");
+              }
+            },
+            value -> String.format(Locale.ROOT, "#%06x", value)));
+  }
+
   public record Clouds(float coverage, int color, float height, float speed, float direction) {
     public static final Clouds DEFAULT = new Clouds(-1, -1, 192, .35f, 45);
     public static final Codec<Clouds> CODEC =
@@ -49,9 +67,7 @@ public record SkySettings(
                 instance
                     .group(
                         range(-1, 1).optionalFieldOf("coverage", -1f).forGetter(Clouds::coverage),
-                        Codec.intRange(-1, 0xffffff)
-                            .optionalFieldOf("color", -1)
-                            .forGetter(Clouds::color),
+                        SkySettings.color().optionalFieldOf("color", -1).forGetter(Clouds::color),
                         range(64, 512).optionalFieldOf("height", 192f).forGetter(Clouds::height),
                         range(0, 4).optionalFieldOf("speed", .35f).forGetter(Clouds::speed),
                         range(0, 360)

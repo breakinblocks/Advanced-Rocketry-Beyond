@@ -5,6 +5,7 @@ package advRocketry.space.client;
 
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
+import advRocketry.client.effects.ShaderCompatibility;
 import advRocketry.life.AtmosphereSync;
 import advRocketry.life.SpaceSuitItem;
 import advRocketry.orbit.BeaconFinderItem;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import org.joml.Matrix4f;
 
@@ -72,6 +74,34 @@ public final class PlanetEffects extends DimensionSpecialEffects {
       Matrix4f projection,
       boolean foggy,
       Runnable setupFog) {
+    return renderSkyPass(level, partialTick, view, camera, foggy, setupFog, false);
+  }
+
+  public static void afterSky(RenderLevelStageEvent event) {
+    var client = Minecraft.getInstance();
+    if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_SKY
+        || !ShaderCompatibility.shaderPackActive()
+        || ShaderCompatibility.shadowPass()
+        || client.level == null
+        || !(client.level.effects() instanceof PlanetEffects effects)) return;
+    effects.renderSkyPass(
+        client.level,
+        event.getPartialTick().getGameTimeDeltaPartialTick(false),
+        event.getModelViewMatrix(),
+        event.getCamera(),
+        false,
+        () -> {},
+        true);
+  }
+
+  private boolean renderSkyPass(
+      ClientLevel level,
+      float partialTick,
+      Matrix4f view,
+      Camera camera,
+      boolean foggy,
+      Runnable setupFog,
+      boolean afterSky) {
     Planet planet = planet();
     var player = Minecraft.getInstance().player;
     boolean freeFlight =
@@ -85,8 +115,11 @@ public final class PlanetEffects extends DimensionSpecialEffects {
                     ? AdvancedRocketryConfig.overworldSkyOverride()
                     : AdvancedRocketryConfig.skyOverride(space)))
         || foggy
+        || camera.getEntity() instanceof LivingEntity living
+            && (living.hasEffect(MobEffects.BLINDNESS) || living.hasEffect(MobEffects.DARKNESS))
         || camera.getFluidInCamera() != FogType.NONE) return false;
-    PlanetSky.render(level, planet, view, partialTick, setupFog);
+    if (ShaderCompatibility.shaderPackActive() == afterSky)
+      PlanetSky.render(level, planet, view, partialTick, setupFog);
     return true;
   }
 
@@ -150,6 +183,11 @@ public final class PlanetEffects extends DimensionSpecialEffects {
   public float getCloudHeight() {
     Planet planet = planet();
     if (planet == null) return super.getCloudHeight();
-    return !space && planet.atmosphere > 75 ? OVERWORLD_CLOUDS : Float.NaN;
+    boolean custom =
+        !planet.skyRenderOverride
+            && (overworld
+                ? AdvancedRocketryConfig.overworldSkyOverride()
+                : AdvancedRocketryConfig.skyOverride(space));
+    return custom || space || planet.atmosphere <= 75 ? Float.NaN : OVERWORLD_CLOUDS;
   }
 }

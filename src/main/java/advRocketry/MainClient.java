@@ -40,6 +40,8 @@ import advRocketry.rocket.client.RocketExhaust;
 import advRocketry.rocket.client.RocketSmoke;
 import advRocketry.space.client.PlanetClouds;
 import advRocketry.space.client.PlanetEffects;
+import advRocketry.space.client.PlanetSky;
+import advRocketry.space.client.SkyLayerShader;
 import advRocketry.transport.TransportRegistry;
 import advRocketry.transport.client.TransportRenderer;
 import advRocketry.transport.client.TransportScreen;
@@ -71,6 +73,7 @@ public final class MainClient {
     bus.addListener(HologramShader::register);
     bus.addListener(RocketEffectShader::register);
     bus.addListener(PlanetClouds::register);
+    bus.addListener(SkyLayerShader::register);
     bus.addListener(JetpackLayer::register);
     bus.addListener(ConnectedModelLoader::register);
     bus.<EntityRenderersEvent.RegisterLayerDefinitions>addListener(SpaceHelmetLayer::definitions);
@@ -102,6 +105,7 @@ public final class MainClient {
     NeoForge.EVENT_BUS.addListener(JetpackClient::controls);
     NeoForge.EVENT_BUS.addListener(JetpackClient::tick);
     NeoForge.EVENT_BUS.addListener(PlanetEffects::fog);
+    NeoForge.EVENT_BUS.addListener(PlanetEffects::afterSky);
     NeoForge.EVENT_BUS.addListener(PlanetEffects::disconnected);
     NeoForge.EVENT_BUS.addListener(StructurePreview::render);
     NeoForge.EVENT_BUS.addListener(StructurePreview::scroll);
@@ -137,6 +141,7 @@ public final class MainClient {
     event.registerReloadListener(
         (ResourceManagerReloadListener)
             manager -> {
+              PlanetSky.clear();
               OrbitalRenderer.clearModels();
               ElevatorCapsuleRenderer.clearModel();
               HovercraftRenderer.clearModel();

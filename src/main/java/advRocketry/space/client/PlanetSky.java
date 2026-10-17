@@ -4,6 +4,7 @@
 package advRocketry.space.client;
 
 import advRocketry.Main;
+import advRocketry.client.effects.ShaderCompatibility;
 import advRocketry.orbit.Station;
 import advRocketry.rocket.RocketEntity;
 import advRocketry.rocket.SpaceNavigation;
@@ -29,7 +30,6 @@ import java.util.Random;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -62,6 +62,7 @@ public final class PlanetSky {
 
   public static void render(
       ClientLevel level, Planet planet, Matrix4f view, float partialTick, Runnable setupFog) {
+    if (ShaderCompatibility.shadowPass()) return;
     Matrix4f skyView = new Matrix4f(view);
     Station station = null;
     if (planet.id == GalaxyData.SPACE_ID && Minecraft.getInstance().player != null) {
@@ -115,43 +116,38 @@ public final class PlanetSky {
         planet.atmosphere == 0
             ? Vec3.ZERO
             : new Vec3(
-                Math.pow(color.x, thickness),
-                Math.pow(color.y, thickness),
-                Math.pow(color.z, thickness));
+                    Math.pow(color.x, thickness),
+                    Math.pow(color.y, thickness),
+                    Math.pow(color.z, thickness))
+                .scale(atmosphere);
     RenderSystem.depthMask(false);
     RenderSystem.disableCull();
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
     FogRenderer.setupNoFog();
     RenderSystem.setShaderColor(1, 1, 1, 1);
-    RenderSystem.setShader(GameRenderer::getPositionColorShader);
-    BufferBuilder sky =
-        Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-    int r = (int) (255 * color.x), g = (int) (255 * color.y), b = (int) (255 * color.z);
-    float size = 64;
-    float[][] corners = {
-      {-size, -size, -size},
-      {size, -size, -size},
-      {size, size, -size},
-      {-size, size, -size},
-      {-size, -size, size},
-      {size, -size, size},
-      {size, size, size},
-      {-size, size, size}
-    };
-    int[][] faces = {
-      {0, 1, 2, 3}, {4, 7, 6, 5}, {0, 4, 5, 1}, {3, 2, 6, 7}, {0, 3, 7, 4}, {1, 5, 6, 2}
-    };
-    for (int[] face : faces)
-      for (int corner : face)
-        sky.addVertex(skyView, corners[corner][0], corners[corner][1], corners[corner][2])
-            .setColor(r, g, b, 255);
-    BufferUploader.drawWithShader(sky.buildOrThrow());
+    var camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+    var state =
+        PlanetSkyState.resolve(
+                planet,
+                camera.y,
+                level.getTimeOfDay(partialTick),
+                level.getRainLevel(partialTick),
+                level.getThunderLevel(partialTick),
+                level
+                    .getBiome(
+                        Minecraft.getInstance().gameRenderer.getMainCamera().getBlockPosition())
+                    .value()
+                    .getBaseTemperature())
+            .litBy(illumination);
+    PlanetAtmosphere.background(skyView, planet, state, color, level.getTimeOfDay(partialTick));
+    PlanetAtmosphere.night(skyView, planet, state, level.getGameTime() + (double) partialTick);
     float starBrightness =
         Math.clamp(
-            level.getStarBrightness(partialTick) * (1 - level.getRainLevel(partialTick))
-                + (density == 0 || color.x < .09 && color.y < .09 && color.z < .09 ? 1 : 0)
-                - Math.max(0, density - 1),
+            Math.max(state.night(), 1 - Math.min(1, state.density()))
+                * (1 - state.weather())
+                * planet.sky.stars()
+                / Math.max(1, state.density()),
             0,
             1);
     Matrix4f starView =
@@ -162,8 +158,7 @@ public final class PlanetSky {
     VertexBuffer stars = stars();
     RenderSystem.setShaderColor(1, 1, 1, (int) (255 * starBrightness) / 255f);
     stars.bind();
-    stars.drawWithShader(
-        starView, RenderSystem.getProjectionMatrix(), GameRenderer.getPositionShader());
+    stars.drawWithShader(starView, RenderSystem.getProjectionMatrix(), SkyLayerShader.color());
     VertexBuffer.unbind();
     RenderSystem.setShaderColor(1, 1, 1, 1);
     var player = Minecraft.getInstance().player;
@@ -180,11 +175,6 @@ public final class PlanetSky {
       setupFog.run();
       return;
     }
-    drawTwilight(
-        skyView,
-        level.getTimeOfDay(partialTick),
-        density,
-        planet.id == GalaxyData.EARTH_ID ? 1 : illumination);
     PoseStack pose = new PoseStack();
     pose.mulPose(skyView);
     pose.mulPose(Axis.YP.rotationDegrees(-90));
@@ -261,6 +251,8 @@ public final class PlanetSky {
       quad(pose.last().pose(), RINGS, 150);
       pose.popPose();
     }
+    PlanetAtmosphere.clouds(
+        skyView, planet, state, level.getGameTime() + (double) partialTick, camera);
     RenderSystem.setShaderColor(1, 1, 1, 1);
     RenderSystem.disableBlend();
     RenderSystem.enableCull();
@@ -291,33 +283,6 @@ public final class PlanetSky {
                   moon, moon.orbitalAngle(ticks, star, planet), root.orbitalDistance);
     }
     return light;
-  }
-
-  private static void drawTwilight(
-      Matrix4f view, float celestialAngle, float density, double light) {
-    float[] color = AtmosphereVisuals.twilight(celestialAngle, density, light);
-    if (color == null) return;
-    PoseStack pose = new PoseStack();
-    pose.mulPose(view);
-    pose.mulPose(Axis.XP.rotationDegrees(90));
-    if (Math.sin(celestialAngle * Math.PI * 2) < 0) pose.mulPose(Axis.ZP.rotationDegrees(180));
-    pose.mulPose(Axis.ZP.rotationDegrees(90));
-    RenderSystem.setShader(GameRenderer::getPositionColorShader);
-    BufferBuilder glow =
-        Tesselator.getInstance()
-            .begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-    glow.addVertex(pose.last(), 0, 100, 0)
-        .setColor(color[0], color[1], color[2], Math.clamp(color[3] * density, 0, 1));
-    for (int index = 0; index <= 16; index++) {
-      double angle = index * Math.PI * 2 / 16;
-      glow.addVertex(
-              pose.last(),
-              (float) Math.sin(angle) * 120,
-              (float) Math.cos(angle) * 120,
-              (float) -Math.cos(angle) * 40 * color[3])
-          .setColor(color[0], color[1], color[2], 0);
-    }
-    BufferUploader.drawWithShader(glow.buildOrThrow());
   }
 
   private static float apparentSize(Planet planet, float distance) {
@@ -422,7 +387,7 @@ public final class PlanetSky {
     }
     RenderSystem.setShaderColor(1, 1, 1, alpha);
     quad(pose.last().pose(), icon, size);
-    PlanetAccents.render(pose, planet, size, alpha);
+    PlanetAccents.render(pose, planet, size, alpha, shadowAngle);
     if (planet.hasShading()) {
       if (planet.atmosphere > 25) {
         tint(planet.skyColor, alpha * .5f);
@@ -451,7 +416,7 @@ public final class PlanetSky {
   private static VertexBuffer stars() {
     if (starBuffer != null) return starBuffer;
     BufferBuilder builder =
-        Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+        Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
     Random random = new Random(10842);
     for (int index = 0; index < 1800; index++) {
       Vec3 direction =
@@ -470,7 +435,9 @@ public final class PlanetSky {
       Vec3 other = direction.cross(tangent);
       for (int[] corner : new int[][] {{-1, -1}, {1, -1}, {1, 1}, {-1, 1}}) {
         Vec3 vertex = center.add(tangent.scale(corner[0])).add(other.scale(corner[1]));
-        builder.addVertex((float) vertex.x, (float) vertex.y, (float) vertex.z);
+        builder
+            .addVertex((float) vertex.x, (float) vertex.y, (float) vertex.z)
+            .setColor(255, 255, 255, 255);
       }
     }
     starBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
@@ -520,7 +487,7 @@ public final class PlanetSky {
   }
 
   private static void quad(Matrix4f matrix, ResourceLocation texture, float size, float height) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+    RenderSystem.setShader(SkyLayerShader::texture);
     RenderSystem.setShaderTexture(0, texture);
     // These sky sprites are magnified far beyond their native resolution.
     // Restore the resource pack's filter after this draw, including on failure.
@@ -528,11 +495,12 @@ public final class PlanetSky {
     skyTexture.setBlurMipmap(true, false);
     try {
       BufferBuilder buffer =
-          Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-      buffer.addVertex(matrix, -size, height, -size).setUv(0, 0);
-      buffer.addVertex(matrix, size, height, -size).setUv(1, 0);
-      buffer.addVertex(matrix, size, height, size).setUv(1, 1);
-      buffer.addVertex(matrix, -size, height, size).setUv(0, 1);
+          Tesselator.getInstance()
+              .begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+      buffer.addVertex(matrix, -size, height, -size).setUv(0, 0).setColor(255, 255, 255, 255);
+      buffer.addVertex(matrix, size, height, -size).setUv(1, 0).setColor(255, 255, 255, 255);
+      buffer.addVertex(matrix, size, height, size).setUv(1, 1).setColor(255, 255, 255, 255);
+      buffer.addVertex(matrix, -size, height, size).setUv(0, 1).setColor(255, 255, 255, 255);
       BufferUploader.drawWithShader(buffer.buildOrThrow());
     } finally {
       skyTexture.restoreLastBlurMipmap();

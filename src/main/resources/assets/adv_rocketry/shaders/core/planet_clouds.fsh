@@ -1,6 +1,10 @@
 #version 150
 uniform float GameTime;
 uniform float Motion;
+uniform vec3 CloudColor;
+uniform float Coverage;
+uniform float Seed;
+uniform vec3 LightDirection;
 uniform vec4 ColorModulator;
 in vec2 texCoord;
 out vec4 fragColor;
@@ -18,10 +22,10 @@ void main() {
     float z = sqrt(max(0.001, 1.0 - r2));
     vec2 sphere = vec2(atan(p.x, z), asin(p.y));
     vec2 uv = sphere * vec2(5.0, 12.0);
-    uv.x += GameTime * 12.0 * Motion;
+    uv.x += GameTime * 12.0 * Motion + Seed;
     float density = noise(uv) * .55 + noise(uv * 2.1) * .3 + noise(uv * 4.3) * .15;
-    float cloud = smoothstep(.47, .72, density);
+    float cloud = smoothstep(.75 - Coverage * .5, .93 - Coverage * .5, density);
     float limb = smoothstep(0.0, .35, z);
-    fragColor = vec4(vec3(.86, .94, 1.0) * ColorModulator.rgb,
+    fragColor = vec4(CloudColor * ColorModulator.rgb * (.15 + .85 * max(0.0, dot(vec3(p.x, p.y, z), LightDirection))),
         cloud * limb * ColorModulator.a);
 }
