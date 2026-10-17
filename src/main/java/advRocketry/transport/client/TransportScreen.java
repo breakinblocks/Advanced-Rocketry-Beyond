@@ -8,10 +8,13 @@ import advRocketry.client.ui.UiButton;
 import advRocketry.client.ui.UiTheme;
 import advRocketry.transport.TransportMenu;
 import advRocketry.transport.TransportRegistry;
+import advRocketry.transport.TransportSideConfig;
+import advRocketry.transport.TransportTagEdit;
 import advRocketry.util.Texts;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class TransportScreen extends ModContainerScreen<TransportMenu> {
   private static final String[] MODES = {
@@ -33,13 +37,14 @@ public final class TransportScreen extends ModContainerScreen<TransportMenu> {
   };
   private final List<UiButton> sides = new ArrayList<>();
   private UiButton routing, redstone;
+  private final List<UiButton> policies = new ArrayList<>();
 
   public TransportScreen(TransportMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
     imageWidth = 300;
-    imageHeight = 232;
+    imageHeight = 362;
     inventoryLabelX = 69;
-    inventoryLabelY = 139;
+    inventoryLabelY = 269;
   }
 
   private UiButton button(int id, int x, int y, int width, Component text) {
@@ -75,6 +80,44 @@ public final class TransportScreen extends ModContainerScreen<TransportMenu> {
               Component.translatable(
                   "gui.adv_rocketry.transport.network_wide_round_robin_gives_each")));
     }
+    for (int i = 0; i < 6; i++)
+      button(10 + i, 8 + i * 48, 140, 46, Component.literal(Direction.values()[i].getName()));
+    policies.clear();
+    for (int i = 0; i < 13; i++)
+      policies.add(button(20 + i, 8 + (i % 4) * 72, 161 + (i / 4) * 19, 70, Component.empty()));
+    // Last row sits below the filter slots to avoid overlapping ghost entries.
+    policies.get(12).setY(topPos + 240);
+    var tag =
+        addRenderableWidget(
+            new EditBox(
+                font,
+                leftPos + 82,
+                topPos + 240,
+                152,
+                18,
+                Component.literal("Tag: slot=namespace:path")));
+    tag.setMaxLength(260);
+    addRenderableWidget(
+        UiButton.builder(
+                Component.literal("Tag"),
+                b -> {
+                  String[] parts = tag.getValue().split("=", 2);
+                  if (parts.length != 2) return;
+                  try {
+                    PacketDistributor.sendToServer(
+                        new TransportTagEdit(
+                            menu.containerId,
+                            menu.value(13),
+                            Integer.parseInt(parts[0]) - 1,
+                            parts[1]));
+                  } catch (NumberFormatException ignored) {
+                  }
+                })
+            .bounds(leftPos + 238, topPos + 240, 54, 18)
+            .build());
+    tag.setTooltip(
+        Tooltip.create(
+            Component.literal("Set a filter tag, e.g. 1=c:ingots/iron. Slots are numbered 1-9.")));
     if (menu.kind == TransportRegistry.Kind.FLUID)
       button(8, 152, 88, 140, Component.translatable("gui.adv_rocketry.transport.clear_fluid_lock"))
           .setTooltip(
@@ -86,6 +129,29 @@ public final class TransportScreen extends ModContainerScreen<TransportMenu> {
   @Override
   public void containerTick() {
     super.containerTick();
+    String[] labels = {
+      "Priority -",
+      "Priority +",
+      TransportSideConfig.Routing.values()[Math.clamp(menu.value(15), 0, 4)].name(),
+      "Pull RS " + menu.value(16),
+      "Push RS " + menu.value(17),
+      "Cap " + (menu.value(18) == Integer.MAX_VALUE ? "max" : menu.value(18)),
+      "Retry " + menu.value(19),
+      "Channel " + menu.value(20),
+      menu.value(21) == 0 ? "Filter off" : "Filter on",
+      menu.value(22) == 0 ? "Allowlist" : "Denylist",
+      menu.value(23) == 1 ? "Exact" : "Identity",
+      menu.value(24) == 1 ? "Sensor on" : "Sensor off",
+      menu.value(25) == 1 ? "VOID ON" : "Void off"
+    };
+    for (int i = 0; i < policies.size(); i++)
+      policies.get(i).setMessage(Component.literal(labels[i]));
+    policies
+        .get(12)
+        .setTooltip(
+            Tooltip.create(
+                Component.literal(
+                    "Deletes matching overflow after real receivers. Enable deliberately.")));
     for (int i = 0; i < sides.size(); i++)
       sides
           .get(i)
@@ -105,6 +171,17 @@ public final class TransportScreen extends ModContainerScreen<TransportMenu> {
   @Override
   protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
     super.renderLabels(graphics, mouseX, mouseY);
+    drawText(
+        graphics,
+        Component.literal(
+            "Edit "
+                + Direction.values()[Math.clamp(menu.value(13), 0, 5)].getName()
+                + " / Priority "
+                + menu.value(14)),
+        8,
+        130,
+        UiTheme.MUTED,
+        false);
     String rate =
         switch (menu.kind) {
           case ENERGY -> "5,000 FE/t per connection";

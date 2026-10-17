@@ -132,6 +132,10 @@ public final class TransportBlock extends Block implements EntityBlock, SimpleWa
   protected void neighborChanged(
       BlockState state, Level level, BlockPos pos, Block neighbor, BlockPos from, boolean moved) {
     if (!level.isClientSide) {
+      if (level.getBlockEntity(pos) instanceof TransportBlockEntity pipe) {
+        pipe.wake();
+        pipe.connectionsDirty = true;
+      }
       TransportNetworks.invalidate(level, pos);
       level.scheduleTick(pos, this, 1);
     }
@@ -140,7 +144,11 @@ public final class TransportBlock extends Block implements EntityBlock, SimpleWa
   @Override
   protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
     if (level.getBlockEntity(pos) instanceof TransportBlockEntity pipe) {
-      pipe.refreshConnections();
+      if (pipe.connectionsDirty) pipe.refreshConnections();
+      if (pipe.sensorUntil != 0 && pipe.sensorUntil <= level.getGameTime()) {
+        pipe.sensorUntil = 0;
+        level.updateNeighborsAt(pos, this);
+      }
       if (pipe.activeUntil <= level.getGameTime() && level.getBlockState(pos).getValue(ACTIVE))
         level.setBlock(
             pos,
@@ -149,6 +157,20 @@ public final class TransportBlock extends Block implements EntityBlock, SimpleWa
       else if (pipe.activeUntil > level.getGameTime())
         level.scheduleTick(pos, this, (int) (pipe.activeUntil - level.getGameTime()));
     }
+  }
+
+  @Override
+  protected boolean isSignalSource(BlockState state) {
+    return true;
+  }
+
+  @Override
+  protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+    return level.getBlockEntity(pos) instanceof TransportBlockEntity pipe
+            && pipe.getLevel() != null
+            && pipe.sensorUntil > pipe.getLevel().getGameTime()
+        ? 15
+        : 0;
   }
 
   @Override

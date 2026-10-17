@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -61,6 +62,55 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
         .getCapability();
   }
 
+  public final TransportSideConfig[] sides = new TransportSideConfig[6];
+  public int channel = -1;
+  public long sensorUntil;
+  public long lastTransferTick;
+  public int lastTransferAmount;
+  public int networkSize;
+  public int blockedReason;
+  public boolean connectionsDirty = true;
+  private long powerTick = Long.MIN_VALUE;
+  private boolean power;
+
+  public TransportSideConfig side(Direction side) {
+    return sides[side.ordinal()];
+  }
+
+  public void wake() {
+    powerTick = Long.MIN_VALUE;
+    for (var side : sides) side.retry.wake();
+  }
+
+  public boolean gate(int mode) {
+    return mode == 0 || powered() == (mode == 1);
+  }
+
+  public boolean extracting(Direction side) {
+    return extracting() && gate(side(side).extractRedstone);
+  }
+
+  public boolean inserting(Direction side) {
+    return gate(side(side).insertRedstone);
+  }
+
+  public boolean accepts(Direction side, ItemStack stack) {
+    return side(side).configured ? side(side).accepts(stack) : accepts(stack);
+  }
+
+  public void transferred(Direction side, int amount) {
+    lastTransferAmount =
+        lastTransferTick == level.getGameTime() ? lastTransferAmount + amount : amount;
+    lastTransferTick = level.getGameTime();
+    blockedReason = 0;
+    if (side(side).sensor) {
+      boolean on = sensorUntil > level.getGameTime();
+      sensorUntil = level.getGameTime() + 20;
+      if (!on) level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+      level.scheduleTick(worldPosition, getBlockState().getBlock(), 20);
+    }
+  }
+
   public boolean roundRobin;
   public int redstone;
   public int cursor;
@@ -87,6 +137,7 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
 
   public TransportBlockEntity(BlockPos pos, BlockState state) {
     super(TransportRegistry.ENTITY.get(), pos, state);
+    Arrays.setAll(sides, index -> new TransportSideConfig());
   }
 
   public TransportRegistry.Kind kind() {
@@ -102,6 +153,14 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
   }
 
   private boolean powered() {
+    if (powerTick != level.getGameTime()) {
+      power = scanPower();
+      powerTick = level.getGameTime();
+    }
+    return power;
+  }
+
+  private boolean scanPower() {
     for (Direction side : Direction.values()) {
       BlockPos neighbor = worldPosition.relative(side);
       if (!level.hasChunkAt(neighbor)) continue;
@@ -110,7 +169,8 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
       if (!state.isRedstoneConductor(level, neighbor)) continue;
       for (Direction sourceSide : Direction.values()) {
         BlockPos source = neighbor.relative(sourceSide);
-        if (level.hasChunkAt(source)
+        if (!source.equals(worldPosition)
+            && level.hasChunkAt(source)
             && level.getBlockState(source).getDirectSignal(level, source, sourceSide) > 0)
           return true;
       }
@@ -119,6 +179,8 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
   }
 
   public void changed() {
+    wake();
+    connectionsDirty = true;
     setChanged();
     TransportNetworks.invalidate(level, worldPosition);
     refreshConnections();
@@ -126,6 +188,7 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
 
   public void refreshConnections() {
     if (level == null || level.isClientSide || isRemoved()) return;
+    connectionsDirty = false;
     BlockState old = getBlockState(), state = old;
     boolean endpoint = false;
     for (Direction direction : Direction.values()) {
@@ -135,7 +198,9 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
         if (level.hasChunkAt(next)
             && level.getBlockEntity(next) instanceof TransportBlockEntity other)
           connected =
-              other.kind() == kind() && other.modes[direction.getOpposite().ordinal()] != DISABLED;
+              other.kind() == kind()
+                  && other.channel == channel
+                  && other.modes[direction.getOpposite().ordinal()] != DISABLED;
         else if (TransportNetworks.capability(this, direction) != null) {
           connected = true;
           endpoint = true;
@@ -155,6 +220,8 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
   public void onLoad() {
     super.onLoad();
     available = true;
+    connectionsDirty = true;
+    wake();
     capabilities.clear();
     if (level != null && !level.isClientSide) {
       TransportNetworks.invalidate(level, worldPosition);
@@ -182,6 +249,10 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
     super.saveAdditional(tag, registries);
     tag.putIntArray("sides", modes);
+    tag.putInt("channel", channel);
+    var configs = new ListTag();
+    for (var side : sides) configs.add(side.save(registries));
+    tag.put("side_config", configs);
     tag.putBoolean("roundRobin", roundRobin);
     tag.putInt("redstone", redstone);
     tag.putInt("cursor", cursor);
@@ -199,6 +270,14 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
     Arrays.fill(modes, INSERT);
     int[] saved = tag.getIntArray("sides");
     for (int i = 0; i < Math.min(6, saved.length); i++) modes[i] = Math.clamp(saved[i], 0, 2);
+    channel = tag.contains("channel") ? Math.clamp(tag.getInt("channel"), -1, 15) : -1;
+    var configs = tag.getList("side_config", 10);
+    for (int i = 0; i < 6; i++)
+      sides[i] =
+          i < configs.size()
+              ? TransportSideConfig.load(configs.getCompound(i), registries)
+              : new TransportSideConfig();
+    wake();
     roundRobin = tag.getBoolean("roundRobin");
     redstone = Math.clamp(tag.getInt("redstone"), 0, 2);
     cursor = Math.max(0, tag.getInt("cursor"));

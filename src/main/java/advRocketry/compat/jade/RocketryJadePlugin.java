@@ -1,5 +1,7 @@
 package advRocketry.compat.jade;
 
+import advRocketry.transport.TransportBlock;
+import advRocketry.transport.TransportBlockEntity;
 import advRocketry.life.OxygenBlock;
 import advRocketry.life.OxygenBlockEntity;
 import advRocketry.orbit.OrbitalBlock;
@@ -17,6 +19,7 @@ import snownee.jade.api.WailaPlugin;
 public final class RocketryJadePlugin implements IWailaPlugin {
   @Override
   public void register(IWailaCommonRegistration registration) {
+    registration.registerBlockDataProvider(TransportStatusProvider.INSTANCE, TransportBlockEntity.class);
     registration.registerBlockDataProvider(
         MachineStatusProvider.INSTANCE, OrbitalBlockEntity.class);
     registration.registerBlockDataProvider(MachineStatusProvider.INSTANCE, RocketBlockEntity.class);
@@ -27,6 +30,7 @@ public final class RocketryJadePlugin implements IWailaPlugin {
 
   @Override
   public void registerClient(IWailaClientRegistration registration) {
+    registration.registerBlockComponent(TransportStatusProvider.INSTANCE, TransportBlock.class);
     registration.registerBlockComponent(MachineStatusProvider.INSTANCE, OrbitalBlock.class);
     registration.registerBlockComponent(MachineStatusProvider.INSTANCE, RocketPartBlock.class);
     registration.registerBlockComponent(MachineStatusProvider.INSTANCE, ProcessingBlock.class);

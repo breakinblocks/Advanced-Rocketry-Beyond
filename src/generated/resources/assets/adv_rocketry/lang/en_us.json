@@ -1,5 +1,4 @@
 {
-  "message.adv_rocketry.assembly.protected": "Assembly is not allowed at %s",
   "adv_rocketry.guide_name": "Advanced Rocketry Field Guide",
   "adv_rocketry.guide_tooltip": "Machines, life support, space travel and automation.",
   "advancement.advancedRocketry": "Advanced Rocketry",
@@ -677,6 +676,7 @@
   "key.adv_rocketry.space_down": "Descend in Space Flight",
   "key.adv_rocketry.toggle_jetpack": "Toggle Jetpack",
   "key.categories.adv_rocketry": "Advanced Rocketry",
+  "message.adv_rocketry.assembly.protected": "Assembly is not allowed at %s",
   "message.adv_rocketry.asteroid_chip.unprogrammed_asteroid_chip": "Unprogrammed asteroid chip",
   "message.adv_rocketry.atmosphere_detector_block.detecting": "Detecting %s",
   "message.adv_rocketry.atmosphere_readout": "Atmosphere: %s (%s atm)",

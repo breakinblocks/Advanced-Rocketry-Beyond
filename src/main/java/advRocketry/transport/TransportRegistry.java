@@ -71,6 +71,7 @@ public final class TransportRegistry {
   private TransportRegistry() {}
 
   public static void register(IEventBus bus) {
+    bus.addListener(TransportTagEdit::register);
     BLOCKS.register(bus);
     ITEMS.register(bus);
     ENTITIES.register(bus);
