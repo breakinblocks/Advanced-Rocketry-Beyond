@@ -22,6 +22,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 /** Native counterpart of LibVulpes' machine-bound repeating sound. */
 @EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public final class MachineSounds {
+  private static final float IDLE_PITCH = .72f;
   private static final Map<ProcessingBlockEntity, MachineLoop> SOUNDS = new HashMap<>();
 
   private MachineSounds() {}
@@ -79,6 +80,7 @@ public final class MachineSounds {
       looping = true;
       delay = 0;
       volume = .02f;
+      pitch = IDLE_PITCH;
       x = machine.getBlockPos().getX() + .5;
       y = machine.getBlockPos().getY() + .5;
       z = machine.getBlockPos().getZ() + .5;
@@ -95,7 +97,7 @@ public final class MachineSounds {
       spool = Math.clamp(spool + (machine.running() ? .08f : -.06f), 0, 1);
       if (spool <= 0) stop();
       volume = spool * .85f;
-      pitch = .72f + spool * .28f;
+      pitch = IDLE_PITCH + spool * (1 - IDLE_PITCH);
     }
   }
 }
