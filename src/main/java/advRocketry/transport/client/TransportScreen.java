@@ -3,6 +3,7 @@
 
 package advRocketry.transport.client;
 
+import advRocketry.Main;
 import advRocketry.client.ui.ModContainerScreen;
 import advRocketry.client.ui.UiButton;
 import advRocketry.client.ui.UiTheme;
@@ -19,6 +20,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -43,6 +45,11 @@ public final class TransportScreen extends ModContainerScreen<TransportMenu> {
     imageHeight = 240;
     inventoryLabelX = 129;
     inventoryLabelY = 147;
+  }
+
+  private static ResourceLocation icon(String name) {
+    return ResourceLocation.fromNamespaceAndPath(
+        Main.MODID, "textures/gui/filter/" + name + ".png");
   }
 
   private UiButton button(int id, int x, int y, int width, Component text) {
@@ -92,34 +99,39 @@ public final class TransportScreen extends ModContainerScreen<TransportMenu> {
     for (int i = 0; i < 13; i++)
       policies.add(button(20 + i, 180 + (i % 3) * 78, 42 + (i / 3) * 19, 76, Component.empty()));
 
+    policies.get(8).icon(icon(menu.kind == TransportRegistry.Kind.FLUID ? "fluid" : "item"));
+    policies.get(10).icon(icon("exact"));
+
     var tag =
         addRenderableWidget(
             new EditBox(
                 font,
                 leftPos + 8,
                 topPos + 126,
-                124,
+                106,
                 18,
                 Component.literal("Tag: slot=namespace:path")));
     tag.setMaxLength(260);
-    addRenderableWidget(
-        UiButton.builder(
-                Component.literal("Tag"),
-                b -> {
-                  String[] parts = tag.getValue().split("=", 2);
-                  if (parts.length != 2) return;
-                  try {
-                    PacketDistributor.sendToServer(
-                        new TransportTagEdit(
-                            menu.containerId,
-                            menu.value(13),
-                            Integer.parseInt(parts[0]) - 1,
-                            parts[1]));
-                  } catch (NumberFormatException ignored) {
-                  }
-                })
-            .bounds(leftPos + 136, topPos + 126, 34, 18)
-            .build());
+    ((UiButton)
+            addRenderableWidget(
+                UiButton.builder(
+                        Component.literal("Tag"),
+                        b -> {
+                          String[] parts = tag.getValue().split("=", 2);
+                          if (parts.length != 2) return;
+                          try {
+                            PacketDistributor.sendToServer(
+                                new TransportTagEdit(
+                                    menu.containerId,
+                                    menu.value(13),
+                                    Integer.parseInt(parts[0]) - 1,
+                                    parts[1]));
+                          } catch (NumberFormatException ignored) {
+                          }
+                        })
+                    .bounds(leftPos + 118, topPos + 126, 52, 18)
+                    .build()))
+        .icon(icon("tag"));
     tag.setTooltip(
         Tooltip.create(
             Component.literal("Set a filter tag, e.g. 1=c:ingots/iron. Slots are numbered 1-9.")));
@@ -151,6 +163,7 @@ public final class TransportScreen extends ModContainerScreen<TransportMenu> {
     };
     for (int i = 0; i < policies.size(); i++)
       policies.get(i).setMessage(Component.literal(labels[i]));
+    policies.get(9).icon(icon(menu.value(22) == 0 ? "allow" : "deny"));
     policies
         .get(12)
         .setTooltip(

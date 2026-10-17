@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=east": {
+      "model": "adv_rocketry:block/coal_generator",
+      "y": 90
+    },
+    "facing=north": {
       "model": "adv_rocketry:block/coal_generator"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/coal_generator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/coal_generator",
+      "y": 270
     }
   }
 }

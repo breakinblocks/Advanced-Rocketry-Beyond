@@ -1,3 +1,3 @@
 {
-  "parent": "minecraft:block/blast_furnace"
+  "parent": "adv_rocketry:block/art/fuel_generator"
 }

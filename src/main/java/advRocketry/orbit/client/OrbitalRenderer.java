@@ -3,7 +3,6 @@
 
 package advRocketry.orbit.client;
 
-import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
@@ -81,10 +80,10 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
   private static final ResourceLocation BLACK_HOLE_TEXTURE =
       ResourceLocation.fromNamespaceAndPath(
           Main.MODID, "textures/machine/black_hole_generator.png");
-  private static final ResourceLocation MICROWAVE_PANEL =
-      ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/block/solar.png");
-  private static final ResourceLocation MICROWAVE_SIDE =
-      ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/block/panelside.png");
+  private static final ResourceLocation MICROWAVE_MODEL =
+      ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/microwave_receiver.obj");
+  private static final ResourceLocation MICROWAVE_TEXTURE =
+      ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/microwave_receiver.png");
   private static final Map<ResourceLocation, ObjModel> MODELS = new HashMap<>();
 
   public OrbitalRenderer(BlockEntityRendererProvider.Context context) {}
@@ -379,23 +378,19 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       int light,
       int overlay) {
     if (!entity.formed) return;
+    pose.pushPose();
+    // The exported Blockbench model is already in blocks, centered over the controller.
+    // Raise its plinth clear of the controller and constituent panel surfaces.
+    pose.translate(0, 1.01, 0);
+    model(MICROWAVE_MODEL)
+        .renderAll(
+            pose,
+            buffers.getBuffer(RenderType.entityCutoutNoCull(MICROWAVE_TEXTURE)),
+            light,
+            overlay,
+            -1);
+    pose.popPose();
     Matrix4f matrix = pose.last().pose();
-    VertexConsumer panel = buffers.getBuffer(RenderType.entityCutoutNoCull(MICROWAVE_PANEL));
-    float[] x = {-2, 3, 3, -2};
-    float[] z = {-2, -2, 3, 3};
-    for (int i = 0; i < 4; i++)
-      panel
-          .addVertex(matrix, x[i], 1.01f, z[i])
-          .setColor(-1)
-          .setUv(x[i] + 2, z[i] + 2)
-          .setOverlay(overlay)
-          .setLight(light)
-          .setNormal(0, 1, 0);
-    VertexConsumer side = buffers.getBuffer(RenderType.entityCutoutNoCull(MICROWAVE_SIDE));
-    microwaveSide(matrix, side, -2, -2, 3, -2, 0, -1, light, overlay);
-    microwaveSide(matrix, side, 3, 3, -2, 3, 0, 1, light, overlay);
-    microwaveSide(matrix, side, 3, -2, 3, 3, 1, 0, light, overlay);
-    microwaveSide(matrix, side, -2, 3, -2, -2, -1, 0, light, overlay);
     if (entity.powerMadeLastTick <= 0) return;
     VertexConsumer beam = buffers.getBuffer(EffectRenderTypes.GLOW);
     for (int i = 0; i < 8; i++) {
@@ -405,48 +400,11 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       float z0 = (float) (Math.sin(angle) * 1.7 + .5);
       float x1 = (float) (Math.cos(next) * 1.7 + .5);
       float z1 = (float) (Math.sin(next) * 1.7 + .5);
-      beam.addVertex(matrix, x0, 1.02f, z0).setColor(85, 100, 110, 40);
-      beam.addVertex(matrix, x1, 1.02f, z1).setColor(85, 100, 110, 40);
+      beam.addVertex(matrix, x0, 3.0f, z0).setColor(85, 100, 110, 40);
+      beam.addVertex(matrix, x1, 3.0f, z1).setColor(85, 100, 110, 40);
       beam.addVertex(matrix, .5f, 65, .5f).setColor(85, 100, 110, 0);
       beam.addVertex(matrix, .5f, 65, .5f).setColor(85, 100, 110, 0);
     }
-    if (!AdvancedRocketryConfig.advancedVfx()) return;
-    VertexConsumer heat = buffers.getBuffer(EffectRenderTypes.GLOW);
-    double tick = entity.getLevel() == null ? 0 : entity.getLevel().getGameTime();
-    for (int xCell = 0; xCell < 10; xCell++)
-      for (int zCell = 0; zCell < 10; zCell++) {
-        float x0 = -2 + xCell * .5f;
-        float z0 = -2 + zCell * .5f;
-        float wave = (float) Math.sin(tick * .5 + xCell * 2 + zCell) * .015f;
-        heat.addVertex(matrix, x0, 1.03f + wave, z0).setColor(255, 180, 80, 18);
-        heat.addVertex(matrix, x0 + .5f, 1.03f + wave, z0).setColor(255, 180, 80, 18);
-        heat.addVertex(matrix, x0 + .5f, 1.03f + wave, z0 + .5f).setColor(255, 180, 80, 18);
-        heat.addVertex(matrix, x0, 1.03f + wave, z0 + .5f).setColor(255, 180, 80, 18);
-      }
-  }
-
-  private static void microwaveSide(
-      Matrix4f matrix,
-      VertexConsumer vertices,
-      float x0,
-      float z0,
-      float x1,
-      float z1,
-      float normalX,
-      float normalZ,
-      int light,
-      int overlay) {
-    float[] xs = {x0, x1, x1, x0};
-    float[] zs = {z0, z1, z1, z0};
-    float[] ys = {0, 0, 1, 1};
-    for (int i = 0; i < 4; i++)
-      vertices
-          .addVertex(matrix, xs[i], ys[i], zs[i])
-          .setColor(-1)
-          .setUv(i == 0 || i == 3 ? 0 : 5, i < 2 ? 1 : 0)
-          .setOverlay(overlay)
-          .setLight(light)
-          .setNormal(normalX, 0, normalZ);
   }
 
   private static void renderObservatory(

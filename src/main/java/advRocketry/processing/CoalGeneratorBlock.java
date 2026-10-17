@@ -11,7 +11,6 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -20,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 /** Single-slot original LibVulpes solid-fuel generator. */
-public final class CoalGeneratorBlock extends Block implements EntityBlock {
+public final class CoalGeneratorBlock extends GeneratorBlock implements EntityBlock {
   public CoalGeneratorBlock(Properties properties) {
     super(properties);
   }

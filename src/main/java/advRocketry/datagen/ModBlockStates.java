@@ -352,8 +352,8 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "side",
         "block/machinegeneric");
     connected("block/circle_light", "block/ctm/stationlight", -1);
-    model("block/coal_generator", "minecraft:block/furnace", null, true);
-    model("block/fuel_generator", "minecraft:block/blast_furnace", null, true);
+    model("block/coal_generator", "adv_rocketry:block/art/coal_generator", null, true);
+    model("block/fuel_generator", "adv_rocketry:block/art/fuel_generator", null, true);
     model(
         "block/concrete", "minecraft:block/cube_all", null, true, "all", "block/rocketpad_noedge");
     connected("block/copper_coil", "block/ctm/coilside", 0);
@@ -1044,8 +1044,8 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/chemical_reactor_formed");
     states("circle_light", NONE, "", "block/circle_light");
     states("citrine_crystal_block", NONE, "", "block/citrine_crystal_block");
-    states("coal_generator", NONE, "", "block/coal_generator");
-    states("fuel_generator", NONE, "", "block/fuel_generator");
+    states("coal_generator", HORIZONTAL, "", "block/coal_generator");
+    states("fuel_generator", HORIZONTAL, "", "block/fuel_generator");
     states("concrete", NONE, "", "block/concrete");
     states("copper_coil", NONE, "", "block/copper_coil");
     states("creative_energy_input", NONE, "", "block/creative_energy_input");

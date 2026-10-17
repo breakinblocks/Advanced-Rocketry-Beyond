@@ -8,10 +8,18 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 /** Flat native button retaining keyboard focus, narration, tooltips and menu actions. */
 public class UiButton extends Button {
   private boolean selected;
+  private ResourceLocation icon;
+
+  public UiButton icon(ResourceLocation texture) {
+    icon = texture;
+    return this;
+  }
+
   private boolean automaticTooltip;
 
   protected UiButton(Builder builder) {
@@ -51,15 +59,18 @@ public class UiButton extends Button {
         width,
         height,
         isFocused() || selected ? UiTheme.ACCENT : UiTheme.BORDER);
-    String label = UiTheme.fit(font, getMessage(), width - 8);
-    if (font.width(getMessage()) > width - 8 && getTooltip() == null) {
+    int inset = icon == null ? 0 : 18;
+    if (icon != null)
+      graphics.blit(icon, getX() + 3, getY() + (height - 16) / 2, 0, 0, 16, 16, 16, 16);
+    String label = UiTheme.fit(font, getMessage(), width - 8 - inset);
+    if (font.width(getMessage()) > width - 8 - inset && getTooltip() == null) {
       setTooltip(Tooltip.create(getMessage()));
       automaticTooltip = true;
     }
     graphics.drawString(
         font,
         label,
-        getX() + (width - font.width(label)) / 2,
+        getX() + inset + (width - inset - font.width(label)) / 2,
         getY() + (height - 8) / 2,
         selected ? UiTheme.ACCENT : active ? UiTheme.TEXT : UiTheme.DISABLED,
         false);
