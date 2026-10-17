@@ -47,13 +47,17 @@ public final class HolographicSelectorLogic {
   }
 
   public record Body(
-      Kind kind, int id, Component name, Vec3 offset, float radius, int color, boolean selected) {}
+      Kind kind, int id, Component name, Vec3 offset, float radius, int color, boolean selected) {
+    public Body {
+      radius = Math.clamp(radius, .05f, HologramState.MAX_RADIUS);
+    }
+  }
 
   /** One server-owned layout supplies both the visible body and its interaction bounds. */
   public static List<Body> bodies(GalaxyData galaxy, OrbitalBlockEntity selector) {
     if (!enabled(selector) || !selector.holographicSelector()) return List.of();
     List<Body> result = new ArrayList<>();
-    float scale = .8f + selector.hologram.size / 20f;
+    float scale = .8f + HologramState.clampSize(selector.hologram.size) / 20f;
     if (selector.hologram.star < 0) {
       for (Star star : galaxy.stars.values()) {
         boolean selected = star.id() == selector.hologram.selectedStar;
@@ -123,11 +127,42 @@ public final class HolographicSelectorLogic {
               Kind.BACK,
               0,
               Component.translatable("gui.adv_rocketry.orbital.selector.back"),
-              new Vec3(0, .45 + selector.hologram.size / 10d, 0),
+              new Vec3(
+                  0, .45 + Math.min(20, HologramState.clampSize(selector.hologram.size)) / 10d, 0),
               .15f,
               0xd07feaff,
               true));
     }
+    // Keep every body above the projector, including room-sized centered planets.
+    double lift =
+        result.stream()
+                .filter(body -> body.kind() != Kind.BACK)
+                .mapToDouble(Body::radius)
+                .max()
+                .orElse(.15)
+            - .15;
+    if (lift > 0)
+      result.replaceAll(
+          body ->
+              body.kind() == Kind.BACK
+                  ? (selector.hologram.size <= 100
+                      ? body
+                      : new Body(
+                          body.kind(),
+                          body.id(),
+                          body.name(),
+                          new Vec3(0, .25, -lift - .65),
+                          body.radius(),
+                          body.color(),
+                          body.selected()))
+                  : new Body(
+                      body.kind(),
+                      body.id(),
+                      body.name(),
+                      body.offset().add(0, lift, 0),
+                      body.radius(),
+                      body.color(),
+                      body.selected()));
     return result;
   }
 
@@ -250,8 +285,8 @@ public final class HolographicSelectorLogic {
             Texts.translate(
                 "status.adv_rocketry.holographic_selector.showing_star", selector.hologram.star);
       }
-      case SELECTOR_SIZE_UP -> selector.hologram.size = Math.min(100, selector.hologram.size + 10);
-      case SELECTOR_SIZE_DOWN -> selector.hologram.size = Math.max(0, selector.hologram.size - 10);
+      case SELECTOR_SIZE_UP -> selector.hologram.resize(true);
+      case SELECTOR_SIZE_DOWN -> selector.hologram.resize(false);
       case SELECTOR_REDSTONE -> selector.hologram.redstone = (selector.hologram.redstone + 1) % 3;
       default -> {
         return;

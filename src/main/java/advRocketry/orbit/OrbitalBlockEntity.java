@@ -395,7 +395,8 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     hologram.target = tag.contains("holo_target") ? tag.getInt("holo_target") : -1;
     hologram.center = tag.contains("holo_center") ? tag.getInt("holo_center") : -1;
     hologram.star = tag.getInt("holo_star");
-    hologram.size = tag.contains("holo_size") ? Math.clamp(tag.getInt("holo_size"), 0, 100) : 20;
+    hologram.size =
+        tag.contains("holo_size") ? HologramState.clampSize(tag.getInt("holo_size")) : 20;
     hologram.redstone = Math.floorMod(tag.getInt("holo_redstone"), 3);
     powerMadeLastTick = tag.getInt("power_last_tick");
     blackHoleBurnUntil = tag.getLong("black_hole_burn_until");

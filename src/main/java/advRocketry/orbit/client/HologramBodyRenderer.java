@@ -41,7 +41,7 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
   public boolean shouldRender(
       HologramBodyEntity entity, Frustum frustum, double x, double y, double z) {
     return entity.distanceToSqr(x, y, z) < 96 * 96
-        && frustum.isVisible(entity.getBoundingBox().inflate(20));
+        && frustum.isVisible(entity.getBoundingBox().inflate(64));
   }
 
   @Override
@@ -54,7 +54,9 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
       int light) {
     if (model == null) model = new ObjModel(MODEL);
     pose.pushPose();
-    pose.scale(entity.radius(), entity.radius(), entity.radius());
+    // The source sphere spans -0.5..0.5; scale its diameter to the synced radius.
+    float diameter = entity.radius() * 2;
+    pose.scale(diameter, diameter, diameter);
     pose.mulPose(
         Axis.YP.rotationDegrees(
             (float) EffectGeometry.time(entity.level(), partialTick, EffectProfiles.get("hologram"))
@@ -79,7 +81,7 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
     var vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
     Vec3 center = entity.projectionCenter().subtract(entity.position());
     double orbit = Math.sqrt(center.x * center.x + center.z * center.z);
-    if (entity.showOrbit() && orbit > .1 && orbit < 20) {
+    if (entity.showOrbit() && orbit > .1 && orbit < 64) {
       pose.pushPose();
       pose.translate(center.x, 0, center.z);
       EffectGeometry.ring(
