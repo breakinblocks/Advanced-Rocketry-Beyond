@@ -80,6 +80,7 @@ public final class AdvancedRocketryConfig {
   private static final ModConfigSpec.BooleanValue ADVANCED_VFX;
   private static final ModConfigSpec.BooleanValue REDUCED_MOTION;
   private static final ModConfigSpec.BooleanValue SINGULARITY_DISTORTION;
+  private static final ModConfigSpec.IntValue EFFECT_DETAIL;
   private static final ModConfigSpec.BooleanValue DROP_EXTINGUISHED_TORCHES;
   private static final ModConfigSpec.IntValue SPACE_SUIT_OXYGEN_TIME;
   private static final ModConfigSpec.IntValue VACUUM_DAMAGE;
@@ -209,6 +210,7 @@ public final class AdvancedRocketryConfig {
     ADVANCED_VFX = client.define("advancedVFX", true);
     REDUCED_MOTION = client.define("reducedMotion", false);
     SINGULARITY_DISTORTION = client.define("singularityDistortion", true);
+    EFFECT_DETAIL = client.defineInRange("effectDetail", 2, 0, 2);
     client.pop();
     CLIENT_SPEC = client.build();
   }
@@ -351,6 +353,10 @@ public final class AdvancedRocketryConfig {
 
   public static boolean singularityDistortion() {
     return client(SINGULARITY_DISTORTION);
+  }
+
+  public static int effectDetail() {
+    return client(EFFECT_DETAIL);
   }
 
   public static int solarGeneratorMultiplier() {

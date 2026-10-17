@@ -151,3 +151,26 @@ Under `data/<namespace>/data_maps/<registry>/`:
 | `adv_rocketry:rocket_propellant` | fluid | Multipliers for `monopropellant`, `bipropellant`, `oxidizer`, `nuclear` |
 | `adv_rocketry:gas_giant_gas` | fluid | `min_gravity`, `max_gravity`, `chance` |
 | `adv_rocketry:satellite_module` | item | `power_generation`, `energy_storage`, `data_storage` |
+
+## Client effect resource packs
+
+Visual profiles belong in resource packs at `assets/adv_rocketry/effects/<effect>.json`.
+They reload with client resources and do not change server gameplay. Supported IDs are
+`hologram`, `rocket`, `laser`, `railgun`, `blackhole`, `terraformer`, `gravity`, `etcher`,
+`planet`, `celestial`, `elevator`, `materials`, `diagnostics`, `hud`, `transport`, and `audio`.
+
+| Field | Default | Bounds |
+|---|---|---|
+| `enabled` | `true` | Boolean |
+| `color` | `7401434` (cyan RGB) | Integer, 0–16777215 |
+| `opacity` | `0.65` | 0–1 |
+| `speed` | `1.0` | 0–4 |
+| `segments` | `32` | 8–64 |
+
+Color, opacity and speed apply to procedural visuals; audio currently uses `enabled`.
+Client configuration offers `advancedVFX`, `reducedMotion`, and `singularityDistortion`.
+Reduced motion freezes procedural movement and suppresses exhaust particles and lens distortion.
+The singularity lens handles at most four nearby sources and uses scene depth to retain foreground
+occlusion. With Iris installed, it retains the geometry effect and skips scene distortion.
+Hold Shift with a holographic projector to separate the construction preview into layers;
+Shift-scroll still selects a layer.

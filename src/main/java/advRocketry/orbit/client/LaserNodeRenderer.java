@@ -50,14 +50,16 @@ public final class LaserNodeRenderer extends EntityRenderer<LaserNodeEntity> {
     var profile = EffectProfiles.get("laser");
     if (!profile.enabled()) return;
     VertexConsumer vertices = buffers.getBuffer(RenderType.lightning());
-    if (EffectGeometry.visible(entity.position(), profile)) {
+    EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, 200, 0), .04, profile.argb(.4f));
+    if (EffectGeometry.visible(entity.position(), profile) && EffectGeometry.reserve()) {
       double time = EffectGeometry.time(entity.level(), partialTick, profile);
       EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, 200, 0), .09,
           profile.argb(.5f));
       for (int strand = 0; strand < 2; strand++) {
         Vec3 previous = new Vec3(.4 * Math.cos(strand * Math.PI), 0, 0);
-        for (int step = 1; step <= 128; step++) {
-          double y = step * 200d / 128;
+        int steps = EffectGeometry.segments(profile) * 4;
+        for (int step = 1; step <= steps; step++) {
+          double y = step * 200d / steps;
           double angle = y * .5 - time * .12 + strand * Math.PI;
           Vec3 next = new Vec3(Math.cos(angle) * .4, y, Math.sin(angle) * .4);
           EffectGeometry.beam(pose, vertices, previous, next, .055,
@@ -65,7 +67,7 @@ public final class LaserNodeRenderer extends EntityRenderer<LaserNodeEntity> {
           previous = next;
         }
       }
-      EffectGeometry.ring(pose, vertices, .65, .03, .035, profile.argb(.8f), profile.segments());
+      EffectGeometry.ring(pose, vertices, .65, .03, .035, profile.argb(.8f), EffectGeometry.segments(profile));
       EffectGeometry.beam(pose, vertices, new Vec3(-.2, .05, 0), new Vec3(.2, .05, 0),
           .12, 0xe0eafff8);
       EffectGeometry.beam(pose, vertices, new Vec3(0, .05, -.2), new Vec3(0, .05, .2),

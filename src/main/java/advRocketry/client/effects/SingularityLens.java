@@ -68,6 +68,7 @@ public final class SingularityLens {
     if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
     if (pending.isEmpty() || shader == null || !AdvancedRocketryConfig.singularityDistortion()
         || !AdvancedRocketryConfig.advancedVfx() || AdvancedRocketryConfig.reducedMotion()
+        || AdvancedRocketryConfig.effectDetail() < 2
         || ModList.get().isLoaded("iris")) {
       pending.clear();
       if (++idleFrames > 120) release();

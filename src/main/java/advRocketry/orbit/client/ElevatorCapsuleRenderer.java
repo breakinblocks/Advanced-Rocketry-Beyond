@@ -53,8 +53,8 @@ public final class ElevatorCapsuleRenderer extends EntityRenderer<ElevatorCapsul
     var profile = EffectProfiles.get("elevator");
     if (capsule.inMotion() && EffectGeometry.visible(capsule.position(), profile)) {
       var glow = buffers.getBuffer(RenderType.lightning());
-      EffectGeometry.ring(pose, glow, 1.2, .15, .025, profile.argb(.6f), profile.segments());
-      EffectGeometry.ring(pose, glow, 1.2, 2.5, .025, profile.argb(.6f), profile.segments());
+      EffectGeometry.ring(pose, glow, 1.2, .15, .025, profile.argb(.6f), EffectGeometry.segments(profile));
+      EffectGeometry.ring(pose, glow, 1.2, 2.5, .025, profile.argb(.6f), EffectGeometry.segments(profile));
     }
     super.render(capsule, yaw, partialTick, pose, buffers, light);
   }

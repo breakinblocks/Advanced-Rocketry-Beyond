@@ -335,7 +335,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       for (int index = 0; index < 8; index++) {
         double height = 4 + (index * 32 + shift) % 252;
         EffectGeometry.ring(pose, glow, .8, height, .04,
-            profile.argb(.35f), profile.segments());
+            profile.argb(.35f), EffectGeometry.segments(profile));
       }
     }
     pose.popPose();

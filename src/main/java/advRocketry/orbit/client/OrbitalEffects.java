@@ -42,17 +42,19 @@ public final class OrbitalEffects {
       for (int i = 0; i < 4; i++) {
         double phase = (time * .008 + i * .25) % 1;
         EffectGeometry.ring(pose, vertices, .6 + phase * 2, .15 + i * .2, .012,
-            profile.argb((float) (1 - phase) * .45f), profile.segments());
+            profile.argb((float) (1 - phase) * .45f), EffectGeometry.segments(profile));
       }
     } else if (entity.blackHoleGenerator() && entity.powerMadeLastTick > 0) {
       SingularityLens.submit(Vec3.atLowerCornerOf(entity.getBlockPos()).add(.5, 2, .5), .35f);
       pose.translate(0, 1.5, 0);
+      EffectGeometry.sphere(pose, buffers.getBuffer(RenderType.debugQuads()), .35, 0xff020406);
+      vertices = buffers.getBuffer(RenderType.lightning());
       pose.mulPose(Axis.XP.rotationDegrees(14));
       for (int i = 0; i < 12; i++) {
         double radius = .45 + i * .075;
         float glow = (float) (.55 + .15 * Math.sin(time * .04 - i));
         EffectGeometry.ring(pose, vertices, radius, .03 * Math.sin(time * .02 + i),
-            .025, profile.argb(glow), profile.segments());
+            .025, profile.argb(glow), EffectGeometry.segments(profile));
       }
     } else if (entity.railgun()) {
       double age = entity.getLevel().getGameTime() + partialTick - entity.railgunFiredAt;
@@ -62,7 +64,7 @@ public final class OrbitalEffects {
         for (int i = 0; i < 5; i++) {
           float strength = (float) Math.max(0, 1 - Math.abs(age - i * 1.5) / 3);
           EffectGeometry.ring(pose, vertices, .6, i + .5, .035,
-              profile.argb(strength), profile.segments());
+              profile.argb(strength), EffectGeometry.segments(profile));
         }
       }
     }

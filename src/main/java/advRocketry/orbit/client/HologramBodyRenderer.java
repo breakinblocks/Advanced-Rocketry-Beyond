@@ -79,23 +79,23 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
     for (int i = -2; i <= 2; i++) {
       double y = radius * i / 3;
       EffectGeometry.ring(pose, vertices, Math.sqrt(radius * radius - y * y), y,
-          .006, color, profile.segments());
+          .006, color, EffectGeometry.segments(profile));
     }
     pose.mulPose(Axis.XP.rotationDegrees(90));
-    EffectGeometry.ring(pose, vertices, radius * 1.02, 0, .008, color, profile.segments());
+    EffectGeometry.ring(pose, vertices, radius * 1.02, 0, .008, color, EffectGeometry.segments(profile));
     pose.popPose();
     Vec3 center = entity.projectionCenter().subtract(entity.position());
     double orbit = Math.sqrt(center.x * center.x + center.z * center.z);
     if (entity.showOrbit() && orbit > .1 && orbit < 20) {
       pose.pushPose();
       pose.translate(center.x, 0, center.z);
-      EffectGeometry.ring(pose, vertices, orbit, 0, .006, profile.argb(.22f), profile.segments());
+      EffectGeometry.ring(pose, vertices, orbit, 0, .006, profile.argb(.22f), EffectGeometry.segments(profile));
       pose.popPose();
       if (entity.selected()) EffectGeometry.beam(pose, vertices, Vec3.ZERO, center,
           .008, profile.argb(.6f));
     }
     if (entity.selected()) EffectGeometry.ring(pose, vertices, radius * 1.3, -radius,
-        .014, profile.argb(.8f), profile.segments());
+        .014, profile.argb(.8f), EffectGeometry.segments(profile));
   }
 
   @Override

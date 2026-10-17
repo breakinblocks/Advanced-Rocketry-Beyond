@@ -14,11 +14,29 @@ public final class EffectGeometry {
   private EffectGeometry() {}
 
   public static void beginFrame(RenderLevelStageEvent event) {
-    if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) remaining = 256;
+    if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY)
+      remaining = 64 << AdvancedRocketryConfig.effectDetail();
   }
 
   public static boolean reserve() {
     return remaining-- > 0;
+  }
+
+  public static int segments(EffectProfile profile) {
+    return Math.min(profile.segments(), 16 << AdvancedRocketryConfig.effectDetail());
+  }
+
+  public static void sphere(PoseStack pose, VertexConsumer vertices, double radius, int color) {
+    for (int row = 0; row < 12; row++) {
+      double a = Math.PI * row / 12, b = Math.PI * (row + 1) / 12;
+      for (int column = 0; column < 24; column++) {
+        double u = column * Math.PI / 12, v = (column + 1) * Math.PI / 12;
+        vertex(pose, vertices, Math.cos(u) * Math.sin(a) * radius, Math.cos(a) * radius, Math.sin(u) * Math.sin(a) * radius, color);
+        vertex(pose, vertices, Math.cos(v) * Math.sin(a) * radius, Math.cos(a) * radius, Math.sin(v) * Math.sin(a) * radius, color);
+        vertex(pose, vertices, Math.cos(v) * Math.sin(b) * radius, Math.cos(b) * radius, Math.sin(v) * Math.sin(b) * radius, color);
+        vertex(pose, vertices, Math.cos(u) * Math.sin(b) * radius, Math.cos(b) * radius, Math.sin(u) * Math.sin(b) * radius, color);
+      }
+    }
   }
 
   public static double time(Level level, float partialTick, EffectProfile profile) {

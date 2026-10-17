@@ -55,7 +55,7 @@ public final class RailgunCargoRenderer extends EntityRenderer<RailgunCargoEntit
           profile.argb(.65f));
       for (int i = 0; i < 4; i++) {
         EffectGeometry.ring(pose, trail, .25 + i * .08, -i * 1.5, .015,
-            profile.argb(.6f - i * .12f), profile.segments());
+            profile.argb(.6f - i * .12f), EffectGeometry.segments(profile));
       }
     }
     super.render(entity, yaw, partialTick, pose, buffers, packedLight);
