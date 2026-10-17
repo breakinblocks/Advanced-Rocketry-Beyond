@@ -4,6 +4,7 @@
 package advRocketry.rocket.client;
 
 import advRocketry.rocket.RocketEntity;
+import advRocketry.client.effects.EffectProfiles;
 import advRocketry.rocket.RocketRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -13,12 +14,13 @@ import net.minecraft.util.RandomSource;
 /** Follows an active rocket and stops the original engine recording when thrust ends. */
 final class RocketEngineSound extends AbstractTickableSoundInstance {
   private final RocketEntity rocket;
+  private float spool;
 
   RocketEngineSound(RocketEntity rocket) {
     super(RocketRegistry.ENGINE_SOUND.get(), SoundSource.NEUTRAL, RandomSource.create());
     this.rocket = rocket;
     looping = true;
-    volume = .8f;
+    volume = .02f;
     tick();
   }
 
@@ -28,13 +30,20 @@ final class RocketEngineSound extends AbstractTickableSoundInstance {
 
   @Override
   public void tick() {
-    if (rocket.isRemoved() || Minecraft.getInstance().level != rocket.level() || !active(rocket)) {
+    var profile = EffectProfiles.get("audio");
+    if (rocket.isRemoved() || Minecraft.getInstance().level != rocket.level() || !profile.enabled()) {
       stop();
       return;
     }
     x = rocket.getX();
     y = rocket.getY();
     z = rocket.getZ();
-    pitch = rocket.flight() == 1 ? 1.05f : .9f;
+    spool = Math.clamp(spool + (active(rocket) ? .05f : -.08f), 0, 1);
+    if (spool <= 0) {
+      stop();
+      return;
+    }
+    volume = .85f * spool;
+    pitch = .65f + .35f * spool;
   }
 }

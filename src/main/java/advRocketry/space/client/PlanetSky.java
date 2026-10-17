@@ -422,6 +422,7 @@ public final class PlanetSky {
     }
     RenderSystem.setShaderColor(1, 1, 1, alpha);
     quad(pose.last().pose(), icon, size);
+    PlanetAccents.render(pose, planet, size, alpha);
     if (planet.hasShading()) {
       if (planet.atmosphere > 25) {
         tint(planet.skyColor, alpha * .5f);

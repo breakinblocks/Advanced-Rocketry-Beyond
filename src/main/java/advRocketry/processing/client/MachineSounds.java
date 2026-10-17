@@ -4,6 +4,7 @@
 package advRocketry.processing.client;
 
 import advRocketry.Main;
+import advRocketry.client.effects.EffectProfiles;
 import advRocketry.processing.ProcessingBlockEntity;
 import advRocketry.processing.ProcessingRegistry;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public final class MachineSounds {
   private MachineSounds() {}
 
   public static void tick(ProcessingBlockEntity machine) {
-    if (!machine.running() || SOUNDS.containsKey(machine)) return;
+    if (!machine.running() || SOUNDS.containsKey(machine) || !EffectProfiles.get("audio").enabled()) return;
     var client = Minecraft.getInstance();
     if (client.options.getSoundSourceVolume(SoundSource.BLOCKS) == 0
         || client.options.getSoundSourceVolume(SoundSource.MASTER) == 0) return;
@@ -55,7 +56,6 @@ public final class MachineSounds {
               if (client.level == null
                   || machine.isRemoved()
                   || machine.getLevel() != client.level
-                  || !machine.running()
                   || loop.isStopped()
                   || !client.getSoundManager().isActive(loop)
                       && client.level.getGameTime() - loop.createdAt > 5) {
@@ -69,6 +69,7 @@ public final class MachineSounds {
   private static final class MachineLoop extends AbstractTickableSoundInstance {
     private final ProcessingBlockEntity machine;
     private final long createdAt;
+    private float spool;
 
     MachineLoop(ProcessingBlockEntity machine, SoundEvent event) {
       super(event, SoundSource.BLOCKS, RandomSource.create());
@@ -76,7 +77,7 @@ public final class MachineSounds {
       createdAt = machine.getLevel().getGameTime();
       looping = true;
       delay = 0;
-      volume = 1;
+      volume = .02f;
       x = machine.getBlockPos().getX() + .5;
       y = machine.getBlockPos().getY() + .5;
       z = machine.getBlockPos().getZ() + .5;
@@ -85,8 +86,14 @@ public final class MachineSounds {
     @Override
     public void tick() {
       if (machine.isRemoved()
-          || !machine.running()
-          || machine.getLevel() != Minecraft.getInstance().level) stop();
+          || machine.getLevel() != Minecraft.getInstance().level || !EffectProfiles.get("audio").enabled()) {
+        stop();
+        return;
+      }
+      spool = Math.clamp(spool + (machine.running() ? .08f : -.06f), 0, 1);
+      if (spool <= 0) stop();
+      volume = spool * .85f;
+      pitch = .72f + spool * .28f;
     }
   }
 }

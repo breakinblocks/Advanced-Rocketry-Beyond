@@ -30,11 +30,11 @@ public final class OrbitalEffects {
     if (entity.atmosphereTerraformer() && entity.terraformerRunning) {
       for (int strand = 0; strand < 3; strand++) {
         for (int i = 0; i < 24; i++) {
-          double y = 3 + (i * .25 + time * .025) % 6;
+          double y = 8 + (i * .25 + time * .025) % 6;
           double a = y * 2 + strand * Math.PI * 2 / 3 + time * .03;
           Vec3 point = new Vec3(Math.cos(a) * .9, y, Math.sin(a) * .9);
           EffectGeometry.beam(pose, vertices, point, point.add(0, .1, 0), .025,
-              profile.argb((float) ((9 - y) / 6)));
+              profile.argb((float) ((14 - y) / 6)));
         }
       }
     } else if (entity.areaGravityController() && entity.areaCurrentGravity > .02f) {
