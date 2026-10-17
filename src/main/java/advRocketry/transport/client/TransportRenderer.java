@@ -35,7 +35,7 @@ public final class TransportRenderer implements BlockEntityRenderer<TransportBlo
     double time = EffectGeometry.time(pipe.getLevel(), partialTick, profile) * .06;
     pose.pushPose();
     pose.translate(.5, .5, .5);
-    var vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
+    var vertices = buffers.getBuffer(EffectRenderTypes.FIBER);
     for (Direction.Axis axis : Direction.Axis.values()) {
       Direction positive = Direction.get(Direction.AxisDirection.POSITIVE, axis);
       boolean forwards = pipe.getBlockState().getValue(TransportBlock.SIDES[positive.ordinal()]);
@@ -50,7 +50,7 @@ public final class TransportRenderer implements BlockEntityRenderer<TransportBlo
       for (int strand = 0; strand < 4; strand++) {
         double u = (strand % 2 == 0 ? -1 : 1) * .052;
         double v = (strand < 2 ? -1 : 1) * .052;
-        EffectGeometry.beam(
+        EffectGeometry.entityBeam(
             pose,
             vertices,
             point(axis, low, u, v),
@@ -106,7 +106,7 @@ public final class TransportRenderer implements BlockEntityRenderer<TransportBlo
       double width,
       int color) {
     if (to > from)
-      EffectGeometry.beam(
+      EffectGeometry.entityBeam(
           pose, vertices, point(axis, from, u, v), point(axis, to, u, v), width, color);
   }
 }

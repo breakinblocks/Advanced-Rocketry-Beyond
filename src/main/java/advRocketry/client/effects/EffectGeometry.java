@@ -4,6 +4,8 @@ import advRocketry.AdvancedRocketryConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -104,6 +106,23 @@ public final class EffectGeometry {
 
   public static void beam(
       PoseStack pose, VertexConsumer vertices, Vec3 from, Vec3 to, double width, int color) {
+    beam(pose, vertices, from, to, width, color, false);
+  }
+
+  /** Full-bright NEW_ENTITY vertices for textured translucent render types. */
+  public static void entityBeam(
+      PoseStack pose, VertexConsumer vertices, Vec3 from, Vec3 to, double width, int color) {
+    beam(pose, vertices, from, to, width, color, true);
+  }
+
+  private static void beam(
+      PoseStack pose,
+      VertexConsumer vertices,
+      Vec3 from,
+      Vec3 to,
+      double width,
+      int color,
+      boolean textured) {
     Vec3 direction = to.subtract(from);
     if (direction.lengthSqr() < 1e-10) return;
     Vec3 side =
@@ -111,16 +130,41 @@ public final class EffectGeometry {
             .cross(Math.abs(direction.normalize().y) > .9 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0))
             .normalize()
             .scale(width);
-    ribbon(pose, vertices, from, to, side, color);
-    ribbon(pose, vertices, from, to, direction.cross(side).normalize().scale(width), color);
+    ribbon(pose, vertices, from, to, side, color, textured);
+    ribbon(
+        pose, vertices, from, to, direction.cross(side).normalize().scale(width), color, textured);
   }
 
   private static void ribbon(
-      PoseStack pose, VertexConsumer vertices, Vec3 from, Vec3 to, Vec3 side, int color) {
-    vertex(pose, vertices, from.x - side.x, from.y - side.y, from.z - side.z, color);
-    vertex(pose, vertices, to.x - side.x, to.y - side.y, to.z - side.z, color);
-    vertex(pose, vertices, to.x + side.x, to.y + side.y, to.z + side.z, color);
-    vertex(pose, vertices, from.x + side.x, from.y + side.y, from.z + side.z, color);
+      PoseStack pose,
+      VertexConsumer vertices,
+      Vec3 from,
+      Vec3 to,
+      Vec3 side,
+      int color,
+      boolean textured) {
+    Vec3 normal = textured ? to.subtract(from).cross(side).normalize() : null;
+    beamVertex(pose, vertices, from.x - side.x, from.y - side.y, from.z - side.z, color, normal);
+    beamVertex(pose, vertices, to.x - side.x, to.y - side.y, to.z - side.z, color, normal);
+    beamVertex(pose, vertices, to.x + side.x, to.y + side.y, to.z + side.z, color, normal);
+    beamVertex(pose, vertices, from.x + side.x, from.y + side.y, from.z + side.z, color, normal);
+  }
+
+  private static void beamVertex(
+      PoseStack pose,
+      VertexConsumer vertices,
+      double x,
+      double y,
+      double z,
+      int color,
+      Vec3 normal) {
+    vertex(pose, vertices, x, y, z, color);
+    if (normal != null)
+      vertices
+          .setUv(.5f, .5f)
+          .setOverlay(OverlayTexture.NO_OVERLAY)
+          .setLight(LightTexture.FULL_BRIGHT)
+          .setNormal(pose.last(), (float) normal.x, (float) normal.y, (float) normal.z);
   }
 
   private static void vertex(
