@@ -36,7 +36,8 @@ public record TransportTagEdit(int menu, int side, int slot, String tag)
               var player = context.player();
               if (player.containerMenu instanceof TransportMenu menu && menu.containerId == p.menu)
                 menu.setTag(player, p.side, p.slot, p.tag);
-          else if (player.containerMenu instanceof TransportTerminalMenu terminal && terminal.containerId == p.menu) terminal.search(player, p.tag);
+              else if (player.containerMenu instanceof TransportTerminalMenu terminal
+                  && terminal.containerId == p.menu) terminal.search(player, p.tag);
             });
   }
 }

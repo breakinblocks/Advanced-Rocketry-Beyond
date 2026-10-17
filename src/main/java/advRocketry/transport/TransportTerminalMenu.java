@@ -53,6 +53,8 @@ public final class TransportTerminalMenu extends ModMenu {
   private int endpoint, slot, page;
   private long scannedTick = Long.MIN_VALUE, nextScan;
   private boolean scanning, truncated;
+  private int transactionWork;
+  private long transactionTick = Long.MIN_VALUE;
   private String search = "";
   private final SplitIntData data;
 
@@ -141,12 +143,14 @@ public final class TransportTerminalMenu extends ModMenu {
       var access = scan.get(endpoint);
       if (access.pipe().isRemoved()
           || !owner.level().hasChunkAt(access.pipe().getBlockPos())
+          || !owner.level().hasChunkAt(access.pipe().getBlockPos().relative(access.side()))
+          || TransportNetworks.capability(access.pipe(), access.side()) != access.handler()
           || slot >= access.handler().getSlots()) {
         endpoint++;
         slot = 0;
         continue;
       }
-      ItemStack stack = access.handler().getStackInSlot(slot++);
+      ItemStack stack = access.handler().extractItem(slot++, Integer.MAX_VALUE, true);
       if (stack.isEmpty() || !access.accepts(stack)) continue;
       var key = new StackKey(stack);
       ItemStack existing = aggregate.get(key);
@@ -230,13 +234,24 @@ public final class TransportTerminalMenu extends ModMenu {
     return true;
   }
 
+  private boolean spendProbe() {
+    long now = owner.level().getGameTime();
+    if (transactionTick != now) {
+      transactionTick = now;
+      transactionWork = SCAN_BUDGET;
+    }
+    if (transactionWork <= 0) return false;
+    transactionWork--;
+    return true;
+  }
+
   private ItemStack take(ItemStack wanted, int count) {
     ItemStack collected = ItemStack.EMPTY;
-    int probes = SCAN_BUDGET;
+    if (!spendProbe()) return ItemStack.EMPTY;
     for (var access : TransportNetworks.storage(pipe, false)) {
       if (!access.accepts(wanted)) continue;
       int remainingCap = Math.min(count, access.pipe().side(access.side()).extractionLimit);
-      for (int i = 0; i < access.handler().getSlots() && probes-- > 0 && remainingCap > 0; i++) {
+      for (int i = 0; i < access.handler().getSlots() && spendProbe() && remainingCap > 0; i++) {
         var actual = access.handler().getStackInSlot(i);
         if (!ItemStack.isSameItemSameComponents(actual, wanted)) continue;
         var extracted = access.handler().extractItem(i, Math.min(count, remainingCap), false);
@@ -252,21 +267,21 @@ public final class TransportTerminalMenu extends ModMenu {
         remainingCap -= extracted.getCount();
         if (count <= 0) return collected;
       }
-      if (probes <= 0) break;
+      if (transactionWork <= 0) break;
     }
     return collected;
   }
 
   private ItemStack deposit(ItemStack offered) {
     ItemStack remainder = offered.copy();
-    int probes = SCAN_BUDGET;
+    if (!spendProbe()) return remainder;
     for (var access : TransportNetworks.storage(pipe, true)) {
       if (!access.accepts(remainder)) continue;
-      for (int i = 0; i < access.handler().getSlots() && probes-- > 0; i++) {
+      for (int i = 0; i < access.handler().getSlots() && spendProbe(); i++) {
         remainder = access.handler().insertItem(i, remainder, false);
         if (remainder.isEmpty()) return ItemStack.EMPTY;
       }
-      if (probes <= 0) break;
+      if (transactionWork <= 0) break;
     }
     return remainder;
   }

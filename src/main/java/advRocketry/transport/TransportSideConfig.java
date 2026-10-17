@@ -6,7 +6,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
@@ -29,9 +31,38 @@ public final class TransportSideConfig {
   public boolean configured, deny, exact = true, sensor, disposal;
   public final Entry[] entries = new Entry[9];
   public int cursor;
+  int scanCursor;
+  int scannedSinceProgress;
+  boolean scanIncomplete;
   final TransportRetry retry = new TransportRetry();
 
-  public record Entry(ItemStack icon, FluidStack fluid, ResourceLocation tag) {
+  public static final class Entry {
+    private final ItemStack icon;
+    private final FluidStack fluid;
+    private final ResourceLocation tag;
+    private final TagKey<Item> itemTag;
+    private final TagKey<Fluid> fluidTag;
+
+    public Entry(ItemStack icon, FluidStack fluid, ResourceLocation tag) {
+      this.icon = icon;
+      this.fluid = fluid;
+      this.tag = tag;
+      itemTag = tag == null ? null : TagKey.create(Registries.ITEM, tag);
+      fluidTag = tag == null ? null : TagKey.create(Registries.FLUID, tag);
+    }
+
+    public ItemStack icon() {
+      return icon;
+    }
+
+    public FluidStack fluid() {
+      return fluid;
+    }
+
+    public ResourceLocation tag() {
+      return tag;
+    }
+
     public static Entry stack(ItemStack stack) {
       return new Entry(
           stack.copyWithCount(1),
@@ -41,7 +72,7 @@ public final class TransportSideConfig {
 
     boolean matches(ItemStack candidate, boolean exact) {
       return tag != null
-          ? candidate.is(TagKey.create(Registries.ITEM, tag))
+          ? candidate.is(itemTag)
           : !icon.isEmpty()
               && (exact
                   ? ItemStack.isSameItemSameComponents(icon, candidate)
@@ -50,7 +81,7 @@ public final class TransportSideConfig {
 
     boolean matches(FluidStack candidate, boolean exact) {
       return tag != null
-          ? candidate.is(TagKey.create(Registries.FLUID, tag))
+          ? candidate.is(fluidTag)
           : !fluid.isEmpty()
               && (exact
                   ? FluidStack.isSameFluidSameComponents(fluid, candidate)

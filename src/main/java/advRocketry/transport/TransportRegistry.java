@@ -69,7 +69,8 @@ public final class TransportRegistry {
       MENUS.register("transport", () -> IMenuTypeExtension.create(TransportMenu::new));
 
   public static final Supplier<MenuType<TransportTerminalMenu>> TERMINAL =
-      MENUS.register("transport_terminal", () -> IMenuTypeExtension.create(TransportTerminalMenu::new));
+      MENUS.register(
+          "transport_terminal", () -> IMenuTypeExtension.create(TransportTerminalMenu::new));
 
   private TransportRegistry() {}
 

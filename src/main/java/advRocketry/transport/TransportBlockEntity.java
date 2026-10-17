@@ -178,6 +178,11 @@ public final class TransportBlockEntity extends BlockEntity implements MenuProvi
     return false;
   }
 
+  public void policyChanged() {
+    setChanged();
+    TransportNetworks.routesChanged(this, true);
+  }
+
   public void changed() {
     wake();
     connectionsDirty = true;

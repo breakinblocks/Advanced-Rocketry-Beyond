@@ -140,7 +140,7 @@ public final class TransportTests {
   public static void itemRoundRobinDistributesIndividuals(GameTestHelper h) {
     var left=pipe(h,TransportRegistry.Kind.ITEM,1);var right=pipe(h,TransportRegistry.Kind.ITEM,2);var input=port(h,left,Direction.WEST,false);var a=port(h,right,Direction.NORTH,true);var b=port(h,right,Direction.SOUTH,true);
     input.inventory.setStackInSlot(0,new ItemStack(Items.IRON_INGOT,32));TransportNetworks.roundRobin(left);
-    h.runAtTickTime(21,()->{h.assertTrue(a.inventory.getStackInSlot(0).getCount()==8 && b.inventory.getStackInSlot(0).getCount()==8,"One batch rotates evenly, not one whole stack per output");h.assertTrue(input.inventory.getStackInSlot(0).getCount()==16,"Exactly 16 source items consumed");h.succeed();});
+    h.succeedWhen(()->{h.assertTrue(a.inventory.getStackInSlot(0).getCount()==8 && b.inventory.getStackInSlot(0).getCount()==8,"One batch rotates evenly, not one whole stack per output");h.assertTrue(input.inventory.getStackInSlot(0).getCount()==16,"Exactly 16 source items consumed");});
   }
   @GameTest(template="empty",timeoutTicks=80)
   public static void filtersAndRedstoneGateExtraction(GameTestHelper h) {

@@ -16,7 +16,13 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.LeverBlock;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.RedstoneTorchBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -133,6 +139,15 @@ public final class TransportBlock extends Block implements EntityBlock, SimpleWa
       BlockState state, Level level, BlockPos pos, Block neighbor, BlockPos from, boolean moved) {
     if (!level.isClientSide) {
       if (level.getBlockEntity(pos) instanceof TransportBlockEntity pipe) {
+        if (neighbor instanceof ButtonBlock
+            || neighbor instanceof LeverBlock
+            || neighbor instanceof DiodeBlock
+            || neighbor instanceof RedStoneWireBlock
+            || neighbor instanceof RedstoneTorchBlock
+            || neighbor == Blocks.REDSTONE_BLOCK) {
+          TransportNetworks.routesChanged(pipe, false);
+          return;
+        }
         pipe.wake();
         pipe.connectionsDirty = true;
       }

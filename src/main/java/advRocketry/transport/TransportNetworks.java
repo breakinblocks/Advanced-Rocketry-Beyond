@@ -55,6 +55,18 @@ public final class TransportNetworks {
     DIRTY.computeIfAbsent(pipe.getLevel(), level -> new HashSet<>()).add(pipe.getBlockPos());
   }
 
+  /** Policy edits preserve topology and hop distances; external capabilities stay authoritative. */
+  public static void routesChanged(TransportBlockEntity pipe, boolean reorder) {
+    var cache = CACHE.get(pipe.getLevel());
+    var network = cache == null ? null : cache.get(pipe.getBlockPos());
+    pipe.wake();
+    if (network == null) return;
+    for (var worker : network.workers) worker.wake();
+    if (reorder)
+      network.outputs.sort(
+          Comparator.comparingInt((End end) -> end.pipe.side(end.side).priority).reversed());
+  }
+
   public static void levelTick(LevelTickEvent.Post event) {
     if (!(event.getLevel() instanceof ServerLevel level)) return;
     var positions = DIRTY.remove(level);
@@ -75,8 +87,10 @@ public final class TransportNetworks {
     Fluid configuredFluid = Fluids.EMPTY;
     boolean conflictingLocks;
     long lastPulse = Long.MIN_VALUE;
+    boolean invalid;
     public boolean oversized;
     public boolean roundRobin;
+    int probesRemaining;
     long lastTick = Long.MIN_VALUE;
 
     public boolean conflicted() {
@@ -134,6 +148,7 @@ public final class TransportNetworks {
       if (previous != null)
         for (var network : new HashSet<>(previous.values()))
           for (var node : network.nodes) node.wake();
+      if (previous != null) for (var network : previous.values()) network.invalid = true;
       OVERSIZED.remove(level);
     }
   }
@@ -158,6 +173,7 @@ public final class TransportNetworks {
 
   private static void forget(Map<BlockPos, Network> cache, Network network) {
     if (network != null) {
+      network.invalid = true;
       for (var node : network.nodes) node.wake();
       for (BlockPos member : network.members) cache.remove(member, network);
     }
@@ -260,6 +276,7 @@ public final class TransportNetworks {
     long now = level.getGameTime();
     if (network.lastTick == now || network.oversized) return;
     network.lastTick = now;
+    network.probesRemaining = 2048;
     if (endpoint.kind() == TransportRegistry.Kind.FLUID && network.conflicted()) return;
     if (endpoint.kind() == TransportRegistry.Kind.ITEM && now % 20 != 0) return;
     int used = 0;
@@ -319,6 +336,8 @@ public final class TransportNetworks {
       }
       Object handler = source.handler();
       if (handler == null) continue;
+      if (network.probesRemaining <= 0) break;
+      config.scanIncomplete = false;
       int allowance = Math.min(budget, config.extractionLimit);
       int moved =
           switch (endpoint.kind()) {
@@ -327,8 +346,10 @@ public final class TransportNetworks {
             case ITEM -> item(network, source, handler, targets, allowance);
           };
       budget -= moved;
-      config.retry.attempted(
-          now, moved, endpoint.kind() == TransportRegistry.Kind.ITEM ? 20 : 1, config.retryCap);
+      if (moved > 0 || !config.scanIncomplete)
+        config.retry.attempted(
+            now, moved, endpoint.kind() == TransportRegistry.Kind.ITEM ? 20 : 1, config.retryCap);
+      leader.sourceCursor = (sourceStart + i + 1) % Math.max(1, count);
       if (moved == 0) source.pipe.blockedReason = 3;
       if (moved > 0) {
         source.pipe.transferred(source.side, moved);
@@ -448,17 +469,32 @@ public final class TransportNetworks {
     if (accepted < available && targets.stream().anyMatch(end -> end.pipe.side(end.side).disposal))
       accepted = available;
     if (accepted <= 0) return 0;
+    if (network.invalid) return 0;
     source.pipe.pendingEnergy = input.extractEnergy(Math.min(available, accepted), false);
     source.pipe.energyIn[source.side.ordinal()] += source.pipe.pendingEnergy;
     source.pipe.setChanged();
-    return deliver(network, source.pipe, targets, budget);
+    return deliver(
+        network,
+        source.pipe,
+        targets,
+        budget,
+        network.roundRobin
+            && source.pipe.side(source.side).routing == TransportSideConfig.Routing.LEGACY);
   }
 
   private static int fluid(
       Network network, End source, Object handler, List<End> targets, int budget) {
     if (!(handler instanceof IFluidHandler input)) return 0;
     Fluid lock = network.acceptedFluid();
-    for (int tank = 0; tank < input.getTanks(); tank++) {
+    var config = source.pipe.side(source.side);
+    int tanks = input.getTanks();
+    int count = Math.min(tanks, Math.min(256, network.probesRemaining));
+    int start = tanks == 0 ? 0 : Math.floorMod(config.scanCursor, tanks);
+    config.scanIncomplete = count < tanks;
+    for (int i = 0; i < count; i++) {
+      int tank = (start + i) % tanks;
+      config.scanCursor = (tank + 1) % tanks;
+      network.probesRemaining--;
       FluidStack candidate = input.getFluidInTank(tank).copy();
       if (candidate.isEmpty()
           || !source.pipe.side(source.side).accepts(candidate)
@@ -483,13 +519,24 @@ public final class TransportNetworks {
           break;
         }
       if (accepted <= 0) continue;
+      if (network.invalid) return 0;
       source.pipe.pendingFluid =
           input.drain(
               candidate.copyWithAmount(Math.min(accepted, candidate.getAmount())),
               FluidAction.EXECUTE);
       source.pipe.setChanged();
-      return deliver(network, source.pipe, targets, budget);
+      config.scannedSinceProgress = 0;
+      return deliver(
+          network,
+          source.pipe,
+          targets,
+          budget,
+          network.roundRobin
+              && source.pipe.side(source.side).routing == TransportSideConfig.Routing.LEGACY);
     }
+    config.scannedSinceProgress += count;
+    config.scanIncomplete = config.scannedSinceProgress < tanks;
+    if (!config.scanIncomplete) config.scannedSinceProgress = 0;
     return 0;
   }
 
@@ -497,8 +544,20 @@ public final class TransportNetworks {
       Network network, End source, Object handler, List<End> targets, int budget) {
     if (!(handler instanceof IItemHandler input)) return 0;
     int total = 0;
-    for (int slot = 0; slot < input.getSlots(); slot++) {
-      ItemStack candidate = input.extractItem(slot, network.roundRobin ? 1 : budget, true);
+    var config = source.pipe.side(source.side);
+    boolean roundRobin = network.roundRobin && config.routing == TransportSideConfig.Routing.LEGACY;
+    int slots = input.getSlots();
+    int limit = Math.min(256, network.probesRemaining);
+    int slot = slots == 0 ? 0 : Math.floorMod(config.scanCursor, slots);
+    int visited = 0, probes = 0;
+    while (visited < slots && probes < limit) {
+      int currentSlot = slot;
+      slot = (slot + 1) % slots;
+      config.scanCursor = slot;
+      visited++;
+      probes++;
+      network.probesRemaining--;
+      ItemStack candidate = input.extractItem(currentSlot, roundRobin ? 1 : budget, true);
       if (candidate.isEmpty() || !source.pipe.accepts(source.side, candidate)) continue;
       int accepted = 0;
       for (var target : targets)
@@ -519,26 +578,47 @@ public final class TransportNetworks {
           break;
         }
       if (accepted <= 0) continue;
+      if (network.invalid) return total;
       source.pipe.pendingItem =
-          input.extractItem(slot, Math.min(accepted, candidate.getCount()), false);
+          input.extractItem(currentSlot, Math.min(accepted, candidate.getCount()), false);
       source.pipe.setChanged();
-      int moved = deliver(network, source.pipe, targets, budget);
+      int moved =
+          deliver(
+              network,
+              source.pipe,
+              targets,
+              budget,
+              network.roundRobin
+                  && source.pipe.side(source.side).routing == TransportSideConfig.Routing.LEGACY);
       total += moved;
       budget -= moved;
-      if (!network.roundRobin || moved == 0 || budget == 0 || !source.pipe.pendingItem.isEmpty())
+      config.scanCursor = 0;
+      config.scannedSinceProgress = 0;
+      if (!roundRobin || moved == 0 || budget == 0 || !source.pipe.pendingItem.isEmpty())
         return total;
-      // Preserve legacy slot order while bounding work by successful transfers.
-      slot = -1;
+      slot = 0;
+      visited = 0;
+    }
+    config.scannedSinceProgress += probes;
+    config.scanIncomplete = total == 0 && config.scannedSinceProgress < slots;
+    if (!config.scanIncomplete) {
+      config.scanCursor = 0;
+      config.scannedSinceProgress = 0;
     }
     return total;
   }
 
   private static int deliver(
       Network network, TransportBlockEntity pipe, List<End> targets, int budget) {
-    if (targets.isEmpty()) return 0;
+    return deliver(network, pipe, targets, budget, network.roundRobin);
+  }
+
+  private static int deliver(
+      Network network, TransportBlockEntity pipe, List<End> targets, int budget, boolean rotate) {
+    if (targets.isEmpty() || network.invalid) return 0;
     var leader = network.nodes.getFirst();
     int start = 0;
-    if (network.roundRobin) {
+    if (rotate) {
       targets = new ArrayList<>(targets);
       for (int group = 0; group < targets.size(); ) {
         int end = group + 1;
@@ -552,6 +632,9 @@ public final class TransportNetworks {
     int moved = 0;
     for (int i = 0; i < targets.size() && moved < budget; i++) {
       var target = targets.get((start + i) % targets.size());
+      if (network.invalid) break;
+      if (target.mode() != TransportBlockEntity.INSERT || !target.pipe.inserting(target.side))
+        continue;
       Object handler = target.handler();
       int amount = 0;
       if (!pipe.pendingItem.isEmpty()
@@ -592,7 +675,10 @@ public final class TransportNetworks {
     }
     // Disposal is a final pass, irrespective of destination priority.
     for (var target : targets) {
-      if (moved >= budget || !target.pipe.side(target.side).disposal) continue;
+      if (network.invalid) break;
+      if (moved >= budget
+          || !target.pipe.side(target.side).disposal
+          || !target.pipe.inserting(target.side)) continue;
       int amount = 0;
       if (!pipe.pendingItem.isEmpty() && target.pipe.accepts(target.side, pipe.pendingItem)) {
         amount = Math.min(budget - moved, pipe.pendingItem.getCount());
@@ -679,7 +765,9 @@ public final class TransportNetworks {
   }
 
   public record StorageAccess(TransportBlockEntity pipe, Direction side, IItemHandler handler) {
-    public boolean accepts(ItemStack stack) { return pipe.accepts(side, stack); }
+    public boolean accepts(ItemStack stack) {
+      return pipe.accepts(side, stack);
+    }
   }
 
   /** Fresh sided access; callers must still validate each actual handler result. */
@@ -689,10 +777,12 @@ public final class TransportNetworks {
     if (network.oversized) return List.of();
     var result = new ArrayList<StorageAccess>();
     for (var end : insert ? network.outputs : network.ends) {
-      if (insert ? end.mode() != TransportBlockEntity.INSERT || !end.pipe.inserting(end.side)
+      if (insert
+          ? end.mode() != TransportBlockEntity.INSERT || !end.pipe.inserting(end.side)
           : end.mode() != TransportBlockEntity.EXTRACT || !end.pipe.extracting(end.side)) continue;
       if (!end.pipe.getLevel().hasChunkAt(end.target) || end.pipe.isRemoved()) continue;
-      if (end.handler() instanceof IItemHandler handler) result.add(new StorageAccess(end.pipe, end.side, handler));
+      if (end.handler() instanceof IItemHandler handler)
+        result.add(new StorageAccess(end.pipe, end.side, handler));
     }
     return result;
   }

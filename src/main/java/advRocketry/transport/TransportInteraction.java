@@ -29,7 +29,14 @@ public final class TransportInteraction {
       if (wrench || dye || clear && configured.kind() != TransportRegistry.Kind.FLUID) {
         if (!level.isClientSide) {
           if (wrench) {
-            var side = event.getFace();
+            var hit = event.getHitVec().getLocation();
+            double x = hit.x - event.getPos().getX() - .5;
+            double y = hit.y - event.getPos().getY() - .5;
+            double z = hit.z - event.getPos().getZ() - .5;
+            var side =
+                Math.max(Math.abs(x), Math.max(Math.abs(y), Math.abs(z))) > .126
+                    ? Direction.getNearest(x, y, z)
+                    : event.getFace();
             if (side != null)
               configured.modes[side.ordinal()] =
                   configured.modes[side.ordinal()] == TransportBlockEntity.DISABLED

@@ -20,7 +20,7 @@ Right-click a cable to configure its six faces. **Insert** sends into an adjacen
 | Fluid | 4,000 mB/t per connected network |
 | Items | 16 items per second per connected network |
 
-Two energy inputs and two outputs can sustain **10,000 FE/t**. One output connection still accepts at most 5,000 FE/t. Connected machines may impose lower limits.
+Two energy inputs and two outputs can sustain **10,000 FE/t**. One output connection still accepts at most 5,000 FE/t. Connected machines may impose lower limits. Large source inventories are scanned over multiple transfer opportunities: at most 256 slots or tanks per source attempt and 2,048 per network tick. Scanning resumes where it stopped, so a large inventory may take longer to find a matching resource.
 
 **Round robin** distributes individual items among successive accepting destinations. Fill-first fills destinations in order. Click the ghost filter with an item to match its type and components without consuming it; click with an empty cursor to clear it. The filter applies to this conduit's machine connections.
 
@@ -28,7 +28,7 @@ Extraction can ignore redstone, require a signal, or require no signal. Check th
 
 ## Side filters and routing
 
-The first row changes connection modes. The direction buttons below it select the face to edit. Each face has nine ghost entries: click with a carried item or filled container, or drag an item or fluid from JEI. Nothing is consumed. Click an entry with an empty cursor to clear it. The single upper-right item slot is a shared filter; a configured side filter replaces it on that face.
+The first row changes connection modes. The direction buttons below it select the face to edit. Each face has nine ghost entries: click with a carried item or filled container, or drag an item or fluid from JEI. Nothing is consumed. Click an entry with an empty cursor to clear it. The single shared item slot is a shared filter; a configured side filter replaces it on that face.
 
 **Filter off** accepts everything permitted by the shared filter. An enabled **Allowlist** accepts matching entries; an enabled **Denylist** rejects them. An empty allowlist blocks everything. **Exact** compares components as well as type; **Identity** compares the item or fluid type alone. To enter a tag, type a slot number and tag such as `1=c:ingots/iron`, then press **Tag**. Hover a paper entry to see its tag.
 
@@ -48,7 +48,7 @@ Higher **Priority** destinations receive first. Lower priorities receive any rem
 
 Open **Storage** from an Item Conduit's menu. It lists inventories on eligible Extract faces, in pages of 36 entries. Search by name or `@mod`. Left-click a listing to withdraw up to a stack; right-click for one. Listings refresh while open, and a click checks actual available stock again. The displayed stack count is capped at 99. Large inventories are scanned over multiple ticks; the listing is limited to 4,096 distinct stacks.
 
-**Deposit held** inserts the carried stack through eligible Insert faces. Source and destination filters and redstone still apply. These manual transactions are separate from automatic pipe cadence, inspect at most 256 inventory slots per transaction, and preserve remainders. Depositing through the terminal never voids items.
+**Deposit held** inserts the carried stack through eligible Insert faces. Source and destination filters and redstone still apply. These manual transactions are separate from automatic pipe cadence, share a limit of 256 inventory probes per tick in each open terminal, and preserve remainders. Depositing through the terminal never voids items.
 
 Place withdrawn ingredients into the crafting grid, then take the result normally. **Refill grid** pulls more of each exact ingredient already in the grid, up to a stack per occupied cell. Crafting only uses collected ingredients; recipe container remainders follow normal crafting rules. Closing returns the crafting grid to your inventory or drops what cannot fit. Shift-clicking the crafting result is disabled; take it normally. Closed terminals do no inventory scanning.
 

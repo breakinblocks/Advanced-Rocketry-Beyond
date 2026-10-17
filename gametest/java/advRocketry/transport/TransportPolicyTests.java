@@ -1,6 +1,8 @@
 package advRocketry.transport;
 
 import advRocketry.processing.MachinePorts;
+import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import advRocketry.processing.PortBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,6 +36,68 @@ public final class TransportPolicyTests {
     p.changed();
     return (PortBlockEntity) h.getLevel().getBlockEntity(p.getBlockPos().relative(side));
   }
+  @GameTest(template = "empty")
+  public static void highPriorityPartialOverflowUsesNextReceiver(GameTestHelper h) {
+    var p = pipe(h, TransportRegistry.Kind.ENERGY, 2);
+    var source = port(h, p, Direction.WEST, false); var first = port(h, p, Direction.NORTH, true); var second = port(h, p, Direction.SOUTH, true);
+    source.injectGeneratedEnergy(10000);
+    first.energyStorage.receiveEnergy(first.energyStorage.getMaxEnergyStored() - 100, false);
+    var network = TransportNetworks.network(p);
+    p.side(Direction.NORTH).priority = 10; p.policyChanged();
+    h.assertTrue(TransportNetworks.network(p) == network, "Policy edit rebuilt topology");
+    TransportNetworks.tick(p);
+    h.assertTrue(first.energyStorage.getEnergyStored() == first.energyStorage.getMaxEnergyStored() && second.energyStorage.getEnergyStored() == 4900, "Partial priority overflow did not conserve 5000 FE"); h.succeed();
+  }
+  @GameTest(template = "empty")
+  public static void explicitFurthestOverridesLegacyRotation(GameTestHelper h) {
+    var a = pipe(h, TransportRegistry.Kind.ENERGY, 1); pipe(h, TransportRegistry.Kind.ENERGY, 2); var b = pipe(h, TransportRegistry.Kind.ENERGY, 3);
+    var source = port(h, a, Direction.WEST, false); var near = port(h, a, Direction.NORTH, true); var far = port(h, b, Direction.NORTH, true);
+    source.injectGeneratedEnergy(5000);
+    a.side(Direction.WEST).routing = TransportSideConfig.Routing.FURTHEST;
+    TransportNetworks.roundRobin(a); a.policyChanged(); TransportNetworks.tick(a);
+    h.assertTrue(near.energyStorage.getEnergyStored() == 0 && far.energyStorage.getEnergyStored() == 5000, "Explicit distance routing ignored"); h.succeed();
+  }
+  @GameTest(template = "empty", timeoutTicks = 80)
+  public static void silentReceiverSpaceRecoversWithinEnergyRetryCap(GameTestHelper h) {
+    var p = pipe(h, TransportRegistry.Kind.ENERGY, 2); var source = port(h, p, Direction.WEST, false);
+    var targetPos = p.getBlockPos().east(); var sink = new ChangingEnergySink(); sink.accepting = true; sink.receiveEnergy(100000, false);
+    ChangingEnergySink.SINKS.put(targetPos, sink); h.getLevel().setBlock(targetPos, Blocks.EMERALD_BLOCK.defaultBlockState(), 3);
+    source.injectGeneratedEnergy(10000); p.side(Direction.WEST).retryCap = 4; p.changed();
+    h.runAtTickTime(20, () -> sink.extractEnergy(1000, false));
+    h.runAtTickTime(25, () -> {
+      h.assertTrue(sink.getEnergyStored() == 100000 && source.energyStorage.getEnergyStored() == 9000, "Silent content change did not recover within cap");
+      ChangingEnergySink.SINKS.remove(targetPos); h.succeed();
+    });
+  }
+
+  @GameTest(template = "empty", timeoutTicks = 160)
+  public static void largeSourceScansResumeWithinBound(GameTestHelper h) {
+    var p = pipe(h, TransportRegistry.Kind.ITEM, 2);
+    var sourcePos = p.getBlockPos().west();
+    class Counted extends ItemStackHandler {
+      int tickProbes, maxProbes; long tick = Long.MIN_VALUE;
+      Counted() { super(1000); }
+      @Override public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (simulate) {
+          if (tick != h.getLevel().getGameTime()) { tick = h.getLevel().getGameTime(); tickProbes = 0; }
+          tickProbes++; maxProbes = Math.max(maxProbes, tickProbes);
+        }
+        return super.extractItem(slot, amount, simulate);
+      }
+    }
+    var input = new Counted(); input.setStackInSlot(900, new ItemStack(Items.DIAMOND, 16));
+    ChangingEnergySink.ITEMS.put(sourcePos, input);
+    h.getLevel().setBlock(sourcePos, Blocks.DIAMOND_BLOCK.defaultBlockState(), 3);
+    h.getLevel().setBlock(p.getBlockPos().east(), MachinePorts.BLOCK_ITEM_INPUT_BLOCK.get().defaultBlockState(), 3);
+    var output = (PortBlockEntity) h.getLevel().getBlockEntity(p.getBlockPos().east());
+    p.modes[Direction.WEST.ordinal()] = TransportBlockEntity.EXTRACT; p.side(Direction.WEST).retryCap = 80; p.changed();
+    h.succeedWhen(() -> {
+      h.assertTrue(output.inventory.getStackInSlot(0).getCount() == 16, "Resumable scan did not reach slot 900");
+      h.assertTrue(input.maxProbes <= 256 && input.getStackInSlot(900).isEmpty(), "Source probe bound or conservation failed: " + input.maxProbes);
+      ChangingEnergySink.ITEMS.remove(sourcePos);
+    });
+  }
+
   @GameTest(template = "empty")
   public static void retryCountsCapsAndWake(GameTestHelper h) {
     var retry = new TransportRetry(); int attempts = 0;

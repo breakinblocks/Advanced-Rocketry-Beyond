@@ -12,14 +12,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -57,7 +57,7 @@ public final class TransportMenu extends ModMenu {
     if (pipe != null) filter.setStackInSlot(0, pipe.filter.copy());
     if (kind == TransportRegistry.Kind.ITEM)
       addSlot(
-          new SlotItemHandler(filter, 0, 350, 63) {
+          new SlotItemHandler(filter, 0, 396, 139) {
             @Override
             public boolean mayPickup(Player player) {
               return false;
@@ -65,7 +65,7 @@ public final class TransportMenu extends ModMenu {
           });
     for (int i = 0; i < 9; i++)
       addSlot(
-          new SlotItemHandler(ghosts, i, 8 + i * 18, 182) {
+          new SlotItemHandler(ghosts, i, 8 + i * 18, 104) {
             @Override
             public boolean mayPickup(Player player) {
               return false;
@@ -77,7 +77,7 @@ public final class TransportMenu extends ModMenu {
             }
           });
     refreshGhosts();
-    addPlayerInventory(inventory, 109, 228);
+    addPlayerInventory(inventory, 129, 158);
     data =
         pipe == null
             ? SplitIntData.client(27)
@@ -142,12 +142,24 @@ public final class TransportMenu extends ModMenu {
   }
 
   public void setGhost(Player player, int side, int slot, ItemStack item, FluidStack fluid) {
-    if (pipe == null || !stillValid(player) || !player.mayBuild() || player.isSpectator() || side != selected || slot < 0 || slot >= 9 || kind == TransportRegistry.Kind.ENERGY) return;
-    var config = pipe.sides[selected]; config.configured = true;
-    config.entries[slot] = !fluid.isEmpty() && kind == TransportRegistry.Kind.FLUID
-        ? new TransportSideConfig.Entry(new ItemStack(fluid.getFluid().getBucket()), fluid.copyWithAmount(1000), null)
-        : item.isEmpty() ? null : TransportSideConfig.Entry.stack(item);
-    pipe.changed(); refreshGhosts(); broadcastChanges();
+    if (pipe == null
+        || !stillValid(player)
+        || !player.mayBuild()
+        || player.isSpectator()
+        || side != selected
+        || slot < 0
+        || slot >= 9
+        || kind == TransportRegistry.Kind.ENERGY) return;
+    var config = pipe.sides[selected];
+    config.configured = true;
+    config.entries[slot] =
+        !fluid.isEmpty() && kind == TransportRegistry.Kind.FLUID
+            ? new TransportSideConfig.Entry(
+                new ItemStack(fluid.getFluid().getBucket()), fluid.copyWithAmount(1000), null)
+            : item.isEmpty() ? null : TransportSideConfig.Entry.stack(item);
+    pipe.policyChanged();
+    refreshGhosts();
+    broadcastChanges();
   }
 
   public void setTag(Player player, int side, int slot, String text) {
@@ -163,7 +175,7 @@ public final class TransportMenu extends ModMenu {
     pipe.sides[selected].configured = true;
     pipe.sides[selected].entries[slot] =
         new TransportSideConfig.Entry(ItemStack.EMPTY, FluidStack.EMPTY, id);
-    pipe.changed();
+    pipe.policyChanged();
     refreshGhosts();
     broadcastChanges();
   }
@@ -185,7 +197,11 @@ public final class TransportMenu extends ModMenu {
     if (pipe == null || !stillValid(player) || !player.mayBuild() || player.isSpectator())
       return false;
     if (id == 40 && kind == TransportRegistry.Kind.ITEM && player instanceof ServerPlayer server) {
-      server.openMenu(new SimpleMenuProvider((menuId, inventory, owner) -> new TransportTerminalMenu(menuId, inventory, pipe), Component.literal("Pipe storage terminal")), buf -> buf.writeBlockPos(pos));
+      server.openMenu(
+          new SimpleMenuProvider(
+              (menuId, inventory, owner) -> new TransportTerminalMenu(menuId, inventory, pipe),
+              Component.literal("Pipe storage terminal")),
+          buf -> buf.writeBlockPos(pos));
       return true;
     }
     if (id >= 0 && id < 6) {
@@ -230,7 +246,8 @@ public final class TransportMenu extends ModMenu {
         case 32 -> config.disposal = !config.disposal;
         default -> {}
       }
-      pipe.changed();
+      if (id == 27 || id == 32) pipe.changed();
+      else pipe.policyChanged();
       for (var side : Direction.values())
         if (player.level().hasChunkAt(pos.relative(side))
             && player.level().getBlockEntity(pos.relative(side))
@@ -238,7 +255,7 @@ public final class TransportMenu extends ModMenu {
     } else if (id == 6 && kind == TransportRegistry.Kind.ITEM) TransportNetworks.roundRobin(pipe);
     else if (id == 7) {
       pipe.redstone = (pipe.redstone + 1) % 3;
-      pipe.changed();
+      pipe.policyChanged();
     } else if (id == 8 && kind == TransportRegistry.Kind.FLUID) TransportNetworks.unlockFluid(pipe);
     else return false;
     snapshotTick = Long.MIN_VALUE;
@@ -258,7 +275,7 @@ public final class TransportMenu extends ModMenu {
         pipe.sides[selected].configured = true;
         pipe.sides[selected].entries[ghost] =
             getCarried().isEmpty() ? null : TransportSideConfig.Entry.stack(getCarried());
-        pipe.changed();
+        pipe.policyChanged();
         refreshGhosts();
         broadcastChanges();
       }
@@ -272,7 +289,7 @@ public final class TransportMenu extends ModMenu {
           && (type == ClickType.PICKUP || type == ClickType.QUICK_MOVE)) {
         pipe.filter = getCarried().isEmpty() ? ItemStack.EMPTY : getCarried().copyWithCount(1);
         filter.setStackInSlot(0, pipe.filter.copy());
-        pipe.changed();
+        pipe.policyChanged();
         broadcastChanges();
       }
       return;
