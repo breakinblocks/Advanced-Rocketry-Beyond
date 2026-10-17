@@ -3,11 +3,13 @@
 
 package advRocketry.orbit.client;
 
+import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.HologramShader;
+import advRocketry.client.effects.HologramSphere;
 import advRocketry.orbit.HologramBodyEntity;
 import advRocketry.processing.client.ObjModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,7 +23,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
-/** Original MIT sphere geometry with native entity picking and hover labels. */
+/** Smooth procedural holograms with native entity picking and a legacy model fallback. */
 public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntity> {
   private static final ResourceLocation MODEL =
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/legacy/hologram_sphere.obj");
@@ -52,7 +54,6 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
       PoseStack pose,
       MultiBufferSource buffers,
       int light) {
-    if (model == null) model = new ObjModel(MODEL);
     pose.pushPose();
     // The source sphere spans -0.5..0.5; scale its diameter to the synced radius.
     float diameter = entity.radius() * 2;
@@ -61,12 +62,18 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
         Axis.YP.rotationDegrees(
             (float) EffectGeometry.time(entity.level(), partialTick, EffectProfiles.get("hologram"))
                 * .3f));
-    model.renderAll(
-        pose,
-        buffers.getBuffer(HologramShader.surface(TEXTURE)),
-        0xf000f0,
-        OverlayTexture.NO_OVERLAY,
-        EffectProfiles.get("hologram").argb(entity.selected() ? 1 : .75f));
+    var surface = HologramShader.surface(TEXTURE);
+    int color = EffectProfiles.get("hologram").argb(entity.selected() ? 1 : .75f);
+    if (HologramShader.active()) {
+      Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+      boolean largeNearby =
+          entity.radius() > 1 && entity.position().distanceToSqr(camera) < 32 * 32;
+      int detail = Math.min(AdvancedRocketryConfig.effectDetail(), largeNearby ? 2 : 1);
+      HologramSphere.render(pose, buffers.getBuffer(surface), detail, color);
+    } else {
+      if (model == null) model = new ObjModel(MODEL);
+      model.renderAll(pose, buffers.getBuffer(surface), 0xf000f0, OverlayTexture.NO_OVERLAY, color);
+    }
     pose.popPose();
     renderProjection(entity, partialTick, pose, buffers);
     super.render(entity, yaw, partialTick, pose, buffers, 0xf000f0);

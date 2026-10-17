@@ -52,12 +52,14 @@ public final class HologramShader extends RenderType {
         () -> {});
   }
 
+  public static boolean active() {
+    return shader != null
+        && AdvancedRocketryConfig.advancedVfx()
+        && EffectProfiles.get("hologram").enabled();
+  }
+
   public static RenderType surface(ResourceLocation fallback) {
-    return shader == null
-            || !AdvancedRocketryConfig.advancedVfx()
-            || !EffectProfiles.get("hologram").enabled()
-        ? RenderType.entityTranslucent(fallback)
-        : SURFACE;
+    return active() ? SURFACE : RenderType.entityTranslucent(fallback);
   }
 
   public static void register(RegisterShadersEvent event) {
