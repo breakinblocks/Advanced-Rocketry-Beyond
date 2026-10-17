@@ -522,12 +522,20 @@ public final class PlanetSky {
   private static void quad(Matrix4f matrix, ResourceLocation texture, float size, float height) {
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
     RenderSystem.setShaderTexture(0, texture);
-    BufferBuilder buffer =
-        Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-    buffer.addVertex(matrix, -size, height, -size).setUv(0, 0);
-    buffer.addVertex(matrix, size, height, -size).setUv(1, 0);
-    buffer.addVertex(matrix, size, height, size).setUv(1, 1);
-    buffer.addVertex(matrix, -size, height, size).setUv(0, 1);
-    BufferUploader.drawWithShader(buffer.buildOrThrow());
+    // These sky sprites are magnified far beyond their native resolution.
+    // Restore the resource pack's filter after this draw, including on failure.
+    var skyTexture = Minecraft.getInstance().getTextureManager().getTexture(texture);
+    skyTexture.setBlurMipmap(true, false);
+    try {
+      BufferBuilder buffer =
+          Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+      buffer.addVertex(matrix, -size, height, -size).setUv(0, 0);
+      buffer.addVertex(matrix, size, height, -size).setUv(1, 0);
+      buffer.addVertex(matrix, size, height, size).setUv(1, 1);
+      buffer.addVertex(matrix, -size, height, size).setUv(0, 1);
+      BufferUploader.drawWithShader(buffer.buildOrThrow());
+    } finally {
+      skyTexture.restoreLastBlurMipmap();
+    }
   }
 }
