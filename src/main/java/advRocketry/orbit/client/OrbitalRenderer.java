@@ -347,7 +347,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
         double angle = Math.PI / 4 + ribbon * Math.PI / 2;
         double x = Math.cos(angle) * .95, z = Math.sin(angle) * .95;
         EffectGeometry.beam(
-            pose, glow, new Vec3(x, 4, z), new Vec3(x, 260, z), .055, profile.argb(.35f));
+            pose, glow, new Vec3(x, 1, z), new Vec3(x, 260, z), .055, profile.argb(.35f));
       }
       for (int index = 0; index < 16; index++) {
         double height = 4 + (index * 16 + shift) % 256;
