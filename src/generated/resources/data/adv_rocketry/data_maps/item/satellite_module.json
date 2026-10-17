@@ -4,7 +4,7 @@
       "energy_storage": 40000
     },
     "adv_rocketry:basic_satellite_solar_panel": {
-      "power_generation": 4
+      "power_generation": 32
     },
     "adv_rocketry:battery": {
       "energy_storage": 10000
@@ -13,7 +13,7 @@
       "data_storage": 1000
     },
     "adv_rocketry:large_satellite_solar_panel": {
-      "power_generation": 40
+      "power_generation": 160
     }
   }
 }

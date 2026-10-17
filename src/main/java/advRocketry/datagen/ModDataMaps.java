@@ -56,11 +56,11 @@ final class ModDataMaps extends DataMapProvider {
     builder(DataMaps.SATELLITE_MODULE)
         .add(
             id("adv_rocketry:basic_satellite_solar_panel"),
-            new DataMaps.SatelliteModule(4, 0, 0),
+            new DataMaps.SatelliteModule(32, 0, 0),
             false)
         .add(
             id("adv_rocketry:large_satellite_solar_panel"),
-            new DataMaps.SatelliteModule(40, 0, 0),
+            new DataMaps.SatelliteModule(160, 0, 0),
             false)
         .add(id("adv_rocketry:battery"), new DataMaps.SatelliteModule(0, 10000, 0), false)
         .add(id("adv_rocketry:advanced_battery"), new DataMaps.SatelliteModule(0, 40000, 0), false)
