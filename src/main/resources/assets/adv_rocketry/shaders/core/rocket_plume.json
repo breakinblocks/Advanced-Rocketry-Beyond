@@ -53,6 +53,16 @@
         0,
         1
       ]
+    },
+    {
+      "name": "PlumeColor",
+      "type": "float",
+      "count": 3,
+      "values": [
+        1,
+        0.7,
+        0.4
+      ]
     }
   ]
 }

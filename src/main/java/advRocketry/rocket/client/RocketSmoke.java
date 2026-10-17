@@ -49,7 +49,7 @@ public final class RocketSmoke {
     PUFFS.add(
         new Puff(
             origin,
-            new Vec3(Math.cos(angle) * speed, ground ? .025 : -.035, Math.sin(angle) * speed),
+            new Vec3(Math.cos(angle) * speed, ground ? .05 : -.035, Math.sin(angle) * speed),
             level.getGameTime(),
             level.random.nextFloat()));
   }

@@ -1,6 +1,7 @@
 package advRocketry.rocket.client;
 
 import advRocketry.Main;
+import advRocketry.client.effects.EffectProfiles;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.logging.LogUtils;
@@ -38,7 +39,21 @@ public final class RocketEffectShader extends RenderType {
         false,
         true,
         CompositeState.builder()
-            .setShaderState(new ShaderStateShard(() -> hot ? plume : smoke))
+            .setShaderState(
+                new ShaderStateShard(
+                    () -> {
+                      if (hot && plume != null) {
+                        var profile = EffectProfiles.get("rocket");
+                        int rgb = profile.color();
+                        plume
+                            .safeGetUniform("PlumeColor")
+                            .set(
+                                ((rgb >> 16) & 255) / 255f,
+                                ((rgb >> 8) & 255) / 255f,
+                                (rgb & 255) / 255f);
+                      }
+                      return hot ? plume : smoke;
+                    }))
             .setTransparencyState(hot ? LIGHTNING_TRANSPARENCY : TRANSLUCENT_TRANSPARENCY)
             .setCullState(NO_CULL)
             .setWriteMaskState(COLOR_WRITE)

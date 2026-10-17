@@ -79,7 +79,7 @@ public final class RocketExhaust {
                 new ClipContext(
                     nozzle, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, rocket));
         boolean ground = hit.getType() == HitResult.Type.BLOCK;
-        Vec3 point = ground ? hit.getLocation().add(0, 1.1, 0) : nozzle.add(0, -7, 0);
+        Vec3 point = ground ? hit.getLocation().add(0, 1.5, 0) : nozzle.add(0, -7, 0);
         RocketSmoke.emit(point, ground);
       }
     }
