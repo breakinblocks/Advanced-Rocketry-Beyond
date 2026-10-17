@@ -126,7 +126,12 @@ public record PlanetDefinition(
       int ringColor,
       boolean renderOverride,
       boolean colorOverride,
-      Optional<Boolean> shading) {
+      Optional<Boolean> shading,
+      SkySettings settings) {
+    public Sky(int skyColor, int fogColor, boolean rings, int ringColor,
+        boolean renderOverride, boolean colorOverride, Optional<Boolean> shading) {
+      this(skyColor, fogColor, rings, ringColor, renderOverride, colorOverride, shading, SkySettings.DEFAULT);
+    }
     static final MapCodec<Sky> CODEC =
         RecordCodecBuilder.mapCodec(
             instance ->
@@ -142,7 +147,8 @@ public record PlanetDefinition(
                         Codec.BOOL
                             .optionalFieldOf("color_override", false)
                             .forGetter(Sky::colorOverride),
-                        Codec.BOOL.optionalFieldOf("shading").forGetter(Sky::shading))
+                        Codec.BOOL.optionalFieldOf("shading").forGetter(Sky::shading),
+                        SkySettings.CODEC.optionalFieldOf("sky", SkySettings.DEFAULT).forGetter(Sky::settings))
                     .apply(instance, Sky::new));
   }
 
@@ -320,6 +326,7 @@ public record PlanetDefinition(
     planet.orbitalPhi = orbit.phi();
     planet.rotationPeriod = orbit.rotationPeriod();
     planet.retrograde = orbit.retrograde();
+    planet.sky = sky.settings();
     planet.skyColor = sky.skyColor();
     planet.fogColor = sky.fogColor();
     planet.rings = sky.rings();

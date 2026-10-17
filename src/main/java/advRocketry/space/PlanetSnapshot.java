@@ -105,7 +105,8 @@ public record PlanetSnapshot(
       String customIcon,
       int skyColor,
       int fogColor,
-      int ringColor) {
+      int ringColor,
+      SkySettings sky) {
     public static final Codec<Visuals> CODEC =
         RecordCodecBuilder.create(
             instance ->
@@ -120,7 +121,8 @@ public record PlanetSnapshot(
                         Codec.string(0, 256).fieldOf("customIcon").forGetter(Visuals::customIcon),
                         Codec.INT.fieldOf("skyColor").forGetter(Visuals::skyColor),
                         Codec.INT.fieldOf("fogColor").forGetter(Visuals::fogColor),
-                        Codec.INT.fieldOf("ringColor").forGetter(Visuals::ringColor))
+                        Codec.INT.fieldOf("ringColor").forGetter(Visuals::ringColor),
+                        SkySettings.CODEC.optionalFieldOf("sky", SkySettings.DEFAULT).forGetter(Visuals::sky))
                     .apply(instance, Visuals::new));
   }
 
@@ -150,7 +152,8 @@ public record PlanetSnapshot(
             planet.customIcon,
             planet.skyColor,
             planet.fogColor,
-            planet.ringColor));
+            planet.ringColor,
+            planet.sky));
   }
 
   public Planet planet() {
@@ -179,6 +182,7 @@ public record PlanetSnapshot(
     planet.skyColor = visuals.skyColor;
     planet.fogColor = visuals.fogColor;
     planet.ringColor = visuals.ringColor;
+    planet.sky = visuals.sky;
     return planet;
   }
 }

@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -56,6 +57,7 @@ public final class Planet {
   public boolean biomeFeatures;
   public Boolean shading;
   public String customIcon = "";
+  public SkySettings sky = SkySettings.DEFAULT;
   public int skyColor = 0xffffff;
   public int fogColor = 0xc0d8ff;
   public int ringColor = 0xffffff;
@@ -187,6 +189,7 @@ public final class Planet {
     tag.putBoolean("biome_features", biomeFeatures);
     if (shading != null) tag.putBoolean("shading", shading);
     tag.putString("custom_icon", customIcon);
+    tag.put("sky", SkySettings.CODEC.encodeStart(NbtOps.INSTANCE, sky).getOrThrow());
     tag.putInt("sky_color", skyColor);
     tag.putInt("fog_color", fogColor);
     tag.putInt("ring_color", ringColor);
@@ -253,6 +256,8 @@ public final class Planet {
     planet.customIcon = tag.getString("custom_icon");
     planet.forceRivers = tag.getBoolean("force_rivers");
     planet.biomeFeatures = tag.getBoolean("biome_features");
+    if (tag.contains("sky"))
+      planet.sky = SkySettings.CODEC.parse(NbtOps.INSTANCE, tag.get("sky")).result().orElse(SkySettings.DEFAULT);
     planet.skyColor = tag.getInt("sky_color");
     planet.fogColor = tag.getInt("fog_color");
     planet.ringColor = tag.getInt("ring_color");

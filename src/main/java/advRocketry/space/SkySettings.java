@@ -1,0 +1,83 @@
+package advRocketry.space;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Locale;
+import net.minecraft.util.StringRepresentable;
+
+/** Cosmetic planet settings; never used by atmosphere or energy simulation. */
+public record SkySettings(
+    Profile profile,
+    Clouds clouds,
+    float haze,
+    float sunset,
+    float stars,
+    float aurora,
+    float nebula,
+    int seed) {
+  public enum Profile implements StringRepresentable {
+    AUTO,
+    CLEAR,
+    TEMPERATE,
+    DENSE,
+    FROZEN,
+    ASH;
+
+    public static final Codec<Profile> CODEC = StringRepresentable.fromEnum(Profile::values);
+
+    @Override
+    public String getSerializedName() {
+      return name().toLowerCase(Locale.ROOT);
+    }
+  }
+
+  private static Codec<Float> range(float min, float max) {
+    return Codec.FLOAT.validate(
+        value ->
+            Float.isFinite(value) && value >= min && value <= max
+                ? DataResult.success(value)
+                : DataResult.error(
+                    () -> "Sky value must be finite and between " + min + " and " + max));
+  }
+
+  public record Clouds(float coverage, int color, float height, float speed, float direction) {
+    public static final Clouds DEFAULT = new Clouds(-1, -1, 192, .35f, 45);
+    public static final Codec<Clouds> CODEC =
+        RecordCodecBuilder.create(
+            instance ->
+                instance
+                    .group(
+                        range(-1, 1).optionalFieldOf("coverage", -1f).forGetter(Clouds::coverage),
+                        Codec.intRange(-1, 0xffffff)
+                            .optionalFieldOf("color", -1)
+                            .forGetter(Clouds::color),
+                        range(64, 512).optionalFieldOf("height", 192f).forGetter(Clouds::height),
+                        range(0, 4).optionalFieldOf("speed", .35f).forGetter(Clouds::speed),
+                        range(0, 360)
+                            .optionalFieldOf("direction", 45f)
+                            .forGetter(Clouds::direction))
+                    .apply(instance, Clouds::new));
+  }
+
+  public static final SkySettings DEFAULT =
+      new SkySettings(Profile.AUTO, Clouds.DEFAULT, 1, 1, 1, 0, 0, 0);
+  public static final Codec<SkySettings> CODEC =
+      RecordCodecBuilder.create(
+          instance ->
+              instance
+                  .group(
+                      Profile.CODEC
+                          .optionalFieldOf("profile", Profile.AUTO)
+                          .forGetter(SkySettings::profile),
+                      Clouds.CODEC
+                          .optionalFieldOf("clouds", Clouds.DEFAULT)
+                          .forGetter(SkySettings::clouds),
+                      range(0, 2).optionalFieldOf("haze", 1f).forGetter(SkySettings::haze),
+                      range(0, 2).optionalFieldOf("sunset", 1f).forGetter(SkySettings::sunset),
+                      range(0, 2).optionalFieldOf("stars", 1f).forGetter(SkySettings::stars),
+                      range(0, 1).optionalFieldOf("aurora", 0f).forGetter(SkySettings::aurora),
+                      range(0, 1).optionalFieldOf("nebula", 0f).forGetter(SkySettings::nebula),
+                      Codec.INT.optionalFieldOf("seed", 0).forGetter(SkySettings::seed))
+                  .apply(instance, SkySettings::new));
+}
