@@ -4,8 +4,11 @@
 package advRocketry.orbit.client;
 
 import advRocketry.orbit.RailgunCargoEntity;
+import advRocketry.client.effects.EffectGeometry;
+import advRocketry.client.effects.EffectProfiles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -13,6 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.phys.Vec3;
 
 /** Renders the original railgun's rising item without creating a collectible duplicate. */
 public final class RailgunCargoRenderer extends EntityRenderer<RailgunCargoEntity> {
@@ -44,6 +48,16 @@ public final class RailgunCargoRenderer extends EntityRenderer<RailgunCargoEntit
         entity.level(),
         entity.getId());
     pose.popPose();
+    var profile = EffectProfiles.get("railgun");
+    if (EffectGeometry.visible(entity.position(), profile)) {
+      var trail = buffers.getBuffer(RenderType.lightning());
+      EffectGeometry.beam(pose, trail, Vec3.ZERO, new Vec3(0, -6, 0), .025,
+          profile.argb(.65f));
+      for (int i = 0; i < 4; i++) {
+        EffectGeometry.ring(pose, trail, .25 + i * .08, -i * 1.5, .015,
+            profile.argb(.6f - i * .12f), profile.segments());
+      }
+    }
     super.render(entity, yaw, partialTick, pose, buffers, packedLight);
   }
 
