@@ -1,0 +1,947 @@
+[
+  [
+    "advbasiccircuit",
+    {
+      "type": "advancedrocketry:cuttingmachine",
+      "itemingredients": [
+        {
+          "item": "advancedrocketry:itemcircuitplate",
+          "data": 1
+        }
+      ],
+      "time": 300,
+      "energy": 100,
+      "itemresults": {
+        "item": "advancedrocketry:ic",
+        "data": 2,
+        "count": 4
+      }
+    }
+  ],
+  [
+    "advcircuitplate",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotGold"
+        },
+        {
+          "item": "minecraft:redstone_block"
+        },
+        {
+          "item": "advancedrocketry:wafer",
+          "data": 0
+        }
+      ],
+      "time": 900,
+      "energy": 100,
+      "itemresults": {
+        "item": "advancedrocketry:itemcircuitplate",
+        "data": 1
+      }
+    }
+  ],
+  [
+    "advcircuitplateetcher",
+    {
+      "type": "advancedrocketry:precisionlaseretcher",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "lensPrecisionLaserEtcher"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateGold"
+        },
+        {
+          "item": "minecraft:redstone_block"
+        },
+        {
+          "item": "advancedrocketry:wafer",
+          "data": 0,
+          "count": 4
+        }
+      ],
+      "time": 1200,
+      "energy": 600,
+      "itemresults": {
+        "item": "advancedrocketry:itemcircuitplate",
+        "data": 1,
+        "count": 2
+      }
+    }
+  ],
+  [
+    "alienplanks",
+    {
+      "type": "advancedrocketry:cuttingmachine",
+      "itemingredients": [
+        {
+          "item": "advancedrocketry:alienwood",
+          "data": 0
+        }
+      ],
+      "time": 80,
+      "energy": 10,
+      "itemresults": {
+        "item": "advancedrocketry:planks",
+        "data": 0,
+        "count": 6
+      }
+    }
+  ],
+  [
+    "antifogvisor",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "item": "libvulpes:battery",
+          "data": 0
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 2
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 3
+        },
+        {
+          "item": "advancedrocketry:lens",
+          "data": 0
+        }
+      ],
+      "time": 200,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:itemupgrade",
+        "data": 4
+      }
+    }
+  ],
+  [
+    "atmanalyser",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "item": "libvulpes:battery",
+          "data": 0
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 2
+        },
+        {
+          "item": "advancedrocketry:misc",
+          "data": 0
+        },
+        {
+          "item": "advancedrocketry:lens",
+          "data": 0
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateTin"
+        }
+      ],
+      "time": 1000,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:atmanalyser"
+      }
+    }
+  ],
+  [
+    "basiccircuit",
+    {
+      "type": "advancedrocketry:cuttingmachine",
+      "itemingredients": [
+        {
+          "item": "advancedrocketry:itemcircuitplate",
+          "data": 0
+        }
+      ],
+      "time": 300,
+      "energy": 100,
+      "itemresults": {
+        "item": "advancedrocketry:ic",
+        "data": 0,
+        "count": 4
+      }
+    }
+  ],
+  [
+    "basiccircuitplate",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotGold"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        },
+        {
+          "item": "advancedrocketry:wafer",
+          "data": 0
+        }
+      ],
+      "time": 900,
+      "energy": 100,
+      "itemresults": {
+        "item": "advancedrocketry:itemcircuitplate",
+        "data": 0
+      }
+    }
+  ],
+  [
+    "basiccircuitplateetcher",
+    {
+      "type": "advancedrocketry:precisionlaseretcher",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "lensPrecisionLaserEtcher"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateGold"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        },
+        {
+          "item": "advancedrocketry:wafer",
+          "data": 0,
+          "count": 4
+        }
+      ],
+      "time": 1200,
+      "energy": 400,
+      "itemresults": {
+        "item": "advancedrocketry:itemcircuitplate",
+        "data": 0,
+        "count": 2
+      }
+    }
+  ],
+  [
+    "beaconfinder",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "item": "advancedrocketry:ic",
+          "data": 1
+        },
+        {
+          "item": "advancedrocketry:itemupgrade",
+          "data": 4
+        }
+      ],
+      "time": 100,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:beaconfinder",
+        "data": 0
+      }
+    }
+  ],
+  [
+    "biomechanger",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "stickCopper",
+          "count": 2
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "stickTitanium"
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 2
+        },
+        {
+          "item": "advancedrocketry:wafer",
+          "data": 0,
+          "count": 2
+        }
+      ],
+      "time": 1000,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:satelliteprimaryfunction",
+        "data": 5
+      }
+    }
+  ],
+  [
+    "biomechangerremote",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "item": "libvulpes:battery",
+          "data": 0
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 2
+        },
+        {
+          "item": "advancedrocketry:misc",
+          "data": 0
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 1
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateTin"
+        }
+      ],
+      "time": 1000,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:biomechanger"
+      }
+    }
+  ],
+  [
+    "bionicleg",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "blockMotor"
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 2
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 3
+        }
+      ],
+      "time": 200,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:itemupgrade",
+        "data": 2
+      }
+    }
+  ],
+  [
+    "blocklens",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "stickIron"
+        },
+        {
+          "item": "advancedrocketry:lens",
+          "data": 0,
+          "count": 3
+        },
+        {
+          "item": "minecraft:glass",
+          "count": 3
+        }
+      ],
+      "time": 100,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:blocklens",
+        "data": 0
+      }
+    }
+  ],
+  [
+    "bonemeal_chem",
+    {
+      "type": "advancedrocketry:chemicalreactor",
+      "itemingredients": [
+        {
+          "item": "minecraft:bone"
+        }
+      ],
+      "fluidingredients": [
+        {
+          "fluid": "nitrogen",
+          "amount": 10
+        }
+      ],
+      "time": 100,
+      "energy": 1,
+      "itemresults": [
+        {
+          "item": "minecraft:dye",
+          "data": 15,
+          "count": 8
+        }
+      ]
+    }
+  ],
+  [
+    "carboncartridgerefresh",
+    {
+      "type": "advancedrocketry:chemicalreactor",
+      "itemingredients": [
+        {
+          "item": "advancedrocketry:carbonscrubbercartridge",
+          "data": 32766
+        }
+      ],
+      "time": 40,
+      "energy": 20,
+      "itemresults": [
+        {
+          "item": "advancedrocketry:carbonscrubbercartridge",
+          "data": 0
+        },
+        {
+          "item": "minecraft:coal",
+          "data": 1
+        }
+      ]
+    }
+  ],
+  [
+    "controlcircuitboard_prec",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateCopper"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateSteel"
+        }
+      ],
+      "time": 200,
+      "energy": 10,
+      "itemresults": {
+        "item": "advancedrocketry:ic",
+        "data": 3
+      }
+    }
+  ],
+  [
+    "dataunit",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "gemEmerald"
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 0
+        }
+      ],
+      "time": 500,
+      "energy": 60,
+      "itemresults": {
+        "item": "advancedrocketry:dataunit",
+        "data": 0
+      }
+    }
+  ],
+  [
+    "elevatorchip",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "item": "advancedrocketry:spacestationchip",
+          "data": 0
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 1
+        }
+      ],
+      "time": 100,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:elevatorchip"
+      }
+    }
+  ],
+  [
+    "flightspeed",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "gemDiamond"
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 2
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 3
+        },
+        {
+          "item": "minecraft:fire_charge"
+        }
+      ],
+      "time": 200,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:itemupgrade",
+        "data": 1
+      }
+    }
+  ],
+  [
+    "highpressuretank",
+    {
+      "type": "advancedrocketry:rollingmachine",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "sheetAluminum",
+          "count": 2
+        }
+      ],
+      "fluidingredients": [
+        {
+          "fluid": "water",
+          "amount": 100
+        }
+      ],
+      "time": 100,
+      "energy": 4,
+      "itemresults": {
+        "item": "advancedrocketry:pressuretank",
+        "data": 2
+      }
+    }
+  ],
+  [
+    "hoverupgrade",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 0
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 3
+        },
+        {
+          "item": "minecraft:redstone_torch"
+        }
+      ],
+      "time": 200,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:itemupgrade",
+        "data": 0
+      }
+    }
+  ],
+  [
+    "hydrogenoxygen",
+    {
+      "type": "advancedrocketry:electrolyser",
+      "fluidingredients": [
+        {
+          "fluid": "water",
+          "amount": 10
+        }
+      ],
+      "time": 100,
+      "energy": 20,
+      "fluidresults": [
+        {
+          "fluid": "hydrogen",
+          "amount": 100
+        },
+        {
+          "fluid": "oxygen",
+          "amount": 100
+        }
+      ]
+    }
+  ],
+  [
+    "ingotsteel",
+    {
+      "type": "advancedrocketry:electricarcfurnace",
+      "itemingredients": [
+        {
+          "item": "minecraft:coal",
+          "data": 1
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ],
+      "time": 6000,
+      "energy": 1,
+      "itemresults": {
+        "type": "forge:ore_dict",
+        "ore": "ingotSteel"
+      }
+    }
+  ],
+  [
+    "ingottitaniumaluminide",
+    {
+      "type": "advancedrocketry:electricarcfurnace",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotAluminum",
+          "count": 7
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotTitanium",
+          "count": 3
+        }
+      ],
+      "time": 9000,
+      "energy": 20,
+      "itemresults": {
+        "type": "forge:ore_dict",
+        "ore": "ingotTitaniumAluminide",
+        "count": 3
+      }
+    }
+  ],
+  [
+    "ingottitaniumiridium",
+    {
+      "type": "advancedrocketry:electricarcfurnace",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIridium"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotTitanium"
+        }
+      ],
+      "time": 3000,
+      "energy": 20,
+      "itemresults": {
+        "type": "forge:ore_dict",
+        "ore": "ingotTitaniumIridium",
+        "count": 2
+      }
+    }
+  ],
+  [
+    "iocircuitboard_prec",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateGold"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateSteel"
+        }
+      ],
+      "time": 200,
+      "energy": 10,
+      "itemresults": {
+        "item": "advancedrocketry:ic",
+        "data": 4
+      }
+    }
+  ],
+  [
+    "liquidiocircuitboard_prec",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "gemLapis"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateSteel"
+        }
+      ],
+      "time": 200,
+      "energy": 10,
+      "itemresults": {
+        "item": "advancedrocketry:ic",
+        "data": 5
+      }
+    }
+  ],
+  [
+    "lowpressuretank",
+    {
+      "type": "advancedrocketry:rollingmachine",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "sheetIron",
+          "count": 2
+        }
+      ],
+      "fluidingredients": [
+        {
+          "fluid": "water",
+          "amount": 100
+        }
+      ],
+      "time": 100,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:pressuretank",
+        "data": 0
+      }
+    }
+  ],
+  [
+    "nuclearcore",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "item": "libvulpes:advstructuremachine"
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 2
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateSteel",
+          "count": 8
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "gemDilithium",
+          "count": 32
+        }
+      ],
+      "time": 2000,
+      "energy": 250,
+      "itemresults": {
+        "item": "advancedrocketry:nuclearcore"
+      }
+    }
+  ],
+  [
+    "paddedboots",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "item": "minecraft:feather"
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 2
+        },
+        {
+          "item": "advancedrocketry:ic",
+          "data": 3
+        },
+        {
+          "item": "minecraft:leather_boots"
+        }
+      ],
+      "time": 200,
+      "energy": 1,
+      "itemresults": {
+        "item": "advancedrocketry:itemupgrade",
+        "data": 3
+      }
+    }
+  ],
+  [
+    "pressuretank",
+    {
+      "type": "advancedrocketry:rollingmachine",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "sheetSteel",
+          "count": 2
+        }
+      ],
+      "fluidingredients": [
+        {
+          "fluid": "water",
+          "amount": 100
+        }
+      ],
+      "time": 100,
+      "energy": 2,
+      "itemresults": {
+        "item": "advancedrocketry:pressuretank",
+        "data": 1
+      }
+    }
+  ],
+  [
+    "rocketfuel",
+    {
+      "type": "advancedrocketry:chemicalreactor",
+      "fluidingredients": [
+        {
+          "fluid": "oxygen",
+          "amount": 10
+        },
+        {
+          "fluid": "hydrogen",
+          "amount": 10
+        }
+      ],
+      "time": 100,
+      "energy": 10,
+      "fluidresults": [
+        {
+          "fluid": "rocketfuel",
+          "amount": 20
+        }
+      ]
+    }
+  ],
+  [
+    "siliconingot",
+    {
+      "type": "advancedrocketry:electricarcfurnace",
+      "itemingredients": [
+        {
+          "item": "minecraft:sand",
+          "data": 0
+        }
+      ],
+      "time": 12000,
+      "energy": 1,
+      "itemresults": {
+        "type": "forge:ore_dict",
+        "ore": "ingotSilicon"
+      }
+    }
+  ],
+  [
+    "siliconwafer",
+    {
+      "type": "advancedrocketry:cuttingmachine",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "bouleSilicon"
+        }
+      ],
+      "time": 300,
+      "energy": 100,
+      "itemresults": {
+        "item": "advancedrocketry:wafer",
+        "data": 0,
+        "count": 4
+      }
+    }
+  ],
+  [
+    "superhighpressuretank",
+    {
+      "type": "advancedrocketry:rollingmachine",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "sheetTitanium",
+          "count": 2
+        }
+      ],
+      "fluidingredients": [
+        {
+          "fluid": "water",
+          "amount": 100
+        }
+      ],
+      "time": 400,
+      "energy": 8,
+      "itemresults": {
+        "item": "advancedrocketry:pressuretank",
+        "data": 3
+      }
+    }
+  ],
+  [
+    "trackingcircuit",
+    {
+      "type": "advancedrocketry:precisionassembler",
+      "itemingredients": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        },
+        {
+          "item": "minecraft:ender_eye"
+        },
+        {
+          "item": "advancedrocketry:itemcircuitplate",
+          "data": 0
+        }
+      ],
+      "time": 900,
+      "energy": 50,
+      "itemresults": {
+        "item": "advancedrocketry:ic",
+        "data": 1
+      }
+    }
+  ]
+]
