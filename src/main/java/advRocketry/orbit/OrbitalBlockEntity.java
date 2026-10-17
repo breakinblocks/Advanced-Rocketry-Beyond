@@ -61,6 +61,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   public int railgunMinimum = 1;
   public int railgunRedstone;
   public int railgunTicks;
+  public long railgunFiredAt = -1000;
   public int researchChannels;
   public int[] researchProgress = new int[3];
   public int discoveryTicks;
@@ -252,6 +253,8 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   }
 
   public void tick() {
+    boolean generating = powerMadeLastTick > 0;
+    boolean laserRunning = laser.running;
     FormedState.tick(this);
     switch (kind()) {
       case HOLOGRAPHIC_SELECTOR -> HolographicSelectorLogic.tick(this);
@@ -284,6 +287,9 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
       case MICROWAVE_RECEIVER -> MicrowaveReceiverLogic.tick(this);
       default -> {}
     }
+    if (level instanceof ServerLevel server
+        && (generating != (powerMadeLastTick > 0) || laserRunning != laser.running))
+      server.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
   }
 
   public boolean warpCore() {
@@ -433,6 +439,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
         tag.contains("railgun_minimum") ? Math.clamp(tag.getInt("railgun_minimum"), 1, 64) : 1;
     railgunRedstone = Math.floorMod(tag.getInt("railgun_redstone"), 3);
     railgunTicks = tag.getInt("railgun_ticks");
+    railgunFiredAt = tag.contains("railgun_fired_at") ? tag.getLong("railgun_fired_at") : -1000;
     researchChannels = tag.getInt("research_channels") & 7;
     int[] progress = tag.getIntArray("research_progress");
     researchProgress = progress.length == 3 ? progress : new int[3];
@@ -448,6 +455,8 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   @Override
   public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
     CompoundTag tag = new CompoundTag();
+    tag.putLong("railgun_fired_at", railgunFiredAt);
+    tag.putBoolean("laser_running", laser.running);
     tag.putBoolean("beacon_enabled", beaconEnabled);
     tag.putFloat("area_current_gravity", areaCurrentGravity);
     tag.putString("elevator_dimension", elevatorDimension);

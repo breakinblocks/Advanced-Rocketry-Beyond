@@ -99,6 +99,9 @@ public final class RailgunLogic {
         cargo.setPos(emitter.getX() + .5, emitter.getY() + 5, emitter.getZ() + .5);
         source.addFreshEntity(cargo);
       }
+      controller.railgunFiredAt = source.getGameTime();
+      source.sendBlockUpdated(controller.getBlockPos(), controller.getBlockState(),
+          controller.getBlockState(), 3);
       source.playSound(
           null,
           emitter,

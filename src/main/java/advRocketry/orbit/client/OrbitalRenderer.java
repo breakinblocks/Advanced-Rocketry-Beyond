@@ -5,6 +5,9 @@ package advRocketry.orbit.client;
 
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
+import advRocketry.client.effects.EffectGeometry;
+import advRocketry.client.effects.EffectProfiles;
+import net.minecraft.world.phys.Vec3;
 import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.OrbitalRegistry;
@@ -121,6 +124,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       MultiBufferSource buffers,
       int light,
       int overlay) {
+    OrbitalEffects.render(entity, partialTick, pose, buffers);
     Direction exposed =
         entity.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)
             ? entity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)
@@ -314,31 +318,22 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     elevatorModel.renderPart("Anchor", pose, vertices, light, overlay);
     if (!entity.elevatorDimension.isEmpty())
       elevatorModel.renderPart("Tether", pose, vertices, light, overlay);
-    if (!entity.elevatorDimension.isEmpty() && !station) {
+    var profile = EffectProfiles.get("elevator");
+    if (!entity.elevatorDimension.isEmpty()
+        && EffectGeometry.visible(Vec3.atCenterOf(entity.getBlockPos()), profile)) {
       VertexConsumer glow = buffers.getBuffer(RenderType.lightning());
-      double shift = (entity.getLevel().getGameTime() + partialTick) % 80;
-      for (int index = 0; index < 10; index++) {
-        double up = 4 + index * 80 + shift;
-        double down = 4 + (index + 1) * 80 - shift;
-        glowCube(pose.last().pose(), glow, up, .7f);
-        glowCube(pose.last().pose(), glow, down, .7f);
+      double shift = EffectGeometry.time(entity.getLevel(), partialTick, profile) % 80;
+      for (int ribbon = -1; ribbon <= 1; ribbon++) {
+        EffectGeometry.beam(pose, glow, new Vec3(ribbon * .35, 4, 0),
+            new Vec3(ribbon * .35, 256, 0), .12, profile.argb(.08f));
+      }
+      for (int index = 0; index < 8; index++) {
+        double height = 4 + (index * 32 + shift) % 252;
+        EffectGeometry.ring(pose, glow, .8, height, .04,
+            profile.argb(.35f), profile.segments());
       }
     }
     pose.popPose();
-  }
-
-  private static void glowCube(
-      Matrix4f matrix, VertexConsumer vertices, double height, float radius) {
-    float low = (float) height - radius, high = (float) height + radius;
-    float[] x = {-radius, radius, radius, -radius, -radius, radius, radius, -radius};
-    float[] y = {low, low, high, high, low, low, high, high};
-    float[] z = {-radius, -radius, -radius, -radius, radius, radius, radius, radius};
-    int[][] faces = {
-      {0, 1, 2, 3}, {4, 7, 6, 5}, {0, 4, 5, 1}, {3, 2, 6, 7}, {0, 3, 7, 4}, {1, 5, 6, 2}
-    };
-    for (int[] face : faces)
-      for (int index : face)
-        vertices.addVertex(matrix, x[index], y[index], z[index]).setColor(140, 225, 255, 30);
   }
 
   private static void renderMicrowaveReceiver(

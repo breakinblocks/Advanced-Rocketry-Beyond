@@ -4,6 +4,8 @@
 package advRocketry.orbit.client;
 
 import advRocketry.Main;
+import advRocketry.client.effects.EffectGeometry;
+import advRocketry.client.effects.EffectProfiles;
 import advRocketry.orbit.ElevatorCapsule;
 import advRocketry.processing.client.ObjModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -48,6 +50,12 @@ public final class ElevatorCapsuleRenderer extends EntityRenderer<ElevatorCapsul
     if (capsule.inMotion())
       model.renderPart("Door", pose, vertices, light, OverlayTexture.NO_OVERLAY);
     pose.popPose();
+    var profile = EffectProfiles.get("elevator");
+    if (capsule.inMotion() && EffectGeometry.visible(capsule.position(), profile)) {
+      var glow = buffers.getBuffer(RenderType.lightning());
+      EffectGeometry.ring(pose, glow, 1.2, .15, .025, profile.argb(.6f), profile.segments());
+      EffectGeometry.ring(pose, glow, 1.2, 2.5, .025, profile.argb(.6f), profile.segments());
+    }
     super.render(capsule, yaw, partialTick, pose, buffers, light);
   }
 
