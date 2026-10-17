@@ -77,6 +77,8 @@ public final class OrbitalEffects {
       if (age >= 0 && age < 12) {
         var offset = RailgunLogic.emitter(entity).subtract(entity.getBlockPos());
         pose.translate(offset.getX(), offset.getY(), offset.getZ());
+        RailgunArcs.render(
+            pose, vertices, profile, age, entity.railgunFiredAt, entity.getBlockPos().asLong());
         for (int i = 0; i < 9; i++) {
           float strength = (float) Math.max(0, 1 - Math.abs(age - i) / 3);
           EffectGeometry.ring(
