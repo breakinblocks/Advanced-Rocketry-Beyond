@@ -22,6 +22,13 @@ public final class SpaceElevatorLogic {
 
   private SpaceElevatorLogic() {}
 
+  /** The motor marks the tether axis in the data-driven frame definition. */
+  public static BlockPos tetherBase(OrbitalBlockEntity controller) {
+    var structure = PlacedMultiblock.of(controller, "space_elevator");
+    BlockPos motor = structure == null ? null : structure.first('M');
+    return motor == null ? controller.getBlockPos() : motor;
+  }
+
   public static boolean complete(OrbitalBlockEntity controller) {
     return controller.spaceElevator() && PlacedMultiblock.complete(controller, "space_elevator");
   }
@@ -154,7 +161,7 @@ public final class SpaceElevatorLogic {
     }
     if (!(source.getLevel() instanceof ServerLevel departure)) return false;
     if (!departure
-        .getEntitiesOfClass(ElevatorCapsule.class, new AABB(source.getBlockPos()).inflate(4, 6, 4))
+        .getEntitiesOfClass(ElevatorCapsule.class, new AABB(tetherBase(source)).inflate(4, 6, 4))
         .isEmpty()) {
       source.status =
           Component.translatable("status.adv_rocketry.space_elevator.a_capsule_is_already_at_this");
@@ -162,7 +169,7 @@ public final class SpaceElevatorLogic {
     }
     ElevatorCapsule capsule = OrbitalRegistry.ELEVATOR_CAPSULE.get().create(departure);
     if (capsule == null) return false;
-    BlockPos launch = source.getBlockPos().above(2);
+    BlockPos launch = tetherBase(source).above(2);
     capsule.setPos(launch.getX() + .5, launch.getY(), launch.getZ() + .5);
     capsule.setYRot(yaw(source.getBlockState().getValue(HorizontalOrbitalBlock.FACING)));
     capsule.depart(target);

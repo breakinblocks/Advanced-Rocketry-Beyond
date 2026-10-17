@@ -3,6 +3,7 @@
 
 package advRocketry.orbit;
 
+import advRocketry.util.ServerDrivenEntity;
 import advRocketry.util.TicketedTransit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -23,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 /** Rideable tether car with the original ascent/descent speeds and interdimensional handoff. */
-public final class ElevatorCapsule extends Entity {
+public final class ElevatorCapsule extends ServerDrivenEntity {
   private static final TicketedTransit<ElevatorCapsule> TRANSIT =
       new TicketedTransit<>("advanced_rocketry_elevator", capsule -> capsule.phase != 0);
   private static final EntityDataAccessor<Integer> MOTION =
@@ -144,7 +145,8 @@ public final class ElevatorCapsule extends Entity {
     ElevatorCapsule arriving = OrbitalRegistry.ELEVATOR_CAPSULE.get().create(destination);
     if (arriving == null) return;
     double startY = destination.dimension() == OrbitalRegistry.SPACE_DIMENSION ? 10 : 1000;
-    arriving.setPos(anchor.getX() + .5, startY, anchor.getZ() + .5);
+    BlockPos tether = SpaceElevatorLogic.tetherBase(controller);
+    arriving.setPos(tether.getX() + .5, startY, tether.getZ() + .5);
     arriving.setYRot(
         SpaceElevatorLogic.yaw(controller.getBlockState().getValue(HorizontalOrbitalBlock.FACING)));
     arriving.targetDimension = targetDimension;
