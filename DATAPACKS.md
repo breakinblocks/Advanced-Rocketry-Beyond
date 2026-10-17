@@ -81,9 +81,9 @@ full. JEI shows all loaded fuel recipes and their total energy.
 ```
 
 `fuel` is a NeoForge sized fluid ingredient; use `"tag": "yourpack:generator_fuels"`
-instead of `"fluid"` to match a fluid tag. Amount must be 1–16,000 mB, duration
-1–1,000,000 ticks, and output 1–1,000,000 FE/t. Total energy is amount-independent:
-`ticks × fe_per_tick` per consumed batch. Keep amounts within the tank capacity.
+instead of `"fluid"` to match a fluid tag. Amount must be 1Ã¢â‚¬â€œ16,000 mB, duration
+1Ã¢â‚¬â€œ1,000,000 ticks, and output 1Ã¢â‚¬â€œ1,000,000 FE/t. Total energy is amount-independent:
+`ticks Ãƒâ€” fe_per_tick` per consumed batch. Keep amounts within the tank capacity.
 
 Override `adv_rocketry:liquid_fuel/rocket_fuel` or `adv_rocketry:liquid_fuel/lava`
 to change the shipped fuels. Add recipe files for other liquids, including modded
@@ -136,6 +136,62 @@ New definitions join an existing world at the next startup, and a planet keeps
 its id even if other definitions change. The `resetPlanetsFromDefinitions`
 config option rebuilds the galaxy from the current definitions while keeping
 stations, satellites, missions and terrain.
+
+### Dynamic skies
+
+An optional `sky` object in a planet definition controls its cosmetic layers:
+
+```json
+"sky": {
+  "profile": "frozen",
+  "clouds": {
+    "coverage": 0.4,
+    "color": "#b8d9ff",
+    "height": 220,
+    "speed": 0.5,
+    "direction": 120
+  },
+  "haze": 0.8,
+  "sunset": 1.2,
+  "stars": 1.1,
+  "aurora": 0.6,
+  "nebula": 0.15,
+  "seed": 37
+}
+```
+
+Every field is optional. `profile` defaults to `auto`, derived from pressure,
+terrain, planet temperature and local biome temperature. Explicit profiles are
+`clear`, `temperate`, `dense`, `frozen` and `ash`. Existing `sky_color`,
+`fog_color` and `color_override` still determine the atmospheric palette.
+
+Cloud coverage defaults to automatic (`-1`); values from `0` to `1` set its
+baseline. Zero disables clouds even in rain. Weather increases nonzero coverage
+and darkens the layers. Cloud color accepts `#RRGGBB` or an RGB integer; omitted
+or `-1` uses the profile's tint. Height defaults to 192 (range 64â€“512); clouds
+fade out over the next 96 blocks during ascent. Speed defaults to 0.35 (0â€“4),
+and direction to 45 degrees (0â€“360). Seed is an integer controlling stable
+variation. Heights and pressure jointly determine atmospheric visibility.
+
+Haze, sunset and stars default to 1 (range 0â€“2). Aurora and nebula default to 0
+(range 0â€“1). Auroras require atmosphere and darkness, independently of rings.
+Nebula orientation is shared within a star system. Airless worlds have no
+atmospheric clouds or auroras. All numeric settings reject non-finite values.
+These settings persist with the planet and synchronize to clients; existing
+saved planets retain their settings under the normal definition-loading rules.
+
+The client `advancedVfx`, `effectDetail` and `reducedMotion` controls also apply.
+Detail 0 suppresses cloud/night decoration, detail 1 uses one cloud layer, and
+detail 2 adds wisps. Reduced motion freezes wind and aurora animation; normal
+celestial motion and camera parallax remain. Sky override switches still apply.
+
+Shader packs can add their own clouds, fog and sky effects. The tested
+Complementary configuration disables its cloud, aurora, atmospheric/border/bloom
+fog and light-shaft layers so planetary settings own those effects; terrain
+lighting and shadows remain shader-driven. The optional Iris 1.8 compatibility
+bridge enables only this mod's planet shader programs. Other Iris versions or
+shader packs may need separate validation; unsupported bridge versions log a
+warning and use the available vanilla-program fallback.
 
 ## Ore profiles
 
@@ -204,10 +260,10 @@ They reload with client resources and do not change server gameplay. Supported I
 | Field | Default | Bounds |
 |---|---|---|
 | `enabled` | `true` | Boolean |
-| `color` | `7401434` (cyan RGB) | Integer, 0–16777215 |
-| `opacity` | `0.65` | 0–1 |
-| `speed` | `1.0` | 0–4 |
-| `segments` | `32` | 8–64 |
+| `color` | `7401434` (cyan RGB) | Integer, 0Ã¢â‚¬â€œ16777215 |
+| `opacity` | `0.65` | 0Ã¢â‚¬â€œ1 |
+| `speed` | `1.0` | 0Ã¢â‚¬â€œ4 |
+| `segments` | `32` | 8Ã¢â‚¬â€œ64 |
 
 Color, opacity and speed apply to procedural visuals; audio currently uses `enabled`.
 The solar array pulses its green output indicators and sends a cyan sweep along the
