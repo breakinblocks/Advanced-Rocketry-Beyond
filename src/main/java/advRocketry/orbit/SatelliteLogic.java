@@ -22,6 +22,7 @@ public final class SatelliteLogic {
       if (!cell.state().is(OrbitalRegistry.HATCH.get())) continue;
       if (!OrbitalInventory.hatchPayload(cell, level.registryAccess()).isEmpty()) continue;
       record.deployed = false;
+      record.horizonTarget = null;
       ItemStack satellite = new ItemStack(OrbitalRegistry.SATELLITE.get());
       satellite.set(ModComponents.SATELLITE, SatelliteProperties.of(record));
       OrbitalInventory.setHatchPayload(cell, level.registryAccess(), satellite);
@@ -52,6 +53,12 @@ public final class SatelliteLogic {
     long previous = record.lastTick;
     if (previous >= gameTime) return;
     long elapsed = Math.min(gameTime - previous, 24000);
+    if (record.type == SatelliteType.HORIZON) {
+      record.energy = 0;
+      record.lastTick = gameTime;
+      galaxy.setDirty();
+      return;
+    }
     int generation = record.powerGeneration;
     boolean producesData = record.type != null && record.type.producesData();
     int consumption = 1 + (producesData ? 4 + Math.max(0, Math.min(160, generation) - 5) : 0);

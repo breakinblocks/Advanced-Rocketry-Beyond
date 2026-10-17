@@ -14,7 +14,8 @@ public enum SatelliteType implements StringRepresentable {
   DENSITY("density", ResearchType.ATMOSPHERE_DENSITY),
   SOLAR_ENERGY("solar_energy", null),
   ORE_SCANNER("ore_scanner", null),
-  BIOME_CHANGER("biome_changer", null);
+  BIOME_CHANGER("biome_changer", null),
+  HORIZON("horizon", null);
 
   public static final Codec<SatelliteType> CODEC =
       StringRepresentable.fromEnum(SatelliteType::values);

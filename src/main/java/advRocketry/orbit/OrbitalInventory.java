@@ -91,6 +91,10 @@ public final class OrbitalInventory extends ItemStackHandler {
   @Override
   protected void onContentsChanged(int slot) {
     if (slot == 7) moveLooseModulesIntoChassis();
+    if (slot == 0
+        && owner.blackHoleGenerator()
+        && SatelliteLink.read(getStackInSlot(0)) != owner.horizonSatelliteId)
+      HorizonSatelliteLogic.unlink(owner);
     owner.setChanged();
   }
 
@@ -141,7 +145,7 @@ public final class OrbitalInventory extends ItemStackHandler {
       return slot == 0
           ? stack.is(OrbitalRegistry.SATELLITE_CHIP.get())
           : slot == 1 && stack.is(OrbitalRegistry.DATA_UNIT.get());
-    if (owner.microwaveReceiver())
+    if (owner.microwaveReceiver() || owner.blackHoleGenerator())
       return slot == 0 && stack.is(OrbitalRegistry.SATELLITE_CHIP.get());
     if (owner.solarArray()
         || owner.stationGravityController()

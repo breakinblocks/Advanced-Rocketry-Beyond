@@ -173,6 +173,21 @@ final class ModLanguage extends LanguageProvider {
     add("item.adv_rocketry.basic_satellite_solar_panel", "Basic Satellite Solar Panel");
     add("item.adv_rocketry.composition_sensor", "Composition Sensor");
     add("item.adv_rocketry.large_satellite_solar_panel", "Large Satellite Solar Panel");
+    add("item.adv_rocketry.horizon_satellite_module", "Horizon Satellite Module");
+    add("satellite_type.adv_rocketry.horizon", "Horizon Amplifier");
+    add("tooltip.adv_rocketry.horizon.bonus", "+%s%% linked black-hole generator output");
+    add("tooltip.adv_rocketry.horizon.orbit", "Requires orbit around a black-hole system");
+    add(
+        "tooltip.adv_rocketry.horizon.no_power",
+        "Generates no energy; module bonuses add together");
+    add(
+        "status.adv_rocketry.horizon.modules",
+        "Use a Microwave Transmitter with Horizon modules, without solar modules");
+    add("gui.adv_rocketry.horizon.chip", "Horizon satellite chip");
+    add("gui.adv_rocketry.horizon.bonus", "Horizon: +%s%%");
+    add(
+        "status.adv_rocketry.horizon.generator_location",
+        "Requires black-hole station orbit or a linked Horizon satellite above this planet");
     add("item.adv_rocketry.mass_detector", "Mass Detector");
     add("item.adv_rocketry.microwave_transmitter", "Microwave Transmitter");
     add("item.adv_rocketry.ore_mapper", "Ore Mapper");

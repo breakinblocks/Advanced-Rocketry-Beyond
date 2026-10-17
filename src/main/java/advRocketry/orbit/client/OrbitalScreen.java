@@ -834,7 +834,7 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
                 : menu.entity.solarArray()
                     ? Component.translatable("gui.adv_rocketry.orbital.solar_array")
                     : menu.entity.blackHoleGenerator()
-                        ? Component.translatable("gui.adv_rocketry.orbital.black_hole_generator")
+                        ? Component.translatable("gui.adv_rocketry.horizon.chip")
                         : menu.entity.warpCore()
                             ? Texts.translate(
                                 "gui.adv_rocketry.orbital.station_warp_fuel",
@@ -849,6 +849,14 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
         26,
         UiTheme.MUTED,
         false);
+    if (menu.entity.blackHoleGenerator())
+      drawText(
+          graphics,
+          Component.translatable("gui.adv_rocketry.horizon.bonus", menu.horizonBonus()),
+          52,
+          46,
+          UiTheme.TEXT,
+          false);
     if (menu.entity.builder())
       drawText(
           graphics,

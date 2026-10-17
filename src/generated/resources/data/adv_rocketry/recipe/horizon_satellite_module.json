@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "L": {
+      "item": "adv_rocketry:large_satellite_solar_panel"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "P": {
+      "tag": "c:plates/titanium_iridium"
+    }
+  },
+  "pattern": [
+    "PLP",
+    "CNC",
+    "PLP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:horizon_satellite_module"
+  }
+}

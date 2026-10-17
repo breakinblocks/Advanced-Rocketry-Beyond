@@ -1,7 +1,10 @@
 package advRocketry.orbit;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 public final class Satellite {
@@ -10,6 +13,8 @@ public final class Satellite {
   public int powerGeneration;
   public int powerStorage;
   public int maxData;
+  public int horizonBonus;
+  public GlobalPos horizonTarget;
   public boolean deployed;
   public int orbitPlanet = -1;
   public long deployedTime;
@@ -42,6 +47,11 @@ public final class Satellite {
     tag.putInt("power_generation", powerGeneration);
     tag.putInt("power_storage", powerStorage);
     tag.putInt("max_data", maxData);
+    tag.putInt("horizon_bonus", horizonBonus);
+    if (horizonTarget != null) {
+      tag.putString("horizon_dimension", horizonTarget.dimension().location().toString());
+      tag.putLong("horizon_position", horizonTarget.pos().asLong());
+    }
     tag.putBoolean("deployed", deployed);
     tag.putInt("orbit_planet", orbitPlanet);
     tag.putLong("deployed_time", deployedTime);
@@ -60,6 +70,14 @@ public final class Satellite {
             tag.getInt("power_storage"),
             tag.getInt("max_data"));
     satellite.id = tag.getLong("satellite_id");
+    satellite.horizonBonus = Math.max(0, tag.getInt("horizon_bonus"));
+    ResourceLocation horizonDimension =
+        ResourceLocation.tryParse(tag.getString("horizon_dimension"));
+    if (horizonDimension != null && tag.contains("horizon_position"))
+      satellite.horizonTarget =
+          GlobalPos.of(
+              ResourceKey.create(Registries.DIMENSION, horizonDimension),
+              BlockPos.of(tag.getLong("horizon_position")));
     satellite.deployed = tag.getBoolean("deployed");
     if (tag.contains("orbit_planet")) satellite.orbitPlanet = tag.getInt("orbit_planet");
     satellite.deployedTime = tag.getLong("deployed_time");

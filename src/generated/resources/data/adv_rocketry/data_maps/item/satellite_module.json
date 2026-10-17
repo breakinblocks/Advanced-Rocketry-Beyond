@@ -9,6 +9,9 @@
     "adv_rocketry:battery": {
       "energy_storage": 10000
     },
+    "adv_rocketry:horizon_satellite_module": {
+      "horizon_bonus_percent": 15
+    },
     "adv_rocketry:item_data_storage": {
       "data_storage": 1000
     },

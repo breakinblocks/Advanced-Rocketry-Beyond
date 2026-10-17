@@ -46,6 +46,8 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   public int warpDestination;
   public int powerMadeLastTick;
   public long blackHoleBurnUntil;
+  public long horizonSatelliteId;
+  public int horizonBonus;
   public String elevatorDimension = "";
   public long elevatorPosition;
   public int areaGravity = 15;
@@ -343,6 +345,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     tag.putInt("holo_redstone", hologram.redstone);
     tag.putInt("power_last_tick", powerMadeLastTick);
     tag.putLong("black_hole_burn_until", blackHoleBurnUntil);
+    tag.putLong("horizon_satellite", horizonSatelliteId);
     tag.putInt("observation_ticks", observation.ticks);
     tag.putInt("observatory_open_progress", observation.openProgress);
     tag.putInt("asteroid_candidate", observation.candidate);
@@ -400,6 +403,8 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     hologram.redstone = Math.floorMod(tag.getInt("holo_redstone"), 3);
     powerMadeLastTick = tag.getInt("power_last_tick");
     blackHoleBurnUntil = tag.getLong("black_hole_burn_until");
+    horizonSatelliteId = tag.getLong("horizon_satellite");
+    horizonBonus = 0;
     observation.ticks = tag.getInt("observation_ticks");
     observation.openProgress = Math.clamp(tag.getInt("observatory_open_progress"), 0, 100);
     observation.candidate =

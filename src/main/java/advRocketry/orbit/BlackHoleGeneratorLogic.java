@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
-/** Original five-layer structure and item-fueled 500 FE/t generation in black-hole orbit. */
+/** Item-fueled generation in black-hole orbit, or on a planet with a linked Horizon satellite. */
 public final class BlackHoleGeneratorLogic {
   private BlackHoleGeneratorLogic() {}
 
@@ -47,16 +47,16 @@ public final class BlackHoleGeneratorLogic {
   public static void tick(OrbitalBlockEntity controller) {
     if (!(controller.getLevel() instanceof ServerLevel level)) return;
     controller.powerMadeLastTick = 0;
+    controller.horizonBonus = 0;
     if (!complete(controller)) {
       controller.status =
           Component.translatable(
               "status.adv_rocketry.black_hole_generator.black_hole_generator_structure_incomplete");
       return;
     }
-    if (!blackHoleOrbit(controller, level)) {
-      controller.status =
-          Component.translatable(
-              "status.adv_rocketry.black_hole_generator.requires_a_station_orbiting_a_black");
+    int horizonBonus = HorizonSatelliteLogic.bonus(controller);
+    if (!blackHoleOrbit(controller, level) && horizonBonus <= 0) {
+      controller.status = Component.translatable("status.adv_rocketry.horizon.generator_location");
       return;
     }
     List<PortBlockEntity> ports = ports(controller);
@@ -82,7 +82,9 @@ public final class BlackHoleGeneratorLogic {
               "status.adv_rocketry.black_hole_generator.insert_fuel_into_an_item_input");
       return;
     }
-    int output = 500 * AdvancedRocketryConfig.blackHolePowerMultiplier();
+    int output =
+        HorizonSatelliteLogic.amplifiedOutput(
+            500 * AdvancedRocketryConfig.blackHolePowerMultiplier(), horizonBonus);
     int accepted = controller.addGeneratedEnergy(output);
     controller.powerMadeLastTick = accepted;
     controller.status =

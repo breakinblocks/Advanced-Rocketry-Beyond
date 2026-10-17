@@ -194,6 +194,9 @@ public final class OrbitalRegistry {
   public static final Supplier<Item> ORE_MAPPER = item("ore_mapper");
   public static final Supplier<Item> BASIC_SOLAR_PANEL = item("basic_satellite_solar_panel");
   public static final Supplier<Item> LARGE_SOLAR_PANEL = item("large_satellite_solar_panel");
+  public static final Supplier<HorizonModuleItem> HORIZON_MODULE =
+      ITEMS.register(
+          "horizon_satellite_module", () -> new HorizonModuleItem(new Item.Properties()));
   public static final Supplier<Item> DATA_UNIT =
       ProcessingRegistry.PART_ITEMS.get("item_data_storage");
   public static final Supplier<Item> SATELLITE_CHIP =
@@ -316,6 +319,11 @@ public final class OrbitalRegistry {
     return module == null ? 0 : module.energyStorage();
   }
 
+  public static int horizonBonus(ItemStack stack) {
+    DataMaps.SatelliteModule module = satelliteModule(stack);
+    return module == null ? 0 : module.horizonBonus();
+  }
+
   public static int data(ItemStack stack) {
     DataMaps.SatelliteModule module = satelliteModule(stack);
     return module == null ? 0 : module.dataStorage();
@@ -401,6 +409,7 @@ public final class OrbitalRegistry {
             MICROWAVE_TRANSMITTER,
             ORE_MAPPER,
             BASIC_SOLAR_PANEL,
-            LARGE_SOLAR_PANEL)) event.accept(part.get());
+            LARGE_SOLAR_PANEL,
+            HORIZON_MODULE)) event.accept(part.get());
   }
 }

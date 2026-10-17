@@ -7,7 +7,17 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record SatelliteProperties(
-    long id, SatelliteType type, int powerGeneration, int powerStorage, int maxData) {
+    long id,
+    SatelliteType type,
+    int powerGeneration,
+    int powerStorage,
+    int maxData,
+    int horizonBonus) {
+  public SatelliteProperties(
+      long id, SatelliteType type, int powerGeneration, int powerStorage, int maxData) {
+    this(id, type, powerGeneration, powerStorage, maxData, 0);
+  }
+
   public static final Codec<SatelliteProperties> CODEC =
       RecordCodecBuilder.create(
           instance ->
@@ -21,7 +31,10 @@ public record SatelliteProperties(
                       Codec.INT
                           .fieldOf("power_storage")
                           .forGetter(SatelliteProperties::powerStorage),
-                      Codec.INT.fieldOf("max_data").forGetter(SatelliteProperties::maxData))
+                      Codec.INT.fieldOf("max_data").forGetter(SatelliteProperties::maxData),
+                      Codec.intRange(0, 60000)
+                          .optionalFieldOf("horizon_bonus", 0)
+                          .forGetter(SatelliteProperties::horizonBonus))
                   .apply(instance, SatelliteProperties::new));
   public static final StreamCodec<ByteBuf, SatelliteProperties> STREAM_CODEC =
       StreamCodec.composite(
@@ -35,6 +48,8 @@ public record SatelliteProperties(
           SatelliteProperties::powerStorage,
           ByteBufCodecs.VAR_INT,
           SatelliteProperties::maxData,
+          ByteBufCodecs.VAR_INT,
+          SatelliteProperties::horizonBonus,
           SatelliteProperties::new);
 
   public static SatelliteProperties of(Satellite satellite) {
@@ -43,6 +58,7 @@ public record SatelliteProperties(
         satellite.type,
         satellite.powerGeneration,
         satellite.powerStorage,
-        satellite.maxData);
+        satellite.maxData,
+        satellite.horizonBonus);
   }
 }

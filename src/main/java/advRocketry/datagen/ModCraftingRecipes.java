@@ -384,13 +384,22 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
         tag("c:batteries"),
         'b',
         item("minecraft:furnace"));
-    shaped(output, "fuel_generator", "adv_rocketry:fuel_generator", 1,
+    shaped(
+        output,
+        "fuel_generator",
+        "adv_rocketry:fuel_generator",
+        1,
         List.of("iri", "tgt", "imi"),
-        'i', tag("c:plates/iron"),
-        'r', item("adv_rocketry:fluid_io_circuit_board"),
-        't', item("adv_rocketry:liquid_tank"),
-        'g', item("adv_rocketry:coal_generator"),
-        'm', item("adv_rocketry:block_motor_block"));
+        'i',
+        tag("c:plates/iron"),
+        'r',
+        item("adv_rocketry:fluid_io_circuit_board"),
+        't',
+        item("adv_rocketry:liquid_tank"),
+        'g',
+        item("adv_rocketry:coal_generator"),
+        'm',
+        item("adv_rocketry:block_motor_block"));
     shaped(
         output,
         "legacy/coil_aluminum",
@@ -914,6 +923,20 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
         item("adv_rocketry:basic_satellite_solar_panel"),
         item("adv_rocketry:basic_satellite_solar_panel"),
         item("adv_rocketry:basic_satellite_solar_panel"));
+    shaped(
+        output,
+        "horizon_satellite_module",
+        "adv_rocketry:horizon_satellite_module",
+        1,
+        List.of("PLP", "CNC", "PLP"),
+        'P',
+        tag("c:plates/titanium_iridium"),
+        'L',
+        item("adv_rocketry:large_satellite_solar_panel"),
+        'C',
+        item("adv_rocketry:advanced_circuit"),
+        'N',
+        item("minecraft:nether_star"));
     shaped(
         output,
         "legacy/lathe",

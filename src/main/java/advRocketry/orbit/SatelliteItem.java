@@ -50,6 +50,10 @@ public final class SatelliteItem extends Item {
         tooltip.add(
             Texts.translate(
                 "message.adv_rocketry.satellite.type", properties.type().displayName()));
+      if (properties.type() == SatelliteType.HORIZON)
+        tooltip.add(
+            Component.translatable(
+                "tooltip.adv_rocketry.horizon.bonus", properties.horizonBonus()));
       tooltip.add(
           Texts.translate(
               "message.adv_rocketry.satellite.power_fe_t_fe_storage",

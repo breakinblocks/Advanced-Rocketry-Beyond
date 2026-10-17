@@ -12,6 +12,7 @@ item_ids:
   - adv_rocketry:advanced_battery
   - adv_rocketry:basic_satellite_solar_panel
   - adv_rocketry:large_satellite_solar_panel
+  - adv_rocketry:horizon_satellite_module
 ---
 
 # Build and deploy satellites
@@ -19,6 +20,18 @@ item_ids:
 Place a Power Input Plug below the builder. Insert the chosen satellite controller component, compatible power, battery and data modules, and a blank Satellite ID Chip.
 
 Assembly takes **100 powered ticks at 10 FE/t**. The chassis retains its modules. Basic and advanced batteries add **10,000 FE** and **40,000 FE** storage respectively, in addition to base capacity.
+
+Basic satellite panels generate **32 energy/tick** and large panels generate **160 energy/tick**. A power satellite uses 1 energy/tick for upkeep. Its six module slots share space between generation and storage.
+
+## Horizon modules
+
+Horizon is the most expensive satellite module tier. Assemble a Microwave Transmitter with up to six Horizon modules and a blank chip. Do not mix Horizon and solar modules. Horizon satellites produce **no energy** and need no power module to assemble.
+
+Deploy the satellite above a planet in a black-hole system. Insert its linked chip into a Black-Hole Generator on that planet, or on a station orbiting that planet. Each Horizon module adds **15%** to the generator's output: one module gives **575 FE/t**, and six give **950 FE/t**, at the default generator settings. The generator still needs its complete frame and item fuel.
+
+One satellite links to one generator at a time. Copied chips do not multiply its effect. Remove the chip or break the old generator to move the link. Recovering the satellite disables the bonus; normal-star systems and mismatched orbits also disable it.
+
+<RecipeFor id="adv_rocketry:horizon_satellite_module" fallbackText="No crafting recipe is enabled for this item on this server." />
 
 Keep the programmed chip. Put the completed Satellite in a rocket's Satellite Hatch and launch it. Deployed data satellites collect over time; power and storage constrain operation.
 

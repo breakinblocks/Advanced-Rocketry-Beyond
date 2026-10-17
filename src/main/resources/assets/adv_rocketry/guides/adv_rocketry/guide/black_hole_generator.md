@@ -12,6 +12,10 @@ item_ids:
 
 This works on a station orbiting a **black hole**. Complete the five-layer frame, supply items through a service input, and connect power outputs.
 
+A linked **Horizon satellite** also enables the generator on the planet below, within a black-hole system. Insert the satellite's chip into the controller. Each installed Horizon module adds **15%** output, up to **+90%** with six modules. With default settings, that raises output from **500 FE/t** to **950 FE/t**. The bonus does not change item burn duration.
+
+The satellite must remain deployed above the same planet. One satellite can boost only one generator; remove its chip from the old generator before linking another. See [satellite assembly](satellite_builder.md) for the module recipe and launch steps.
+
 It produces **500 FE/t** while burning items in the correct orbit. Check orbit, input and output capacity if idle. The example uses item-input and energy-output ports in the flexible positions.
 
 ## Build example

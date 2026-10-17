@@ -19,7 +19,7 @@ import net.neoforged.neoforge.items.ItemHandlerCopySlot;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 public final class OrbitalMenu extends ModMenu {
-  private static final int COUNT = 39;
+  private static final int COUNT = 40;
   public final OrbitalBlockEntity entity;
   private final SplitIntData data;
   private final Level level;
@@ -50,6 +50,10 @@ public final class OrbitalMenu extends ModMenu {
     buffer.writeLong(entity.observation.seed);
     buffer.writeUtf(entity.dockingId, 32);
     buffer.writeUtf(entity.dockingTarget, 32);
+  }
+
+  public int horizonBonus() {
+    return data.value(39);
   }
 
   public long asteroidSeed() {
@@ -128,6 +132,7 @@ public final class OrbitalMenu extends ModMenu {
               : 0;
       case 38 ->
           entity.observatory() ? ObservatoryLogic.researchData(entity, ResearchType.MASS) : 0;
+      case 39 -> entity.horizonBonus;
       default -> 0;
     };
   }
@@ -139,6 +144,7 @@ public final class OrbitalMenu extends ModMenu {
     this.data = data;
     if (entity.hatch()
         || entity.microwaveReceiver()
+        || entity.blackHoleGenerator()
         || entity.railgun()
         || entity.astrobodyProcessor()
         || entity.atmosphereTerraformer())

@@ -301,6 +301,13 @@ final class ModItemModels extends ModItemModelHelpers {
         true,
         "layer0",
         "item/satellitepowersource1");
+    model(
+        "item/horizon_satellite_module",
+        "minecraft:item/generated",
+        null,
+        true,
+        "layer0",
+        "item/horizon_satellite_module");
     model("item/lathe", "block/lathe", null, true);
     model("item/launch_pad", "block/launch_pad", null, true);
     model("item/legs_upgrade", "minecraft:item/generated", null, true, "layer0", "item/bioniclegs");

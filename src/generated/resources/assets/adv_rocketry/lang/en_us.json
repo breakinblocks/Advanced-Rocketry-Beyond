@@ -305,6 +305,8 @@
   "gui.adv_rocketry.guide.output": "Output",
   "gui.adv_rocketry.guide.processing_cost": "%s ticks; %s FE/t (base cost before machine upgrades).",
   "gui.adv_rocketry.guide.random_output": "Random output: %s rolls per operation.",
+  "gui.adv_rocketry.horizon.bonus": "Horizon: +%s%%",
+  "gui.adv_rocketry.horizon.chip": "Horizon satellite chip",
   "gui.adv_rocketry.liquid_fuel.amount": "%s mB fuel",
   "gui.adv_rocketry.liquid_fuel.duration": "%s ticks (%s s)",
   "gui.adv_rocketry.liquid_fuel.rate": "%s FE/t",
@@ -573,6 +575,7 @@
   "item.adv_rocketry.gold_plate": "Gold Plate",
   "item.adv_rocketry.helium3_bucket": "Helium-3 Bucket",
   "item.adv_rocketry.helium_bucket": "Helium Bucket",
+  "item.adv_rocketry.horizon_satellite_module": "Horizon Satellite Module",
   "item.adv_rocketry.hover_upgrade": "Hover Upgrade",
   "item.adv_rocketry.hovercraft": "Hovercraft",
   "item.adv_rocketry.hydrogen_bucket": "Hydrogen Bucket",
@@ -819,6 +822,7 @@
   "satellite_type.adv_rocketry.biome_changer": "Biome Changer",
   "satellite_type.adv_rocketry.composition": "Composition Sensor",
   "satellite_type.adv_rocketry.density": "Atmosphere Density Sensor",
+  "satellite_type.adv_rocketry.horizon": "Horizon Amplifier",
   "satellite_type.adv_rocketry.mass": "Mass Detector",
   "satellite_type.adv_rocketry.optical": "Optical Telescope",
   "satellite_type.adv_rocketry.ore_scanner": "Ore Mapper",
@@ -839,6 +843,8 @@
   "status.adv_rocketry.holographic_selector.showing_star_system": "Showing star system",
   "status.adv_rocketry.holographic_selector.showing_stars": "Showing stars",
   "status.adv_rocketry.holographic_selector.station_targeting": "Station targeting %s",
+  "status.adv_rocketry.horizon.generator_location": "Requires black-hole station orbit or a linked Horizon satellite above this planet",
+  "status.adv_rocketry.horizon.modules": "Use a Microwave Transmitter with Horizon modules, without solar modules",
   "status.adv_rocketry.observatory.asteroid_chip_programmed": "Asteroid chip programmed",
   "status.adv_rocketry.observatory.found_asteroid_targets": "Found %s asteroid targets",
   "status.adv_rocketry.observatory.scan_needs_100_distance_data": "Scan needs 100 distance data",
@@ -957,5 +963,8 @@
   "subtitles.adv_rocketry.machinelarge": "Terraformer rumbles",
   "subtitles.adv_rocketry.precass": "Assembler whirs",
   "subtitles.adv_rocketry.railgunbang": "Railgun fires",
-  "subtitles.adv_rocketry.rollingmachine": "Rolling machine presses"
+  "subtitles.adv_rocketry.rollingmachine": "Rolling machine presses",
+  "tooltip.adv_rocketry.horizon.bonus": "+%s%% linked black-hole generator output",
+  "tooltip.adv_rocketry.horizon.no_power": "Generates no energy; module bonuses add together",
+  "tooltip.adv_rocketry.horizon.orbit": "Requires orbit around a black-hole system"
 }

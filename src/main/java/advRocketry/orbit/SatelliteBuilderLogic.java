@@ -36,12 +36,13 @@ public final class SatelliteBuilderLogic {
     }
     ItemStack primary = entity.inventory.getStackInSlot(0);
     SatelliteType type = OrbitalRegistry.type(primary);
-    int generation = 0, storage = 720, data = 0;
+    int generation = 0, storage = 720, data = 0, horizonBonus = 0;
     for (int slot = 1; slot <= 6; slot++) {
       ItemStack module = entity.inventory.getStackInSlot(slot);
       generation += OrbitalRegistry.generation(module);
       storage += OrbitalRegistry.storage(module);
       data += OrbitalRegistry.data(module);
+      horizonBonus += OrbitalRegistry.horizonBonus(module);
       if (!module.isEmpty() && !OrbitalRegistry.module(module)) {
         entity.status =
             Component.translatable("status.adv_rocketry.orbital.invalid_satellite_module");
@@ -49,8 +50,15 @@ public final class SatelliteBuilderLogic {
         return false;
       }
     }
+    if (horizonBonus > 0) {
+      if (type != SatelliteType.SOLAR_ENERGY || generation != 0) {
+        entity.status = Component.translatable("status.adv_rocketry.horizon.modules");
+        return false;
+      }
+      type = SatelliteType.HORIZON;
+    }
     if (type == null
-        || generation == 0
+        || generation == 0 && horizonBonus == 0
         || !entity.inventory.getStackInSlot(9).isEmpty()
         || !(type == SatelliteType.ORE_SCANNER
             ? entity.inventory.getStackInSlot(8).is(OrbitalRegistry.ORE_SCANNER.get())
@@ -70,6 +78,7 @@ public final class SatelliteBuilderLogic {
     }
     GalaxyData galaxy = GalaxyData.get(serverLevel.getServer());
     Satellite record = new Satellite(type, generation, storage, data);
+    record.horizonBonus = horizonBonus;
     long id = galaxy.newSatellite(record);
     ItemStack chassis = entity.inventory.extractItem(7, 1, false);
     chassis.set(ModComponents.SATELLITE, SatelliteProperties.of(record));

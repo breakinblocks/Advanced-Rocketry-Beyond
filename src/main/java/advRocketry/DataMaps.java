@@ -75,7 +75,12 @@ public final class DataMaps {
                         : DataResult.success(gas));
   }
 
-  public record SatelliteModule(int powerGeneration, int energyStorage, int dataStorage) {
+  public record SatelliteModule(
+      int powerGeneration, int energyStorage, int dataStorage, int horizonBonus) {
+    public SatelliteModule(int powerGeneration, int energyStorage, int dataStorage) {
+      this(powerGeneration, energyStorage, dataStorage, 0);
+    }
+
     public static final Codec<SatelliteModule> CODEC =
         RecordCodecBuilder.create(
             instance ->
@@ -89,7 +94,10 @@ public final class DataMaps {
                             .forGetter(SatelliteModule::energyStorage),
                         ExtraCodecs.NON_NEGATIVE_INT
                             .optionalFieldOf("data_storage", 0)
-                            .forGetter(SatelliteModule::dataStorage))
+                            .forGetter(SatelliteModule::dataStorage),
+                        Codec.intRange(0, 10000)
+                            .optionalFieldOf("horizon_bonus_percent", 0)
+                            .forGetter(SatelliteModule::horizonBonus))
                     .apply(instance, SatelliteModule::new));
   }
 
