@@ -4,6 +4,7 @@
 package advRocketry.orbit;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,6 +25,10 @@ public final class HologramBodyEntity extends Entity {
       SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.INT);
   private static final EntityDataAccessor<Boolean> SELECTED =
       SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BOOLEAN);
+  private static final EntityDataAccessor<BlockPos> PROJECTOR =
+      SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BLOCK_POS);
+  private static final EntityDataAccessor<Boolean> ORBIT =
+      SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BOOLEAN);
   private OrbitalBlockEntity owner;
   private HolographicSelectorLogic.Kind kind;
   private int bodyId;
@@ -39,6 +44,8 @@ public final class HologramBodyEntity extends Entity {
     builder.define(RADIUS, .15f);
     builder.define(COLOR, 0xd07feaff);
     builder.define(SELECTED, false);
+    builder.define(PROJECTOR, BlockPos.ZERO);
+    builder.define(ORBIT, false);
   }
 
   boolean matches(HolographicSelectorLogic.Body body) {
@@ -52,6 +59,8 @@ public final class HologramBodyEntity extends Entity {
     entityData.set(RADIUS, body.radius());
     entityData.set(COLOR, body.color());
     entityData.set(SELECTED, body.selected());
+    entityData.set(PROJECTOR, selector.getBlockPos());
+    entityData.set(ORBIT, body.kind() == HolographicSelectorLogic.Kind.PLANET);
     setCustomName(body.name());
     Vec3 center = Vec3.atLowerCornerOf(selector.getBlockPos()).add(.5, 1.05, .5).add(body.offset());
     setPos(center);
@@ -68,6 +77,14 @@ public final class HologramBodyEntity extends Entity {
 
   public boolean selected() {
     return entityData.get(SELECTED);
+  }
+
+  public Vec3 projectionCenter() {
+    return Vec3.atLowerCornerOf(entityData.get(PROJECTOR)).add(.5, 1.15, .5);
+  }
+
+  public boolean showOrbit() {
+    return entityData.get(ORBIT);
   }
 
   private void updateBounds() {
