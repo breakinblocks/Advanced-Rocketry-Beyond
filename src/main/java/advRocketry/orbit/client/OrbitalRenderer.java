@@ -166,6 +166,8 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       pose.pushPose();
       pose.translate(.5, .5, .5);
       pose.mulPose(Axis.YP.rotationDegrees(yaw(front(entity)) + 90));
+      // Keep the formed shell clear of coplanar frame and port block faces.
+      pose.scale(1.002f, 1.002f, 1.002f);
       model(BLACK_HOLE_MODEL)
           .renderAll(
               pose,
