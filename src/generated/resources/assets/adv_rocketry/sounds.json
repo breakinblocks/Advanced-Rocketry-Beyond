@@ -25,19 +25,19 @@
   },
   "crystallizer": {
     "sounds": [
-      "adv_rocketry:crystallizer"
+      "adv_rocketry:machinelarge"
     ],
     "subtitle": "subtitles.adv_rocketry.crystallizer"
   },
   "cuttingmachine": {
     "sounds": [
-      "adv_rocketry:cuttingmachine"
+      "adv_rocketry:machinelarge"
     ],
     "subtitle": "subtitles.adv_rocketry.cuttingmachine"
   },
   "electricarcfurnace": {
     "sounds": [
-      "adv_rocketry:electricarcfurnace"
+      "adv_rocketry:machinelarge"
     ],
     "subtitle": "subtitles.adv_rocketry.electricarcfurnace"
   },
@@ -49,7 +49,7 @@
   },
   "electrolyser": {
     "sounds": [
-      "adv_rocketry:electrolyser"
+      "adv_rocketry:machinelarge"
     ],
     "subtitle": "subtitles.adv_rocketry.electrolyser"
   },
@@ -79,7 +79,7 @@
   },
   "precass": {
     "sounds": [
-      "adv_rocketry:precass"
+      "adv_rocketry:machinelarge"
     ],
     "subtitle": "subtitles.adv_rocketry.precass"
   },
