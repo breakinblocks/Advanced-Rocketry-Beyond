@@ -3,7 +3,7 @@ package advRocketry.orbit.client;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectRenderTypes;
-import advRocketry.client.effects.SingularityLens;
+import advRocketry.client.effects.SceneDistortion;
 import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -61,7 +61,7 @@ public final class OrbitalEffects {
             EffectGeometry.segments(profile));
       }
     } else if (entity.blackHoleGenerator() && entity.powerMadeLastTick > 0) {
-      SingularityLens.submit(Vec3.atLowerCornerOf(entity.getBlockPos()).add(.5, 2, .5), .35f);
+      SceneDistortion.submit(Vec3.atLowerCornerOf(entity.getBlockPos()).add(.5, 2, .5), .35f);
       pose.translate(0, 1.5, 0);
       EffectGeometry.sphere(pose, buffers.getBuffer(RenderType.debugQuads()), .35, 0xff020406);
       vertices = buffers.getBuffer(EffectRenderTypes.GLOW);

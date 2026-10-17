@@ -1,0 +1,175 @@
+{
+  "vertex": "adv_rocketry:scene_distortion",
+  "fragment": "adv_rocketry:scene_distortion",
+  "attributes": [
+    "Position",
+    "UV0"
+  ],
+  "samplers": [
+    {
+      "name": "SceneSampler"
+    },
+    {
+      "name": "DepthSampler"
+    }
+  ],
+  "uniforms": [
+    {
+      "name": "ScreenSize",
+      "type": "float",
+      "count": 2,
+      "values": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "Lens0",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Lens1",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Lens2",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Lens3",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "HeatTime",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    },
+    {
+      "name": "HeatStrength",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0.65
+      ]
+    },
+    {
+      "name": "HeatStart0",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "HeatEnd0",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "HeatStart1",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "HeatEnd1",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "HeatStart2",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "HeatEnd2",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "HeatStart3",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "HeatEnd3",
+      "type": "float",
+      "count": 4,
+      "values": [
+        -10,
+        -10,
+        0,
+        0
+      ]
+    }
+  ]
+}

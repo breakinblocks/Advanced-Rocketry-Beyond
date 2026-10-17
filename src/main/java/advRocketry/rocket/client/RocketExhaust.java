@@ -3,6 +3,7 @@ package advRocketry.rocket.client;
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.SceneDistortion;
 import advRocketry.rocket.RocketEntity;
 import advRocketry.rocket.RocketPartBlock;
 import advRocketry.space.GalaxySync;
@@ -37,6 +38,13 @@ public final class RocketExhaust {
       if (!(cell.state().getBlock() instanceof RocketPartBlock part)
           || part.kind != RocketPartBlock.Kind.ENGINE) continue;
       if (++engines > 32) break;
+      SceneDistortion.submitHeat(
+          rocket
+              .getPosition(partialTick)
+              .add(
+                  cell.position().getX() + .5 - rocket.structure().width / 2d,
+                  cell.position().getY(),
+                  cell.position().getZ() + .5 - rocket.structure().depth / 2d));
       pose.pushPose();
       pose.translate(
           cell.position().getX() + .5, cell.position().getY(), cell.position().getZ() + .5);

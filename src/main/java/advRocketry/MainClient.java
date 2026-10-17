@@ -3,7 +3,7 @@ package advRocketry;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.HologramShader;
-import advRocketry.client.effects.SingularityLens;
+import advRocketry.client.effects.SceneDistortion;
 import advRocketry.client.model.ConnectedModelLoader;
 import advRocketry.compat.guideme.RocketryGuide;
 import advRocketry.life.LifeSupportRegistry;
@@ -66,7 +66,7 @@ public final class MainClient {
     bus.addListener(MainClient::screens);
     bus.addListener(MainClient::renderers);
     bus.addListener(MainClient::reloadListeners);
-    bus.addListener(SingularityLens::register);
+    bus.addListener(SceneDistortion::register);
     bus.addListener(HologramShader::register);
     bus.addListener(RocketEffectShader::register);
     bus.addListener(PlanetClouds::register);
@@ -89,8 +89,8 @@ public final class MainClient {
     bus.addListener(ProcessingClient::registerFluidExtensions);
     NeoForge.EVENT_BUS.addListener(LaserBeamRenderer::render);
     NeoForge.EVENT_BUS.addListener(EffectGeometry::beginFrame);
-    NeoForge.EVENT_BUS.addListener(SingularityLens::render);
-    NeoForge.EVENT_BUS.addListener(SingularityLens::logout);
+    NeoForge.EVENT_BUS.addListener(SceneDistortion::render);
+    NeoForge.EVENT_BUS.addListener(SceneDistortion::logout);
     NeoForge.EVENT_BUS.addListener(RocketClient::controls);
     NeoForge.EVENT_BUS.addListener(RocketClient::tick);
     NeoForge.EVENT_BUS.addListener(RocketExhaust::tick);
