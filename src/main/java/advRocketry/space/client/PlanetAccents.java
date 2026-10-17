@@ -18,24 +18,33 @@ public final class PlanetAccents {
   private PlanetAccents() {}
 
   public static void render(PoseStack pose, Planet planet, float size, float alpha) {
-    if (!AdvancedRocketryConfig.advancedVfx() || !planet.hasShading() || planet.atmosphere <= 25) return;
+    if (!AdvancedRocketryConfig.advancedVfx() || !planet.hasShading() || planet.atmosphere <= 25)
+      return;
     var profile = EffectProfiles.get("planet");
     var aurora = EffectProfiles.get("celestial");
     if (!profile.enabled() && !(aurora.enabled() && planet.rings)) return;
     RenderSystem.setShaderColor(1, 1, 1, 1);
     RenderSystem.setShader(GameRenderer::getPositionColorShader);
-    var vertices = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+    var vertices =
+        Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
     if (profile.enabled()) {
       for (int layer = 0; layer < 5; layer++) {
         float opacity = alpha * .16f * (1 - layer / 5f);
-        EffectGeometry.ring(pose, vertices, size * (1 + layer * .008), 99.8, size * .005,
-            profile.argb(opacity), EffectGeometry.segments(profile));
+        EffectGeometry.ring(
+            pose,
+            vertices,
+            size * (1 + layer * .008),
+            99.8,
+            size * .005,
+            profile.argb(opacity),
+            EffectGeometry.segments(profile));
       }
     }
     if (aurora.enabled() && planet.rings) {
       double time = EffectGeometry.time(Minecraft.getInstance().level, 0, aurora);
       for (int i = 0; i < EffectGeometry.segments(aurora); i++) {
-        double a = i * Math.PI / EffectGeometry.segments(aurora), b = (i + 1) * Math.PI / EffectGeometry.segments(aurora);
+        double a = i * Math.PI / EffectGeometry.segments(aurora),
+            b = (i + 1) * Math.PI / EffectGeometry.segments(aurora);
         float x0 = (float) Math.cos(a) * size * .65f, x1 = (float) Math.cos(b) * size * .65f;
         float z0 = (float) Math.sin(a) * size * .16f - size * .65f;
         float z1 = (float) Math.sin(b) * size * .16f - size * .65f;

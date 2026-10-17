@@ -7,8 +7,6 @@ import advRocketry.AdvancedRocketryConfig;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.util.ComponentText;
 import advRocketry.util.MachineEnergy;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -403,7 +401,8 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     blackHoleBurnUntil = tag.getLong("black_hole_burn_until");
     observation.ticks = tag.getInt("observation_ticks");
     observation.openProgress = Math.clamp(tag.getInt("observatory_open_progress"), 0, 100);
-    observation.candidate = tag.contains("asteroid_candidate") ? tag.getInt("asteroid_candidate") : -1;
+    observation.candidate =
+        tag.contains("asteroid_candidate") ? tag.getInt("asteroid_candidate") : -1;
     observation.options = tag.getIntArray("asteroid_options");
     observation.catalogHash = tag.getInt("asteroid_catalog_hash");
     observation.optionIndex =

@@ -13,7 +13,9 @@ public final class FlightInstruments {
   public static void render(GuiGraphics graphics) {
     var client = Minecraft.getInstance();
     var profile = EffectProfiles.get("hud");
-    if (!profile.enabled() || client.player == null || !client.options.getCameraType().isFirstPerson()
+    if (!profile.enabled()
+        || client.player == null
+        || !client.options.getCameraType().isFirstPerson()
         || !(client.player.getVehicle() instanceof RocketEntity rocket)) return;
     int x = graphics.guiWidth() / 2, y = graphics.guiHeight() / 2;
     if (graphics.guiWidth() < 320 || graphics.guiHeight() < 200) return;
@@ -32,9 +34,19 @@ public final class FlightInstruments {
     graphics.vLine(x, y - 3, y + 3, color);
     int altitude = (int) Math.floor(rocket.getY());
     int speed = (int) Math.round(rocket.getDeltaMovement().y * 20);
-    graphics.drawString(client.font, Component.translatable("hud.adv_rocketry.flight_altitude", altitude),
-        x - 90, y + 65, color, false);
-    graphics.drawString(client.font, Component.translatable("hud.adv_rocketry.flight_vertical", speed),
-        x + 15, y + 65, color, false);
+    graphics.drawString(
+        client.font,
+        Component.translatable("hud.adv_rocketry.flight_altitude", altitude),
+        x - 90,
+        y + 65,
+        color,
+        false);
+    graphics.drawString(
+        client.font,
+        Component.translatable("hud.adv_rocketry.flight_vertical", speed),
+        x + 15,
+        y + 65,
+        color,
+        false);
   }
 }

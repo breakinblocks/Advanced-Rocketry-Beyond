@@ -22,12 +22,13 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
 /** 1.21.1 port of Nautec's bounded, depth-aware scene lens. Render-thread owned. */
 public final class SingularityLens {
   private record Source(Vec3 center, float radius) {}
+
   private static final List<Source> pending = new ArrayList<>();
   private static ShaderInstance shader;
   private static TextureTarget scene;
@@ -39,11 +40,15 @@ public final class SingularityLens {
     release();
     shader = null;
     try {
-      event.registerShader(new ShaderInstance(event.getResourceProvider(),
-          ResourceLocation.fromNamespaceAndPath(Main.MODID, "singularity_lens"),
-          DefaultVertexFormat.POSITION_TEX), loaded -> shader = loaded);
+      event.registerShader(
+          new ShaderInstance(
+              event.getResourceProvider(),
+              ResourceLocation.fromNamespaceAndPath(Main.MODID, "singularity_lens"),
+              DefaultVertexFormat.POSITION_TEX),
+          loaded -> shader = loaded);
     } catch (IOException error) {
-      LogUtils.getLogger().warn("Singularity shader unavailable; retaining geometry effects", error);
+      LogUtils.getLogger()
+          .warn("Singularity shader unavailable; retaining geometry effects", error);
     }
   }
 
@@ -66,8 +71,11 @@ public final class SingularityLens {
 
   public static void render(RenderLevelStageEvent event) {
     if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
-    if (pending.isEmpty() || shader == null || !AdvancedRocketryConfig.singularityDistortion()
-        || !AdvancedRocketryConfig.advancedVfx() || AdvancedRocketryConfig.reducedMotion()
+    if (pending.isEmpty()
+        || shader == null
+        || !AdvancedRocketryConfig.singularityDistortion()
+        || !AdvancedRocketryConfig.advancedVfx()
+        || AdvancedRocketryConfig.reducedMotion()
         || AdvancedRocketryConfig.effectDetail() < 2
         || ModList.get().isLoaded("iris")) {
       pending.clear();
@@ -82,13 +90,23 @@ public final class SingularityLens {
     var chosen = List.copyOf(pending.subList(0, Math.min(4, pending.size())));
     pending.clear();
     if (target.width <= 0 || target.height <= 0) return;
-    if (scene == null) scene = new TextureTarget(target.width, target.height, true, Minecraft.ON_OSX);
+    if (scene == null)
+      scene = new TextureTarget(target.width, target.height, true, Minecraft.ON_OSX);
     else if (scene.width != target.width || scene.height != target.height)
       scene.resize(target.width, target.height, Minecraft.ON_OSX);
     GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, target.frameBufferId);
     GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, scene.frameBufferId);
-    GL30.glBlitFramebuffer(0, 0, target.width, target.height, 0, 0, scene.width, scene.height,
-        GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT, GL30.GL_NEAREST);
+    GL30.glBlitFramebuffer(
+        0,
+        0,
+        target.width,
+        target.height,
+        0,
+        0,
+        scene.width,
+        scene.height,
+        GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT,
+        GL30.GL_NEAREST);
     target.bindWrite(true);
     shader.setSampler("SceneSampler", scene.getColorTextureId());
     shader.setSampler("DepthSampler", scene.getDepthTextureId());
@@ -105,7 +123,9 @@ public final class SingularityLens {
           Vector4f center = projection.transform(new Vector4f(view));
           Vector4f edge = projection.transform(new Vector4f(view).add(source.radius, 0, 0, 0));
           Vector4f front = projection.transform(new Vector4f(view).add(0, 0, source.radius, 0));
-          lens.set(center.x / center.w * .5f + .5f, center.y / center.w * .5f + .5f,
+          lens.set(
+              center.x / center.w * .5f + .5f,
+              center.y / center.w * .5f + .5f,
               Math.abs(edge.x / edge.w - center.x / center.w) * .5f,
               front.z / front.w * .5f + .5f);
         }
@@ -121,7 +141,8 @@ public final class SingularityLens {
     RenderSystem.disableBlend();
     RenderSystem.setShader(() -> shader);
     try {
-      var quad = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+      var quad =
+          Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
       quad.addVertex(-1, -1, 0).setUv(0, 0);
       quad.addVertex(1, -1, 0).setUv(1, 0);
       quad.addVertex(1, 1, 0).setUv(1, 1);

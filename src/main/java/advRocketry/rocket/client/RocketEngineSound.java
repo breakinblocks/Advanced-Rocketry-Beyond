@@ -3,8 +3,8 @@
 
 package advRocketry.rocket.client;
 
-import advRocketry.rocket.RocketEntity;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.rocket.RocketEntity;
 import advRocketry.rocket.RocketRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -31,7 +31,9 @@ final class RocketEngineSound extends AbstractTickableSoundInstance {
   @Override
   public void tick() {
     var profile = EffectProfiles.get("audio");
-    if (rocket.isRemoved() || Minecraft.getInstance().level != rocket.level() || !profile.enabled()) {
+    if (rocket.isRemoved()
+        || Minecraft.getInstance().level != rocket.level()
+        || !profile.enabled()) {
       stop();
       return;
     }

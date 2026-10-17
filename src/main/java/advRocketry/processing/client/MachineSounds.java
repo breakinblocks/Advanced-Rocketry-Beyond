@@ -27,7 +27,8 @@ public final class MachineSounds {
   private MachineSounds() {}
 
   public static void tick(ProcessingBlockEntity machine) {
-    if (!machine.running() || SOUNDS.containsKey(machine) || !EffectProfiles.get("audio").enabled()) return;
+    if (!machine.running() || SOUNDS.containsKey(machine) || !EffectProfiles.get("audio").enabled())
+      return;
     var client = Minecraft.getInstance();
     if (client.options.getSoundSourceVolume(SoundSource.BLOCKS) == 0
         || client.options.getSoundSourceVolume(SoundSource.MASTER) == 0) return;
@@ -86,7 +87,8 @@ public final class MachineSounds {
     @Override
     public void tick() {
       if (machine.isRemoved()
-          || machine.getLevel() != Minecraft.getInstance().level || !EffectProfiles.get("audio").enabled()) {
+          || machine.getLevel() != Minecraft.getInstance().level
+          || !EffectProfiles.get("audio").enabled()) {
         stop();
         return;
       }

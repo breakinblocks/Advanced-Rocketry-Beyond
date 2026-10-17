@@ -32,7 +32,9 @@ public final class EffectProfiles implements ResourceManagerReloadListener {
       if (resource.isEmpty()) continue;
       try (var reader = resource.get().openAsReader()) {
         var result = EffectProfile.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
-        result.resultOrPartial(error -> LogUtils.getLogger().warn("Invalid effect {}: {}", path, error))
+        result
+            .resultOrPartial(
+                error -> LogUtils.getLogger().warn("Invalid effect {}: {}", path, error))
             .ifPresent(profile -> loaded.put(id, profile));
       } catch (IOException | RuntimeException error) {
         LogUtils.getLogger().warn("Cannot load effect {}", path, error);
