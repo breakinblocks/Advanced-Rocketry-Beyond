@@ -35,6 +35,7 @@ import advRocketry.rocket.client.HovercraftClient;
 import advRocketry.rocket.client.HovercraftRenderer;
 import advRocketry.rocket.client.RocketClient;
 import advRocketry.rocket.client.RocketExhaust;
+import advRocketry.space.client.PlanetClouds;
 import advRocketry.space.client.PlanetEffects;
 import advRocketry.transport.TransportRegistry;
 import advRocketry.transport.client.TransportRenderer;
@@ -64,6 +65,7 @@ public final class MainClient {
     bus.addListener(MainClient::reloadListeners);
     bus.addListener(SingularityLens::register);
     bus.addListener(HologramShader::register);
+    bus.addListener(PlanetClouds::register);
     bus.addListener(JetpackLayer::register);
     bus.addListener(ConnectedModelLoader::register);
     bus.<EntityRenderersEvent.RegisterLayerDefinitions>addListener(SpaceHelmetLayer::definitions);

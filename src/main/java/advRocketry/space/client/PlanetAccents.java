@@ -21,6 +21,7 @@ public final class PlanetAccents {
     if (!AdvancedRocketryConfig.advancedVfx() || !planet.hasShading() || planet.atmosphere <= 25)
       return;
     var profile = EffectProfiles.get("planet");
+    PlanetClouds.render(pose, size, alpha);
     var aurora = EffectProfiles.get("celestial");
     if (!profile.enabled() && !(aurora.enabled() && planet.rings)) return;
     RenderSystem.setShaderColor(1, 1, 1, 1);
