@@ -2,6 +2,7 @@ package advRocketry.rocket.client;
 
 import advRocketry.Main;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.ShaderCompatibility;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.logging.LogUtils;
@@ -62,6 +63,10 @@ public final class RocketEffectShader extends RenderType {
 
   public static boolean ready() {
     return smoke != null && plume != null;
+  }
+
+  public static boolean needsCompatibilityGeometry() {
+    return ShaderCompatibility.shaderPackActive() || !ready();
   }
 
   public static void register(RegisterShadersEvent event) {

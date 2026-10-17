@@ -17,7 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -86,7 +85,7 @@ public final class SceneDistortion {
         || !AdvancedRocketryConfig.advancedVfx()
         || AdvancedRocketryConfig.reducedMotion()
         || AdvancedRocketryConfig.effectDetail() < 2
-        || ModList.get().isLoaded("iris")) {
+        || ShaderCompatibility.shaderPackActive()) {
       pending.clear();
       heat.clear();
       if (++idleFrames > 120) release();

@@ -3,7 +3,9 @@ package advRocketry.rocket.client;
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.SceneDistortion;
+import advRocketry.client.effects.ShaderCompatibility;
 import advRocketry.rocket.RocketEntity;
 import advRocketry.rocket.RocketPartBlock;
 import advRocketry.space.GalaxySync;
@@ -24,10 +26,12 @@ public final class RocketExhaust {
   public static void render(
       RocketEntity rocket, float partialTick, PoseStack pose, MultiBufferSource buffers) {
     var profile = EffectProfiles.get("rocket");
+    if (ShaderCompatibility.shadowPass()) return;
     if (!rocket.enginesActive() || !EffectGeometry.visible(rocket.position(), profile)) return;
     if (!EffectGeometry.reserve()) return;
-    if (!RocketEffectShader.ready()) return;
-    var vertices = buffers.getBuffer(RocketEffectShader.PLUME);
+    boolean compatible = RocketEffectShader.needsCompatibilityGeometry();
+    var vertices =
+        buffers.getBuffer(compatible ? EffectRenderTypes.EMISSIVE : RocketEffectShader.PLUME);
     double time = EffectGeometry.time(rocket.level(), partialTick, profile);
     int color =
         ((int) (profile.opacity() * 255) << 24)
@@ -48,9 +52,11 @@ public final class RocketExhaust {
       pose.pushPose();
       pose.translate(
           cell.position().getX() + .5, cell.position().getY(), cell.position().getZ() + .5);
-      RocketSmoke.quad(pose, vertices, 2.5f, 0, -10, color);
+      if (compatible) RocketCompatibilityGeometry.plume(pose, vertices, profile.argb(1), time);
+      else RocketSmoke.quad(pose, vertices, 2.5f, 0, -10, color);
       pose.mulPose(Axis.YP.rotationDegrees(90));
-      RocketSmoke.quad(pose, vertices, 2.5f, 0, -10, color);
+      if (compatible) RocketCompatibilityGeometry.plume(pose, vertices, profile.argb(1), time);
+      else RocketSmoke.quad(pose, vertices, 2.5f, 0, -10, color);
       pose.popPose();
     }
   }

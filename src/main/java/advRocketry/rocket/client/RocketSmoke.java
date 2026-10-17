@@ -3,6 +3,8 @@ package advRocketry.rocket.client;
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.EffectRenderTypes;
+import advRocketry.client.effects.ShaderCompatibility;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.ArrayList;
@@ -69,12 +71,15 @@ public final class RocketSmoke {
   }
 
   public static void render(RenderLevelStageEvent event) {
-    if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
+    boolean compatible = RocketEffectShader.needsCompatibilityGeometry();
+    var stage =
+        compatible
+            ? RenderLevelStageEvent.Stage.AFTER_ENTITIES
+            : RenderLevelStageEvent.Stage.AFTER_PARTICLES;
+    if (event.getStage() != stage) return;
+    if (ShaderCompatibility.shadowPass()) return;
     var client = Minecraft.getInstance();
-    if (client.level != level
-        || level == null
-        || !RocketEffectShader.ready()
-        || AdvancedRocketryConfig.reducedMotion()) return;
+    if (client.level != level || level == null || AdvancedRocketryConfig.reducedMotion()) return;
     var profile = EffectProfiles.get("rocket");
     var camera = event.getCamera().getPosition();
     double now = level.getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false);
@@ -83,7 +88,8 @@ public final class RocketSmoke {
             .reversed());
     var pose = event.getPoseStack();
     var buffers = client.renderBuffers().bufferSource();
-    var vertices = buffers.getBuffer(RocketEffectShader.SMOKE);
+    var type = compatible ? EffectRenderTypes.SMOKE : RocketEffectShader.SMOKE;
+    var vertices = buffers.getBuffer(type);
     for (var puff : PUFFS) {
       double age = now - puff.born();
       Vec3 position = puff.position(age);
@@ -98,9 +104,10 @@ public final class RocketSmoke {
       var relative = position.subtract(camera);
       pose.translate(relative.x, relative.y, relative.z);
       pose.mulPose(event.getCamera().rotation());
-      quad(pose, vertices, radius, radius, -radius, color);
+      if (compatible) RocketCompatibilityGeometry.smoke(pose, vertices, radius, color, puff.seed());
+      else quad(pose, vertices, radius, radius, -radius, color);
       pose.popPose();
     }
-    buffers.endBatch(RocketEffectShader.SMOKE);
+    buffers.endBatch(type);
   }
 }

@@ -35,7 +35,7 @@ public final class TransportRenderer implements BlockEntityRenderer<TransportBlo
     double time = EffectGeometry.time(pipe.getLevel(), partialTick, profile) * .06;
     pose.pushPose();
     pose.translate(.5, .5, .5);
-    var vertices = buffers.getBuffer(EffectRenderTypes.FIBER);
+    var vertices = buffers.getBuffer(EffectRenderTypes.EMISSIVE);
     for (Direction.Axis axis : Direction.Axis.values()) {
       Direction positive = Direction.get(Direction.AxisDirection.POSITIVE, axis);
       boolean forwards = pipe.getBlockState().getValue(TransportBlock.SIDES[positive.ordinal()]);
