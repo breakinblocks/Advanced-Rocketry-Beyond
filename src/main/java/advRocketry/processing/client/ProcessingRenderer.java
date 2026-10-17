@@ -178,33 +178,39 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
         render(model, "Hull", pose, vertices, light, overlay);
         pose.pushPose();
         float sweep = (progress * 16) % 1;
-        if (tile.running())
-          pose.translate(
-              0,
-              0,
-              progress < .875
-                  ? progress - sweep / 16 + (sweep > .875 ? (sweep - .875) / 2 : 0)
-                  : (1 - progress) / .15);
+        double advance =
+            progress < .875
+                ? progress - sweep / 16 + (sweep > .875 ? (sweep - .875) / 2 : 0)
+                : (1 - progress) / .15;
+        double traverse = sweep < .875 ? sweep : (1 - sweep) / .15;
+        if (tile.running()) pose.translate(0, 0, advance);
         render(model, "Mount", pose, vertices, light, overlay);
         pose.pushPose();
-        if (tile.running() && progress < .875)
-          pose.translate(-(sweep < .875 ? sweep : (1 - sweep) / .15), 0, 0);
+        if (tile.running() && progress < .875) pose.translate(-traverse, 0, 0);
         render(model, "Laser", pose, vertices, light, overlay);
         var laserProfile = EffectProfiles.get("etcher");
         if (tile.running()
             && progress < .875
-            && EffectGeometry.visible(Vec3.atCenterOf(tile.getBlockPos()), laserProfile)) {
+            && EffectGeometry.visible(Vec3.atCenterOf(tile.getBlockPos()), laserProfile)
+            && EffectGeometry.reserve()) {
           var beam = buffers.getBuffer(EffectRenderTypes.GLOW);
+          // Follow the stepped workpiece in the OBJ instead of terminating below its surface.
+          double radius =
+              Math.max(Math.abs(-1.06 - traverse + 1.5), Math.abs(-1.94 + advance + 1.5));
+          double surface =
+              radius <= .25 ? 1.4375 : radius <= .375 ? 1.40625 : radius <= .5 ? 1.3125 : 1;
+          double contact = surface + .006;
           EffectGeometry.beam(
               pose,
               beam,
               new Vec3(-1.06, 1.56, -1.94),
-              new Vec3(-1.06, 1.06, -1.94),
-              .009,
+              new Vec3(-1.06, contact, -1.94),
+              .012,
               laserProfile.argb(.9f));
           pose.pushPose();
-          pose.translate(-1.06, 1.065, -1.94);
-          EffectGeometry.ring(pose, beam, .04, 0, .015, 0xb0eaffff, 12);
+          pose.translate(-1.06, contact, -1.94);
+          EffectGeometry.ring(
+              pose, beam, .055, 0, .018, (laserProfile.argb(1) & 0xff000000) | 0xeaffff, 12);
           pose.popPose();
         }
         pose.popPose();
