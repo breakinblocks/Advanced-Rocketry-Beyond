@@ -36,6 +36,7 @@ import advRocketry.rocket.client.RocketExhaust;
 import advRocketry.space.client.PlanetEffects;
 import advRocketry.transport.TransportRegistry;
 import advRocketry.transport.client.TransportScreen;
+import advRocketry.transport.client.TransportRenderer;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -108,6 +109,7 @@ public final class MainClient {
   }
 
   private static void renderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerBlockEntityRenderer(TransportRegistry.ENTITY.get(), TransportRenderer::new);
     event.registerEntityRenderer(OrbitalRegistry.HOLOGRAM_BODY.get(), HologramBodyRenderer::new);
     event.registerBlockEntityRenderer(OrbitalRegistry.BLOCK_ENTITY.get(), OrbitalRenderer::new);
     event.registerEntityRenderer(

@@ -4,6 +4,9 @@
 package advRocketry.processing.client;
 
 import advRocketry.Main;
+import advRocketry.client.effects.EffectGeometry;
+import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.MachineIndicators;
 import advRocketry.processing.MachineType;
 import advRocketry.processing.ProcessingBlock;
 import advRocketry.processing.ProcessingBlockEntity;
@@ -24,6 +27,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 /** Original model coordinates and animation transforms, using modern vertex buffers. */
 public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingBlockEntity> {
@@ -57,6 +61,9 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
       int light,
       int overlay) {
     MachineType machine = tile.machine();
+    MachineIndicators.render(pose, buffers,
+        tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING),
+        tile.running(), tile.progress(partialTick), Vec3.atCenterOf(tile.getBlockPos()));
     if (machine == MachineType.ELECTRIC_ARC_FURNACE
         || !tile.getBlockState().getValue(ProcessingBlock.FORMED)) return;
     ObjModel model = MODELS.computeIfAbsent(machine, type -> new ObjModel(modelPath(type.id())));
@@ -178,6 +185,17 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
         if (tile.running() && progress < .875)
           pose.translate(-(sweep < .875 ? sweep : (1 - sweep) / .15), 0, 0);
         render(model, "Laser", pose, vertices, light, overlay);
+        var laserProfile = EffectProfiles.get("etcher");
+        if (tile.running() && progress < .875
+            && EffectGeometry.visible(Vec3.atCenterOf(tile.getBlockPos()), laserProfile)) {
+          var beam = buffers.getBuffer(RenderType.lightning());
+          EffectGeometry.beam(pose, beam, new Vec3(-1.06, 1.56, -1.94),
+              new Vec3(-1.06, 1.06, -1.94), .009, laserProfile.argb(.9f));
+          pose.pushPose();
+          pose.translate(-1.06, 1.065, -1.94);
+          EffectGeometry.ring(pose, beam, .04, 0, .015, 0xb0eaffff, 12);
+          pose.popPose();
+        }
         pose.popPose();
         pose.popPose();
       }

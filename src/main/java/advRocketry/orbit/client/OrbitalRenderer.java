@@ -7,6 +7,7 @@ import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.MachineIndicators;
 import net.minecraft.world.phys.Vec3;
 import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
@@ -130,6 +131,10 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             ? entity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)
             : Direction.UP;
     light = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockPos().relative(exposed));
+    if (exposed.getAxis().isHorizontal())
+      MachineIndicators.render(pose, buffers, exposed,
+          entity.formed && (entity.powerMadeLastTick > 0 || entity.terraformerRunning || entity.laser.running),
+          1, Vec3.atCenterOf(entity.getBlockPos()));
     if (entity.holographicSelector()) {
 
       return;
