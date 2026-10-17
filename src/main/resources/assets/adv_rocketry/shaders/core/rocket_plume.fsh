@@ -14,6 +14,13 @@ void main() {
  float shape=1.0-smoothstep(width*.45,width+(turbulence-.5)*.13,x);
  float tail=1.0-smoothstep(.62,1.0,y);
  vec3 heat=mix(PlumeColor * vec3(1.0,.55,.25),vec3(1.0,.97,.78),pow(shape,2.0));
+ // Low-opacity red compression cells fade downstream without breaking the continuous jet.
+ float cell=fract(y*6.0+.1);
+ float diamond=max(0.0,1.0-abs(cell-.5)*2.0);
+ float core=1.0-smoothstep(width*(.12+.38*diamond),width*(.24+.42*diamond),x);
+ float downstream=1.0-smoothstep(.08,.8,y);
+ float shock=core*pow(diamond,3.0)*downstream;
+ heat=mix(heat,vec3(1.0,.12,.045),shock*.10);
  float alpha=shape*tail*tint.a;
  if(alpha<.005) discard;
  fragColor=vec4(heat,alpha);
