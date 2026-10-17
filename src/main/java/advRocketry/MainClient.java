@@ -31,6 +31,7 @@ import advRocketry.processing.client.StructurePreview;
 import advRocketry.rocket.client.HovercraftClient;
 import advRocketry.rocket.client.HovercraftRenderer;
 import advRocketry.rocket.client.RocketClient;
+import advRocketry.rocket.client.RocketExhaust;
 import advRocketry.space.client.PlanetEffects;
 import advRocketry.transport.TransportRegistry;
 import advRocketry.transport.client.TransportScreen;
@@ -77,6 +78,7 @@ public final class MainClient {
     NeoForge.EVENT_BUS.addListener(LaserBeamRenderer::render);
     NeoForge.EVENT_BUS.addListener(RocketClient::controls);
     NeoForge.EVENT_BUS.addListener(RocketClient::tick);
+    NeoForge.EVENT_BUS.addListener(RocketExhaust::tick);
     NeoForge.EVENT_BUS.addListener(LaserNodeSounds::tick);
     NeoForge.EVENT_BUS.addListener(HovercraftClient::controls);
     NeoForge.EVENT_BUS.addListener(JetpackClient::controls);

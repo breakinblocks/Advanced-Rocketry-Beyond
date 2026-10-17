@@ -43,6 +43,7 @@ public final class RocketRenderer extends EntityRenderer<RocketEntity> {
       blocks.renderSingleBlock(cell.state(), pose, buffers, light, OverlayTexture.NO_OVERLAY);
       pose.popPose();
     }
+    RocketExhaust.render(rocket, partialTick, pose, buffers);
     pose.popPose();
     super.render(rocket, yaw, partialTick, pose, buffers, light);
   }
