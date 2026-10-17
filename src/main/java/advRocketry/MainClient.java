@@ -9,6 +9,7 @@ import advRocketry.compat.guideme.RocketryGuide;
 import advRocketry.life.LifeSupportRegistry;
 import advRocketry.life.SuitMenu;
 import advRocketry.life.SuitWorkstationMenu;
+import advRocketry.life.client.FlightInstruments;
 import advRocketry.life.client.JetpackClient;
 import advRocketry.life.client.JetpackLayer;
 import advRocketry.life.client.OxygenScreen;
@@ -90,6 +91,7 @@ public final class MainClient {
     NeoForge.EVENT_BUS.addListener(RocketClient::controls);
     NeoForge.EVENT_BUS.addListener(RocketClient::tick);
     NeoForge.EVENT_BUS.addListener(RocketExhaust::tick);
+    NeoForge.EVENT_BUS.addListener(FlightInstruments::tick);
     NeoForge.EVENT_BUS.addListener(LaserNodeSounds::tick);
     NeoForge.EVENT_BUS.addListener(HovercraftClient::controls);
     NeoForge.EVENT_BUS.addListener(JetpackClient::controls);
