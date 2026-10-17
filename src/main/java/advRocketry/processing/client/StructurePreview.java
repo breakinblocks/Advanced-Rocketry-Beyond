@@ -3,6 +3,7 @@
 
 package advRocketry.processing.client;
 
+import advRocketry.AdvancedRocketryConfig;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.processing.HoloProjectorItem;
 import advRocketry.processing.ProjectorBlueprint;
@@ -102,7 +103,10 @@ public final class StructurePreview {
     pose.pushPose();
     pose.translate(-camera.x, -camera.y, -camera.z);
     var profile = EffectProfiles.get("diagnostics");
-    boolean exploded = profile.enabled() && minecraft.player.isShiftKeyDown();
+    boolean exploded =
+        AdvancedRocketryConfig.advancedVfx()
+            && profile.enabled()
+            && minecraft.player.isShiftKeyDown();
     int bottom = layers.isEmpty() ? 0 : layers.getLast();
     int drawn = 0;
     for (ProjectorBlueprint.Cell cell : cells) {
@@ -114,16 +118,28 @@ public final class StructurePreview {
       boolean matches = cell.matches().test(state);
       if (state.isAir() && matches) continue;
       pose.pushPose();
-      double lift = exploded ? (cell.position().getY() - bottom) * .35 : 0;
+      double lift = exploded ? (cell.position().getY() - bottom) * .75 : 0;
       pose.translate(0, lift, 0);
-      draw(pose, vertices, cell.position(), matches);
+      draw(
+          pose,
+          vertices,
+          cell.position(),
+          matches,
+          exploded ? profile.color() : 0x1affff,
+          exploded ? profile.opacity() : .7f);
       pose.popPose();
     }
     pose.popPose();
     buffer.endBatch(RenderType.lines());
   }
 
-  private static void draw(PoseStack pose, VertexConsumer vertices, BlockPos pos, boolean matches) {
+  private static void draw(
+      PoseStack pose,
+      VertexConsumer vertices,
+      BlockPos pos,
+      boolean matches,
+      int color,
+      float opacity) {
     LevelRenderer.renderLineBox(
         pose,
         vertices,
@@ -133,9 +149,9 @@ public final class StructurePreview {
         pos.getX() + .99,
         pos.getY() + .99,
         pos.getZ() + .99,
-        matches ? .1f : .8f,
-        matches ? 1f : .3f,
-        1f,
-        .7f);
+        matches ? ((color >> 16) & 255) / 255f : .8f,
+        matches ? ((color >> 8) & 255) / 255f : .3f,
+        matches ? (color & 255) / 255f : 1f,
+        opacity);
   }
 }
