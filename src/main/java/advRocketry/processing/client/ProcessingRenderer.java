@@ -61,7 +61,7 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
       MultiBufferSource buffers,
       int light,
       int overlay) {
-    MachineType machine = tile.machine();
+    renderMachine(tile, partialTick, pose, buffers, light, overlay);
     MachineIndicators.render(
         pose,
         buffers,
@@ -69,6 +69,16 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
         tile.running(),
         tile.progress(partialTick),
         Vec3.atCenterOf(tile.getBlockPos()));
+  }
+
+  private void renderMachine(
+      ProcessingBlockEntity tile,
+      float partialTick,
+      PoseStack pose,
+      MultiBufferSource buffers,
+      int light,
+      int overlay) {
+    MachineType machine = tile.machine();
     if (machine == MachineType.ELECTRIC_ARC_FURNACE
         || !tile.getBlockState().getValue(ProcessingBlock.FORMED)) return;
     ObjModel model = MODELS.computeIfAbsent(machine, type -> new ObjModel(modelPath(type.id())));

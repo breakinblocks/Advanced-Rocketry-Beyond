@@ -127,12 +127,11 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       MultiBufferSource buffers,
       int light,
       int overlay) {
-    OrbitalEffects.render(entity, partialTick, pose, buffers);
+    renderMachine(entity, partialTick, pose, buffers, light, overlay);
     Direction exposed =
         entity.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)
             ? entity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)
             : Direction.UP;
-    light = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockPos().relative(exposed));
     if (exposed.getAxis().isHorizontal())
       MachineIndicators.render(
           pose,
@@ -144,6 +143,21 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
                   || entity.laser.running),
           1,
           Vec3.atCenterOf(entity.getBlockPos()));
+  }
+
+  private void renderMachine(
+      OrbitalBlockEntity entity,
+      float partialTick,
+      PoseStack pose,
+      MultiBufferSource buffers,
+      int light,
+      int overlay) {
+    OrbitalEffects.render(entity, partialTick, pose, buffers);
+    Direction exposed =
+        entity.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)
+            ? entity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)
+            : Direction.UP;
+    light = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockPos().relative(exposed));
     if (entity.holographicSelector()) {
 
       return;
