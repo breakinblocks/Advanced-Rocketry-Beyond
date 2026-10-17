@@ -58,6 +58,7 @@ public final class SuitHud {
     if (player == null || client.level == null || client.options.hideGui || player.isSpectator())
       return;
     ResourceLocation dimension = client.level.dimension().location();
+    FlightInstruments.render(graphics);
     ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
     int top = MARGIN + RocketClient.hudHeight();
     warning(graphics, client.font, dimension, player.tickCount);

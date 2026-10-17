@@ -516,6 +516,8 @@
   "gui.adv_rocketry.transport.sections": "%s | %s sections",
   "gui.adv_rocketry.transport.side_mode": "%s: %s",
   "gui.adv_rocketry.transport.sneak_use_a_filled_bucket_to": "Sneak-use a filled bucket to lock the loaded network; an empty bucket voids pipe buffers only.",
+  "hud.adv_rocketry.flight_altitude": "ALT %s m",
+  "hud.adv_rocketry.flight_vertical": "V/S %s m/s",
   "hud.adv_rocketry.atmosphere": "Atmosphere",
   "hud.adv_rocketry.atmosphere_warning": "Unsafe atmosphere: %s",
   "hud.adv_rocketry.breathable": "Breathable",

@@ -27,6 +27,8 @@ final class ModLanguage extends LanguageProvider {
 
   @Override
   protected void addTranslations() {
+    add("hud.adv_rocketry.flight_altitude", "ALT %s m");
+    add("hud.adv_rocketry.flight_vertical", "V/S %s m/s");
     add("message.adv_rocketry.assembly.protected", "Assembly is not allowed at %s");
     addItem();
     addBlock();

@@ -4,6 +4,7 @@
 package advRocketry.processing.client;
 
 import advRocketry.processing.HoloProjectorItem;
+import advRocketry.client.effects.EffectProfiles;
 import advRocketry.processing.ProjectorBlueprint;
 import advRocketry.util.Texts;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -100,12 +101,23 @@ public final class StructurePreview {
     var vertices = buffer.getBuffer(RenderType.lines());
     pose.pushPose();
     pose.translate(-camera.x, -camera.y, -camera.z);
+    var profile = EffectProfiles.get("diagnostics");
+    boolean exploded = profile.enabled() && minecraft.player.isShiftKeyDown();
+    int bottom = layers.isEmpty() ? 0 : layers.getLast();
+    int drawn = 0;
     for (ProjectorBlueprint.Cell cell : cells) {
+      if (++drawn > 4096) break;
       if (selectedLayer >= 0 && cell.position().getY() != layers.get(selectedLayer)) continue;
+      if (!minecraft.level.hasChunkAt(cell.position())
+          || cell.position().distToCenterSqr(camera) > 64 * 64) continue;
       BlockState state = minecraft.level.getBlockState(cell.position());
       boolean matches = cell.matches().test(state);
       if (state.isAir() && matches) continue;
+      pose.pushPose();
+      double lift = exploded ? (cell.position().getY() - bottom) * .35 : 0;
+      pose.translate(0, lift, 0);
       draw(pose, vertices, cell.position(), matches);
+      pose.popPose();
     }
     pose.popPose();
     buffer.endBatch(RenderType.lines());
