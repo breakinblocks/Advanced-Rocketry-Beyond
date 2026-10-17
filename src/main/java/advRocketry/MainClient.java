@@ -1,9 +1,10 @@
 package advRocketry;
 
-import advRocketry.client.model.ConnectedModelLoader;
-import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectGeometry;
+import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.HologramShader;
 import advRocketry.client.effects.SingularityLens;
+import advRocketry.client.model.ConnectedModelLoader;
 import advRocketry.compat.guideme.RocketryGuide;
 import advRocketry.life.LifeSupportRegistry;
 import advRocketry.life.SuitMenu;
@@ -36,8 +37,8 @@ import advRocketry.rocket.client.RocketClient;
 import advRocketry.rocket.client.RocketExhaust;
 import advRocketry.space.client.PlanetEffects;
 import advRocketry.transport.TransportRegistry;
-import advRocketry.transport.client.TransportScreen;
 import advRocketry.transport.client.TransportRenderer;
+import advRocketry.transport.client.TransportScreen;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -62,6 +63,7 @@ public final class MainClient {
     bus.addListener(MainClient::renderers);
     bus.addListener(MainClient::reloadListeners);
     bus.addListener(SingularityLens::register);
+    bus.addListener(HologramShader::register);
     bus.addListener(JetpackLayer::register);
     bus.addListener(ConnectedModelLoader::register);
     bus.<EntityRenderersEvent.RegisterLayerDefinitions>addListener(SpaceHelmetLayer::definitions);

@@ -7,8 +7,8 @@ import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.MachineIndicators;
-import net.minecraft.world.phys.Vec3;
 import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.OrbitalRegistry;
@@ -27,6 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 /** Renders the original MIT solar array OBJ at its controller. */
@@ -132,9 +133,16 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             : Direction.UP;
     light = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockPos().relative(exposed));
     if (exposed.getAxis().isHorizontal())
-      MachineIndicators.render(pose, buffers, exposed,
-          entity.formed && (entity.powerMadeLastTick > 0 || entity.terraformerRunning || entity.laser.running),
-          1, Vec3.atCenterOf(entity.getBlockPos()));
+      MachineIndicators.render(
+          pose,
+          buffers,
+          exposed,
+          entity.formed
+              && (entity.powerMadeLastTick > 0
+                  || entity.terraformerRunning
+                  || entity.laser.running),
+          1,
+          Vec3.atCenterOf(entity.getBlockPos()));
     if (entity.holographicSelector()) {
 
       return;
@@ -326,16 +334,21 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     var profile = EffectProfiles.get("elevator");
     if (!entity.elevatorDimension.isEmpty()
         && EffectGeometry.visible(Vec3.atCenterOf(entity.getBlockPos()), profile)) {
-      VertexConsumer glow = buffers.getBuffer(RenderType.lightning());
+      VertexConsumer glow = buffers.getBuffer(EffectRenderTypes.GLOW);
       double shift = EffectGeometry.time(entity.getLevel(), partialTick, profile) % 80;
       for (int ribbon = -1; ribbon <= 1; ribbon++) {
-        EffectGeometry.beam(pose, glow, new Vec3(ribbon * .35, 4, 0),
-            new Vec3(ribbon * .35, 256, 0), .12, profile.argb(.08f));
+        EffectGeometry.beam(
+            pose,
+            glow,
+            new Vec3(ribbon * .35, 4, 0),
+            new Vec3(ribbon * .35, 256, 0),
+            .12,
+            profile.argb(.08f));
       }
       for (int index = 0; index < 8; index++) {
         double height = 4 + (index * 32 + shift) % 252;
-        EffectGeometry.ring(pose, glow, .8, height, .04,
-            profile.argb(.35f), EffectGeometry.segments(profile));
+        EffectGeometry.ring(
+            pose, glow, .8, height, .04, profile.argb(.35f), EffectGeometry.segments(profile));
       }
     }
     pose.popPose();
@@ -366,7 +379,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     microwaveSide(matrix, side, 3, -2, 3, 3, 1, 0, light, overlay);
     microwaveSide(matrix, side, -2, 3, -2, -2, -1, 0, light, overlay);
     if (entity.powerMadeLastTick <= 0) return;
-    VertexConsumer beam = buffers.getBuffer(RenderType.lightning());
+    VertexConsumer beam = buffers.getBuffer(EffectRenderTypes.GLOW);
     for (int i = 0; i < 8; i++) {
       double angle = i * Math.PI / 4;
       double next = (i + 1) * Math.PI / 4;
@@ -380,7 +393,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       beam.addVertex(matrix, .5f, 65, .5f).setColor(85, 100, 110, 0);
     }
     if (!AdvancedRocketryConfig.advancedVfx()) return;
-    VertexConsumer heat = buffers.getBuffer(RenderType.lightning());
+    VertexConsumer heat = buffers.getBuffer(EffectRenderTypes.GLOW);
     double tick = entity.getLevel() == null ? 0 : entity.getLevel().getGameTime();
     for (int xCell = 0; xCell < 10; xCell++)
       for (int zCell = 0; zCell < 10; zCell++) {

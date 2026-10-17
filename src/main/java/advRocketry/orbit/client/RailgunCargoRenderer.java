@@ -3,12 +3,12 @@
 
 package advRocketry.orbit.client;
 
-import advRocketry.orbit.RailgunCargoEntity;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.EffectRenderTypes;
+import advRocketry.orbit.RailgunCargoEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -50,12 +50,17 @@ public final class RailgunCargoRenderer extends EntityRenderer<RailgunCargoEntit
     pose.popPose();
     var profile = EffectProfiles.get("railgun");
     if (EffectGeometry.visible(entity.position(), profile)) {
-      var trail = buffers.getBuffer(RenderType.lightning());
-      EffectGeometry.beam(pose, trail, Vec3.ZERO, new Vec3(0, -6, 0), .025,
-          profile.argb(.65f));
+      var trail = buffers.getBuffer(EffectRenderTypes.GLOW);
+      EffectGeometry.beam(pose, trail, Vec3.ZERO, new Vec3(0, -6, 0), .025, profile.argb(.65f));
       for (int i = 0; i < 4; i++) {
-        EffectGeometry.ring(pose, trail, .25 + i * .08, -i * 1.5, .015,
-            profile.argb(.6f - i * .12f), EffectGeometry.segments(profile));
+        EffectGeometry.ring(
+            pose,
+            trail,
+            .25 + i * .08,
+            -i * 1.5,
+            .015,
+            profile.argb(.6f - i * .12f),
+            EffectGeometry.segments(profile));
       }
     }
     super.render(entity, yaw, partialTick, pose, buffers, packedLight);

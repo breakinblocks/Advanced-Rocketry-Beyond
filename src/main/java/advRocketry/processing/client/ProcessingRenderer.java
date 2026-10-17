@@ -6,6 +6,7 @@ package advRocketry.processing.client;
 import advRocketry.Main;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
+import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.MachineIndicators;
 import advRocketry.processing.MachineType;
 import advRocketry.processing.ProcessingBlock;
@@ -61,9 +62,13 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
       int light,
       int overlay) {
     MachineType machine = tile.machine();
-    MachineIndicators.render(pose, buffers,
+    MachineIndicators.render(
+        pose,
+        buffers,
         tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING),
-        tile.running(), tile.progress(partialTick), Vec3.atCenterOf(tile.getBlockPos()));
+        tile.running(),
+        tile.progress(partialTick),
+        Vec3.atCenterOf(tile.getBlockPos()));
     if (machine == MachineType.ELECTRIC_ARC_FURNACE
         || !tile.getBlockState().getValue(ProcessingBlock.FORMED)) return;
     ObjModel model = MODELS.computeIfAbsent(machine, type -> new ObjModel(modelPath(type.id())));
@@ -186,11 +191,17 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
           pose.translate(-(sweep < .875 ? sweep : (1 - sweep) / .15), 0, 0);
         render(model, "Laser", pose, vertices, light, overlay);
         var laserProfile = EffectProfiles.get("etcher");
-        if (tile.running() && progress < .875
+        if (tile.running()
+            && progress < .875
             && EffectGeometry.visible(Vec3.atCenterOf(tile.getBlockPos()), laserProfile)) {
-          var beam = buffers.getBuffer(RenderType.lightning());
-          EffectGeometry.beam(pose, beam, new Vec3(-1.06, 1.56, -1.94),
-              new Vec3(-1.06, 1.06, -1.94), .009, laserProfile.argb(.9f));
+          var beam = buffers.getBuffer(EffectRenderTypes.GLOW);
+          EffectGeometry.beam(
+              pose,
+              beam,
+              new Vec3(-1.06, 1.56, -1.94),
+              new Vec3(-1.06, 1.06, -1.94),
+              .009,
+              laserProfile.argb(.9f));
           pose.pushPose();
           pose.translate(-1.06, 1.065, -1.94);
           EffectGeometry.ring(pose, beam, .04, 0, .015, 0xb0eaffff, 12);
@@ -255,7 +266,7 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
           float time = tile.getLevel().getGameTime() & 0xffff;
           float y = .1f * (float) Math.sin(time * 2), z = .1f * (float) Math.sin((time + 200) * 3);
           float[] ys = {0, y, -y, y, 0}, zs = {0, z, -z, z, 0};
-          VertexConsumer arc = buffers.getBuffer(RenderType.lightning());
+          VertexConsumer arc = buffers.getBuffer(EffectRenderTypes.GLOW);
           for (int segment = 0; segment < 4; segment++) {
             float x0 = -1.8f + segment * .15f, x1 = x0 + .15f;
             for (int plane = 0; plane < 2; plane++) {
