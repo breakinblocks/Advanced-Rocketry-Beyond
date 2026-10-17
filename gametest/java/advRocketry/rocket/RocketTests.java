@@ -44,6 +44,26 @@ import net.minecraft.network.chat.Component;
 @PrefixGameTestTemplate(false)
 public final class RocketTests {
   @GameTest(template = "empty")
+  public static void disassemblyRespectsAdventureBuildRestriction(GameTestHelper helper) {
+    var level = helper.getLevel();
+    var origin = helper.absolutePos(new BlockPos(2, 3, 2));
+    var structure = new RocketStructure();
+    structure.cells.add(
+        new RocketStructure.Cell(
+            BlockPos.ZERO, Blocks.IRON_BLOCK.defaultBlockState(), new CompoundTag()));
+    var rocket = RocketRegistry.ROCKET.get().create(level);
+    rocket.initialize(structure, origin);
+    level.addFreshEntity(rocket);
+    var player = helper.makeMockPlayer(GameType.ADVENTURE);
+    GameType.ADVENTURE.updatePlayerAbilities(player.getAbilities());
+    rocket.disassemble(player);
+    helper.assertTrue(!rocket.isRemoved(), "Adventure player disassembled a rocket");
+    helper.assertTrue(level.isEmptyBlock(origin), "Adventure player placed rocket blocks");
+    rocket.discard();
+    helper.succeed();
+  }
+
+  @GameTest(template = "empty")
   public static void assemblyHonorsProtectionBeforeRemovingBlocks(GameTestHelper helper) {
     var level = helper.getLevel();
     BlockPos origin = helper.absolutePos(new BlockPos(2, 3, 2));

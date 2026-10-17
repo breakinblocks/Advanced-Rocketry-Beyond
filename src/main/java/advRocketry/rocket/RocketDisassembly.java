@@ -22,6 +22,7 @@ final class RocketDisassembly {
   static void disassemble(RocketEntity rocket, @Nullable Player player) {
     if (!(rocket.level() instanceof ServerLevel level)
         || rocket.flight() != 0
+        || player != null && !player.mayBuild()
         || !rocket.getPassengers().isEmpty()) return;
     BlockPos origin = rocket.origin();
     for (var cell : rocket.structure.cells) {
