@@ -82,9 +82,9 @@ public final class OrbitalEffects {
           EffectGeometry.ring(
               pose,
               vertices,
-              1.65,
+              2.05,
               i + 2,
-              .035,
+              .11,
               profile.argb(strength),
               EffectGeometry.segments(profile));
         }
