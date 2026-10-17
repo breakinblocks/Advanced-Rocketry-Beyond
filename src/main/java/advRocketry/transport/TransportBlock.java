@@ -36,14 +36,14 @@ public final class TransportBlock extends Block implements EntityBlock {
     BooleanProperty.create("west"),
     BooleanProperty.create("east")
   };
-  private static final VoxelShape CORE = box(5, 5, 5, 11, 11, 11);
+  private static final VoxelShape CORE = box(6, 6, 6, 10, 10, 10);
   private static final VoxelShape[] ARMS = {
-    box(5, 0, 5, 11, 5, 11),
-    box(5, 11, 5, 11, 16, 11),
-    box(5, 5, 0, 11, 11, 5),
-    box(5, 5, 11, 11, 11, 16),
-    box(0, 5, 5, 5, 11, 11),
-    box(11, 5, 5, 16, 11, 11)
+    box(6, 0, 6, 10, 6, 10),
+    box(6, 10, 6, 10, 16, 10),
+    box(6, 6, 0, 10, 10, 6),
+    box(6, 6, 10, 10, 10, 16),
+    box(0, 6, 6, 6, 10, 10),
+    box(10, 6, 6, 16, 10, 10)
   };
   public final TransportRegistry.Kind kind;
 
