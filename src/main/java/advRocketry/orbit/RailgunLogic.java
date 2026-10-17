@@ -12,7 +12,6 @@ import advRocketry.space.Planet;
 import advRocketry.util.Texts;
 import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -22,6 +21,15 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 /** Original eleven-layer railgun footprint and linked, powered stack transfer. */
 public final class RailgunLogic {
   private RailgunLogic() {}
+
+  public static final int MUZZLE_HEIGHT = 11;
+
+  /** The central motor anchors the model, coil field and cosmetic cargo path. */
+  public static BlockPos emitter(OrbitalBlockEntity controller) {
+    var placed = PlacedMultiblock.of(controller, "railgun");
+    BlockPos motor = placed == null ? null : placed.first('M');
+    return motor != null ? motor : controller.getBlockPos();
+  }
 
   public static boolean complete(OrbitalBlockEntity controller) {
     return controller.railgun() && PlacedMultiblock.complete(controller, "railgun");
@@ -91,12 +99,11 @@ public final class RailgunLogic {
       for (int target = 0; target < output.inventory.getSlots() && !remaining.isEmpty(); target++)
         remaining = output.inventory.insertItem(target, remaining, false);
       controller.energy.consume(cost, false);
-      Direction facing = controller.getBlockState().getValue(HorizontalOrbitalBlock.FACING);
-      BlockPos emitter = controller.getBlockPos().relative(facing.getOpposite(), 2);
+      BlockPos emitter = emitter(controller);
       RailgunCargoEntity cargo = OrbitalRegistry.RAILGUN_CARGO.get().create(source);
       if (cargo != null) {
         cargo.setDisplay(moved);
-        cargo.setPos(emitter.getX() + .5, emitter.getY() + 5, emitter.getZ() + .5);
+        cargo.setPos(emitter.getX() + .5, emitter.getY() + MUZZLE_HEIGHT, emitter.getZ() + .5);
         source.addFreshEntity(cargo);
       }
       controller.railgunFiredAt = source.getGameTime();

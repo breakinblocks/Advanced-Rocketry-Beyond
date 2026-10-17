@@ -4,8 +4,8 @@ import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.SceneDistortion;
-import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
+import advRocketry.orbit.RailgunLogic;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -74,16 +74,16 @@ public final class OrbitalEffects {
       }
     } else if (entity.railgun()) {
       double age = entity.getLevel().getGameTime() + partialTick - entity.railgunFiredAt;
-      if (age >= 0 && age < 10) {
-        var facing = entity.getBlockState().getValue(HorizontalOrbitalBlock.FACING);
-        pose.translate(-facing.getStepX() * 2, 0, -facing.getStepZ() * 2);
-        for (int i = 0; i < 5; i++) {
-          float strength = (float) Math.max(0, 1 - Math.abs(age - i * 1.5) / 3);
+      if (age >= 0 && age < 12) {
+        var offset = RailgunLogic.emitter(entity).subtract(entity.getBlockPos());
+        pose.translate(offset.getX(), offset.getY(), offset.getZ());
+        for (int i = 0; i < 9; i++) {
+          float strength = (float) Math.max(0, 1 - Math.abs(age - i) / 3);
           EffectGeometry.ring(
               pose,
               vertices,
-              .6,
-              i + .5,
+              1.65,
+              i + 2,
               .035,
               profile.argb(strength),
               EffectGeometry.segments(profile));

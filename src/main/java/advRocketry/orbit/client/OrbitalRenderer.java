@@ -12,6 +12,7 @@ import advRocketry.client.effects.MachineIndicators;
 import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.OrbitalRegistry;
+import advRocketry.orbit.RailgunLogic;
 import advRocketry.processing.client.ObjModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -201,9 +202,10 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     if (entity.railgun()) {
       if (!entity.formed) return;
       pose.pushPose();
-      pose.translate(.5, 0, .5);
+      var offset = RailgunLogic.emitter(entity).subtract(entity.getBlockPos());
+      pose.translate(offset.getX() + .5, offset.getY() + .002, offset.getZ() + .5);
+      pose.scale(1.002f, 1.002f, 1.002f);
       pose.mulPose(Axis.YP.rotationDegrees(yaw(front(entity))));
-      pose.translate(0, 0, 3);
       model(RAILGUN_MODEL)
           .renderAll(
               pose,
