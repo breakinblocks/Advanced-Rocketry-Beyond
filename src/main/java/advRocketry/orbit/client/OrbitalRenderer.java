@@ -297,8 +297,9 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     if (!entity.formed) return;
     ObjModel areaModel = model(AREA_MODEL);
     pose.pushPose();
-    // Keep the hull base clear of coplanar floor faces.
+    // Separate the hull from coplanar floor and support-block faces.
     pose.translate(.5, -.498, .5);
+    pose.scale(1.002f, 1.002f, 1.002f);
     var vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(AREA_TEXTURE));
     areaModel.renderPart("Hull", pose, vertices, light, overlay);
     pose.mulPose(
