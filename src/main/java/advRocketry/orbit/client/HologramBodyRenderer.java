@@ -10,6 +10,7 @@ import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.HologramShader;
 import advRocketry.client.effects.HologramSphere;
+import advRocketry.client.effects.ShaderCompatibility;
 import advRocketry.orbit.HologramBodyEntity;
 import advRocketry.processing.client.ObjModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -54,6 +55,7 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
       PoseStack pose,
       MultiBufferSource buffers,
       int light) {
+    if (ShaderCompatibility.shadowPass()) return;
     pose.pushPose();
     // The source sphere spans -0.5..0.5; scale its diameter to the synced radius.
     float diameter = entity.radius() * 2;
@@ -64,7 +66,9 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
                 * .3f));
     var surface = HologramShader.surface(TEXTURE);
     int color = EffectProfiles.get("hologram").argb(entity.selected() ? 1 : .75f);
-    if (HologramShader.active()) {
+    if (ShaderCompatibility.shaderPackActive()) {
+      renderWireSphere(pose, buffers, color);
+    } else if (HologramShader.active()) {
       Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
       boolean largeNearby =
           entity.radius() > 1 && entity.position().distanceToSqr(camera) < 32 * 32;
@@ -77,6 +81,24 @@ public final class HologramBodyRenderer extends EntityRenderer<HologramBodyEntit
     pose.popPose();
     renderProjection(entity, partialTick, pose, buffers);
     super.render(entity, yaw, partialTick, pose, buffers, 0xf000f0);
+  }
+
+  /** Shader-pack fallback uses the same emissive geometry as the projection rings. */
+  private static void renderWireSphere(PoseStack pose, MultiBufferSource buffers, int color) {
+    var vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
+    int segments = AdvancedRocketryConfig.effectDetail() > 1 ? 48 : 32;
+    for (int latitude = -3; latitude <= 3; latitude++) {
+      double angle = latitude * Math.PI / 8;
+      EffectGeometry.ring(
+          pose, vertices, .5 * Math.cos(angle), .5 * Math.sin(angle), .0025, color, segments);
+    }
+    for (int longitude = 0; longitude < 6; longitude++) {
+      pose.pushPose();
+      pose.mulPose(Axis.YP.rotationDegrees(longitude * 30));
+      pose.mulPose(Axis.XP.rotationDegrees(90));
+      EffectGeometry.ring(pose, vertices, .5, 0, .0025, color, segments);
+      pose.popPose();
+    }
   }
 
   private static void renderProjection(

@@ -54,6 +54,7 @@ public final class HologramShader extends RenderType {
 
   public static boolean active() {
     return shader != null
+        && !ShaderCompatibility.shaderPackActive()
         && AdvancedRocketryConfig.advancedVfx()
         && EffectProfiles.get("hologram").enabled();
   }
