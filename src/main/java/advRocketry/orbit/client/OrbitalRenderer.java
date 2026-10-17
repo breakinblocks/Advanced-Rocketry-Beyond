@@ -337,22 +337,22 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       elevatorModel.renderPart("Tether", pose, vertices, light, overlay);
     var profile = EffectProfiles.get("elevator");
     if (!entity.elevatorDimension.isEmpty()
-        && EffectGeometry.visible(Vec3.atCenterOf(entity.getBlockPos()), profile)) {
+        && EffectGeometry.visible(Vec3.atCenterOf(entity.getBlockPos()), profile)
+        && EffectGeometry.reserve()) {
+      // Tether mesh spans x=0..1 and z=-1..0 in model space.
+      pose.translate(.5, 0, -.5);
       VertexConsumer glow = buffers.getBuffer(EffectRenderTypes.GLOW);
-      double shift = EffectGeometry.time(entity.getLevel(), partialTick, profile) % 80;
-      for (int ribbon = -1; ribbon <= 1; ribbon++) {
+      double shift = EffectGeometry.time(entity.getLevel(), partialTick, profile) % 256;
+      for (int ribbon = 0; ribbon < 4; ribbon++) {
+        double angle = Math.PI / 4 + ribbon * Math.PI / 2;
+        double x = Math.cos(angle) * .95, z = Math.sin(angle) * .95;
         EffectGeometry.beam(
-            pose,
-            glow,
-            new Vec3(ribbon * .35, 4, 0),
-            new Vec3(ribbon * .35, 256, 0),
-            .12,
-            profile.argb(.08f));
+            pose, glow, new Vec3(x, 4, z), new Vec3(x, 260, z), .055, profile.argb(.35f));
       }
-      for (int index = 0; index < 8; index++) {
-        double height = 4 + (index * 32 + shift) % 252;
+      for (int index = 0; index < 16; index++) {
+        double height = 4 + (index * 16 + shift) % 256;
         EffectGeometry.ring(
-            pose, glow, .8, height, .04, profile.argb(.35f), EffectGeometry.segments(profile));
+            pose, glow, 1.05, height, .06, profile.argb(.5f), EffectGeometry.segments(profile));
       }
     }
     pose.popPose();

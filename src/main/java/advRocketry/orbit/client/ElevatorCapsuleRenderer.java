@@ -52,12 +52,14 @@ public final class ElevatorCapsuleRenderer extends EntityRenderer<ElevatorCapsul
       model.renderPart("Door", pose, vertices, light, OverlayTexture.NO_OVERLAY);
     pose.popPose();
     var profile = EffectProfiles.get("elevator");
-    if (capsule.inMotion() && EffectGeometry.visible(capsule.position(), profile)) {
+    if (capsule.inMotion()
+        && EffectGeometry.visible(capsule.position(), profile)
+        && EffectGeometry.reserve()) {
       var glow = buffers.getBuffer(EffectRenderTypes.GLOW);
       EffectGeometry.ring(
-          pose, glow, 1.2, .15, .025, profile.argb(.6f), EffectGeometry.segments(profile));
+          pose, glow, 2.25, .15, .025, profile.argb(.6f), EffectGeometry.segments(profile));
       EffectGeometry.ring(
-          pose, glow, 1.2, 2.5, .025, profile.argb(.6f), EffectGeometry.segments(profile));
+          pose, glow, 2.25, 4.1, .025, profile.argb(.6f), EffectGeometry.segments(profile));
     }
     super.render(capsule, yaw, partialTick, pose, buffers, light);
   }
