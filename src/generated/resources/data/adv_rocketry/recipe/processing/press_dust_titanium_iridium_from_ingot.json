@@ -1,0 +1,17 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 0,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/titanium_iridium"
+    }
+  ],
+  "machine": "plate_press",
+  "outputs": [
+    {
+      "id": "adv_rocketry:titanium_iridium_dust"
+    }
+  ],
+  "ticks": 1
+}

@@ -9,6 +9,46 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
   static void build(RecipeOutput output) {
     shaped(
         output,
+        "centrifuge_casing",
+        "adv_rocketry:centrifuge_casing",
+        4,
+        List.of("PSP", "S S", "PSP"),
+        'P',
+        tag("c:plates/steel"),
+        'S',
+        item("adv_rocketry:block_structure_block"));
+    shaped(
+        output,
+        "basic_laser_gun",
+        "adv_rocketry:basic_laser_gun",
+        1,
+        List.of("PLI", "CBI", "  I"),
+        'P',
+        tag("c:plates/steel"),
+        'L',
+        item("adv_rocketry:basic_lens"),
+        'I',
+        tag("c:ingots/steel"),
+        'C',
+        item("adv_rocketry:advanced_circuit"),
+        'B',
+        item("adv_rocketry:advanced_battery"));
+    shaped(
+        output,
+        "night_vision_upgrade",
+        "adv_rocketry:night_vision_upgrade",
+        1,
+        List.of("PGP", "LCL", "PGP"),
+        'P',
+        tag("c:plates/steel"),
+        'G',
+        item("minecraft:glowstone_dust"),
+        'L',
+        item("adv_rocketry:basic_lens"),
+        'C',
+        item("adv_rocketry:advanced_circuit"));
+    shaped(
+        output,
         "energy_cable",
         "adv_rocketry:energy_cable",
         8,

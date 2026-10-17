@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "adv_rocketry:advanced_battery"
+    },
+    "C": {
+      "item": "adv_rocketry:advanced_circuit"
+    },
+    "I": {
+      "tag": "c:ingots/steel"
+    },
+    "L": {
+      "item": "adv_rocketry:basic_lens"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "PLI",
+    "CBI",
+    "  I"
+  ],
+  "result": {
+    "count": 1,
+    "id": "adv_rocketry:basic_laser_gun"
+  }
+}

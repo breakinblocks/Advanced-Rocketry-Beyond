@@ -7,6 +7,17 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
   private ModProcessingRecipes() {}
 
   static void build(RecipeOutput output) {
+    for (String material :
+        List.of("silicon", "steel", "titanium", "titanium_aluminide", "titanium_iridium")) {
+      processing(
+          output,
+          "processing/press_dust_" + material + "_from_ingot",
+          "plate_press",
+          1,
+          0,
+          List.of(stack("#c:ingots/" + material, 1)),
+          List.of(stack("adv_rocketry:" + material + "_dust", 1)));
+    }
     processing(
         output,
         "processing/advbasiccircuit",

@@ -4,6 +4,19 @@ Everything here can be changed by a datapack, KubeJS script or mod. Recipes,
 tags and data maps reload with `/reload`. Stars, planets, asteroids, ore
 profiles and multiblocks load when the world starts.
 
+## Survival acquisition
+
+Centrifuge casings, the Basic Laser Gun, and the Earthbright Visor use crafting
+recipes. Silicon, steel, titanium, titanium aluminide, and titanium iridium dusts
+can be pressed from their ingots at one dust per ingot, without FE.
+
+Ores, terrain, alien vegetation, and colored crystals come from world generation.
+Filled buckets use fluid collection; extinguished torches come from atmospheric
+extinguishing. Landing floats form automatically for rocket landings over lava,
+and packed space stations come from the station assembler. Creative Energy Input
+is intentionally creative-only. Satellite research uses `item_data_storage`;
+planet selection uses `holographic_planet_selector`.
+
 ## Processing recipes
 
 Recipe type `adv_rocketry:processing`, under `data/<namespace>/recipe/`.
