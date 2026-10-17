@@ -3,6 +3,7 @@
 
 package advRocketry.compat.guideme;
 
+import advRocketry.Main;
 import advRocketry.compat.ProcessingDisplay;
 import advRocketry.processing.ProcessingRecipe;
 import advRocketry.processing.ProcessingRegistry;
@@ -40,7 +41,7 @@ public final class ProcessingRecipeLayouts implements RecipeTypeMappingSupplier 
     var controller =
         new ItemStack(
             BuiltInRegistries.ITEM.get(
-                ResourceLocation.fromNamespaceAndPath("adv_rocketry", recipe.machine().id())));
+                ResourceLocation.fromNamespaceAndPath(Main.MODID, recipe.machine().id())));
     var details = new LytVBox();
     details.setGap(3);
     details.modifyStyle(style -> style.color(SymbolicColor.CRAFTING_RECIPE_TYPE));
