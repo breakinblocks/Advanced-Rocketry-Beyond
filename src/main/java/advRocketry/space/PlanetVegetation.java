@@ -63,8 +63,8 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
             ? terrain.terrainSeed()
             : level.getSeed();
     // Sparse mature trees, younger forms and clearings share a smooth coverage field.
-    for (int attempt = 0; attempt < 7; attempt++) {
-      BlockPos pos = surface(level, ox + 4 + random.nextInt(8), oz + 4 + random.nextInt(8));
+    for (int attempt = 0; attempt < 11; attempt++) {
+      BlockPos pos = surface(level, ox + random.nextInt(16), oz + random.nextInt(16));
       String biome = biome(level, pos);
       double cover = PlanetLandforms.field(seed, 151, pos.getX(), pos.getZ(), 100);
       if (watershed
@@ -77,7 +77,7 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
         if (cover > -.3 && (!biome.equals("marsh") || random.nextInt(4) == 0)) {
           boolean roots = habitat.wetness() > .62 || biome.equals("deepswamp");
           if (random.nextInt(12) == 0) fallenTree(level, pos, random, roots);
-          else if (random.nextInt(3) != 0) {
+          else if (random.nextDouble() < .65 + Math.max(0, cover) * .3) {
             double slope =
                 Math.abs(
                     PlanetWatershed.height(
@@ -98,6 +98,8 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
       BlockPos pos = surface(level, ox + random.nextInt(16), oz + random.nextInt(16));
       String biome = biome(level, pos);
       double cover = PlanetLandforms.field(seed, 157, pos.getX(), pos.getZ(), 45);
+      if (watershed && living && riparian(biome) && riverbank(level, pos, random, seed, planet))
+        continue;
       if (living && cover > -.35) {
         switch (biome) {
           case "alien_forest" ->
@@ -246,12 +248,64 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
     return false;
   }
 
+  private static boolean riparian(String biome) {
+    return biome.equals("alien_forest")
+        || biome.equals("marsh")
+        || biome.equals("deepswamp")
+        || biome.equals("alien_river");
+  }
+
+  private static boolean riverbank(
+      WorldGenLevel level, BlockPos pos, RandomSource random, long seed, Planet planet) {
+    var habitat = PlanetWatershed.sample(seed, planet.gravity, pos.getX(), pos.getZ());
+    if (habitat.banks() < .35 || pos.getY() > planet.seaLevel + 7) return false;
+    BlockPos floor = level.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, pos);
+    int depth = pos.getY() - floor.getY();
+    if (depth > 0 && level.getFluidState(floor).is(FluidTags.WATER)) {
+      if (depth <= 4 && random.nextInt(3) != 0) {
+        plant(level, floor, "aquatic_frond", Direction.UP);
+        if (depth <= 2 && habitat.wetness() > .65 && random.nextInt(4) == 0)
+          plant(level, pos, "floating_leaves", Direction.UP);
+      }
+      return true;
+    }
+    // Smooth patches leave exposed bars between banks of sedges and ferns.
+    double patch = PlanetLandforms.field(seed, 239, pos.getX(), pos.getZ(), 13);
+    if (patch < -.25 || !natural(level.getBlockState(pos.below()))) return true;
+    if (random.nextInt(75) == 0 && level.isEmptyBlock(pos)) {
+      level.setBlock(pos, Blocks.MOSSY_COBBLESTONE.defaultBlockState(), 2);
+      Direction direction = Direction.from2DDataValue(random.nextInt(4));
+      BlockPos side = pos.relative(direction);
+      if (level.isEmptyBlock(side) && natural(level.getBlockState(side.below())))
+        level.setBlock(side, Blocks.MOSS_BLOCK.defaultBlockState(), 2);
+      return true;
+    }
+    if (random.nextInt(90) == 0 && fallenTree(level, pos, random, true)) return true;
+    String plant =
+        waterNear(level, pos)
+            ? "jointed_reeds"
+            : habitat.wetness() > .6
+                ? "marsh_sedge"
+                : random.nextInt(4) == 0 ? "spiral_seedling" : "forest_groundcover";
+    plant(level, pos, plant, Direction.UP);
+    if (random.nextInt(3) == 0)
+      for (Direction direction : Direction.Plane.HORIZONTAL) {
+        BlockPos neighbor =
+            surface(level, pos.getX() + direction.getStepX(), pos.getZ() + direction.getStepZ());
+        if (Math.abs(neighbor.getY() - pos.getY()) <= 1)
+          plant(level, neighbor, plant, Direction.UP);
+      }
+    return true;
+  }
+
   private static boolean natural(BlockState state) {
     return state.is(Blocks.STONE)
         || state.is(Blocks.DEEPSLATE)
         || state.is(BlockTags.DIRT)
         || state.is(Blocks.MOSS_BLOCK)
         || state.is(Blocks.MUD)
+        || state.is(BiomeMaterials.block("rooted_loam"))
+        || state.is(BiomeMaterials.block("alluvial_silt"))
         || state.is(BiomeMaterials.block("banded_stone"));
   }
 
@@ -278,7 +332,7 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
   public static boolean woodlandTree(
       WorldGenLevel level, BlockPos base, RandomSource random, boolean rootwood, boolean exposed) {
     int age = exposed ? 0 : random.nextInt(10);
-    boolean dead = age == 9;
+    boolean dead = age == 9 && random.nextInt(3) == 0;
     int height =
         age < 3 ? 4 + random.nextInt(3) : age < 7 ? 7 + random.nextInt(4) : 12 + random.nextInt(5);
     int radius = dead ? 2 : age < 3 ? 2 : age < 7 ? 3 : 4;
@@ -313,9 +367,9 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
     if (base.getY() + height + 3 >= level.getMaxBuildHeight()) return false;
     // Validate the whole footprint before writing; no half trees or clipped crowns.
     for (int y = 0; y <= height + 2; y++)
-      for (int x = -radius - 1; x <= radius + 1; x++)
-        for (int z = -radius - 1; z <= radius + 1; z++) {
-          if (y < height - 4 && (x != 0 || z != 0)) continue;
+      for (int x = -radius - 3; x <= radius + 3; x++)
+        for (int z = -radius - 3; z <= radius + 3; z++) {
+          if (y < Math.max(1, height - 6) && (x != 0 || z != 0)) continue;
           BlockState s = level.getBlockState(base.offset(x, y, z));
           if (!s.isAir() && !s.canBeReplaced() && !s.is(BlockTags.LEAVES)) return false;
           if (!s.getFluidState().isEmpty()) return false;
@@ -328,20 +382,21 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
                 : ProcessingRegistry.part("alien_log");
     BlockState wood = log.defaultBlockState();
     List<BlockPos> logs = new ArrayList<>();
+    List<BlockPos> crowns = new ArrayList<>();
     for (int y = 0; y < height; y++) {
       level.setBlock(base.above(y), wood, 2);
       logs.add(base.above(y));
     }
     for (Direction d : Direction.Plane.HORIZONTAL) {
-      int length = 1 + random.nextInt(Math.min(3, radius)),
-          by = Math.max(2, height - 2 - random.nextInt(3));
+      int length = rootwood ? radius : Math.max(1, radius - 1),
+          by = Math.max(1, height - (rootwood ? 4 : 3) - random.nextInt(2));
       for (int step = 1; step <= length; step++) {
-        BlockPos branch = base.above(by + step / 2).relative(d, step);
+        BlockPos branch = base.above(by + (rootwood ? step / 3 : step / 2)).relative(d, step);
         BlockState axis =
             wood.hasProperty(RotatedPillarBlock.AXIS)
                 ? wood.setValue(RotatedPillarBlock.AXIS, d.getAxis())
                 : wood;
-        if (step % 2 == 0) {
+        if (step % (rootwood ? 3 : 2) == 0) {
           BlockPos joint = branch.below();
           level.setBlock(joint, wood, 2);
           logs.add(joint);
@@ -349,6 +404,7 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
         level.setBlock(branch, axis, 2);
         logs.add(branch);
       }
+      crowns.add(base.above(by + (rootwood ? length / 3 : length / 2)).relative(d, length));
       if (rootwood && !dead) {
         BlockPos root = base.relative(d);
         if (level.isEmptyBlock(root) && level.getBlockState(root.below()).isSolid()) {
@@ -368,23 +424,34 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
                   : ProcessingRegistry.part("alien_leaves"))
               .defaultBlockState()
               .setValue(LeavesBlock.DISTANCE, 1);
-      for (int y = height - 3; y <= height + 1; y++) {
-        int r = y >= height ? 2 : radius;
-        for (int x = -r; x <= r; x++)
-          for (int z = -r; z <= r; z++)
-            if (x * x + z * z <= r * r + 1
-                && (Math.abs(x) != r || Math.abs(z) != r || random.nextBoolean())) {
-              BlockPos leaf = base.offset(x, y, z);
+      crowns.add(base.above(height - 1));
+      // Rootwood spreads into low, overlapping lobes; bluewood keeps stepped, rising crowns.
+      for (BlockPos crown : crowns) {
+        int width = rootwood ? Math.min(3, radius) : Math.min(2, radius);
+        for (int dy = -1; dy <= 2; dy++) {
+          int r = dy == 2 ? 1 : width;
+          for (int x = -r; x <= r; x++)
+            for (int z = -r; z <= r; z++) {
+              if (x * x + z * z > r * r + (dy == 0 ? 1 : 0)) continue;
+              BlockPos leaf = crown.offset(x, dy, z);
               int distance = logs.stream().mapToInt(at -> at.distManhattan(leaf)).min().orElse(7);
               if (distance < 7 && level.isEmptyBlock(leaf))
                 level.setBlock(leaf, leaves.setValue(LeavesBlock.DISTANCE, distance), 2);
             }
+        }
       }
       if (rootwood)
-        for (Direction d : Direction.Plane.HORIZONTAL) {
-          BlockPos tip = base.above(height - 3).relative(d, 2);
-          for (int down = 1; down <= 3; down++)
-            plant(level, tip.below(down), "hanging_roots", Direction.DOWN);
+        for (BlockPos crown : crowns) {
+          BlockPos tip = crown.below();
+          while (logs.contains(tip)) tip = tip.below();
+          int length = 2 + random.nextInt(3);
+          for (int down = 0; down < length; down++) {
+            BlockPos root = tip.below(down);
+            // Overlapping crown lobes can cover the underside of a branch.
+            if (level.getBlockState(root).is(BlockTags.LEAVES))
+              level.setBlock(root, Blocks.AIR.defaultBlockState(), 2);
+            if (!plant(level, root, "hanging_roots", Direction.DOWN)) break;
+          }
         }
     }
     return true;

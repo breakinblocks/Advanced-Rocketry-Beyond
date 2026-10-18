@@ -171,7 +171,11 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   Forest and swamp palettes gain riparian transitions; other surface palettes retain
   their own biome selection. Rootwood favors wet ground, while bluewood occupies
   drier slopes. Young growth, old trees, dead snags, and fallen logs use their existing
-  wood, leaf, and plant blocks and normal harvest behavior.
+  wood, leaf, and plant blocks and normal harvest behavior. Rootwood has broad,
+  low crowns with hanging roots; bluewood has stepped, rising branch crowns.
+  Riverbanks blend silt and rooted soil into exposed gravel according to slope,
+  moisture, and local patches. Reeds line the water, sedges and groundcover extend
+  inland, and aquatic fronds and floating leaves favor shallow margins.
 - **Biomes:** `biomes`, optionally weighted, e.g.
   `[{"biome": "minecraft:plains", "weight": 9}]`. `crater_biomes` limits craters
   to listed biomes.

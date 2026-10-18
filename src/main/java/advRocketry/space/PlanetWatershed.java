@@ -2,6 +2,7 @@ package advRocketry.space;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -140,13 +141,24 @@ public final class PlanetWatershed {
           if (floor > sea - 20 && floor < sea + 6) {
             pos.set(x, floor, z);
             BlockState current = chunk.getBlockState(pos);
-            if (current.isSolid() && !current.is(Blocks.BEDROCK))
-              chunk.setBlockState(
-                  pos,
-                  sample.sediment() > .25
-                      ? Blocks.GRAVEL.defaultBlockState()
-                      : BiomeMaterials.block("alluvial_silt").defaultBlockState(),
-                  false);
+            if (current.is(BlockTags.DIRT)
+                || current.is(Blocks.STONE)
+                || current.is(Blocks.GRAVEL)
+                || current.is(Blocks.MUD)
+                || current.is(BiomeMaterials.block("alluvial_silt"))) {
+              double slope =
+                  Math.max(
+                      Math.abs(height(seed, sea, planet.gravity, x + 2, z) - top),
+                      Math.abs(height(seed, sea, planet.gravity, x, z + 2) - top));
+              double patch = PlanetLandforms.field(seed, 239, x, z, 13);
+              BlockState surface;
+              if (slope > 2.5 || sample.sediment() > .45 && patch < .15)
+                surface = Blocks.GRAVEL.defaultBlockState();
+              else if (floor >= sea && sample.wetness() > .55 && patch > -.25)
+                surface = BiomeMaterials.block("rooted_loam").defaultBlockState();
+              else surface = BiomeMaterials.block("alluvial_silt").defaultBlockState();
+              chunk.setBlockState(pos, surface, false);
+            }
           }
         }
         if (top < sea && PlanetLandforms.continents(seed, x, z) >= -.35) {
