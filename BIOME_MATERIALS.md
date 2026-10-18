@@ -42,6 +42,8 @@ Bone meal on an established plant grows one offspring in an adjacent empty space
 
 These conditions apply to the offspring location. Ordinary placement rules remain unchanged, so decorative specimens on other sturdy blocks can still be kept.
 
+Pack authors can extend or replace the block tags `adv_rocketry:plant_substrates/heat`, `adv_rocketry:plant_substrates/mineral`, and `adv_rocketry:plant_substrates/shore` to customize bone-meal substrates. For example, `data/adv_rocketry/tags/block/plant_substrates/mineral.json` containing `{"values":["minecraft:dripstone_block"]}` adds dripstone to the existing mineral substrates. Use `"replace":true` to replace the defaults. For optional mod blocks, use entries such as `{"id":"othermod:stone","required":false}` with the actual installed block ID. A tagged block must still provide sturdy support; tags do not bypass attachment or water rules.
+
 ## Local plant ambience
 
 Suitable river and wetland banks can have short drift lines of fallen foliage, with reeds at their ends. These follow actual water edges, fit within their generating chunk, and leave occupied blocks and water channels intact.

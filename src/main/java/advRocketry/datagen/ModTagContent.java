@@ -1,6 +1,7 @@
 package advRocketry.datagen;
 
 import advRocketry.Main;
+import advRocketry.ModTags;
 import advRocketry.processing.ProcessingFluids;
 import advRocketry.processing.ProcessingRegistry;
 import advRocketry.space.BiomeMaterials;
@@ -36,6 +37,17 @@ final class ModTagContent {
   private ModTagContent() {}
 
   static void blocks(ModTagProvider<Block> tags) {
+    tags.values(
+        ModTags.HEAT_PLANT_SUBSTRATES,
+        "minecraft:magma_block",
+        "adv_rocketry:cooling_crust",
+        "adv_rocketry:weathered_basalt");
+    tags.values(
+        ModTags.MINERAL_PLANT_SUBSTRATES,
+        "adv_rocketry:mineral_crust",
+        "minecraft:calcite",
+        "minecraft:amethyst_block");
+    tags.values(ModTags.SHORE_PLANT_SUBSTRATES, "#minecraft:sand", "adv_rocketry:alluvial_silt");
     for (String name : BiomeMaterials.STONES)
       tags.values("minecraft:mineable/pickaxe", "adv_rocketry:" + name);
     for (String name : BiomeMaterials.SOILS)

@@ -71,6 +71,8 @@ Apply bone meal to a planted specimen to grow **one nearby offspring**. Leave em
 | Mineral blooms | Mineral crust, calcite or amethyst blocks |
 | Salt shrubs | Sand or alluvial silt |
 
+These are the default supports. Servers can customize cultivation materials for heat plants, mineral blooms and salt shrubs; sturdy support is still required.
+
 Heat and mineral plants do not compost. Other small plants, tree leaves and saplings can go in a composter.
 
 ## Process your harvest

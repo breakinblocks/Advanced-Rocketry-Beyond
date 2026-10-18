@@ -1,5 +1,6 @@
 package advRocketry.space;
 
+import advRocketry.ModTags;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -177,16 +178,9 @@ public final class HabitatPlantBlock extends Block
   private boolean fertileSupport(LevelReader level, BlockPos pos, Direction face) {
     BlockState support = level.getBlockState(pos.relative(face.getOpposite()));
     return switch (habitat) {
-      case "heat" ->
-          support.is(Blocks.MAGMA_BLOCK)
-              || support.is(BiomeMaterials.block("cooling_crust"))
-              || support.is(BiomeMaterials.block("weathered_basalt"));
-      case "mineral" ->
-          support.is(BiomeMaterials.block("mineral_crust"))
-              || support.is(Blocks.CALCITE)
-              || support.is(Blocks.AMETHYST_BLOCK);
-      case "shore" ->
-          support.is(BlockTags.SAND) || support.is(BiomeMaterials.block("alluvial_silt"));
+      case "heat" -> support.is(ModTags.HEAT_PLANT_SUBSTRATES);
+      case "mineral" -> support.is(ModTags.MINERAL_PLANT_SUBSTRATES);
+      case "shore" -> support.is(ModTags.SHORE_PLANT_SUBSTRATES);
       default -> true;
     };
   }
