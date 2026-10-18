@@ -12,18 +12,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-/** Reversible visual ownership of supports and ports inside the containment vessel. */
-public final class BlackHoleAssembly {
+/** Reversible visual ownership of supports and ports beneath formed orbital models. */
+public final class OrbitalAssembly {
   private static final Map<Level, Map<BlockPos, BlockPos>> OWNERS = new WeakHashMap<>();
 
-  private BlackHoleAssembly() {}
+  private OrbitalAssembly() {}
 
   public static void update(OrbitalBlockEntity controller, boolean formed) {
     Level level = controller.getLevel();
     if (level == null || level.isClientSide) return;
     var owners = OWNERS.computeIfAbsent(level, ignored -> new HashMap<>());
     Set<BlockPos> target = new HashSet<>();
-    var structure = PlacedMultiblock.of(controller, "black_hole_generator");
+    var structure =
+        PlacedMultiblock.of(
+            controller, controller.observatory() ? "observatory" : "black_hole_generator");
     if (formed && structure != null) {
       if (!structure.loaded()) return;
       for (var cell : structure.cells()) {
@@ -65,7 +67,7 @@ public final class BlackHoleAssembly {
     if (owner == null) return false;
     if (!level.isLoaded(owner)) return true;
     return level.getBlockEntity(owner) instanceof OrbitalBlockEntity controller
-        && controller.blackHoleGenerator()
+        && (controller.blackHoleGenerator() || controller.observatory())
         && controller.formed;
   }
 }

@@ -3,7 +3,7 @@
 
 package advRocketry.processing;
 
-import advRocketry.orbit.BlackHoleAssembly;
+import advRocketry.orbit.OrbitalAssembly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -35,7 +35,7 @@ public class MachinePartBlock extends Block {
   @Override
   protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
     if (!state.getValue(ASSEMBLED)) return;
-    if (MultiblockMachine.isPartClaimed(level, pos) || BlackHoleAssembly.isClaimed(level, pos))
+    if (MultiblockMachine.isPartClaimed(level, pos) || OrbitalAssembly.isClaimed(level, pos))
       level.scheduleTick(pos, this, 40);
     else level.setBlock(pos, state.setValue(ASSEMBLED, false), Block.UPDATE_CLIENTS);
   }
