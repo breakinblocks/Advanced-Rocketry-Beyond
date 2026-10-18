@@ -97,4 +97,6 @@ Look for short lines of fallen foliage along water edges and fungi on fallen log
 
 Where habitat deposits generate, exposed alluvial silt can contain clay pockets. Mineral crust in mineral caves can contain calcite; volcanic cooling crust can contain magma. Stormland strike glass can contain fused glass, which needs **Silk Touch** to collect. Deposit availability depends on the planet's generation settings.
 
+Servers can extend these deposits to suitable biomes from other mods or disable individual deposit types.
+
 [Back to Planets and equipment](worlds.md)

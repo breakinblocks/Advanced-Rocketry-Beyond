@@ -37,6 +37,10 @@ final class ModTagContent {
   private ModTagContent() {}
 
   static void blocks(ModTagProvider<Block> tags) {
+    tags.values(ModTags.CLAY_DEPOSIT_HOSTS, "adv_rocketry:alluvial_silt");
+    tags.values(ModTags.CALCITE_DEPOSIT_HOSTS, "adv_rocketry:mineral_crust");
+    tags.values(ModTags.GLASS_DEPOSIT_HOSTS, "adv_rocketry:strike_glass");
+    tags.values(ModTags.MAGMA_DEPOSIT_HOSTS, "adv_rocketry:cooling_crust");
     tags.values(
         ModTags.HEAT_PLANT_SUBSTRATES,
         "minecraft:magma_block",
@@ -288,6 +292,14 @@ final class ModTagContent {
   }
 
   static void biomes(ModTagProvider<Biome> tags) {
+    tags.values(
+        ModTags.CLAY_DEPOSIT_BIOMES,
+        "adv_rocketry:alien_river",
+        "adv_rocketry:marsh",
+        "adv_rocketry:deepswamp");
+    tags.values(ModTags.CALCITE_DEPOSIT_BIOMES, "adv_rocketry:mineral_caves");
+    tags.values(ModTags.GLASS_DEPOSIT_BIOMES, "adv_rocketry:stormland");
+    tags.values(ModTags.MAGMA_DEPOSIT_BIOMES, "adv_rocketry:volcanic");
     tags.values("minecraft:is_ocean", "adv_rocketry:oceanspires");
     tags.values("c:is_ocean", "adv_rocketry:oceanspires");
     tags.optional("adv_rocketry:planet_biomes/ocean", "#minecraft:is_ocean", "#c:is_ocean");

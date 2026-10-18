@@ -12,6 +12,22 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 public final class ModTags {
+  public static final TagKey<Biome> CLAY_DEPOSIT_BIOMES =
+      tag(Registries.BIOME, "habitat_deposits/clay");
+  public static final TagKey<Biome> CALCITE_DEPOSIT_BIOMES =
+      tag(Registries.BIOME, "habitat_deposits/calcite");
+  public static final TagKey<Biome> GLASS_DEPOSIT_BIOMES =
+      tag(Registries.BIOME, "habitat_deposits/glass");
+  public static final TagKey<Biome> MAGMA_DEPOSIT_BIOMES =
+      tag(Registries.BIOME, "habitat_deposits/magma");
+  public static final TagKey<Block> CLAY_DEPOSIT_HOSTS =
+      tag(Registries.BLOCK, "habitat_deposits/clay");
+  public static final TagKey<Block> CALCITE_DEPOSIT_HOSTS =
+      tag(Registries.BLOCK, "habitat_deposits/calcite");
+  public static final TagKey<Block> GLASS_DEPOSIT_HOSTS =
+      tag(Registries.BLOCK, "habitat_deposits/glass");
+  public static final TagKey<Block> MAGMA_DEPOSIT_HOSTS =
+      tag(Registries.BLOCK, "habitat_deposits/magma");
   public static final TagKey<Block> HEAT_PLANT_SUBSTRATES =
       tag(Registries.BLOCK, "plant_substrates/heat");
   public static final TagKey<Block> MINERAL_PLANT_SUBSTRATES =

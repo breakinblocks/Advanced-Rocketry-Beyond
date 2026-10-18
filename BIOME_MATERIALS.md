@@ -65,7 +65,9 @@ New planets using generation version 9 contain small exposed pockets in native A
 | Stormland | Strike glass | Fused glass; collect with Silk Touch |
 | Volcanic | Cooling crust | Magma for building, bubble columns and heat-plant cultivation |
 
-Pockets check the biome at their actual elevation, including underground habitats. Each chunk has four candidate columns with a one-in-six chance per eligible exposed layer; each successful pocket replaces at most nine host blocks. Buried ores, other substrates and optional mod biomes are not replaced. Existing planets retain their saved generation version and do not gain these deposits automatically.
+Pockets check the biome at their actual elevation, including underground habitats. Each chunk has four candidate columns with a one-in-six chance per eligible exposed layer; each successful pocket replaces at most nine host blocks. With the default tags, buried ores, other substrates and optional mod biomes are not replaced. Existing planets retain their saved generation version and do not gain these deposits automatically.
+
+Pack authors can configure each deposit through matching `adv_rocketry:habitat_deposits/clay`, `calcite`, `glass`, or `magma` tags in both registries. Biome files go in `data/adv_rocketry/tags/worldgen/biome/habitat_deposits/`; replaceable block files go in `data/adv_rocketry/tags/block/habitat_deposits/`. Both the biome and host block must match. Add optional mod IDs with `{"id":"othermod:actual_id","required":false}` entries. To disable a deposit, replace either tag with `{"replace":true,"values":[]}`. If tags overlap, the first matching deposit wins in this order: clay, calcite, glass, magma. Counts, exposure checks and chunk boundaries are unchanged.
 
 ## Remaining work
 

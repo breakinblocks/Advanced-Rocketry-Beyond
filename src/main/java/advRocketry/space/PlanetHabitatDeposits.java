@@ -1,6 +1,6 @@
 package advRocketry.space;
 
-import advRocketry.Main;
+import advRocketry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 
 /**
- * Small exposed resource pockets, restricted to native habitat substrates and the current chunk.
+ * Small exposed resource pockets, restricted to tagged habitats, substrates and the current chunk.
  */
 final class PlanetHabitatDeposits {
   private PlanetHabitatDeposits() {}
@@ -45,23 +45,17 @@ final class PlanetHabitatDeposits {
   }
 
   private static BlockState reward(ChunkAccess chunk, BlockPos pos) {
-    var key = chunk.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).unwrapKey();
-    if (key.isEmpty() || !key.get().location().getNamespace().equals(Main.MODID)) return null;
+    var biome = chunk.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2);
     BlockState host = chunk.getBlockState(pos);
-    return switch (key.get().location().getPath()) {
-      case "alien_river", "marsh", "deepswamp" ->
-          host.is(BiomeMaterials.block("alluvial_silt")) ? Blocks.CLAY.defaultBlockState() : null;
-      case "mineral_caves" ->
-          host.is(BiomeMaterials.block("mineral_crust"))
-              ? Blocks.CALCITE.defaultBlockState()
-              : null;
-      case "stormland" ->
-          host.is(BiomeMaterials.block("strike_glass")) ? Blocks.GLASS.defaultBlockState() : null;
-      case "volcanic" ->
-          host.is(BiomeMaterials.block("cooling_crust"))
-              ? Blocks.MAGMA_BLOCK.defaultBlockState()
-              : null;
-      default -> null;
-    };
+    // Explicit priority makes overlapping datapack tags deterministic.
+    if (biome.is(ModTags.CLAY_DEPOSIT_BIOMES) && host.is(ModTags.CLAY_DEPOSIT_HOSTS))
+      return Blocks.CLAY.defaultBlockState();
+    if (biome.is(ModTags.CALCITE_DEPOSIT_BIOMES) && host.is(ModTags.CALCITE_DEPOSIT_HOSTS))
+      return Blocks.CALCITE.defaultBlockState();
+    if (biome.is(ModTags.GLASS_DEPOSIT_BIOMES) && host.is(ModTags.GLASS_DEPOSIT_HOSTS))
+      return Blocks.GLASS.defaultBlockState();
+    if (biome.is(ModTags.MAGMA_DEPOSIT_BIOMES) && host.is(ModTags.MAGMA_DEPOSIT_HOSTS))
+      return Blocks.MAGMA_BLOCK.defaultBlockState();
+    return null;
   }
 }
