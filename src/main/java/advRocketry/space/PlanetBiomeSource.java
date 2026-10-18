@@ -71,7 +71,7 @@ public final class PlanetBiomeSource extends BiomeSource {
                           Codec.BOOL
                               .optionalFieldOf("channels", false)
                               .forGetter(source -> source.channels),
-                          Codec.intRange(1, 6)
+                          Codec.intRange(1, 7)
                               .optionalFieldOf("generation_version", 1)
                               .forGetter(source -> source.version),
                           Codec.doubleRange(0, Double.MAX_VALUE)
@@ -392,7 +392,10 @@ public final class PlanetBiomeSource extends BiomeSource {
   }
 
   private Holder<Biome> habitat(int x, int y, int z) {
-    double moisture = PlanetLandforms.moisture(seed, x, z);
+    double moisture =
+        version >= 7 && profile.equals("cavern")
+            ? PlanetCaverns.moisture(seed, x, y, z)
+            : PlanetLandforms.moisture(seed, x, z);
     double temperature = PlanetLandforms.temperature(seed, x, z);
     double land = PlanetLandforms.continents(seed, x, z);
     PlanetWatershed.Sample water = watersheds ? PlanetWatershed.sample(seed, gravity, x, z) : null;

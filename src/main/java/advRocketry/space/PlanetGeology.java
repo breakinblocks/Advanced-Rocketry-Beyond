@@ -9,7 +9,8 @@ public final class PlanetGeology {
         || profile.equals("storm")
         || version >= 4 && profile.equals("volcanic")
         || version >= 5 && profile.equals("lunar")
-        || version >= 6 && profile.equals("fractured");
+        || version >= 6 && profile.equals("fractured")
+        || version >= 7 && profile.equals("cavern");
   }
 
   private static double fissure(long seed, double x, double z) {
@@ -19,6 +20,7 @@ public final class PlanetGeology {
 
   public static double height(
       long seed, String profile, int sea, double gravity, double x, double z) {
+    if (profile.equals("cavern")) return 280;
     if (profile.equals("fractured")) return PlanetFractures.height(seed, sea, gravity, x, z);
     if (profile.equals("lunar")) return PlanetFrontiers.lunarHeight(seed, sea, gravity, x, z);
     if (profile.equals("storm")) return PlanetFrontiers.stormHeight(seed, sea, gravity, x, z);
@@ -73,6 +75,8 @@ public final class PlanetGeology {
       double z) {
     if (profile.equals("fractured"))
       return PlanetFractures.density(seed, sea, gravity, caves, x, y, z);
+    if (profile.equals("cavern"))
+      return PlanetCaverns.density(seed, sea, gravity, caves, x, y, z);
     double top = height(seed, profile, sea, gravity, x, z);
     double rock = (top - y) / 22;
     rock +=
