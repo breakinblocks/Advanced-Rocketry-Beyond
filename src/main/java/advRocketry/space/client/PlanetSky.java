@@ -20,13 +20,11 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
@@ -56,7 +54,6 @@ public final class PlanetSky {
   }
 
   private static final Map<String, ResourceLocation> ICONS = new HashMap<>();
-  private static VertexBuffer starBuffer;
 
   private PlanetSky() {}
 
@@ -155,12 +152,8 @@ public final class PlanetSky {
             .mul(skyView)
             .rotateY((float) (-Math.PI / 2))
             .rotateX(level.getTimeOfDay(partialTick) * (float) (Math.PI * 2));
-    VertexBuffer stars = stars();
-    RenderSystem.setShaderColor(1, 1, 1, (int) (255 * starBrightness) / 255f);
-    stars.bind();
-    stars.drawWithShader(starView, RenderSystem.getProjectionMatrix(), SkyLayerShader.color());
-    VertexBuffer.unbind();
-    RenderSystem.setShaderColor(1, 1, 1, 1);
+    GalacticSky.render(
+        starView, planet, star, state, starBrightness, level.getGameTime() + (double) partialTick);
     var player = Minecraft.getInstance().player;
     SpaceNavigation navigation =
         player != null && player.getVehicle() instanceof RocketEntity rocket
@@ -413,46 +406,9 @@ public final class PlanetSky {
     return resources.getResource(legacy).isPresent() ? legacy : planetTexture("moon");
   }
 
-  private static VertexBuffer stars() {
-    if (starBuffer != null) return starBuffer;
-    BufferBuilder builder =
-        Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-    Random random = new Random(10842);
-    for (int index = 0; index < 1800; index++) {
-      Vec3 direction =
-          new Vec3(
-              random.nextDouble() * 2 - 1,
-              random.nextDouble() * 2 - 1,
-              random.nextDouble() * 2 - 1);
-      if (direction.lengthSqr() < .01 || direction.lengthSqr() > 1) continue;
-      direction = direction.normalize();
-      Vec3 center = direction.scale(100);
-      Vec3 tangent =
-          direction
-              .cross(Math.abs(direction.y) > .9 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0))
-              .normalize()
-              .scale(.08 + random.nextDouble() * .1);
-      Vec3 other = direction.cross(tangent);
-      for (int[] corner : new int[][] {{-1, -1}, {1, -1}, {1, 1}, {-1, 1}}) {
-        Vec3 vertex = center.add(tangent.scale(corner[0])).add(other.scale(corner[1]));
-        builder
-            .addVertex((float) vertex.x, (float) vertex.y, (float) vertex.z)
-            .setColor(255, 255, 255, 255);
-      }
-    }
-    starBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-    starBuffer.bind();
-    starBuffer.upload(builder.buildOrThrow());
-    VertexBuffer.unbind();
-    return starBuffer;
-  }
-
   public static void clear() {
     ICONS.clear();
-    if (starBuffer != null) {
-      starBuffer.close();
-      starBuffer = null;
-    }
+    GalacticSky.clear();
   }
 
   private static void drawStar(

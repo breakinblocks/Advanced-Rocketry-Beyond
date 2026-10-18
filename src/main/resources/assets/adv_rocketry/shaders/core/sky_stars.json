@@ -1,0 +1,101 @@
+{
+  "vertex": "adv_rocketry:sky_stars",
+  "fragment": "adv_rocketry:sky_stars",
+  "attributes": [
+    "Position",
+    "UV0",
+    "Color"
+  ],
+  "samplers": [],
+  "uniforms": [
+    {
+      "name": "ModelViewMat",
+      "type": "matrix4x4",
+      "count": 16,
+      "values": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "ProjMat",
+      "type": "matrix4x4",
+      "count": 16,
+      "values": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "ColorModulator",
+      "type": "float",
+      "count": 4,
+      "values": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "Time",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    },
+    {
+      "name": "Twinkle",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0.6
+      ]
+    },
+    {
+      "name": "Distortion",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0.5
+      ]
+    },
+    {
+      "name": "Atmosphere",
+      "type": "float",
+      "count": 1,
+      "values": [
+        1
+      ]
+    }
+  ]
+}

@@ -19,7 +19,6 @@ public final class PlanetAtmosphere {
   private static final ResourceLocation SPARSE = texture("cloud_sparse");
   private static final ResourceLocation BROAD = texture("cloud_broad");
   private static final ResourceLocation WISPS = texture("cloud_wisps");
-  private static final ResourceLocation NEBULA = texture("nebula");
 
   private PlanetAtmosphere() {}
 
@@ -170,17 +169,6 @@ public final class PlanetAtmosphere {
     float visible =
         Math.max(state.night(), 1 - Math.min(1, state.density())) * (1 - state.weather());
     if (visible <= .001) return;
-    if (planet.sky.nebula() > 0) {
-      Matrix4f band = new Matrix4f(view).rotateZ(.65f).rotateY(planet.star * 1.37f);
-      layer(
-          band,
-          NEBULA,
-          new Vec3(.32, .2, .55),
-          visible * planet.sky.nebula() * .32f,
-          Math.floorMod(planet.star, 97) / 97d,
-          .1,
-          .7);
-    }
     float opacity = visible * Math.min(1, state.density()) * planet.sky.aurora();
     if (opacity <= .001) return;
     double time = AdvancedRocketryConfig.reducedMotion() ? 0 : ticks / 160d;

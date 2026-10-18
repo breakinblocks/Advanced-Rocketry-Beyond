@@ -15,12 +15,15 @@ import net.neoforged.neoforge.client.event.RegisterShadersEvent;
  */
 public final class SkyLayerShader {
   private static ShaderInstance color, texture;
+  static ShaderInstance stars, galaxy;
 
   private SkyLayerShader() {}
 
   public static void register(RegisterShadersEvent event) {
     color = null;
     texture = null;
+    stars = null;
+    galaxy = null;
     try {
       event.registerShader(
           new ShaderInstance(
@@ -34,6 +37,18 @@ public final class SkyLayerShader {
               ResourceLocation.fromNamespaceAndPath(Main.MODID, "sky_texture"),
               DefaultVertexFormat.POSITION_TEX_COLOR),
           loaded -> texture = ShaderCompatibility.allowPlanetShader(loaded) ? loaded : null);
+      event.registerShader(
+          new ShaderInstance(
+              event.getResourceProvider(),
+              ResourceLocation.fromNamespaceAndPath(Main.MODID, "sky_stars"),
+              DefaultVertexFormat.POSITION_TEX_COLOR),
+          loaded -> stars = ShaderCompatibility.allowPlanetShader(loaded) ? loaded : null);
+      event.registerShader(
+          new ShaderInstance(
+              event.getResourceProvider(),
+              ResourceLocation.fromNamespaceAndPath(Main.MODID, "sky_galaxy"),
+              DefaultVertexFormat.POSITION_COLOR),
+          loaded -> galaxy = ShaderCompatibility.allowPlanetShader(loaded) ? loaded : null);
     } catch (IOException error) {
       LogUtils.getLogger()
           .warn("Planet sky programs unavailable; using standard sky layers", error);

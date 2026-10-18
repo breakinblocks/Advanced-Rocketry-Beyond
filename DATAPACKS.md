@@ -154,6 +154,10 @@ An optional `sky` object in a planet definition controls its cosmetic layers:
   "haze": 0.8,
   "sunset": 1.2,
   "stars": 1.1,
+  "star_density": 1.0,
+  "twinkle": 0.6,
+  "distortion": 0.5,
+  "galaxy": 0.65,
   "aurora": 0.6,
   "nebula": 0.15,
   "seed": 37
@@ -175,7 +179,7 @@ variation. Heights and pressure jointly determine atmospheric visibility.
 
 Haze, sunset and stars default to 1 (range 0â€“2). Aurora and nebula default to 0
 (range 0â€“1). Auroras require atmosphere and darkness, independently of rings.
-Nebula orientation is shared within a star system. Airless worlds have no
+Nebula and galactic-band orientation is shared within a star system. Airless worlds have no
 atmospheric clouds or auroras. All numeric settings reject non-finite values.
 These settings persist with the planet and synchronize to clients; existing
 saved planets retain their settings under the normal definition-loading rules.
@@ -278,3 +282,24 @@ The singularity lens handles at most four nearby sources and uses scene depth to
 occlusion. With Iris installed, it retains the geometry effect and skips scene distortion.
 Hold Shift with a holographic projector to separate the construction preview into layers;
 Shift-scroll still selects a layer.
+
+### Starfields and galactic light
+
+`star_density` defaults to 1 (range 0–4). At the default, detail levels 0/1/2
+use 10,000/24,000/48,000 stars across the entire sphere, with extra density in
+the galactic plane. `stars` controls visibility independently of density.
+`twinkle` defaults to 0.6 and `distortion` to 0.5 (both range 0–1).
+Distortion and chromatic scintillation fade with atmosphere; reduced motion
+freezes both effects. Twinkle remains subtle in vacuum.
+
+`galaxy` defaults to 0.65 (range 0–2) and controls the dusty galactic band;
+`nebula` adds diffuse blue/violet clouds. Detail 0 or disabled advanced VFX
+omits these diffuse layers while retaining the starfield.
+
+Defined non-black-hole systems appear along their relative map X/Z directions,
+with color from stellar temperature and apparent brightness scaled by size
+and distance. Coincident systems are omitted. The band core points toward the
+map's system centroid. The shared plane is tilted for presentation. Dust lanes,
+arm-like clouds and background stars are procedural decoration: the map does
+not define a three-dimensional physical galaxy. Cached geometry rebuilds when
+the system catalog, observer, density or detail changes, and on resource reload.

@@ -16,7 +16,23 @@ public record SkySettings(
     float stars,
     float aurora,
     float nebula,
-    int seed) {
+    int seed,
+    float starDensity,
+    float twinkle,
+    float distortion,
+    float galaxy) {
+  public SkySettings(
+      Profile profile,
+      Clouds clouds,
+      float haze,
+      float sunset,
+      float stars,
+      float aurora,
+      float nebula,
+      int seed) {
+    this(profile, clouds, haze, sunset, stars, aurora, nebula, seed, 1, .6f, .5f, .65f);
+  }
+
   public enum Profile implements StringRepresentable {
     AUTO,
     CLEAR,
@@ -94,6 +110,14 @@ public record SkySettings(
                       range(0, 2).optionalFieldOf("stars", 1f).forGetter(SkySettings::stars),
                       range(0, 1).optionalFieldOf("aurora", 0f).forGetter(SkySettings::aurora),
                       range(0, 1).optionalFieldOf("nebula", 0f).forGetter(SkySettings::nebula),
-                      Codec.INT.optionalFieldOf("seed", 0).forGetter(SkySettings::seed))
+                      Codec.INT.optionalFieldOf("seed", 0).forGetter(SkySettings::seed),
+                      range(0, 4)
+                          .optionalFieldOf("star_density", 1f)
+                          .forGetter(SkySettings::starDensity),
+                      range(0, 1).optionalFieldOf("twinkle", .6f).forGetter(SkySettings::twinkle),
+                      range(0, 1)
+                          .optionalFieldOf("distortion", .5f)
+                          .forGetter(SkySettings::distortion),
+                      range(0, 2).optionalFieldOf("galaxy", .65f).forGetter(SkySettings::galaxy))
                   .apply(instance, SkySettings::new));
 }
