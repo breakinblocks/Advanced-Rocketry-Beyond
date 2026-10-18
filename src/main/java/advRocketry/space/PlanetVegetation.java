@@ -489,10 +489,22 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
             .setValue(RotatedPillarBlock.AXIS, direction.getAxis());
     for (BlockPos at : trunk) {
       level.setBlock(at, wood, 2);
-      if (random.nextBoolean())
-        plant(
-            level, at.relative(direction.getClockWise()), "shelf_fungus", direction.getClockWise());
     }
+    // Place the complete trunk before its dependent fungi and ground-level young growth.
+    for (BlockPos at : trunk)
+      for (Direction side : List.of(direction.getClockWise(), direction.getCounterClockWise())) {
+        BlockPos beside = at.relative(side);
+        if (random.nextInt(3) == 0) plant(level, beside, "shelf_fungus", side);
+        BlockPos growth = at.relative(side, 2);
+        if (!level.isEmptyBlock(growth) || random.nextBoolean()) continue;
+        String name =
+            rootwood && waterNear(level, growth)
+                ? random.nextBoolean() ? "jointed_reeds" : "marsh_sedge"
+                : random.nextInt(4) == 0
+                    ? "spiral_seedling"
+                    : rootwood ? "fan_fern" : "fallen_foliage";
+        plant(level, growth, name, Direction.UP);
+      }
     return true;
   }
 
