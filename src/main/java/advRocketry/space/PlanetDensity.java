@@ -42,7 +42,7 @@ public record PlanetDensity(
   }
 
   public static final Codec<String> PROFILE_CODEC =
-      names("temperate", "volcanic", "lunar", "fractured", "cavern", "arid", "storm");
+      names("temperate", "volcanic", "lunar", "fractured", "cavern", "arid", "storm", "glacial");
 
   private static Codec<String> names(String... allowed) {
     return Codec.STRING.validate(

@@ -68,7 +68,7 @@ public final class Planet {
   public boolean volcanoes;
   public boolean geodes;
   public boolean caves = true;
-  public int generationVersion = 7;
+  public int generationVersion = 8;
   public String noiseProfile = "auto";
   public boolean structures = true;
   public float craterFrequency = 1;

@@ -154,13 +154,13 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
 - **Terrain:** `terrain` (`terrestrial`, `asteroid`, `cave`, `moon`,
   `volcanic`), `sea_level`, `filler_block`, `ocean_block`, `caves`,
   `structures`, `force_rivers`, `noise_profile`, `generation_version`, and
-  `biome_features`. Generation versions 2 through 7 run native biome features and modifiers;
+  `biome_features`. Generation versions 2 through 8 run native biome features and modifiers;
   individual planetary plants apply their own pressure, temperature, and attachment rules.
   `noise_profile` accepts `auto`, `temperate`, `volcanic`, `lunar`, `fractured`,
-  `cavern`, `arid`, or `storm`. `auto` derives a profile from terrain, pressure, temperature,
+  `cavern`, `arid`, `storm`, or `glacial`. `auto` derives a profile from terrain, pressure, temperature,
   and an exclusively hot-dry-rock palette.
   The selected profile is stored with the planet. `generation_version` defaults
-  to `7`; `1` selects the original terrain implementation and `2` selects
+  to `8`; `1` selects the original terrain implementation and `2` selects
   the continuous terrain without watershed habitats. The version is saved per planet.
   Version `3` connects temperate water rivers to wet banks, marsh/swamp transitions,
   underground waterways, and occasional sinkholes. This requires rivers, water oceans,
@@ -202,6 +202,12 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   uneven floors, pillars, and connecting passages. Higher gravity lowers chamber
   ceilings. Moisture varies vertically so lush, root, fungal, and dripstone
   habitats can occupy different levels. `caves: false` disables these cavities.
+  Version `8` selects `glacial` for exclusively Crystal Chasms terrestrial palettes
+  below 250 K and above pressure 25. Explicit `glacial` profiles are also supported.
+  Broad valleys cut snowy uplands, coastal shelves overhang shallow water, and
+  gravity deepens crevasses. With caves enabled, crevasses meet subglacial passages.
+  Disabling caves retains surface crevasses and shelves but removes those passages.
+  Mixed palettes retain their usual terrain profile.
   Ocean Spires form tapered, leaning outcrops anchored to natural seabeds, with
   submerged and exposed variants. Placement rejects obstacles before changing any
   blocks. Shallow water supports patchy aquatic fronds with open gaps; deeper

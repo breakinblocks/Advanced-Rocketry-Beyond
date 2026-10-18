@@ -71,7 +71,7 @@ public final class PlanetBiomeSource extends BiomeSource {
                           Codec.BOOL
                               .optionalFieldOf("channels", false)
                               .forGetter(source -> source.channels),
-                          Codec.intRange(1, 7)
+                          Codec.intRange(1, 8)
                               .optionalFieldOf("generation_version", 1)
                               .forGetter(source -> source.version),
                           Codec.doubleRange(0, Double.MAX_VALUE)
@@ -168,7 +168,7 @@ public final class PlanetBiomeSource extends BiomeSource {
                     ? List.of("adv_rocketry:lava_tubes", "adv_rocketry:mineral_caves")
                     : profile.equals("arid")
                         ? List.of("adv_rocketry:mineral_caves", "minecraft:dripstone_caves")
-                        : planet.temperature < 250
+                        : profile.equals("glacial") || planet.temperature < 250
                             ? List.of("adv_rocketry:subglacial_caves", "adv_rocketry:mineral_caves")
                             : List.of(
                                 "adv_rocketry:root_caverns",

@@ -5,7 +5,8 @@ public final class PlanetGeology {
   private PlanetGeology() {}
 
   public static boolean enabled(int version, String profile) {
-    return profile.equals("arid")
+    return profile.equals("glacial")
+        || profile.equals("arid")
         || profile.equals("storm")
         || version >= 4 && profile.equals("volcanic")
         || version >= 5 && profile.equals("lunar")
@@ -20,6 +21,7 @@ public final class PlanetGeology {
 
   public static double height(
       long seed, String profile, int sea, double gravity, double x, double z) {
+    if (profile.equals("glacial")) return PlanetGlaciers.height(seed, sea, gravity, x, z);
     if (profile.equals("cavern")) return 280;
     if (profile.equals("fractured")) return PlanetFractures.height(seed, sea, gravity, x, z);
     if (profile.equals("lunar")) return PlanetFrontiers.lunarHeight(seed, sea, gravity, x, z);
@@ -77,6 +79,8 @@ public final class PlanetGeology {
       return PlanetFractures.density(seed, sea, gravity, caves, x, y, z);
     if (profile.equals("cavern"))
       return PlanetCaverns.density(seed, sea, gravity, caves, x, y, z);
+    if (profile.equals("glacial"))
+      return PlanetGlaciers.density(seed, sea, gravity, caves, x, y, z);
     double top = height(seed, profile, sea, gravity, x, z);
     double rock = (top - y) / 22;
     rock +=

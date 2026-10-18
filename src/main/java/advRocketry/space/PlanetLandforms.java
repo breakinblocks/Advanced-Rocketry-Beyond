@@ -8,6 +8,13 @@ public final class PlanetLandforms {
 
   public static String profile(Planet planet) {
     if (!planet.noiseProfile.equals("auto")) return planet.noiseProfile;
+    if (planet.generationVersion >= 8
+        && planet.terrain == TerrainType.TERRESTRIAL
+        && planet.atmosphere > 25
+        && planet.temperature < 250
+        && !planet.biomes.isEmpty()
+        && planet.biomes.stream().allMatch(id -> id.equals(BiomeMaterials.id("crystalchasms"))))
+      return "glacial";
     if (planet.generationVersion >= 5
         && planet.terrain == TerrainType.TERRESTRIAL
         && planet.atmosphere > 25

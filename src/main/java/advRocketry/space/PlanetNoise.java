@@ -112,6 +112,14 @@ public final class PlanetNoise {
               SurfaceRules.verticalGradient(
                   "adv_rocketry:bedrock", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(5)),
               state(Blocks.BEDROCK)));
+    if (PlanetLandforms.profile(p).equals("glacial"))
+      rules.add(
+          SurfaceRules.ifTrue(
+              SurfaceRules.yBlockCheck(VerticalAnchor.absolute(p.seaLevel - 12), 0),
+              SurfaceRules.ifTrue(
+                  SurfaceRules.not(
+                      SurfaceRules.yBlockCheck(VerticalAnchor.absolute(p.seaLevel + 7), 0)),
+                  biome("crystalchasms", state(Blocks.PACKED_ICE)))));
     List<SurfaceRules.RuleSource> top = new ArrayList<>();
     top.add(biome("moon", state(ProcessingRegistry.part("moon_turf"))));
     top.add(biome("moondark", state(BiomeMaterials.block("dark_regolith"))));
@@ -120,7 +128,14 @@ public final class PlanetNoise {
     top.add(biome("volcanic", patch("cooling_crust", "volcanic_ash", .15)));
     top.add(biome("volcanicbarren", patch("weathered_basalt", "porous_stone", .2)));
     top.add(biome("lava_tubes", state(BiomeMaterials.block("weathered_basalt"))));
-    top.add(biome("crystalchasms", state(Blocks.SNOW_BLOCK)));
+    top.add(
+        biome(
+            "crystalchasms",
+            PlanetLandforms.profile(p).equals("glacial")
+                ? SurfaceRules.sequence(
+                    SurfaceRules.ifTrue(SurfaceRules.steep(), state(Blocks.PACKED_ICE)),
+                    state(Blocks.SNOW_BLOCK))
+                : state(Blocks.SNOW_BLOCK)));
     top.add(
         biome(
             "subglacial_caves",
