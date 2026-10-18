@@ -119,7 +119,19 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
   @Override
   public CompletableFuture<ChunkAccess> createBiomes(
       RandomState random, Blender blender, StructureManager structures, ChunkAccess chunk) {
-    if (PlanetWatershed.enabled(planet)) {
+    if (planet.generationVersion >= 6 && PlanetLandforms.profile(planet).equals("fractured")) {
+      Aquifer.FluidStatus air =
+          new Aquifer.FluidStatus(chunk.getMinBuildHeight(), Blocks.AIR.defaultBlockState());
+      chunk.getOrCreateNoiseChunk(
+          access ->
+              NoiseChunk.forChunk(
+                  access,
+                  random,
+                  Beardifier.forStructuresInChunk(structures, access.getPos()),
+                  generatorSettings().value(),
+                  (x, y, z) -> air,
+                  blender));
+    } else if (PlanetWatershed.enabled(planet)) {
       Aquifer.FluidStatus ocean =
           new Aquifer.FluidStatus(planet.seaLevel, Blocks.WATER.defaultBlockState());
       Aquifer.FluidStatus ground =

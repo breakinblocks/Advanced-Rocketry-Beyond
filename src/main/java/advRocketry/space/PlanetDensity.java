@@ -102,7 +102,11 @@ public record PlanetDensity(
       case "continents" -> PlanetLandforms.continents(seed, x, z);
       case "erosion" -> PlanetLandforms.field(seed, 29, x, z, 370);
       case "ridges" -> PlanetLandforms.channel(seed, x, z);
-      case "depth" -> (height(x, z) - y) / 80;
+      case "depth" ->
+          (hostileGeology && profile.equals("fractured")
+                  ? PlanetFractures.depth(seed, sea, x, y, z)
+                  : height(x, z) - y)
+              / 80;
       case "surface" -> (height(x, z) - y) / 22;
       default ->
           hostileGeology

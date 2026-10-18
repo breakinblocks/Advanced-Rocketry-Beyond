@@ -154,13 +154,13 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
 - **Terrain:** `terrain` (`terrestrial`, `asteroid`, `cave`, `moon`,
   `volcanic`), `sea_level`, `filler_block`, `ocean_block`, `caves`,
   `structures`, `force_rivers`, `noise_profile`, `generation_version`, and
-  `biome_features`. Generation versions 2 through 5 run native biome features and modifiers;
+  `biome_features`. Generation versions 2 through 6 run native biome features and modifiers;
   individual planetary plants apply their own pressure, temperature, and attachment rules.
   `noise_profile` accepts `auto`, `temperate`, `volcanic`, `lunar`, `fractured`,
   `cavern`, `arid`, or `storm`. `auto` derives a profile from terrain, pressure, temperature,
   and an exclusively hot-dry-rock palette.
   The selected profile is stored with the planet. `generation_version` defaults
-  to `5`; `1` selects the original terrain implementation and `2` selects
+  to `6`; `1` selects the original terrain implementation and `2` selects
   the continuous terrain without watershed habitats. The version is saved per planet.
   Version `3` connects temperate water rivers to wet banks, marsh/swamp transitions,
   underground waterways, and occasional sinkholes. This requires rivers, water oceans,
@@ -192,6 +192,12 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   fluid. `storm` is selected automatically for exclusively Stormland terrestrial
   palettes with pressure above 25 and temperature at most 450 K. Mixed palettes
   retain their normal terrain; explicit profiles remain available in datapacks.
+  Version `6` gives `fractured` terrain three irregular island layers, tapered
+  undersides, and broken shelves. Higher gravity makes the islands thicker;
+  low gravity produces thinner shelves. Cavities respect `caves`, while gaps
+  between islands remain part of the terrain. These planets have no ocean fluid.
+  Habitat depth follows each island layer so exposed lower shelves retain surface
+  biomes. Island elevations use `sea_level` clamped to 48–120 to fit the world height.
   Ocean Spires form tapered, leaning outcrops anchored to natural seabeds, with
   submerged and exposed variants. Placement rejects obstacles before changing any
   blocks. Shallow water supports patchy aquatic fronds with open gaps; deeper

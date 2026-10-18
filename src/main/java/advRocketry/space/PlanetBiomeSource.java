@@ -71,7 +71,7 @@ public final class PlanetBiomeSource extends BiomeSource {
                           Codec.BOOL
                               .optionalFieldOf("channels", false)
                               .forGetter(source -> source.channels),
-                          Codec.intRange(1, 5)
+                          Codec.intRange(1, 6)
                               .optionalFieldOf("generation_version", 1)
                               .forGetter(source -> source.version),
                           Codec.doubleRange(0, Double.MAX_VALUE)
@@ -402,7 +402,10 @@ public final class PlanetBiomeSource extends BiomeSource {
             : watersheds
                 ? PlanetWatershed.height(seed, sea, gravity, x, z)
                 : PlanetLandforms.height(seed, profile, sea, channels, x, z);
-    double depth = top - y;
+    double depth =
+        version >= 6 && profile.equals("fractured")
+            ? PlanetFractures.depth(seed, sea, x, y, z)
+            : top - y;
     if (water != null) moisture = Math.min(1, moisture + water.banks() * .45);
     if (!caves.isEmpty() && depth > 18 + 7 * PlanetLandforms.field(seed, 59, x, z, 95)) {
       if (depth > 90 && !profile.equals("cavern") || y < -24)
