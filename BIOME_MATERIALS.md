@@ -1,0 +1,37 @@
+# Biome material uses
+
+This audit covers the 37 blocks registered by `BiomeMaterials` and the four legacy bluewood blocks (`alien_*`). All have block loot tables. It does not cover every machine or item in the mod.
+
+| Materials | Harvest and existing uses | Renewal |
+| --- | --- | --- |
+| weathered_basalt, cooling_crust, mineral_crust, strike_glass, lunar_breccia, dark_regolith, banded_stone, wet_slate, glacial_stone, porous_stone | Pickaxe; drop themselves. Building blocks and stone crafting/tool materials. Cooling crust emits light. Strike glass also smelts to glass. | Finite terrain deposits |
+| rooted_loam, alluvial_silt, volcanic_ash, luminous_moss | Drop themselves; shovel is fastest. Building/landscaping; ash and moss make dyes, moss emits light. Silt centrifuges into clay. | No reproduction mechanic |
+| rootwood_log, stripped_rootwood_log, rootwood_planks | Drop themselves; axe is fastest. Logs craft into four planks or saw into six; wood tags support ordinary wood recipes and fuel. Logs can be stripped. | Sapling-grown trees |
+| alien_log, alien_planks (bluewood) | Drop themselves; axe is fastest. Four crafted or six sawn planks per log; charcoal and ordinary wood recipes/fuel. | Sapling-grown trees |
+| rootwood_leaves, alien_leaves | Shears/Silk Touch collect leaves; otherwise vanilla sapling chances, increased by Fortune. Compostable. | Sapling-grown trees |
+| rootwood_sapling, alien_sapling | Drop themselves; plant to grow trees or compost. | Tree leaf drops |
+| fan_fern, spiral_seedling, forest_groundcover, fallen_foliage, shelf_fungus, floating_leaves, aquatic_frond, salt_shrub | Drop themselves without a tool; decoration, dye and compost. Shelf fungus emits light. | Replantable, no reproduction mechanic |
+| hanging_roots, jointed_reeds, marsh_sedge | Drop themselves without a tool; decoration, dye, compost and fiber. Reeds/sedge also make paper. | Replantable, no reproduction mechanic |
+| luminous_seed_cluster, cave_blossom | Drop themselves without a tool; lighting, dye, compost and glowstone extraction. | Replantable, no reproduction mechanic |
+| vent_growth, ember_curl, storm_blades, spark_mushroom, mineral_bloom | Drop themselves without a tool; decoration and dye. All except storm blades emit light. Spark mushrooms yield glowstone; mineral blooms yield quartz. These heat/mineral plants are not compostable. | Replantable, no reproduction mechanic |
+
+Plants still require their native placement conditions: ceiling or wall support, suitable soil, water surfaces or submerged support as applicable. Harvesting does not make them freely placeable everywhere.
+
+## Processing yields
+
+| Input | Process | Output |
+| --- | --- | --- |
+| 3 jointed reeds, marsh sedge, or hanging roots (one species per batch) | Cutting machine, 80 ticks, 10 energy/tick | 2 string |
+| 3 jointed reeds or marsh sedge (one species in a horizontal row) | Crafting | 3 paper |
+| 4 luminous seed clusters, cave blossoms, or spark mushrooms (one species per batch) | Centrifuge, 200 ticks, 20 energy/tick | 1 glowstone dust |
+| 4 alluvial silt | Centrifuge, 200 ticks, 20 energy/tick | 4 clay balls |
+| 1 strike glass | Smelting, 200 ticks | 1 glass |
+| 4 mineral blooms | Centrifuge, 200 ticks, 20 energy/tick | 1 quartz |
+
+The existing hand recipe remains three jointed reeds for one string. Extraction consumes the input; none of these outputs crafts back into its source. Recipes use individual species deliberately, so unrelated plants cannot substitute for the habitat reward. All recipe IDs are under `adv_rocketry:biomes/` and can be replaced by datapacks.
+
+## Remaining work
+
+- Add habitat-sensitive propagation for small plants if renewable harvesting is desired. Replanting alone does not replenish harvested plants.
+- Most terrain blocks remain building and stone-crafting materials; this pass adds selective utility without making every rock an ore.
+- Habitat-specific resource deposits remain a separate generation task.

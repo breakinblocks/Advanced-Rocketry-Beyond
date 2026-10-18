@@ -44,6 +44,55 @@ final class ModBiomeRecipes extends ModRecipeHelpers {
         "minecraft:charcoal",
         .15f,
         200);
+    for (String plant : List.of("jointed_reeds", "marsh_sedge", "hanging_roots"))
+      processing(
+          output,
+          "biomes/fiber_from_" + plant,
+          "cutting_machine",
+          80,
+          10,
+          List.of(stack("adv_rocketry:" + plant, 3)),
+          List.of(stack("minecraft:string", 2)));
+    for (String plant : List.of("jointed_reeds", "marsh_sedge"))
+      shaped(
+          output,
+          "biomes/paper_from_" + plant,
+          "minecraft:paper",
+          3,
+          List.of("PPP"),
+          'P', item("adv_rocketry:" + plant));
+    for (String plant : List.of("luminous_seed_cluster", "cave_blossom", "spark_mushroom"))
+      processing(
+          output,
+          "biomes/glowstone_from_" + plant,
+          "centrifuge",
+          200,
+          20,
+          List.of(stack("adv_rocketry:" + plant, 4)),
+          List.of(stack("minecraft:glowstone_dust", 1)));
+    processing(
+        output,
+        "biomes/clay_from_alluvial_silt",
+        "centrifuge",
+        200,
+        20,
+        List.of(stack("adv_rocketry:alluvial_silt", 4)),
+        List.of(stack("minecraft:clay_ball", 4)));
+    smelting(
+        output,
+        "biomes/glass_from_strike_glass",
+        item("adv_rocketry:strike_glass"),
+        "minecraft:glass",
+        .1f,
+        200);
+    processing(
+        output,
+        "biomes/quartz_from_mineral_bloom",
+        "centrifuge",
+        200,
+        20,
+        List.of(stack("adv_rocketry:mineral_bloom", 4)),
+        List.of(stack("minecraft:quartz", 1)));
     for (String log : List.of("rootwood_log", "stripped_rootwood_log"))
       processing(
           output,

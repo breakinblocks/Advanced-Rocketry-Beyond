@@ -1,0 +1,18 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 10,
+  "inputs": [
+    {
+      "count": 3,
+      "item": "adv_rocketry:hanging_roots"
+    }
+  ],
+  "machine": "cutting_machine",
+  "outputs": [
+    {
+      "count": 2,
+      "id": "minecraft:string"
+    }
+  ],
+  "ticks": 80
+}

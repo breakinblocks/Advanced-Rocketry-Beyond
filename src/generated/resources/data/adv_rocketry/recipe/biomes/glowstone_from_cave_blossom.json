@@ -1,0 +1,17 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 20,
+  "inputs": [
+    {
+      "count": 4,
+      "item": "adv_rocketry:cave_blossom"
+    }
+  ],
+  "machine": "centrifuge",
+  "outputs": [
+    {
+      "id": "minecraft:glowstone_dust"
+    }
+  ],
+  "ticks": 200
+}

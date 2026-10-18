@@ -1,0 +1,17 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 20,
+  "inputs": [
+    {
+      "count": 4,
+      "item": "adv_rocketry:mineral_bloom"
+    }
+  ],
+  "machine": "centrifuge",
+  "outputs": [
+    {
+      "id": "minecraft:quartz"
+    }
+  ],
+  "ticks": 200
+}
