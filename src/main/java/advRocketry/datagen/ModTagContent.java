@@ -1,6 +1,7 @@
 package advRocketry.datagen;
 
 import advRocketry.Main;
+import advRocketry.processing.ProcessingFluids;
 import advRocketry.processing.ProcessingRegistry;
 import java.util.Map;
 import java.util.Set;
@@ -208,6 +209,9 @@ final class ModTagContent {
   }
 
   static void fluids(ModTagProvider<Fluid> tags) {
+    for (String name : ProcessingFluids.DEFINITIONS.keySet())
+      tags.values("c:" + name, "adv_rocketry:" + name, "adv_rocketry:flowing_" + name);
+    tags.values("c:water", "minecraft:water", "minecraft:flowing_water");
     tags.values(
         "minecraft:lava", "adv_rocketry:enriched_lava", "adv_rocketry:flowing_enriched_lava");
     tags.values("adv_rocketry:harvestable_gases");

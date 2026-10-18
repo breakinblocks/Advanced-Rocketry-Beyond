@@ -33,7 +33,6 @@ import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 /** Original suit checks and vacuum cadence with a native, reversible gravity modifier. */
 public final class PlanetEnvironment {
@@ -109,8 +108,7 @@ public final class PlanetEnvironment {
     if (protectedSuit && planet.oxygen && planet.atmosphere > 75) return;
     if (protectedSuit
         && chest.getItem() instanceof SpaceSuitItem suit
-        && suit.transferOxygen(chest, new FluidStack(ProcessingFluids.oxygen(), 1), false) == 1)
-      return;
+        && suit.consumeGas(chest, ProcessingFluids.OXYGEN, 1) == 1) return;
     if (protectedSuit && SpaceBreathing.sealed(level, chest) && SpaceBreathing.consume(chest))
       return;
     boolean hot = !vacuum && planet.temperature > 450;

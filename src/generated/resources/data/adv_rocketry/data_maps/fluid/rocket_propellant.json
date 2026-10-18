@@ -1,13 +1,13 @@
 {
   "values": {
-    "adv_rocketry:hydrogen": {
+    "#c:hydrogen": {
       "bipropellant": 1.0,
       "nuclear": 1.0
     },
-    "adv_rocketry:oxygen": {
+    "#c:oxygen": {
       "oxidizer": 1.0
     },
-    "adv_rocketry:rocket_fuel": {
+    "#c:rocket_fuel": {
       "monopropellant": 2.0
     }
   }

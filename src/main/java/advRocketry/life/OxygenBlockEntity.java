@@ -48,8 +48,8 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
       new FluidTank(
           TANK_CAPACITY,
           fluid ->
-              fluid.is(ProcessingFluids.oxygen())
-                  || (charger() && fluid.is(ProcessingFluids.hydrogen()))) {
+              fluid.is(ProcessingFluids.OXYGEN)
+                  || (charger() && fluid.is(ProcessingFluids.HYDROGEN))) {
         @Override
         protected void onContentsChanged() {
           setChanged();
@@ -151,7 +151,7 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         if (armor.getItem() instanceof SpaceSuitItem suit) {
           int moved = suit.transferOxygen(armor, tank.getFluid().copy(), true);
           tank.drain(moved, IFluidHandler.FluidAction.EXECUTE);
-        } else if (tank.getFluid().is(ProcessingFluids.oxygen())
+        } else if (tank.getFluid().is(ProcessingFluids.OXYGEN)
             && SpaceBreathing.sealed(level, armor)) {
           int moved = SpaceBreathing.fill(armor, tank.getFluidAmount());
           tank.drain(moved, IFluidHandler.FluidAction.EXECUTE);

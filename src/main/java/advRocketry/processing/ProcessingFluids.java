@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -116,6 +118,14 @@ public final class ProcessingFluids {
     define("methane", 0xff9ab8c2);
     define("rocket_fuel", 0xffe5d884);
     define("enriched_lava", 0xffffffff);
+  }
+
+  public static final TagKey<Fluid> OXYGEN = commonTag("oxygen");
+  public static final TagKey<Fluid> HYDROGEN = commonTag("hydrogen");
+  public static final TagKey<Fluid> ROCKET_FUEL = commonTag("rocket_fuel");
+
+  public static TagKey<Fluid> commonTag(String name) {
+    return TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", name));
   }
 
   private ProcessingFluids() {}

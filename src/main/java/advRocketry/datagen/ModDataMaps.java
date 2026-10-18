@@ -1,6 +1,7 @@
 package advRocketry.datagen;
 
 import advRocketry.DataMaps;
+import advRocketry.processing.ProcessingFluids;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
@@ -31,17 +32,17 @@ final class ModDataMaps extends DataMapProvider {
         }) fuel.add(id(item), new DataMaps.BlackHoleFuel(1), false);
     builder(DataMaps.ROCKET_PROPELLANT)
         .add(
-            id("adv_rocketry:rocket_fuel"),
+            ProcessingFluids.ROCKET_FUEL,
             new DataMaps.Propellant(
                 Optional.of(2f), Optional.empty(), Optional.empty(), Optional.empty()),
             false)
         .add(
-            id("adv_rocketry:hydrogen"),
+            ProcessingFluids.HYDROGEN,
             new DataMaps.Propellant(
                 Optional.empty(), Optional.of(1f), Optional.empty(), Optional.of(1f)),
             false)
         .add(
-            id("adv_rocketry:oxygen"),
+            ProcessingFluids.OXYGEN,
             new DataMaps.Propellant(
                 Optional.empty(), Optional.empty(), Optional.of(1f), Optional.empty()),
             false);

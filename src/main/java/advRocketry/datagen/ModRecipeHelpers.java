@@ -121,6 +121,8 @@ abstract class ModRecipeHelpers {
     }
 
     SizedFluidIngredient fluidIngredient() {
+      if (tag())
+        return SizedFluidIngredient.of(TagKey.create(Registries.FLUID, location()), amount);
       return SizedFluidIngredient.of(fluidType(), amount);
     }
 

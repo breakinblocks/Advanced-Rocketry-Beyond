@@ -4,7 +4,7 @@
   "fluid_inputs": [
     {
       "amount": 10,
-      "fluid": "minecraft:water"
+      "tag": "c:water"
     }
   ],
   "fluid_outputs": [

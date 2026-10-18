@@ -4,11 +4,11 @@
   "fluid_inputs": [
     {
       "amount": 10,
-      "fluid": "adv_rocketry:oxygen"
+      "tag": "c:oxygen"
     },
     {
       "amount": 10,
-      "fluid": "adv_rocketry:hydrogen"
+      "tag": "c:hydrogen"
     }
   ],
   "fluid_outputs": [

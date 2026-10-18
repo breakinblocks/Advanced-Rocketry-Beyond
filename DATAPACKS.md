@@ -41,6 +41,46 @@ Outputs preserve their component patches when resolved through tags. Each operat
 may produce at most 4096 items, including weighted rolls; output pools have at most
 256 entries. Large results are split into stacks before saving.
 
+### Common fluids and output overrides
+
+Suits, oxygen vents and chargers accept `#c:oxygen`; jetpacks and chargers accept
+`#c:hydrogen`. Terraformers consume `#c:oxygen` and `#c:nitrogen`. Tanks preserve
+the supplied fluid ID and components; a partly filled tank only mixes identical
+fluid stacks. AR supplies source and flowing entries in these common tags.
+Rocket propellant defaults use `#c:hydrogen`, `#c:oxygen`, and `#c:rocket_fuel`
+through the `adv_rocketry:rocket_propellant` fluid data map. The Fuel Generator's
+rocket-fuel recipe also accepts `#c:rocket_fuel`.
+
+Fluid recipe inputs use `{ "tag": "c:oxygen", "amount": 10 }`. Fluid outputs
+use a concrete registry ID, for example `{ "id": "othermod:oxygen", "amount": 100 }`.
+To choose another mod's electrolyzer outputs, override
+`data/adv_rocketry/recipe/processing/hydrogenoxygen.json` in your datapack:
+
+```json
+{
+  "type": "adv_rocketry:processing",
+  "machine": "electrolyzer",
+  "ticks": 100,
+  "energy": 20,
+  "fluid_inputs": [{ "tag": "c:water", "amount": 10 }],
+  "fluid_outputs": [
+    { "id": "othermod:hydrogen", "amount": 100 },
+    { "id": "othermod:oxygen", "amount": 100 }
+  ]
+}
+```
+
+Replace the example IDs with installed fluids. Override
+`data/adv_rocketry/recipe/processing/rocketfuel.json` the same way to choose the
+chemical reactor's fuel output. Add replacement fluids to the common tags if
+their mod does not already do so. Reload recipes and tags with `/reload`.
+
+Gas-collection outputs come from a planet's `gases` list, the
+`adv_rocketry:harvestable_gases` fluid tag, and the `adv_rocketry:gas_giant_gas`
+data map for generated gas giants. These accept other mods' registered fluid
+IDs. Pumps and rocket disassembly return the actual collected or stored fluid.
+These production paths do not need an additional output config.
+
 ### Armor sealing
 
 `adv_rocketry:armor_sealing` recipes select an `armor_type` (`helmet`, `chestplate`,

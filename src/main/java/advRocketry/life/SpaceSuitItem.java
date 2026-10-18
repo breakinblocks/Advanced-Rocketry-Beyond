@@ -12,6 +12,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -66,7 +68,7 @@ public final class SpaceSuitItem extends ArmorItem {
         if (getType() == Type.CHESTPLATE && slot < 2) {
           if (!(stack.getItem() instanceof PressureTankItem tank)) return false;
           var fluid = tank.handler(stack).getFluid();
-          return fluid.isEmpty() || fluid.is(ProcessingFluids.oxygen());
+          return fluid.isEmpty() || fluid.is(ProcessingFluids.OXYGEN);
         }
         if (stack.getItem() instanceof PressureTankItem) return getType() == Type.CHESTPLATE;
         return switch (getType()) {
@@ -93,7 +95,7 @@ public final class SpaceSuitItem extends ArmorItem {
       ItemStack stack = inventory.getStackInSlot(slot);
       if (!(stack.getItem() instanceof PressureTankItem tank)) continue;
       var handler = tank.handler(stack);
-      if (handler.getFluid().isEmpty() || handler.getFluid().is(ProcessingFluids.oxygen()))
+      if (handler.getFluid().isEmpty() || handler.getFluid().is(ProcessingFluids.OXYGEN))
         capacity += handler.getTankCapacity(0);
     }
     return (int) Math.min(Integer.MAX_VALUE, capacity);
@@ -106,7 +108,7 @@ public final class SpaceSuitItem extends ArmorItem {
       var stack = inventory.getStackInSlot(slot);
       if (stack.getItem() instanceof PressureTankItem tank) {
         var fluid = tank.handler(stack).getFluid();
-        if (fluid.is(ProcessingFluids.oxygen())) oxygen += fluid.getAmount();
+        if (fluid.is(ProcessingFluids.OXYGEN)) oxygen += fluid.getAmount();
       }
     }
     return oxygen;
@@ -137,6 +139,25 @@ public final class SpaceSuitItem extends ArmorItem {
         modules.setStackInSlot(slot, replacement);
         return;
       }
+  }
+
+  /** Consume the stored member of a gas tag without converting it to an AR fluid. */
+  public int consumeGas(ItemStack armor, TagKey<Fluid> gas, int amount) {
+    if (amount <= 0) return 0;
+    var inventory = inventory(armor);
+    int remaining = amount;
+    for (int slot = 0; slot < inventory.getSlots() && remaining > 0; slot++) {
+      var stack = inventory.getStackInSlot(slot);
+      if (!(stack.getItem() instanceof PressureTankItem tank)) continue;
+      var handler = tank.handler(stack.copy());
+      if (!handler.getFluid().is(gas)) continue;
+      int moved = handler.drain(remaining, IFluidHandler.FluidAction.EXECUTE).getAmount();
+      if (moved > 0) {
+        inventory.setStackInSlot(slot, handler.getContainer());
+        remaining -= moved;
+      }
+    }
+    return amount - remaining;
   }
 
   public int transferOxygen(ItemStack armor, FluidStack oxygen, boolean fill) {

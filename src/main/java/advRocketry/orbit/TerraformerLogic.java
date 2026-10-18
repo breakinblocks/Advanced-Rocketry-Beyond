@@ -20,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 /** Original atmosphere density process with its full twelve-layer multiblock and power ports. */
@@ -175,9 +174,8 @@ public final class TerraformerLogic {
     for (BlockPos pos : controller.terraformerPorts.fluid()) {
       if (remaining <= 0) break;
       if (level.getBlockEntity(pos) instanceof PortBlockEntity port) {
-        FluidStack request =
-            new FluidStack(ProcessingFluids.DEFINITIONS.get(name).source.get(), remaining);
-        remaining -= port.myTank.drain(request, action).getAmount();
+        if (port.myTank.getFluid().is(ProcessingFluids.commonTag(name)))
+          remaining -= port.myTank.drain(remaining, action).getAmount();
       }
     }
     return amount - remaining;

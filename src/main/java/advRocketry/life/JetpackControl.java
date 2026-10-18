@@ -21,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 /** The original hydrogen jetpack's held-jump thrust, validated against equipped suit modules. */
@@ -104,7 +103,7 @@ public record JetpackControl() implements CustomPacketPayload {
     var chest = player.getItemBySlot(EquipmentSlot.CHEST);
     return chest.getItem() instanceof SpaceSuitItem suit
         && suit.countModule(chest, "jetpack") > 0
-        && suit.transferOxygen(chest, new FluidStack(ProcessingFluids.hydrogen(), 1), false) == 1;
+        && suit.consumeGas(chest, ProcessingFluids.HYDROGEN, 1) == 1;
   }
 
   static boolean jetpack(ItemStack module) {
