@@ -13,6 +13,7 @@ import advRocketry.space.GalaxyData;
 import advRocketry.space.Planet;
 import advRocketry.space.PlanetRuntime;
 import advRocketry.util.IdOrTag;
+import advRocketry.util.RemoteChunks;
 import advRocketry.util.Texts;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -169,19 +170,6 @@ public final class OrbitalLaserLogic {
     controller.laser.jammed = false;
     controller.laser.targetPlanet = planet.id;
     clampTarget(controller, target);
-    if (controller.laser.terrain && controller.laser.depth == 0) {
-      int top = target.getMinBuildHeight();
-      for (int x = -1; x <= 1; x++)
-        for (int z = -1; z <= 1; z++)
-          top =
-              Math.max(
-                  top,
-                  target.getHeight(
-                      Heightmap.Types.MOTION_BLOCKING,
-                      controller.laser.x + x,
-                      controller.laser.z + z));
-      controller.laser.depth = top - 1;
-    }
     controller.status =
         Texts.translate(
             "status.adv_rocketry.orbital_laser.orbital_laser_running_above", planet.name);
@@ -219,8 +207,29 @@ public final class OrbitalLaserLogic {
       controller.setChanged();
       return;
     }
-    if (controller.laser.terrain)
-      refreshNode(controller, PlanetRuntime.create(level.getServer(), target));
+    if (controller.laser.terrain) {
+      ServerLevel surface = PlanetRuntime.create(level.getServer(), target);
+      BlockPos column = new BlockPos(controller.laser.x, 0, controller.laser.z);
+      if (!RemoteChunks.ready(
+          surface,
+          column,
+          1,
+          "remoteTargets",
+          level.dimension().location() + "/laser/" + controller.getBlockPos().asLong())) return;
+      if (controller.laser.depth == 0) {
+        int top = surface.getMinBuildHeight();
+        for (int x = -1; x <= 1; x++)
+          for (int z = -1; z <= 1; z++)
+            top =
+                Math.max(
+                    top,
+                    surface.getHeight(
+                        Heightmap.Types.MOTION_BLOCKING, column.getX() + x, column.getZ() + z));
+        controller.laser.depth = top - 1;
+        controller.setChanged();
+      }
+      refreshNode(controller, surface);
+    }
     controller.laser.ticks++;
     int stored = controller.energy.getEnergyStored();
     int operationEnergy = AdvancedRocketryConfig.laserDrillEnergy();
@@ -295,7 +304,8 @@ public final class OrbitalLaserLogic {
       for (int dx = -1; dx <= 1; dx++)
         for (int dz = -1; dz <= 1; dz++) {
           BlockPos pos = new BlockPos(x + dx, y, z + dz);
-          if (level.getBlockState(pos).is(OrbitalRegistry.LASER_LIGHT.get()))
+          if (level.hasChunkAt(pos)
+              && level.getBlockState(pos).is(OrbitalRegistry.LASER_LIGHT.get()))
             level.removeBlock(pos, false);
         }
   }

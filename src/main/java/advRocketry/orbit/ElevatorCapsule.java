@@ -3,6 +3,7 @@
 
 package advRocketry.orbit;
 
+import advRocketry.AdvancedRocketryConfig;
 import advRocketry.util.ServerDrivenEntity;
 import advRocketry.util.TicketedTransit;
 import net.minecraft.core.BlockPos;
@@ -21,12 +22,20 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 /** Rideable tether car with the original ascent/descent speeds and interdimensional handoff. */
 public final class ElevatorCapsule extends ServerDrivenEntity {
+  public static void registerChunkTickets(RegisterTicketControllersEvent event) {
+    TRANSIT.register(event);
+  }
+
   private static final TicketedTransit<ElevatorCapsule> TRANSIT =
-      new TicketedTransit<>("advanced_rocketry_elevator", capsule -> capsule.phase != 0);
+      new TicketedTransit<>(
+          "advanced_rocketry_elevator",
+          capsule -> capsule.phase != 0,
+          () -> AdvancedRocketryConfig.chunkLoading("elevators"));
   private static final EntityDataAccessor<Integer> MOTION =
       SynchedEntityData.defineId(ElevatorCapsule.class, EntityDataSerializers.INT);
   private String targetDimension = "";

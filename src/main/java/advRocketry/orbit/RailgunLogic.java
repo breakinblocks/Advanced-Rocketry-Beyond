@@ -9,6 +9,7 @@ import advRocketry.processing.PortBlockEntity;
 import advRocketry.processing.ProcessingRegistry;
 import advRocketry.space.GalaxyData;
 import advRocketry.space.Planet;
+import advRocketry.util.RemoteChunks;
 import advRocketry.util.Texts;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -71,7 +72,12 @@ public final class RailgunLogic {
     ServerLevel destination = source.getServer().getLevel(link.dimension());
     if (destination == null) return;
     BlockPos destinationPos = link.pos();
-    if (!destination.isLoaded(destinationPos)
+    if (!RemoteChunks.ready(
+            destination,
+            destinationPos,
+            16,
+            "remoteTargets",
+            source.dimension().location() + "/railgun/" + controller.getBlockPos().asLong())
         || !sameSystem(source, controller.getBlockPos(), destination, destinationPos)
         || !(destination.getBlockEntity(destinationPos) instanceof OrbitalBlockEntity receiver)
         || !receiver.railgun()

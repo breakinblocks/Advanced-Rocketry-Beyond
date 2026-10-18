@@ -18,6 +18,7 @@ import advRocketry.orbit.DockingPortConfig;
 import advRocketry.orbit.ElevatorCapsule;
 import advRocketry.orbit.MiningMission;
 import advRocketry.orbit.OrbitalRegistry;
+import advRocketry.orbit.SatelliteLogic;
 import advRocketry.orbit.StationChipAction;
 import advRocketry.orbit.WarpLogic;
 import advRocketry.orbit.WirelessTransceiverBlockEntity;
@@ -44,6 +45,7 @@ import advRocketry.space.TerraformBiomeLogic;
 import advRocketry.transport.TransportInteraction;
 import advRocketry.transport.TransportNetworks;
 import advRocketry.transport.TransportRegistry;
+import advRocketry.util.MachineChunkLoading;
 import advRocketry.util.ServerSchedule;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -58,6 +60,12 @@ public final class Main {
 
   public Main(IEventBus bus, ModContainer container) {
     container.registerConfig(ModConfig.Type.SERVER, AdvancedRocketryConfig.SPEC);
+    bus.addListener(MachineChunkLoading::register);
+    bus.addListener(RocketEntity::registerChunkTickets);
+    bus.addListener(ElevatorCapsule::registerChunkTickets);
+    NeoForge.EVENT_BUS.addListener(MachineChunkLoading::stopped);
+    ServerSchedule.every(20, MachineChunkLoading::tick);
+    ServerSchedule.every(20, SatelliteLogic::tick);
     ModComponents.register(bus);
     DataRegistries.register(bus);
     DataMaps.register(bus);

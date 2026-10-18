@@ -3,7 +3,9 @@
 
 package advRocketry.orbit;
 
+import advRocketry.util.MachineChunkLoading;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -109,6 +111,8 @@ public class OrbitalBlock extends Block implements EntityBlock {
   }
 
   public static void cleanup(OrbitalBlockEntity entity) {
+    if (entity.getLevel() instanceof ServerLevel level)
+      MachineChunkLoading.remove(level, entity.getBlockPos());
     if (entity.blackHoleGenerator() || entity.observatory()) OrbitalAssembly.update(entity, false);
     if (entity.blackHoleGenerator()) {
       HorizonSatelliteLogic.unlink(entity);

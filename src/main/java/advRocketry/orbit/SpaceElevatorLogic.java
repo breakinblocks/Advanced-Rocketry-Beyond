@@ -6,6 +6,7 @@ package advRocketry.orbit;
 import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.space.GalaxyData;
+import advRocketry.util.RemoteChunks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -134,6 +135,13 @@ public final class SpaceElevatorLogic {
         source.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, id));
     if (destination == null) return null;
     BlockPos pos = BlockPos.of(controller.elevatorPosition);
+    if (!RemoteChunks.ready(
+        destination,
+        pos,
+        16,
+        "elevators",
+        source.dimension().location() + "/elevator/" + controller.getBlockPos().asLong()))
+      return null;
     return destination.getBlockEntity(pos) instanceof OrbitalBlockEntity other
             && other.spaceElevator()
         ? other

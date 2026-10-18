@@ -6,6 +6,7 @@ package advRocketry.orbit;
 import advRocketry.space.GalaxyData;
 import advRocketry.space.Planet;
 import advRocketry.space.PlanetRuntime;
+import advRocketry.util.RemoteChunks;
 import java.util.ArrayList;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
@@ -75,7 +76,7 @@ public final class BiomeChangerLogic {
       for (int changed = 0; changed < 10 && job.index < CELLS; changed++) {
         if (record.energy < ENERGY_PER_CELL) break;
         BlockPos cell = job.cell(level.getMinBuildHeight());
-        level.getChunkAt(cell);
+        if (!RemoteChunks.ready(level, cell, 3, "biomeJobs", "satellite/" + entry.getKey())) break;
         if (FillBiomeCommand.fill(
                 level,
                 cell,

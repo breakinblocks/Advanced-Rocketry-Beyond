@@ -7,6 +7,7 @@ import advRocketry.ModComponents;
 import advRocketry.rocket.RocketStructure;
 import advRocketry.space.GalaxyData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
@@ -45,6 +46,12 @@ public final class SatelliteLogic {
     stored.energy -= drawn;
     galaxy.setDirty();
     return drawn;
+  }
+
+  public static void tick(MinecraftServer server) {
+    GalaxyData galaxy = GalaxyData.get(server);
+    long now = server.overworld().getGameTime();
+    for (long id : galaxy.satellites.keySet()) advance(galaxy, id, now);
   }
 
   public static void advance(GalaxyData galaxy, long id, long gameTime) {

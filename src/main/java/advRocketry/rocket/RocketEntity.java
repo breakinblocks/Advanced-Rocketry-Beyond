@@ -57,6 +57,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -67,9 +68,15 @@ import org.jetbrains.annotations.Nullable;
 
 /** Persistent native rocket: carries the exact assembled blocks and their saved inventories. */
 public final class RocketEntity extends ServerDrivenEntity {
+  public static void registerChunkTickets(RegisterTicketControllersEvent event) {
+    TRANSIT.register(event);
+  }
+
   private static final TicketedTransit<RocketEntity> TRANSIT =
       new TicketedTransit<>(
-          "advanced_rocketry_flight", rocket -> rocket.flight() != 0 || rocket.asteroidRcs());
+          "advanced_rocketry_flight",
+          rocket -> rocket.flight() != 0 || rocket.asteroidRcs(),
+          () -> AdvancedRocketryConfig.chunkLoading("rockets"));
   static final EntityDataAccessor<CompoundTag> SHIP =
       SynchedEntityData.defineId(RocketEntity.class, EntityDataSerializers.COMPOUND_TAG);
   static final EntityDataAccessor<Integer> FLIGHT =

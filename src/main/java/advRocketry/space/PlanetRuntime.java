@@ -21,6 +21,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.progress.LoggerChunkProgressListener;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ForcedChunksSavedData;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
@@ -32,6 +34,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.world.chunk.ForcedChunkManager;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -193,6 +196,14 @@ public final class PlanetRuntime {
         new BorderChangeListener.DelegateBorderChangeListener(level.getWorldBorder()));
     server.forgeGetWorldMap().put(planet.key(), level);
     server.markWorldsDirty();
+    // Dynamic levels bypass MinecraftServer's normal forced-chunk restoration path.
+    ForcedChunksSavedData forced =
+        level.getDataStorage().get(ForcedChunksSavedData.factory(), "chunks");
+    if (forced != null) {
+      for (long packed : forced.getChunks())
+        level.getChunkSource().updateChunkForced(new ChunkPos(packed), true);
+      ForcedChunkManager.reinstatePersistentChunks(level, forced);
+    }
     NeoForge.EVENT_BUS.post(new LevelEvent.Load(level));
     return level;
   }

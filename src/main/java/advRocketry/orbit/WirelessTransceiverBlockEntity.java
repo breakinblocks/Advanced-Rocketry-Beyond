@@ -6,6 +6,7 @@ package advRocketry.orbit;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.space.GalaxyData;
+import advRocketry.util.MachineChunkLoading;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,10 +20,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 /** Persistent original 100-unit typed buffers, connected through the native data-bus inventory. */
@@ -37,7 +38,8 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
   private static final Map<MinecraftServer, Networks> NETWORKS = new WeakHashMap<>();
 
   private static final class Networks {
-    final Set<WirelessTransceiverBlockEntity> loaded = Collections.newSetFromMap(new WeakHashMap<>());
+    final Set<WirelessTransceiverBlockEntity> loaded =
+        Collections.newSetFromMap(new WeakHashMap<>());
     long generation;
     Map<Long, List<WirelessTransceiverBlockEntity>> sources;
   }
@@ -49,6 +51,7 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
   private Networks networks() {
     return NETWORKS.computeIfAbsent(((ServerLevel) level).getServer(), ignored -> new Networks());
   }
+
   private final Map<ResearchType, Integer> data = new LinkedHashMap<>();
   private Mode mode = Mode.OFF;
   private long cachedNetwork;
@@ -71,11 +74,14 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
 
   private void invalidate() {
     if (!(level instanceof ServerLevel serverLevel)) return;
-    serverLevel.getServer().execute(() -> {
-      Networks state = networks();
-      state.generation++;
-      state.sources = null;
-    });
+    serverLevel
+        .getServer()
+        .execute(
+            () -> {
+              Networks state = networks();
+              state.generation++;
+              state.sources = null;
+            });
   }
 
   public String positionKey() {
@@ -119,6 +125,8 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
 
   public void unlink() {
     if (level instanceof ServerLevel serverLevel)
+      MachineChunkLoading.remove(serverLevel, worldPosition);
+    if (level instanceof ServerLevel serverLevel)
       GalaxyData.get(serverLevel.getServer()).removeWireless(positionKey());
     invalidate();
   }
@@ -127,10 +135,13 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
   public void onLoad() {
     super.onLoad();
     if (level instanceof ServerLevel serverLevel)
-      serverLevel.getServer().execute(() -> {
-        if (!isRemoved()) networks().loaded.add(this);
-        invalidate();
-      });
+      serverLevel
+          .getServer()
+          .execute(
+              () -> {
+                if (!isRemoved()) networks().loaded.add(this);
+                invalidate();
+              });
   }
 
   @Override
@@ -147,10 +158,13 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
 
   private void unloadNetwork() {
     if (level instanceof ServerLevel serverLevel)
-      serverLevel.getServer().execute(() -> {
-        networks().loaded.remove(this);
-        invalidate();
-      });
+      serverLevel
+          .getServer()
+          .execute(
+              () -> {
+                networks().loaded.remove(this);
+                invalidate();
+              });
   }
 
   private ItemStackHandler adjacentData() {
@@ -227,6 +241,7 @@ public final class WirelessTransceiverBlockEntity extends BlockEntity {
   }
 
   public void tick() {
+    MachineChunkLoading.refresh(this);
     if (!(level instanceof ServerLevel)) return;
     if (mode == Mode.SOURCE) pull();
     else if (mode == Mode.SINK) {

@@ -10,11 +10,14 @@ import advRocketry.rocket.RocketStructure;
 import advRocketry.space.GalaxyData;
 import advRocketry.space.Planet;
 import advRocketry.space.PlanetRuntime;
+import advRocketry.util.RemoteChunks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -80,13 +83,28 @@ public final class MiningMission {
         Planet planet = galaxy.byDimension(key.location());
         if (planet != null && planet.landable()) destination = PlanetRuntime.create(server, planet);
       }
-      if (destination == null
-          || !(mission.kind == Mission.Kind.GAS
-              ? GasMission.finish(destination, mission)
-              : finish(destination, mission))) continue;
+      if (destination == null || !returnAreaReady(destination, mission, entry.getKey())) continue;
+      if (!(mission.kind == Mission.Kind.GAS
+          ? GasMission.finish(destination, mission)
+          : finish(destination, mission))) continue;
       galaxy.miningMissions.remove(entry.getKey());
       galaxy.setDirty();
     }
+  }
+
+  private static boolean returnAreaReady(ServerLevel level, Mission mission, long id) {
+    CompoundTag tag = mission.rocket;
+    double x = tag.getDouble("x"), z = tag.getDouble("z");
+    if (tag.getBoolean("deployable") && tag.contains("launch_y")) {
+      Direction forward = Direction.byName(tag.getString("forward_direction"));
+      if (forward == null || !forward.getAxis().isHorizontal()) forward = Direction.NORTH;
+      x = tag.getDouble("launch_x") + forward.getStepX() * 64d;
+      z = tag.getDouble("launch_z") + forward.getStepZ() * 64d;
+    }
+    RocketStructure ship = RocketStructure.load(tag.getCompound("ship"));
+    int radius = Math.max(ship.width, ship.depth) / 2 + 2;
+    return RemoteChunks.ready(
+        level, BlockPos.containing(x, 0, z), radius, "missionReturns", "mission/" + id);
   }
 
   public static boolean finish(ServerLevel level, Mission mission) {

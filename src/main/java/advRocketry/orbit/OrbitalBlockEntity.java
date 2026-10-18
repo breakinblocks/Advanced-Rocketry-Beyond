@@ -6,6 +6,7 @@ package advRocketry.orbit;
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.util.ComponentText;
+import advRocketry.util.MachineChunkLoading;
 import advRocketry.util.MachineEnergy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -253,6 +254,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   }
 
   public void tick() {
+    MachineChunkLoading.refresh(this);
     boolean generating = powerMadeLastTick > 0;
     boolean laserRunning = laser.running;
     FormedState.tick(this);

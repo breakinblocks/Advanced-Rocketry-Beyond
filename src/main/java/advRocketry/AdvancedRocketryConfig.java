@@ -9,6 +9,9 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 /** Original discovery and terraforming defaults exposed as world/server settings. */
 public final class AdvancedRocketryConfig {
+  private static final ModConfigSpec.BooleanValue CHUNK_LOADING;
+  private static final Map<String, ModConfigSpec.BooleanValue> CHUNK_SYSTEMS =
+      new LinkedHashMap<>();
   public static final ModConfigSpec SPEC;
   public static final ModConfigSpec CLIENT_SPEC;
   private static final ModConfigSpec.BooleanValue PLANETS_MUST_BE_DISCOVERED;
@@ -89,8 +92,52 @@ public final class AdvancedRocketryConfig {
   private static final ModConfigSpec.BooleanValue RESET_PLANETS_FROM_DEFINITIONS;
   private static final ModConfigSpec.BooleanValue RESET_PLANETS_ONLY_ONCE;
 
+  public static boolean chunkLoading(String system) {
+    return CHUNK_LOADING.get() && CHUNK_SYSTEMS.get(system).get();
+  }
+
   static {
     ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+    builder.push("chunkLoading");
+    CHUNK_LOADING =
+        builder
+            .comment("Allow machines and remote operations to maintain their own chunk tickets.")
+            .define("enabled", true);
+    for (String system :
+        new String[] {
+          "rockets",
+          "elevators",
+          "orbitalMachines",
+          "remoteTargets",
+          "missionReturns",
+          "biomeJobs",
+          "wireless"
+        })
+      CHUNK_SYSTEMS.put(
+          system,
+          builder
+              .comment(
+                  switch (system) {
+                    case "rockets" ->
+                        "Keep flying rockets ticking, including across server restarts.";
+                    case "elevators" ->
+                        "Keep linked elevator anchors, destination areas and moving capsules"
+                            + " loaded.";
+                    case "orbitalMachines" ->
+                        "Keep working orbital infrastructure, multiblocks and adjacent service"
+                            + " connections loaded.";
+                    case "remoteTargets" ->
+                        "Temporarily load railgun receivers and terrain-mining laser targets.";
+                    case "missionReturns" ->
+                        "Temporarily load return areas for asteroid and gas missions.";
+                    case "biomeJobs" ->
+                        "Temporarily load the current biome-changing satellite work area.";
+                    default ->
+                        "Keep linked, enabled wireless data transceivers and their adjacent buses"
+                            + " loaded.";
+                  })
+              .define(system, true));
+    builder.pop();
     builder.push("planets");
     PLANETS_MUST_BE_DISCOVERED = builder.define("planetsMustBeDiscovered", false);
     PLANET_DISCOVERY_CHANCE = builder.defineInRange("planetDiscoveryChance", 5, 1, 1000);
