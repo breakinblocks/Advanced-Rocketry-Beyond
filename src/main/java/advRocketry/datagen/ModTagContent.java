@@ -4,6 +4,7 @@ import advRocketry.Main;
 import advRocketry.ModTags;
 import advRocketry.processing.ProcessingFluids;
 import advRocketry.processing.ProcessingRegistry;
+import advRocketry.rocket.RocketRegistry;
 import advRocketry.space.BiomeMaterials;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +38,13 @@ final class ModTagContent {
   private ModTagContent() {}
 
   static void blocks(ModTagProvider<Block> tags) {
+    RocketRegistry.PARTS
+        .values()
+        .forEach(
+            block ->
+                tags.value(
+                    tags.key("minecraft:mineable/pickaxe"),
+                    BuiltInRegistries.BLOCK.getKey(block.get())));
     tags.values(ModTags.CLAY_DEPOSIT_HOSTS, "adv_rocketry:alluvial_silt");
     tags.values(ModTags.CALCITE_DEPOSIT_HOSTS, "adv_rocketry:mineral_crust");
     tags.values(ModTags.GLASS_DEPOSIT_HOSTS, "adv_rocketry:strike_glass");
