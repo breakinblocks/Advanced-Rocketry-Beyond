@@ -276,6 +276,13 @@ final class ModTagContent {
   }
 
   static void biomes(ModTagProvider<Biome> tags) {
+    tags.values("minecraft:is_ocean", "adv_rocketry:oceanspires");
+    tags.values("c:is_ocean", "adv_rocketry:oceanspires");
+    tags.optional("adv_rocketry:planet_biomes/ocean", "#minecraft:is_ocean", "#c:is_ocean");
+    tags.optional(
+        "adv_rocketry:planet_biomes/deep_ocean", "#minecraft:is_deep_ocean", "#c:is_deep_ocean");
+    tags.optional(
+        "adv_rocketry:planet_biomes/shallow_ocean", "#c:is_shallow_ocean", "minecraft:warm_ocean");
     tags.optional(
         "adv_rocketry:planet_biomes/caves",
         "terralith:cave/fungal_caves",

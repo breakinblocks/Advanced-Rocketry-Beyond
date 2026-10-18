@@ -156,7 +156,6 @@ public final class PlanetRuntime {
     long seed = PlanetSeeds.planet(server.getWorldData().worldGenOptions().seed(), planet.id);
     if (planet.generationVersion >= 2) {
       planet.noiseProfile = PlanetLandforms.profile(planet);
-      settings = PlanetNoise.settings(planet, seed, PlanetBiomeSurfaces.rules(registries, biomes));
     }
     List<Integer> biomeWeights =
         planet.biomeWeights.isEmpty() || terraformed
@@ -169,12 +168,15 @@ public final class PlanetRuntime {
                             .map(key -> planet.biomeWeights.getOrDefault(key.location(), 30))
                             .orElse(30))
                 .toList();
-    PlanetTerrain terrain =
-        new PlanetTerrain(
-            PlanetBiomeSource.forPlanet(biomes, biomeWeights, seed, planet, biomeRegistry),
-            Holder.direct(settings),
-            planet,
-            seed);
+    PlanetBiomeSource source =
+        PlanetBiomeSource.forPlanet(biomes, biomeWeights, seed, planet, biomeRegistry);
+    if (planet.generationVersion >= 2)
+      settings =
+          PlanetNoise.settings(
+              planet,
+              seed,
+              PlanetBiomeSurfaces.rules(registries, List.copyOf(source.possibleBiomes())));
+    PlanetTerrain terrain = new PlanetTerrain(source, Holder.direct(settings), planet, seed);
     ServerLevel level =
         new ServerLevel(
             server,

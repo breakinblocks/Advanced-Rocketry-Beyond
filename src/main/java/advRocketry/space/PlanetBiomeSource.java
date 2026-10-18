@@ -37,7 +37,8 @@ public final class PlanetBiomeSource extends BiomeSource {
       int version,
       double gravity,
       boolean watersheds,
-      List<Holder<Biome>> riparian) {}
+      List<Holder<Biome>> riparian,
+      Optional<PlanetMarineHabitat> marine) {}
 
   public static final MapCodec<PlanetBiomeSource> CODEC =
       RecordCodecBuilder.<Definition>mapCodec(
@@ -82,7 +83,10 @@ public final class PlanetBiomeSource extends BiomeSource {
                           Biome.CODEC
                               .listOf()
                               .optionalFieldOf("riparian_biomes", List.of())
-                              .forGetter(source -> source.riparian))
+                              .forGetter(source -> source.riparian),
+                          PlanetMarineHabitat.CODEC
+                              .optionalFieldOf("ocean_habitats")
+                              .forGetter(source -> source.marine))
                       .apply(instance, Definition::new))
           .flatXmap(
               definition -> {
@@ -103,7 +107,8 @@ public final class PlanetBiomeSource extends BiomeSource {
                         definition.version,
                         definition.gravity,
                         definition.watersheds,
-                        definition.riparian));
+                        definition.riparian,
+                        definition.marine));
               },
               source ->
                   DataResult.success(
@@ -120,7 +125,8 @@ public final class PlanetBiomeSource extends BiomeSource {
                           source.version,
                           source.gravity,
                           source.watersheds,
-                          source.riparian)));
+                          source.riparian,
+                          source.marine)));
   private final List<Holder<Biome>> biomes;
   private final List<Integer> weights;
   private final long totalWeight;
@@ -135,6 +141,7 @@ public final class PlanetBiomeSource extends BiomeSource {
   private final double gravity;
   private final boolean watersheds;
   private final List<Holder<Biome>> riparian;
+  private final Optional<PlanetMarineHabitat> marine;
 
   public PlanetBiomeSource(List<Holder<Biome>> biomes, long seed) {
     this(biomes, List.of(), seed);
@@ -239,7 +246,28 @@ public final class PlanetBiomeSource extends BiomeSource {
           planet.generationVersion,
           planet.gravity,
           PlanetWatershed.enabled(planet),
-          riparian);
+          riparian,
+          Optional.of(
+              new PlanetMarineHabitat(
+                  PlanetMarineHabitat.supportsWater(planet),
+                  biomes.stream()
+                      .filter(b -> !PlanetMarineHabitat.ocean(b))
+                      .findFirst()
+                      .orElseGet(
+                          () ->
+                              registry.getHolderOrThrow(
+                                  ResourceKey.create(
+                                      Registries.BIOME,
+                                      BiomeMaterials.id(
+                                          profile.equals("lunar")
+                                              ? "moon"
+                                              : profile.equals("volcanic")
+                                                  ? "volcanic"
+                                                  : PlanetMarineHabitat.supportsWater(planet)
+                                                      ? "alien_forest"
+                                                      : "hotdryrock")))),
+                  3,
+                  24)));
     }
     if (!planet.hasRivers()) return new PlanetBiomeSource(biomes, weights, seed);
     return new PlanetBiomeSource(
@@ -275,7 +303,8 @@ public final class PlanetBiomeSource extends BiomeSource {
         1,
         1,
         false,
-        List.of());
+        List.of(),
+        Optional.empty());
   }
 
   private PlanetBiomeSource(
@@ -291,7 +320,8 @@ public final class PlanetBiomeSource extends BiomeSource {
       int version,
       double gravity,
       boolean watersheds,
-      List<Holder<Biome>> riparian) {
+      List<Holder<Biome>> riparian,
+      Optional<PlanetMarineHabitat> marine) {
     if (biomes.isEmpty()) throw new IllegalArgumentException("Planet requires at least one biome");
     if (!weights.isEmpty() && weights.size() != biomes.size()
         || weights.stream().anyMatch(weight -> weight <= 0 || weight > 1000000))
@@ -312,6 +342,7 @@ public final class PlanetBiomeSource extends BiomeSource {
     this.gravity = gravity;
     this.watersheds = watersheds;
     this.riparian = List.copyOf(riparian);
+    this.marine = marine;
   }
 
   @Override
@@ -322,8 +353,11 @@ public final class PlanetBiomeSource extends BiomeSource {
   @Override
   protected Stream<Holder<Biome>> collectPossibleBiomes() {
     return Stream.concat(
-            Stream.concat(caves.stream(), riparian.stream()),
-            Stream.concat(biomes.stream(), Stream.concat(river.stream(), frozenRiver.stream())))
+            marine.stream().map(PlanetMarineHabitat::landFallback),
+            Stream.concat(
+                Stream.concat(caves.stream(), riparian.stream()),
+                Stream.concat(
+                    biomes.stream(), Stream.concat(river.stream(), frozenRiver.stream()))))
         .distinct();
   }
 
@@ -382,10 +416,20 @@ public final class PlanetBiomeSource extends BiomeSource {
       if (moisture < -.22) return caves.get(2);
       return caves.get(Math.min(3, caves.size() - 1));
     }
-    Holder<Biome> selected = biomes.getFirst();
+    boolean oceanRegion =
+        marine.isPresent()
+            && biomes.stream()
+                .anyMatch(
+                    b -> PlanetMarineHabitat.ocean(b) && marine.get().allows(b, sea - top, land));
+    Holder<Biome> selected =
+        marine.map(PlanetMarineHabitat::landFallback).orElse(biomes.getFirst());
     double best = Double.POSITIVE_INFINITY;
     for (int i = 0; i < biomes.size(); i++) {
       Holder<Biome> b = biomes.get(i);
+      if (marine.isPresent()) {
+        boolean ocean = PlanetMarineHabitat.ocean(b);
+        if (ocean != oceanRegion || ocean && !marine.get().allows(b, sea - top, land)) continue;
+      }
       String name = b.unwrapKey().map(k -> k.location().toString()).orElse("");
       double targetWet =
           switch (name) {
@@ -396,7 +440,7 @@ public final class PlanetBiomeSource extends BiomeSource {
           };
       double targetTemp = Math.clamp((b.value().getBaseTemperature() - .65) * .9, -.8, .8);
       double targetLand =
-          b.is(BiomeTags.IS_OCEAN) || name.equals("adv_rocketry:oceanspires")
+          PlanetMarineHabitat.ocean(b) || name.equals("adv_rocketry:oceanspires")
               ? -.65
               : name.equals("adv_rocketry:moondark") || name.equals("adv_rocketry:marsh")
                   ? -.15
@@ -417,7 +461,7 @@ public final class PlanetBiomeSource extends BiomeSource {
         && depth < 18
         && (water != null ? water.river() : PlanetLandforms.channel(seed, x, z) < .045)
         && land > -.35
-        && !selected.is(BiomeTags.IS_OCEAN))
+        && !PlanetMarineHabitat.ocean(selected))
       return selected.value().getBaseTemperature() < .15
           ? frozenRiver.orElse(river.get())
           : river.get();
@@ -428,7 +472,7 @@ public final class PlanetBiomeSource extends BiomeSource {
         && top > sea - 2
         && top < sea + 7
         && land > -.35
-        && !selected.is(BiomeTags.IS_OCEAN))
+        && !PlanetMarineHabitat.ocean(selected))
       return water.wetness() > .72 && water.clearing() > -.15
           ? riparian.getLast()
           : riparian.getFirst();

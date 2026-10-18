@@ -17,7 +17,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
@@ -61,7 +60,7 @@ public final class PlanetBiomeCatalog {
                     new Entry(
                         holder.key().location(),
                         holder.value().getBaseTemperature(),
-                        holder.is(BiomeTags.IS_OCEAN),
+                        PlanetMarineHabitat.ocean(holder),
                         holder.is(
                                 TagKey.create(Registries.BIOME, ResourceLocation.parse("c:is_hot")))
                             || holder.value().getBaseTemperature() > 1,
@@ -123,6 +122,7 @@ public final class PlanetBiomeCatalog {
                   entry ->
                       policy.single().contains(entry.id())
                           && !excluded.contains(entry.id())
+                          && (!entry.ocean() || PlanetMarineHabitat.supportsWater(planet))
                           && singleClimate(entry, planet.temperature))
               .toList();
       if (!single.isEmpty()) return List.of(single.get(random.nextInt(single.size())).id());
@@ -131,7 +131,8 @@ public final class PlanetBiomeCatalog {
     if (planet.temperature > 450) candidates.addAll(policy.scorched());
     else
       for (Entry entry : catalog) {
-        if (excluded.contains(entry.id())) continue;
+        if (excluded.contains(entry.id())
+            || entry.ocean() && !PlanetMarineHabitat.supportsWater(planet)) continue;
         boolean eligible =
             planet.temperature > 325
                 ? entry.hot() || entry.ocean()
@@ -149,7 +150,9 @@ public final class PlanetBiomeCatalog {
     Set<ResourceLocation> result = new LinkedHashSet<>(candidates.subList(0, count));
     if (planet.atmosphere > 200 && planet.temperature > 275 && planet.temperature <= 450)
       for (Entry entry : catalog)
-        if (policy.pressure().contains(entry.id())) result.add(entry.id());
+        if (policy.pressure().contains(entry.id())
+            && (!entry.ocean() || PlanetMarineHabitat.supportsWater(planet)))
+          result.add(entry.id());
     if (result.isEmpty())
       throw new IllegalStateException(
           "No eligible biomes for planet "

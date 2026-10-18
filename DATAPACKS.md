@@ -194,6 +194,20 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   rules with bedrock placements removed. AR retains its terrain, gravity, river,
   and cave shapes; biome features use the installed mod's definitions. Custom
   surface rules injected outside the noise-settings registry remain mod-dependent.
+  Ocean habitats recognize Minecraft, common `c:`, and AR `planet_biomes/ocean`,
+  `deep_ocean`, and `shallow_ocean` biome tags. New biome sources restrict oceans
+  to water-bearing temperate planets and submerged continental basins: at least
+  3 blocks of water, with deep habitats starting at 24 blocks and shallow habitats
+  ending there. Ocean-only palettes receive a declared land fallback. Serialized
+  sources without `ocean_habitats` omit these new placement constraints.
+  Geophilic's changes participate through the loaded vanilla biome definitions;
+  overlapping datapacks resolve through their normal priority, not a feature merge.
+  Lithostitched-registered biomes participate through the same registry and tags.
+  Dimension-scoped injectors retain their original targets; AR does not retarget
+  Overworld-only injections to planets or import their terrain routing.
+  Nautec's 1.21.1 ocean/beach feature modifiers apply through biome tags, including
+  AR ocean spires. Their original placement filters and height ranges still apply.
+  Nautec's newer 26.1.2 biome release cannot be loaded in this 1.21.1 build.
   Automatic selection applies when creating planets; existing saved palettes and
   explicitly supplied biome lists are retained. No third-party biome data is bundled.
 - **Biomes:** `biomes`, optionally weighted, e.g.
