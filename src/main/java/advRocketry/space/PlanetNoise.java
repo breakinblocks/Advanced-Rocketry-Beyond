@@ -34,6 +34,7 @@ public final class PlanetNoise {
   public static NoiseGeneratorSettings settings(
       Planet p, long seed, List<SurfaceRules.RuleSource> importedSurfaces) {
     String profile = PlanetLandforms.profile(p);
+    boolean dryLunar = p.generationVersion >= 5 && profile.equals("lunar") && p.atmosphere <= 25;
     DensityFunction zero = DensityFunctions.zero();
     NoiseRouter router =
         new NoiseRouter(
@@ -55,7 +56,7 @@ public final class PlanetNoise {
     return new NoiseGeneratorSettings(
         NoiseSettings.create(-64, 384, 1, 2),
         p.fillerState(),
-        p.atmosphere == 0 || profile.equals("fractured")
+        p.atmosphere == 0 || dryLunar || profile.equals("fractured")
             ? Blocks.AIR.defaultBlockState()
             : BuiltInRegistries.BLOCK.get(p.ocean).defaultBlockState(),
         router,
@@ -63,7 +64,7 @@ public final class PlanetNoise {
         List.of(),
         p.seaLevel,
         !p.breathable(),
-        p.atmosphere > 0 && !profile.equals("fractured"),
+        p.atmosphere > 0 && !dryLunar && !profile.equals("fractured"),
         false,
         false);
   }
@@ -132,7 +133,15 @@ public final class PlanetNoise {
     top.add(biome("fungal_caverns", state(Blocks.MYCELIUM)));
     top.add(biome("alien_river", state(BiomeMaterials.block("alluvial_silt"))));
     top.add(biome("oceanspires", state(BiomeMaterials.block("wet_slate"))));
-    top.add(biome("stormland", state(BiomeMaterials.block("rooted_loam"))));
+    top.add(
+        biome(
+            "stormland",
+            p.generationVersion >= 5 && PlanetLandforms.profile(p).equals("storm")
+                ? SurfaceRules.sequence(
+                    SurfaceRules.ifTrue(
+                        SurfaceRules.steep(), patch("banded_stone", "strike_glass", .65)),
+                    state(BiomeMaterials.block("rooted_loam")))
+                : state(BiomeMaterials.block("rooted_loam"))));
     top.add(biome("marsh", state(BiomeMaterials.block("alluvial_silt"))));
     top.add(biome("deepswamp", state(Blocks.MUD)));
     top.addAll(importedSurfaces);

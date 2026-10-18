@@ -223,7 +223,7 @@ public record PlanetDefinition(
           biomes,
           craterBiomes,
           "auto",
-          4);
+          5);
     }
 
     static final MapCodec<Terrain> CODEC =
@@ -272,15 +272,16 @@ public record PlanetDefinition(
                                                 "lunar",
                                                 "fractured",
                                                 "cavern",
-                                                "arid")
+                                                "arid",
+                                                "storm")
                                             .contains(value)
                                         ? DataResult.success(value)
                                         : DataResult.error(
                                             () -> "Unknown terrain profile: " + value))
                             .optionalFieldOf("noise_profile", "auto")
                             .forGetter(Terrain::noiseProfile),
-                        Codec.intRange(1, 4)
-                            .optionalFieldOf("generation_version", 4)
+                        Codec.intRange(1, 5)
+                            .optionalFieldOf("generation_version", 5)
                             .forGetter(Terrain::generationVersion))
                     .apply(instance, Terrain::new));
   }

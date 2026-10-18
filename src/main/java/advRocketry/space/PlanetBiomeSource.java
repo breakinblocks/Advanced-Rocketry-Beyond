@@ -71,7 +71,7 @@ public final class PlanetBiomeSource extends BiomeSource {
                           Codec.BOOL
                               .optionalFieldOf("channels", false)
                               .forGetter(source -> source.channels),
-                          Codec.intRange(1, 4)
+                          Codec.intRange(1, 5)
                               .optionalFieldOf("generation_version", 1)
                               .forGetter(source -> source.version),
                           Codec.doubleRange(0, Double.MAX_VALUE)
@@ -428,6 +428,8 @@ public final class PlanetBiomeSource extends BiomeSource {
                     b -> PlanetMarineHabitat.ocean(b) && marine.get().allows(b, sea - top, land));
     Holder<Biome> selected =
         marine.map(PlanetMarineHabitat::landFallback).orElse(biomes.getFirst());
+    double lunarBasin =
+        version >= 5 && profile.equals("lunar") ? PlanetFrontiers.basin(seed, x, z).interior() : -1;
     double best = Double.POSITIVE_INFINITY;
     for (int i = 0; i < biomes.size(); i++) {
       Holder<Biome> b = biomes.get(i);
@@ -457,6 +459,10 @@ public final class PlanetBiomeSource extends BiomeSource {
               + Math.pow(land - targetLand, 2) * .4
               - variation * .35
               - Math.log(weights.get(i)) * .08;
+      if (lunarBasin >= 0) {
+        if (name.equals("adv_rocketry:moondark")) score += (1 - lunarBasin) * 1.2;
+        if (name.equals("adv_rocketry:moon")) score += lunarBasin * 1.2;
+      }
       if (score < best) {
         best = score;
         selected = b;
