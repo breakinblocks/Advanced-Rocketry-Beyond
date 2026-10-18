@@ -179,6 +179,10 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   Moist low floodplains contain shallow pools and muddy islands. Rootwood stands
   favor raised islands, with open sedge patches and floating leaves around shallow
   water. These transitions taper out before uplands and preserve main-channel incision.
+  Ocean Spires form tapered, leaning outcrops anchored to natural seabeds, with
+  submerged and exposed variants. Placement rejects obstacles before changing any
+  blocks. Shallow water supports patchy aquatic fronds with open gaps; deeper
+  water stays sparse, and exposed tips can carry salt shrubs.
   Installed biome mods and datapacks participate in automatic selection through the
   biome registry. Terralith and Biomes O' Plenty surface biomes follow the normal
   temperature rules. `minecraft:is_nether` biomes (including Incendium and BOP's

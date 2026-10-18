@@ -154,8 +154,11 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
               || biome.equals("oceanspires"))) {
         BlockPos floor = level.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, pos);
         if (level.getFluidState(floor).is(FluidTags.WATER)) {
-          plant(level, floor, "aquatic_frond", Direction.UP);
-          if (random.nextInt(4) == 0 && pos.getY() - floor.getY() < 5)
+          int waterDepth = pos.getY() - floor.getY();
+          double meadow = PlanetLandforms.field(seed, 277, floor.getX(), floor.getZ(), 28);
+          if (!biome.equals("oceanspires") || waterDepth <= 18 && meadow > -.15)
+            plant(level, floor, "aquatic_frond", Direction.UP);
+          if (!biome.equals("oceanspires") && random.nextInt(4) == 0 && waterDepth < 5)
             plant(level, pos, "floating_leaves", Direction.UP);
         }
       }
@@ -512,18 +515,16 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
       return;
     }
     if (biome.equals("oceanspires")) {
-      BlockPos floor = level.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, base);
-      int height = Math.min(30, Math.max(8, base.getY() - floor.getY() + 5 + random.nextInt(8)));
-      for (int y = 0; y < height; y++) {
-        int r = y < height / 2 ? 3 : y < height - 3 ? 2 : 1;
-        for (int x = -r; x <= r; x++)
-          for (int z = -r; z <= r; z++)
-            if (x * x + z * z <= r * r)
-              replaceAir(
-                  level,
-                  floor.offset(x, y, z),
-                  BiomeMaterials.block(y < height / 3 ? "wet_slate" : "banded_stone"));
-      }
+      int floorY = level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, base.getX(), base.getZ());
+      for (int x = -3; x <= 3; x++)
+        for (int z = -3; z <= 3; z++)
+          if (x * x + z * z <= 9)
+            floorY =
+                Math.max(
+                    floorY,
+                    level.getHeight(
+                        Heightmap.Types.OCEAN_FLOOR_WG, base.getX() + x, base.getZ() + z));
+      oceanSpire(level, new BlockPos(base.getX(), floorY, base.getZ()), base.getY(), random);
       return;
     }
     String material =
@@ -541,6 +542,70 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
         for (int y = 0; y <= r; y++)
           if (x * x + z * z + y * y <= r * r)
             replaceAir(level, base.offset(x, y, z), BiomeMaterials.block(material));
+  }
+
+  /** Preflight the entire outcrop so obstacles never leave a partial or floating formation. */
+  public static boolean oceanSpire(
+      WorldGenLevel level, BlockPos floor, int waterSurface, RandomSource random) {
+    int depth = waterSurface - floor.getY();
+    if (depth < 4 || depth > 48 || !level.getFluidState(floor).is(FluidTags.WATER)) return false;
+    int height =
+        Math.min(
+            42, random.nextInt(4) == 0 ? Math.max(5, depth - 3) : depth + 3 + random.nextInt(6));
+    Direction lean = Direction.from2DDataValue(random.nextInt(4));
+    List<BlockPos> shape = new ArrayList<>();
+    // Every foundation column must meet a natural seabed within four blocks.
+    for (int x = -3; x <= 3; x++)
+      for (int z = -3; z <= 3; z++) {
+        if (x * x + z * z > 9) continue;
+        BlockPos at = floor.offset(x, 0, z);
+        int drop = 0;
+        while (!seabed(level.getBlockState(at.below())) && drop < 4) {
+          if (!oceanSpace(level, at)) return false;
+          at = at.below();
+          drop++;
+        }
+        if (!seabed(level.getBlockState(at.below()))) return false;
+        for (int y = at.getY(); y < floor.getY(); y++)
+          shape.add(new BlockPos(at.getX(), y, at.getZ()));
+      }
+    for (int y = 0; y < height; y++) {
+      int radius = y < height / 3 ? 3 : y < height * 3 / 4 ? 2 : 1;
+      int shift = Math.min(2, y / 10);
+      for (int x = -radius; x <= radius; x++)
+        for (int z = -radius; z <= radius; z++) {
+          if (x * x + z * z > radius * radius) continue;
+          shape.add(floor.relative(lean, shift).offset(x, y, z));
+        }
+    }
+    for (BlockPos at : shape)
+      if (at.getY() >= level.getMaxBuildHeight() || !oceanSpace(level, at)) return false;
+    for (BlockPos at : shape)
+      level.setBlock(
+          at,
+          BiomeMaterials.block(at.getY() < waterSurface - 2 ? "wet_slate" : "banded_stone")
+              .defaultBlockState(),
+          2);
+    BlockPos tip = floor.relative(lean, Math.min(2, (height - 1) / 10)).above(height);
+    if (tip.getY() > waterSurface && random.nextBoolean())
+      plant(level, tip, "salt_shrub", Direction.UP);
+    return true;
+  }
+
+  private static boolean seabed(BlockState state) {
+    return natural(state)
+        || state.is(BlockTags.SAND)
+        || state.is(Blocks.GRAVEL)
+        || state.is(BiomeMaterials.block("wet_slate"));
+  }
+
+  private static boolean oceanSpace(WorldGenLevel level, BlockPos pos) {
+    BlockState state = level.getBlockState(pos);
+    return state.isAir()
+        || state.is(Blocks.WATER)
+        || state.is(Blocks.SEAGRASS)
+        || state.is(Blocks.TALL_SEAGRASS)
+        || state.is(BiomeMaterials.block("aquatic_frond"));
   }
 
   private static void replaceAir(WorldGenLevel level, BlockPos pos, Block block) {
