@@ -38,6 +38,8 @@ Tin, aluminum, titanium and dilithium generate under default Overworld settings;
 
 Pack oxygen, return fuel and suitable tools. Use [beacons](beacon.md) to mark important sites.
 
+See [Biome fieldcraft](biome_fieldcraft.md) for plant cultivation, harvested materials and habitat deposits.
+
 ## Crafting
 
 ### Alien Planks
