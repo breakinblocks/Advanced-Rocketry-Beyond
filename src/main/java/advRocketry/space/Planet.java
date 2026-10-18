@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Native counterpart of the original DimensionProperties; values retain their original units. */
 public final class Planet {
+  public static final int CURRENT_GENERATION_VERSION = 9;
   public final int id;
   public String name;
   public ResourceLocation location;
@@ -68,7 +69,7 @@ public final class Planet {
   public boolean volcanoes;
   public boolean geodes;
   public boolean caves = true;
-  public int generationVersion = 9;
+  public int generationVersion = CURRENT_GENERATION_VERSION;
   public String noiseProfile = "auto";
   public boolean structures = true;
   public float craterFrequency = 1;

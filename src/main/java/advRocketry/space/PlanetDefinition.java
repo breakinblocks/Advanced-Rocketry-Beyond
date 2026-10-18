@@ -223,7 +223,7 @@ public record PlanetDefinition(
           biomes,
           craterBiomes,
           "auto",
-          8);
+          Planet.CURRENT_GENERATION_VERSION);
     }
 
     static final MapCodec<Terrain> CODEC =
@@ -281,8 +281,8 @@ public record PlanetDefinition(
                                             () -> "Unknown terrain profile: " + value))
                             .optionalFieldOf("noise_profile", "auto")
                             .forGetter(Terrain::noiseProfile),
-                        Codec.intRange(1, 8)
-                            .optionalFieldOf("generation_version", 8)
+                        Codec.intRange(1, Planet.CURRENT_GENERATION_VERSION)
+                            .optionalFieldOf("generation_version", Planet.CURRENT_GENERATION_VERSION)
                             .forGetter(Terrain::generationVersion))
                     .apply(instance, Terrain::new));
   }
