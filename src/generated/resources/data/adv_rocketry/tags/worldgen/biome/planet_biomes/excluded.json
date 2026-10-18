@@ -1,5 +1,25 @@
 {
   "values": [
+    {
+      "id": "#minecraft:is_nether",
+      "required": false
+    },
+    {
+      "id": "#minecraft:is_end",
+      "required": false
+    },
+    {
+      "id": "#minecraft:is_river",
+      "required": false
+    },
+    {
+      "id": "#c:is_cave",
+      "required": false
+    },
+    {
+      "id": "#c:is_underground",
+      "required": false
+    },
     "adv_rocketry:alien_river",
     "adv_rocketry:root_caverns",
     "adv_rocketry:fungal_caverns",

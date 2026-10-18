@@ -28,6 +28,11 @@ public final class PlanetNoise {
   }
 
   public static NoiseGeneratorSettings settings(Planet p, long seed) {
+    return settings(p, seed, List.of());
+  }
+
+  public static NoiseGeneratorSettings settings(
+      Planet p, long seed, List<SurfaceRules.RuleSource> importedSurfaces) {
     String profile = PlanetLandforms.profile(p);
     DensityFunction zero = DensityFunctions.zero();
     NoiseRouter router =
@@ -54,7 +59,7 @@ public final class PlanetNoise {
             ? Blocks.AIR.defaultBlockState()
             : BuiltInRegistries.BLOCK.get(p.ocean).defaultBlockState(),
         router,
-        surface(p),
+        surface(p, importedSurfaces),
         List.of(),
         p.seaLevel,
         !p.breathable(),
@@ -93,6 +98,11 @@ public final class PlanetNoise {
   }
 
   public static SurfaceRules.RuleSource surface(Planet p) {
+    return surface(p, List.of());
+  }
+
+  private static SurfaceRules.RuleSource surface(
+      Planet p, List<SurfaceRules.RuleSource> importedSurfaces) {
     List<SurfaceRules.RuleSource> rules = new ArrayList<>();
     if (p.terrain != TerrainType.ASTEROID)
       rules.add(
@@ -124,6 +134,7 @@ public final class PlanetNoise {
     top.add(biome("stormland", state(BiomeMaterials.block("rooted_loam"))));
     top.add(biome("marsh", state(BiomeMaterials.block("alluvial_silt"))));
     top.add(biome("deepswamp", state(Blocks.MUD)));
+    top.addAll(importedSurfaces);
     top.add(SurfaceRules.ifTrue(SurfaceRules.steep(), state(BiomeMaterials.block("banded_stone"))));
     top.add(SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), state(Blocks.GRASS_BLOCK)));
     top.add(state(BiomeMaterials.block("alluvial_silt")));
@@ -141,7 +152,12 @@ public final class PlanetNoise {
                 biome("volcanic", state(BiomeMaterials.block("weathered_basalt"))),
                 biome("volcanicbarren", patch("weathered_basalt", "porous_stone", .2)),
                 biome("alien_forest", state(BiomeMaterials.block("rooted_loam"))),
-                state(p.fillerState().getBlock()))));
+                importedSurfaces.isEmpty()
+                    ? state(p.fillerState().getBlock())
+                    : SurfaceRules.sequence(
+                        SurfaceRules.sequence(
+                            importedSurfaces.toArray(SurfaceRules.RuleSource[]::new)),
+                        state(p.fillerState().getBlock())))));
     return SurfaceRules.sequence(rules.toArray(SurfaceRules.RuleSource[]::new));
   }
 }

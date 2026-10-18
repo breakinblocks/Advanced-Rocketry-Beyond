@@ -276,6 +276,21 @@ final class ModTagContent {
   }
 
   static void biomes(ModTagProvider<Biome> tags) {
+    tags.optional(
+        "adv_rocketry:planet_biomes/caves",
+        "terralith:cave/fungal_caves",
+        "terralith:cave/underground_jungle",
+        "terralith:cave/andesite_caves",
+        "biomesoplenty:glowing_grotto");
+    tags.optional(
+        "adv_rocketry:planet_biomes/excluded",
+        "#minecraft:is_nether",
+        "#minecraft:is_end",
+        "#minecraft:is_river",
+        "#c:is_cave",
+        "#c:is_underground");
+    tags.optional("adv_rocketry:planet_biomes/scorched", "#minecraft:is_nether");
+    tags.optional("adv_rocketry:planet_biomes/airless", "#minecraft:is_end");
     tags.values(
         "adv_rocketry:planet_biomes/excluded",
         "adv_rocketry:alien_river",

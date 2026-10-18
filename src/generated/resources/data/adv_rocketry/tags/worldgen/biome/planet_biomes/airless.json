@@ -1,5 +1,9 @@
 {
   "values": [
+    {
+      "id": "#minecraft:is_end",
+      "required": false
+    },
     "adv_rocketry:moon",
     "adv_rocketry:moondark"
   ]

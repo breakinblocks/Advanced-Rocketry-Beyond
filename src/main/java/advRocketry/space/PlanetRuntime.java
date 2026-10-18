@@ -156,7 +156,7 @@ public final class PlanetRuntime {
     long seed = PlanetSeeds.planet(server.getWorldData().worldGenOptions().seed(), planet.id);
     if (planet.generationVersion >= 2) {
       planet.noiseProfile = PlanetLandforms.profile(planet);
-      settings = PlanetNoise.settings(planet, seed);
+      settings = PlanetNoise.settings(planet, seed, PlanetBiomeSurfaces.rules(registries, biomes));
     }
     List<Integer> biomeWeights =
         planet.biomeWeights.isEmpty() || terraformed

@@ -179,6 +179,23 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   Moist low floodplains contain shallow pools and muddy islands. Rootwood stands
   favor raised islands, with open sedge patches and floating leaves around shallow
   water. These transitions taper out before uplands and preserve main-channel incision.
+  Installed biome mods and datapacks participate in automatic selection through the
+  biome registry. Terralith and Biomes O' Plenty surface biomes follow the normal
+  temperature rules. `minecraft:is_nether` biomes (including Incendium and BOP's
+  Nether biomes) enter the scorched pool above 450 K; `minecraft:is_end` biomes
+  (including Nullscape and BOP's End biomes) enter the airless pool at pressure 25
+  or below. Nether, End, river and underground tags are excluded from the ordinary
+  surface pool. The existing `planet_biomes/airless`, `scorched`, and `excluded`
+  tags can be replaced or extended by a datapack to change these choices.
+  `adv_rocketry:planet_biomes/caves` adds optional temperate underground habitats;
+  its defaults include selected Terralith caves and BOP's glowing grotto, while
+  retaining vanilla lush/dripstone and AR caves. Missing optional entries are ignored.
+  Imported surface biomes use their registered Overworld, Nether, or End surface
+  rules with bedrock placements removed. AR retains its terrain, gravity, river,
+  and cave shapes; biome features use the installed mod's definitions. Custom
+  surface rules injected outside the noise-settings registry remain mod-dependent.
+  Automatic selection applies when creating planets; existing saved palettes and
+  explicitly supplied biome lists are retained. No third-party biome data is bundled.
 - **Biomes:** `biomes`, optionally weighted, e.g.
   `[{"biome": "minecraft:plains", "weight": 9}]`. `crater_biomes` limits craters
   to listed biomes.
@@ -314,7 +331,7 @@ shipped letters for ports, motors, coils, lenses and panels.
 
 | Tag | Type | Purpose |
 |---|---|---|
-| `adv_rocketry:planet_biomes/excluded`, `high_pressure`, `single`, `airless`, `scorched` | biome | Automatic planet biome selection |
+| `adv_rocketry:planet_biomes/excluded`, `high_pressure`, `single`, `airless`, `scorched`, `caves` | biome | Automatic planet biome selection |
 | `adv_rocketry:rocket_blacklist` | block | Cannot be part of a rocket |
 | `adv_rocketry:sealable`, `adv_rocketry:unsealable` | block | Always or never airtight |
 | `adv_rocketry:torches` | block | Torches that go out in vacuum |

@@ -17,6 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
@@ -170,6 +171,27 @@ public final class PlanetBiomeSource extends BiomeSource {
           registry
               .getHolder(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(name)))
               .ifPresent(caves::add);
+      }
+      if (caves.size() == 5
+          && profile.equals("temperate")
+          && planet.atmosphere > 25
+          && planet.temperature >= 250
+          && planet.temperature <= 450) {
+        registry
+            .getTag(TagKey.create(Registries.BIOME, BiomeMaterials.id("planet_biomes/caves")))
+            .ifPresent(
+                tag ->
+                    tag.stream()
+                        .sorted(
+                            (a, b) ->
+                                a.unwrapKey()
+                                    .orElseThrow()
+                                    .location()
+                                    .compareTo(b.unwrapKey().orElseThrow().location()))
+                        .forEach(
+                            b -> {
+                              if (!caves.contains(b)) caves.add(b);
+                            }));
       }
       boolean water = planet.ocean.equals(ResourceLocation.withDefaultNamespace("water"));
       Optional<Holder<Biome>> river =
@@ -344,8 +366,14 @@ public final class PlanetBiomeSource extends BiomeSource {
     double depth = top - y;
     if (water != null) moisture = Math.min(1, moisture + water.banks() * .45);
     if (!caves.isEmpty() && depth > 18 + 7 * PlanetLandforms.field(seed, 59, x, z, 95)) {
-      if (depth > 90 && !profile.equals("cavern") || y < -24) return caves.getLast();
+      if (depth > 90 && !profile.equals("cavern") || y < -24)
+        return caves.get(Math.min(4, caves.size() - 1));
       if (caves.size() <= 2) return caves.getFirst();
+      if (caves.size() > 5 && PlanetLandforms.field(seed, 263, x, z, 90) > .25) {
+        double patch = PlanetLandforms.field(seed, 269, x, z, 150);
+        int index = Math.clamp((int) ((patch + 1) * .5 * (caves.size() - 5)), 0, caves.size() - 6);
+        return caves.get(5 + index);
+      }
       if (water != null
           && water.underground() < .09
           && Math.abs(y - PlanetWatershed.waterLevel(sea)) < 18)

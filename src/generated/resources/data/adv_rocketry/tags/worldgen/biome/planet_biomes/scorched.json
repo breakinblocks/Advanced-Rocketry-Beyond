@@ -1,5 +1,9 @@
 {
   "values": [
+    {
+      "id": "#minecraft:is_nether",
+      "required": false
+    },
     "adv_rocketry:hotdryrock",
     "adv_rocketry:volcanic",
     "adv_rocketry:volcanicbarren"

@@ -45,6 +45,13 @@ public final class ModTagProvider<T> extends TagsProvider<T> {
       else appender.add(ResourceKey.create(registryKey, ResourceLocation.parse(id)));
   }
 
+  public void optional(String tag, String... ids) {
+    TagAppender<T> appender = tag(key(tag));
+    for (String id : ids)
+      if (id.startsWith("#")) appender.addOptionalTag(ResourceLocation.parse(id.substring(1)));
+      else appender.addOptional(ResourceLocation.parse(id));
+  }
+
   public void value(TagKey<T> tag, ResourceLocation id) {
     tag(tag).add(ResourceKey.create(registryKey, id));
   }
