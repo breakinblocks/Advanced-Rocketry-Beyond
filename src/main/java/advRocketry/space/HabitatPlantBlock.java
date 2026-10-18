@@ -5,15 +5,19 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -25,7 +29,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Plants retain their attachment and fluid rules when harvested and replanted. */
-public final class HabitatPlantBlock extends Block implements SimpleWaterloggedBlock {
+public final class HabitatPlantBlock extends Block
+    implements SimpleWaterloggedBlock, BonemealableBlock {
   public static final MapCodec<HabitatPlantBlock> CODEC =
       RecordCodecBuilder.mapCodec(
           i ->
@@ -95,6 +100,67 @@ public final class HabitatPlantBlock extends Block implements SimpleWaterloggedB
         || below.is(BiomeMaterials.block("alluvial_silt"))
         || below.is(BiomeMaterials.block("luminous_moss"))
         || habitat.equals("aquatic") && below.isFaceSturdy(level, support, Direction.UP);
+  }
+
+  @Override
+  public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+    return findGrowthPosition(level, pos, state, 0) != null;
+  }
+
+  @Override
+  public boolean isBonemealSuccess(
+      Level level, RandomSource random, BlockPos pos, BlockState state) {
+    return true;
+  }
+
+  @Override
+  public void performBonemeal(
+      ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+    BlockPos target = findGrowthPosition(level, pos, state, random.nextInt(8));
+    if (target != null) level.setBlockAndUpdate(target, state);
+  }
+
+  /** One nearby offspring per application, without replacing plants or other occupied blocks. */
+  private BlockPos findGrowthPosition(
+      LevelReader level, BlockPos pos, BlockState state, int start) {
+    if (!state.canSurvive(level, pos)) return null;
+    Direction face = state.getValue(BlockStateProperties.FACING);
+    for (int i = 0; i < 8; i++) {
+      int index = (start + i) % 8;
+      if (index >= 4) index++; // Skip the parent at the center of the 3x3 plane.
+      int dx = index % 3 - 1;
+      int dz = index / 3 - 1;
+      BlockPos target =
+          face.getAxis() == Direction.Axis.X
+              ? pos.offset(0, dx, dz)
+              : face.getAxis() == Direction.Axis.Z ? pos.offset(dx, dz, 0) : pos.offset(dx, 0, dz);
+      if (!level.hasChunkAt(target)) continue;
+      BlockState existing = level.getBlockState(target);
+      boolean space =
+          habitat.equals("aquatic")
+              ? existing.is(Blocks.WATER) && existing.getFluidState().isSource()
+              : existing.isAir();
+      if (space && state.canSurvive(level, target) && fertileSupport(level, target, face))
+        return target;
+    }
+    return null;
+  }
+
+  private boolean fertileSupport(LevelReader level, BlockPos pos, Direction face) {
+    BlockState support = level.getBlockState(pos.relative(face.getOpposite()));
+    return switch (habitat) {
+      case "heat" ->
+          support.is(Blocks.MAGMA_BLOCK)
+              || support.is(BiomeMaterials.block("cooling_crust"))
+              || support.is(BiomeMaterials.block("weathered_basalt"));
+      case "mineral" ->
+          support.is(BiomeMaterials.block("mineral_crust"))
+              || support.is(Blocks.CALCITE)
+              || support.is(Blocks.AMETHYST_BLOCK);
+      case "shore" ->
+          support.is(BlockTags.SAND) || support.is(BiomeMaterials.block("alluvial_silt"));
+      default -> true;
+    };
   }
 
   @Override
