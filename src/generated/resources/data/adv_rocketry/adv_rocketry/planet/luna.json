@@ -9,7 +9,6 @@
       "biome": "adv_rocketry:moondark"
     }
   ],
-  "caves": true,
   "craters": true,
   "fog_color": "#000000",
   "gravity": 0.166,

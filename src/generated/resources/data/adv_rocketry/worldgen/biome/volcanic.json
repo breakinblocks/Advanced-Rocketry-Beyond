@@ -1,15 +1,36 @@
 {
-  "carvers": {},
+  "carvers": {
+    "air": "minecraft:cave"
+  },
   "downfall": 0.0,
   "effects": {
     "fog_color": 4469538,
     "foliage_color": 6110765,
     "grass_color": 7820346,
+    "particle": {
+      "options": {
+        "type": "minecraft:ash"
+      },
+      "probability": 0.006
+    },
     "sky_color": 4469538,
     "water_color": 4159204,
     "water_fog_color": 329011
   },
-  "features": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "adv_rocketry:planet_ecosystem"
+    ]
+  ],
   "has_precipitation": false,
   "spawn_costs": {},
   "spawners": {

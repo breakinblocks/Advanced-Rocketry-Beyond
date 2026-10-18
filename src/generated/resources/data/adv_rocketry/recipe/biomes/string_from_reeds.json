@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "adv_rocketry:jointed_reeds"
+    },
+    {
+      "item": "adv_rocketry:jointed_reeds"
+    },
+    {
+      "item": "adv_rocketry:jointed_reeds"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:string"
+  }
+}

@@ -2,12 +2,16 @@ package advRocketry.datagen;
 
 import advRocketry.DataMaps;
 import advRocketry.processing.ProcessingFluids;
+import advRocketry.space.BiomeMaterials;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.DataMapProvider;
+import net.neoforged.neoforge.registries.datamaps.builtin.Compostable;
+import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
+import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 
 final class ModDataMaps extends DataMapProvider {
   ModDataMaps(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
@@ -20,6 +24,18 @@ final class ModDataMaps extends DataMapProvider {
 
   @Override
   protected void gather() {
+    var compost = builder(NeoForgeDataMaps.COMPOSTABLES);
+    BiomeMaterials.PLANTS.forEach(
+        (name, habitat) -> {
+          if (!habitat.equals("heat") && !habitat.equals("mineral"))
+            compost.add(BiomeMaterials.id(name), new Compostable(.3f), false);
+        });
+    compost.add(BiomeMaterials.id("rootwood_leaves"), new Compostable(.3f), false);
+    compost.add(BiomeMaterials.id("rootwood_sapling"), new Compostable(.3f), false);
+    compost.add(BiomeMaterials.id("alien_leaves"), new Compostable(.3f), false);
+    compost.add(BiomeMaterials.id("alien_sapling"), new Compostable(.3f), false);
+    builder(NeoForgeDataMaps.FURNACE_FUELS)
+        .add(BiomeMaterials.id("charcoal_log"), new FurnaceFuel(1600), false);
     builder(DataMaps.PROCESSING_TIME)
         .add(id("adv_rocketry:gold_coil"), .9f, false)
         .add(id("adv_rocketry:aluminum_coil"), .8f, false)

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "adv_rocketry:block/rootwood_log_top",
+    "side": "adv_rocketry:block/rootwood_log"
+  }
+}

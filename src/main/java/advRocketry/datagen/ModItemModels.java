@@ -1,5 +1,6 @@
 package advRocketry.datagen;
 
+import advRocketry.space.BiomeMaterials;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -11,6 +12,10 @@ final class ModItemModels extends ModItemModelHelpers {
 
   @Override
   protected void registerModels() {
+    for (String name : BiomeMaterials.ALL.keySet())
+      if (BiomeMaterials.PLANTS.containsKey(name) || name.endsWith("sapling"))
+        model("item/" + name, "minecraft:item/generated", null, true, "layer0", "block/" + name);
+      else model("item/" + name, "block/" + name, null, true);
     model(
         "item/advanced_battery", "minecraft:item/generated", null, true, "layer0", "item/battery1");
     model(

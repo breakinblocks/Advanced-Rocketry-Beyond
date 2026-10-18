@@ -97,6 +97,11 @@ public final class TerraformBiomeLogic {
     planet.atmosphere = density;
     if (before == atmosphereClass(density)) return;
     Planet candidate = new Planet(planet.id, planet.name);
+    candidate.generationVersion = planet.generationVersion;
+    candidate.noiseProfile = planet.noiseProfile;
+    candidate.caves = planet.caves;
+    candidate.terrain = planet.terrain;
+    candidate.seaLevel = planet.seaLevel;
     candidate.atmosphere = density;
     candidate.temperature = planet.temperature;
     try {
@@ -160,19 +165,23 @@ public final class TerraformBiomeLogic {
   }
 
   static void changeCell(ServerLevel level, PlanetBiomeSource source, int x, int z) {
-    Holder<Biome> target =
-        source.getNoiseBiome(x >> 2, 0, z >> 2, level.getChunkSource().randomState().sampler());
-    BlockPos pos = new BlockPos(x, level.getMinBuildHeight(), z);
-    var chunk = level.getChunkAt(pos);
-    boolean unchanged = true;
-    for (int y = level.getMinBuildHeight() >> 2; y < level.getMaxBuildHeight() >> 2; y++) {
-      if (!chunk.getNoiseBiome(x >> 2, y, z >> 2).is(target)) {
-        unchanged = false;
-        break;
-      }
+    var sampler = level.getChunkSource().randomState().sampler();
+    var chunk = level.getChunk(x >> 4, z >> 4);
+    int min = level.getMinBuildHeight() >> 2, max = level.getMaxBuildHeight() >> 2;
+    for (int y = min; y < max; ) {
+      Holder<Biome> target = source.getNoiseBiome(x >> 2, y, z >> 2, sampler);
+      int end = y + 1;
+      while (end < max && source.getNoiseBiome(x >> 2, end, z >> 2, sampler).equals(target)) end++;
+      boolean changed = false;
+      for (int at = y; at < end; at++)
+        if (!chunk.getNoiseBiome(x >> 2, at, z >> 2).equals(target)) {
+          changed = true;
+          break;
+        }
+      if (changed)
+        FillBiomeCommand.fill(
+            level, new BlockPos(x, y << 2, z), new BlockPos(x + 3, (end << 2) - 1, z + 3), target);
+      y = end;
     }
-    if (unchanged) return;
-    FillBiomeCommand.fill(
-        level, pos, new BlockPos(x + 3, level.getMaxBuildHeight() - 1, z + 3), target);
   }
 }

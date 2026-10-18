@@ -154,6 +154,10 @@ public final class PlanetRuntime {
             PlanetOres.select(planet).isEmpty() && base.oreVeinsEnabled(),
             base.useLegacyRandomSource());
     long seed = PlanetSeeds.planet(server.getWorldData().worldGenOptions().seed(), planet.id);
+    if (planet.generationVersion >= 2) {
+      planet.noiseProfile = PlanetLandforms.profile(planet);
+      settings = PlanetNoise.settings(planet, seed);
+    }
     List<Integer> biomeWeights =
         planet.biomeWeights.isEmpty() || terraformed
             ? List.of()

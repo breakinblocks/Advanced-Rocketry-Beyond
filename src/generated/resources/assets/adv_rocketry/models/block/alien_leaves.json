@@ -2,6 +2,6 @@
   "parent": "minecraft:block/leaves",
   "render_type": "minecraft:cutout",
   "textures": {
-    "all": "adv_rocketry:legacy/advancedrocketry/blocks/leaves_alien"
+    "all": "adv_rocketry:block/bluewood_leaves"
   }
 }

@@ -235,9 +235,31 @@ public final class PlanetOres {
   public static Function<Holder<Biome>, BiomeGenerationSettings> settings(Planet planet) {
     var cache = new ConcurrentHashMap<Holder<Biome>, BiomeGenerationSettings>();
     return biome ->
-        select(planet).isEmpty()
-            ? biome.value().getGenerationSettings()
-            : cache.computeIfAbsent(biome, key -> withoutOres(key.value().getGenerationSettings()));
+        cache.computeIfAbsent(
+            biome,
+            key -> {
+              BiomeGenerationSettings original = key.value().getGenerationSettings();
+              if (planet.generationVersion < 2
+                  && key.unwrapKey()
+                      .map(k -> k.location().getNamespace().equals("adv_rocketry"))
+                      .orElse(false)) {
+                var legacy = new BiomeGenerationSettings.PlainBuilder();
+                for (var stage : original.getCarvingStages())
+                  original
+                      .getCarvers(stage)
+                      .forEach(
+                          carver -> {
+                            if (!carver.is(ResourceLocation.withDefaultNamespace("cave")))
+                              legacy.addCarver(stage, carver);
+                          });
+                for (int step = 0; step < original.features().size(); step++)
+                  for (var feature : original.features().get(step))
+                    if (!feature.is(BiomeMaterials.id("planet_ecosystem")))
+                      legacy.addFeature(step, feature);
+                original = legacy.build();
+              }
+              return select(planet).isEmpty() ? original : withoutOres(original);
+            });
   }
 
   public static BiomeGenerationSettings withoutOres(BiomeGenerationSettings original) {

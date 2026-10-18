@@ -128,10 +128,25 @@ public record PlanetDefinition(
       boolean colorOverride,
       Optional<Boolean> shading,
       SkySettings settings) {
-    public Sky(int skyColor, int fogColor, boolean rings, int ringColor,
-        boolean renderOverride, boolean colorOverride, Optional<Boolean> shading) {
-      this(skyColor, fogColor, rings, ringColor, renderOverride, colorOverride, shading, SkySettings.DEFAULT);
+    public Sky(
+        int skyColor,
+        int fogColor,
+        boolean rings,
+        int ringColor,
+        boolean renderOverride,
+        boolean colorOverride,
+        Optional<Boolean> shading) {
+      this(
+          skyColor,
+          fogColor,
+          rings,
+          ringColor,
+          renderOverride,
+          colorOverride,
+          shading,
+          SkySettings.DEFAULT);
     }
+
     static final MapCodec<Sky> CODEC =
         RecordCodecBuilder.mapCodec(
             instance ->
@@ -148,7 +163,9 @@ public record PlanetDefinition(
                             .optionalFieldOf("color_override", false)
                             .forGetter(Sky::colorOverride),
                         Codec.BOOL.optionalFieldOf("shading").forGetter(Sky::shading),
-                        SkySettings.CODEC.optionalFieldOf("sky", SkySettings.DEFAULT).forGetter(Sky::settings))
+                        SkySettings.CODEC
+                            .optionalFieldOf("sky", SkySettings.DEFAULT)
+                            .forGetter(Sky::settings))
                     .apply(instance, Sky::new));
   }
 
@@ -180,7 +197,35 @@ public record PlanetDefinition(
       boolean forceRivers,
       boolean biomeFeatures,
       List<WeightedBiome> biomes,
-      Map<ResourceLocation, Integer> craterBiomes) {
+      Map<ResourceLocation, Integer> craterBiomes,
+      String noiseProfile,
+      int generationVersion) {
+    public Terrain(
+        TerrainType type,
+        int seaLevel,
+        ResourceLocation filler,
+        ResourceLocation ocean,
+        boolean caves,
+        boolean structures,
+        boolean forceRivers,
+        boolean biomeFeatures,
+        List<WeightedBiome> biomes,
+        Map<ResourceLocation, Integer> craterBiomes) {
+      this(
+          type,
+          seaLevel,
+          filler,
+          ocean,
+          caves,
+          structures,
+          forceRivers,
+          biomeFeatures,
+          biomes,
+          craterBiomes,
+          "auto",
+          3);
+    }
+
     static final MapCodec<Terrain> CODEC =
         RecordCodecBuilder.mapCodec(
             instance ->
@@ -200,7 +245,7 @@ public record PlanetDefinition(
                             .optionalFieldOf(
                                 "ocean_block", ResourceLocation.withDefaultNamespace("water"))
                             .forGetter(Terrain::ocean),
-                        Codec.BOOL.optionalFieldOf("caves", false).forGetter(Terrain::caves),
+                        Codec.BOOL.optionalFieldOf("caves", true).forGetter(Terrain::caves),
                         Codec.BOOL
                             .optionalFieldOf("structures", false)
                             .forGetter(Terrain::structures),
@@ -216,7 +261,26 @@ public record PlanetDefinition(
                             .forGetter(Terrain::biomes),
                         Codec.unboundedMap(ResourceLocation.CODEC, Codec.intRange(0, 100))
                             .optionalFieldOf("crater_biomes", Map.of())
-                            .forGetter(Terrain::craterBiomes))
+                            .forGetter(Terrain::craterBiomes),
+                        Codec.STRING
+                            .validate(
+                                value ->
+                                    List.of(
+                                                "auto",
+                                                "temperate",
+                                                "volcanic",
+                                                "lunar",
+                                                "fractured",
+                                                "cavern")
+                                            .contains(value)
+                                        ? DataResult.success(value)
+                                        : DataResult.error(
+                                            () -> "Unknown terrain profile: " + value))
+                            .optionalFieldOf("noise_profile", "auto")
+                            .forGetter(Terrain::noiseProfile),
+                        Codec.intRange(1, 3)
+                            .optionalFieldOf("generation_version", 3)
+                            .forGetter(Terrain::generationVersion))
                     .apply(instance, Terrain::new));
   }
 
@@ -335,6 +399,8 @@ public record PlanetDefinition(
     planet.colorOverride = sky.colorOverride();
     planet.shading = sky.shading().orElse(null);
     planet.terrain = terrain.type();
+    planet.noiseProfile = terrain.noiseProfile();
+    planet.generationVersion = terrain.generationVersion();
     planet.seaLevel = terrain.seaLevel();
     planet.filler = terrain.filler();
     planet.ocean = terrain.ocean();

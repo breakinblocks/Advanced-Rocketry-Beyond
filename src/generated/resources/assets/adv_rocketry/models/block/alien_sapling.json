@@ -2,6 +2,6 @@
   "parent": "minecraft:block/cross",
   "render_type": "minecraft:cutout",
   "textures": {
-    "cross": "adv_rocketry:legacy/advancedrocketry/blocks/sapling_bluetree"
+    "cross": "adv_rocketry:block/bluewood_sapling"
   }
 }

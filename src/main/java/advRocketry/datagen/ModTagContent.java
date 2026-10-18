@@ -3,6 +3,7 @@ package advRocketry.datagen;
 import advRocketry.Main;
 import advRocketry.processing.ProcessingFluids;
 import advRocketry.processing.ProcessingRegistry;
+import advRocketry.space.BiomeMaterials;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,6 +36,30 @@ final class ModTagContent {
   private ModTagContent() {}
 
   static void blocks(ModTagProvider<Block> tags) {
+    for (String name : BiomeMaterials.STONES)
+      tags.values("minecraft:mineable/pickaxe", "adv_rocketry:" + name);
+    for (String name : BiomeMaterials.SOILS)
+      tags.values("minecraft:mineable/shovel", "adv_rocketry:" + name);
+    tags.values(
+        "minecraft:dirt",
+        "adv_rocketry:rooted_loam",
+        "adv_rocketry:alluvial_silt",
+        "adv_rocketry:luminous_moss");
+    tags.values(
+        "minecraft:logs_that_burn",
+        "adv_rocketry:rootwood_log",
+        "adv_rocketry:stripped_rootwood_log",
+        "adv_rocketry:alien_log",
+        "adv_rocketry:charcoal_log");
+    tags.values(
+        "minecraft:mineable/axe",
+        "adv_rocketry:rootwood_log",
+        "adv_rocketry:stripped_rootwood_log",
+        "adv_rocketry:rootwood_planks");
+    tags.values("minecraft:leaves", "adv_rocketry:rootwood_leaves", "adv_rocketry:alien_leaves");
+    tags.values(
+        "minecraft:saplings", "adv_rocketry:rootwood_sapling", "adv_rocketry:alien_sapling");
+    tags.values("minecraft:planks", "adv_rocketry:rootwood_planks", "adv_rocketry:alien_planks");
     tags.values(
         "adv_rocketry:connected_textures",
         "adv_rocketry:block_structure_block",
@@ -133,8 +158,23 @@ final class ModTagContent {
         "adv_rocketry:solar_panel",
         "adv_rocketry:structure_tower",
         "adv_rocketry:vacuum_laser");
-    ProcessingRegistry.PART_BLOCKS
-        .values()
+    tags.values(
+        "minecraft:mineable/axe",
+        "adv_rocketry:alien_log",
+        "adv_rocketry:alien_planks",
+        "adv_rocketry:charcoal_log");
+    ProcessingRegistry.PART_BLOCKS.entrySet().stream()
+        .filter(
+            entry ->
+                !Set.of(
+                        "alien_log",
+                        "alien_planks",
+                        "alien_leaves",
+                        "alien_sapling",
+                        "charcoal_log",
+                        "electric_mushroom")
+                    .contains(entry.getKey()))
+        .map(Map.Entry::getValue)
         .forEach(
             block ->
                 tags.value(
@@ -143,6 +183,20 @@ final class ModTagContent {
   }
 
   static void items(ModTagProvider<Item> tags) {
+    tags.values("minecraft:leaves", "adv_rocketry:rootwood_leaves", "adv_rocketry:alien_leaves");
+    for (String stone : BiomeMaterials.STONES) {
+      tags.values("minecraft:stone_tool_materials", "adv_rocketry:" + stone);
+      tags.values("minecraft:stone_crafting_materials", "adv_rocketry:" + stone);
+    }
+    tags.values(
+        "minecraft:logs_that_burn",
+        "adv_rocketry:rootwood_log",
+        "adv_rocketry:stripped_rootwood_log",
+        "adv_rocketry:alien_log",
+        "adv_rocketry:charcoal_log");
+    tags.values("minecraft:planks", "adv_rocketry:rootwood_planks", "adv_rocketry:alien_planks");
+    tags.values(
+        "minecraft:saplings", "adv_rocketry:rootwood_sapling", "adv_rocketry:alien_sapling");
     tags.values(
         "adv_rocketry:laser_drill_ores",
         "minecraft:iron_ore",
@@ -224,6 +278,24 @@ final class ModTagContent {
   static void biomes(ModTagProvider<Biome> tags) {
     tags.values(
         "adv_rocketry:planet_biomes/excluded",
+        "adv_rocketry:alien_river",
+        "adv_rocketry:root_caverns",
+        "adv_rocketry:fungal_caverns",
+        "adv_rocketry:mineral_caves",
+        "adv_rocketry:lava_tubes",
+        "adv_rocketry:lunar_tubes",
+        "adv_rocketry:subglacial_caves");
+    tags.values("minecraft:is_river", "adv_rocketry:alien_river");
+    tags.values(
+        "c:is_cave",
+        "adv_rocketry:root_caverns",
+        "adv_rocketry:fungal_caverns",
+        "adv_rocketry:mineral_caves",
+        "adv_rocketry:lava_tubes",
+        "adv_rocketry:lunar_tubes",
+        "adv_rocketry:subglacial_caves");
+    tags.values(
+        "adv_rocketry:planet_biomes/excluded",
         "minecraft:river",
         "minecraft:frozen_river",
         "minecraft:the_void",
@@ -237,7 +309,6 @@ final class ModTagContent {
         "minecraft:end_midlands",
         "minecraft:small_end_islands",
         "minecraft:end_barrens",
-        "adv_rocketry:alien_forest",
         "adv_rocketry:moon",
         "adv_rocketry:moondark",
         "adv_rocketry:hotdryrock",

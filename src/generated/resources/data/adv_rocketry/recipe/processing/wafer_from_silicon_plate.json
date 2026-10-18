@@ -1,0 +1,17 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 100,
+  "inputs": [
+    {
+      "count": 1,
+      "tag": "c:plates/silicon"
+    }
+  ],
+  "machine": "cutting_machine",
+  "outputs": [
+    {
+      "id": "adv_rocketry:silicon_wafer"
+    }
+  ],
+  "ticks": 300
+}

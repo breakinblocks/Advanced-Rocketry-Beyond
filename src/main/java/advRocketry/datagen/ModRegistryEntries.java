@@ -6,6 +6,7 @@ import advRocketry.Main;
 import advRocketry.orbit.AsteroidCatalog;
 import advRocketry.space.OreWorldgen;
 import advRocketry.space.PlanetDefinition;
+import advRocketry.space.PlanetVegetation;
 import advRocketry.space.StarDefinition;
 import advRocketry.space.TerrainType;
 import java.util.List;
@@ -15,9 +16,11 @@ import java.util.OptionalLong;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.Carvers;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -26,6 +29,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.biome.AmbientMoodSettings;
+import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -35,6 +40,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -93,6 +99,14 @@ final class ModRegistryEntries {
   }
 
   private static void configuredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> context) {
+    context.register(
+        key(Registries.CONFIGURED_FEATURE, "planet_ecosystem"),
+        new ConfiguredFeature<>(
+            PlanetVegetation.ECOSYSTEM.get(), NoneFeatureConfiguration.INSTANCE));
+    context.register(
+        key(Registries.CONFIGURED_FEATURE, "rootwood_tree"),
+        new ConfiguredFeature<>(
+            PlanetVegetation.ROOTWOOD.get(), NoneFeatureConfiguration.INSTANCE));
     for (String name : OreWorldgen.NAMES) {
       Block ore =
           BuiltInRegistries.BLOCK.get(
@@ -115,6 +129,11 @@ final class ModRegistryEntries {
 
   private static void placedFeatures(BootstrapContext<PlacedFeature> context) {
     var features = context.lookup(Registries.CONFIGURED_FEATURE);
+    context.register(
+        key(Registries.PLACED_FEATURE, "planet_ecosystem"),
+        new PlacedFeature(
+            features.getOrThrow(key(Registries.CONFIGURED_FEATURE, "planet_ecosystem")),
+            List.of(BiomeFilter.biome())));
     for (String name : OreWorldgen.NAMES)
       context.register(
           key(Registries.PLACED_FEATURE, name + "_ore"),
@@ -182,33 +201,64 @@ final class ModRegistryEntries {
               "stormland", true, .9f, .9f, 2105376, 4159204, 2105376, 2105376, 2105376, 0),
           new BiomeSpec("volcanic", false, 1, 0, 4469538, 4159204, 4469538, 7820346, 6110765, .1f),
           new BiomeSpec(
-              "volcanicbarren", false, 1, 0, 4469538, 4159204, 4469538, 7820346, 6110765, .1f));
+              "volcanicbarren", false, 1, 0, 4469538, 4159204, 4469538, 7820346, 6110765, .1f),
+          new BiomeSpec(
+              "alien_river", true, .65f, .9f, 7907327, 4427910, 7907327, 6719569, 5601092, .1f),
+          new BiomeSpec(
+              "root_caverns", true, .7f, .95f, 2636378, 4427910, 0, 5601092, 5636065, .1f),
+          new BiomeSpec(
+              "fungal_caverns", true, .65f, .8f, 3881056, 4427910, 0, 5601092, 5636065, .1f),
+          new BiomeSpec("mineral_caves", false, .4f, .2f, 2894384, 4159204, 0, 7829367, 7829367, 0),
+          new BiomeSpec("lava_tubes", false, 1.2f, 0, 4469538, 4159204, 0, 7820346, 6110765, 0),
+          new BiomeSpec("lunar_tubes", false, .2f, 0, 5592405, 4159204, 0, 7829367, 7829367, 0),
+          new BiomeSpec(
+              "subglacial_caves", false, -.2f, 0, 10467583, 4159204, 0, 10798573, 10994670, 0));
 
   private static void biomes(BootstrapContext<Biome> context) {
     var placed = context.lookup(Registries.PLACED_FEATURE);
     var carvers = context.lookup(Registries.CONFIGURED_CARVER);
-    for (BiomeSpec spec : BIOMES)
+    for (BiomeSpec spec : BIOMES) {
+      var generation = new BiomeGenerationSettings.Builder(placed, carvers);
+      if (!spec.name().equals("space")) {
+        generation.addFeature(
+            GenerationStep.Decoration.VEGETAL_DECORATION,
+            placed.getOrThrow(key(Registries.PLACED_FEATURE, "planet_ecosystem")));
+        generation.addCarver(GenerationStep.Carving.AIR, carvers.getOrThrow(Carvers.CAVE));
+      }
+      var effects =
+          new BiomeSpecialEffects.Builder()
+              .fogColor(spec.fog())
+              .waterColor(spec.water())
+              .waterFogColor(329011)
+              .skyColor(spec.sky())
+              .grassColorOverride(spec.grass())
+              .foliageColorOverride(spec.foliage());
+      switch (spec.name()) {
+        case "root_caverns", "fungal_caverns" ->
+            effects
+                .ambientParticle(
+                    new AmbientParticleSettings(ParticleTypes.SPORE_BLOSSOM_AIR, .007f))
+                .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
+        case "volcanic", "volcanicbarren", "lava_tubes" ->
+            effects.ambientParticle(new AmbientParticleSettings(ParticleTypes.ASH, .006f));
+        case "crystalchasms", "mineral_caves", "subglacial_caves" ->
+            effects.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
+        default -> {}
+      }
       context.register(
           key(Registries.BIOME, spec.name()),
           new Biome.BiomeBuilder()
               .hasPrecipitation(spec.precipitation())
               .temperature(spec.temperature())
               .downfall(spec.downfall())
-              .specialEffects(
-                  new BiomeSpecialEffects.Builder()
-                      .fogColor(spec.fog())
-                      .waterColor(spec.water())
-                      .waterFogColor(329011)
-                      .skyColor(spec.sky())
-                      .grassColorOverride(spec.grass())
-                      .foliageColorOverride(spec.foliage())
-                      .build())
+              .specialEffects(effects.build())
               .mobSpawnSettings(
                   new MobSpawnSettings.Builder()
                       .creatureGenerationProbability(spec.creatures())
                       .build())
-              .generationSettings(new BiomeGenerationSettings.Builder(placed, carvers).build())
+              .generationSettings(generation.build())
               .build());
+    }
   }
 
   private static void enchantments(BootstrapContext<Enchantment> context) {

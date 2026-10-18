@@ -16,8 +16,6 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public final class ModBlockLoot extends BlockLootSubProvider {
@@ -34,17 +32,12 @@ public final class ModBlockLoot extends BlockLootSubProvider {
     for (Block block : getKnownBlocks()) {
       String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
       switch (path) {
-        case "alien_leaves" ->
+        case "rootwood_leaves" ->
             add(
                 block,
-                LootTable.lootTable()
-                    .withPool(
-                        LootPool.lootPool()
-                            .setRolls(ConstantValue.exactly(1))
-                            .add(
-                                LootItem.lootTableItem(block("alien_sapling"))
-                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-                            .when(LootItemRandomChanceCondition.randomChance(0.01f))));
+                createLeavesDrops(block, block("rootwood_sapling"), NORMAL_LEAVES_SAPLING_CHANCES));
+        case "alien_leaves" ->
+            add(block, createLeavesDrops(block, block("alien_sapling"), NORMAL_LEAVES_SAPLING_CHANCES));
         case "liquid_tank" ->
             add(
                 block,

@@ -1,5 +1,6 @@
 package advRocketry.datagen;
 
+import advRocketry.space.BiomeMaterials;
 import java.util.Map;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -62,6 +63,68 @@ final class ModBlockStates extends ModBlockStateHelpers {
 
   @Override
   protected void registerStatesAndModels() {
+    for (String name : BiomeMaterials.ALL.keySet()) {
+      String habitat = BiomeMaterials.PLANTS.get(name);
+      if (name.endsWith("_log")) {
+        model(
+            "block/" + name,
+            "minecraft:block/cube_column",
+            null,
+            true,
+            "side",
+            "block/" + name,
+            "end",
+            "block/" + name + "_top");
+        states(name, AXIS, "", "block/" + name);
+      } else if (habitat != null || name.endsWith("sapling")) {
+        String parent = "minecraft:block/cross", key = "cross";
+        if ("wall".equals(habitat)) {
+          parent = "minecraft:block/coral_wall_fan";
+          key = "fan";
+        }
+        if ("floating".equals(habitat)) {
+          parent = "minecraft:block/lily_pad";
+          key = "texture";
+        }
+        model(
+            "block/" + name,
+            parent,
+            "minecraft:cutout",
+            true,
+            key,
+            "block/" + name,
+            "particle",
+            "block/" + name);
+        states(
+            name,
+            "wall".equals(habitat)
+                ? Map.of(
+                    "facing=north",
+                    new int[] {0, 0},
+                    "facing=south",
+                    new int[] {0, 180},
+                    "facing=east",
+                    new int[] {0, 90},
+                    "facing=west",
+                    new int[] {0, 270},
+                    "facing=up",
+                    new int[] {0, 0},
+                    "facing=down",
+                    new int[] {0, 0})
+                : NONE,
+            "",
+            "block/" + name);
+      } else {
+        model(
+            "block/" + name,
+            "minecraft:block/cube_all",
+            name.endsWith("leaves") ? "minecraft:cutout" : null,
+            true,
+            "all",
+            "block/" + name);
+        states(name, NONE, "", "block/" + name);
+      }
+    }
     obj(
         "block/advanced_bipropellant_rocket_motor",
         "models/rocket/advbipropellantrocketmotor.obj",
@@ -149,30 +212,30 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "minecraft:cutout",
         true,
         "all",
-        "legacy/advancedrocketry/blocks/leaves_alien");
+        "block/bluewood_leaves");
     model(
         "block/alien_log",
         "minecraft:block/cube_column",
         null,
         true,
         "side",
-        "legacy/advancedrocketry/blocks/log_blue",
+        "block/bluewood_log",
         "end",
-        "legacy/advancedrocketry/blocks/log_blue_top");
+        "block/bluewood_log_top");
     model(
         "block/alien_planks",
         "minecraft:block/cube_all",
         null,
         true,
         "all",
-        "legacy/advancedrocketry/blocks/plank_blue");
+        "block/bluewood_planks");
     model(
         "block/alien_sapling",
         "minecraft:block/cross",
         "minecraft:cutout",
         true,
         "cross",
-        "legacy/advancedrocketry/blocks/sapling_bluetree");
+        "block/bluewood_sapling");
     connected("block/aluminum_coil", "block/ctm/coilside", 0);
     model(
         "block/aluminum_ore",

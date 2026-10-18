@@ -1,0 +1,55 @@
+{
+  "values": {
+    "adv_rocketry:alien_leaves": {
+      "chance": 0.3
+    },
+    "adv_rocketry:alien_sapling": {
+      "chance": 0.3
+    },
+    "adv_rocketry:aquatic_frond": {
+      "chance": 0.3
+    },
+    "adv_rocketry:cave_blossom": {
+      "chance": 0.3
+    },
+    "adv_rocketry:fallen_foliage": {
+      "chance": 0.3
+    },
+    "adv_rocketry:fan_fern": {
+      "chance": 0.3
+    },
+    "adv_rocketry:floating_leaves": {
+      "chance": 0.3
+    },
+    "adv_rocketry:forest_groundcover": {
+      "chance": 0.3
+    },
+    "adv_rocketry:hanging_roots": {
+      "chance": 0.3
+    },
+    "adv_rocketry:jointed_reeds": {
+      "chance": 0.3
+    },
+    "adv_rocketry:luminous_seed_cluster": {
+      "chance": 0.3
+    },
+    "adv_rocketry:marsh_sedge": {
+      "chance": 0.3
+    },
+    "adv_rocketry:rootwood_leaves": {
+      "chance": 0.3
+    },
+    "adv_rocketry:rootwood_sapling": {
+      "chance": 0.3
+    },
+    "adv_rocketry:salt_shrub": {
+      "chance": 0.3
+    },
+    "adv_rocketry:shelf_fungus": {
+      "chance": 0.3
+    },
+    "adv_rocketry:spiral_seedling": {
+      "chance": 0.3
+    }
+  }
+}

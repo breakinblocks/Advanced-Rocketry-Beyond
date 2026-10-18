@@ -1,5 +1,7 @@
 {
-  "carvers": {},
+  "carvers": {
+    "air": "minecraft:cave"
+  },
   "downfall": 0.9,
   "effects": {
     "fog_color": 7907327,
@@ -9,7 +11,20 @@
     "water_color": 4159204,
     "water_fog_color": 329011
   },
-  "features": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "adv_rocketry:planet_ecosystem"
+    ]
+  ],
   "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {

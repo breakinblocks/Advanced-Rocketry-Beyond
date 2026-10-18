@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "adv_rocketry:block/shelf_fungus"
+    },
+    "facing=east": {
+      "model": "adv_rocketry:block/shelf_fungus",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "adv_rocketry:block/shelf_fungus"
+    },
+    "facing=south": {
+      "model": "adv_rocketry:block/shelf_fungus",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "adv_rocketry:block/shelf_fungus"
+    },
+    "facing=west": {
+      "model": "adv_rocketry:block/shelf_fungus",
+      "y": 270
+    }
+  }
+}

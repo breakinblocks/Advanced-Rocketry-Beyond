@@ -11,6 +11,7 @@ import advRocketry.orbit.BiomeChangerRemoteItem;
 import advRocketry.orbit.DataUnitItem;
 import advRocketry.orbit.LinkerItem;
 import advRocketry.orbit.SatelliteChipItem;
+import advRocketry.space.BiomeMaterials;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -52,9 +53,15 @@ public final class ProcessingRegistry {
   private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
       DeferredRegister.create(Registries.RECIPE_SERIALIZER, Main.MODID);
   public static final Supplier<RecipeType<LiquidFuelRecipe>> LIQUID_FUEL_TYPE =
-      TYPES.register("liquid_fuel", () -> new RecipeType<>() {
-        @Override public String toString() { return "adv_rocketry:liquid_fuel"; }
-      });
+      TYPES.register(
+          "liquid_fuel",
+          () ->
+              new RecipeType<>() {
+                @Override
+                public String toString() {
+                  return "adv_rocketry:liquid_fuel";
+                }
+              });
   public static final Supplier<RecipeSerializer<LiquidFuelRecipe>> LIQUID_FUEL_SERIALIZER =
       SERIALIZERS.register("liquid_fuel", LiquidFuelRecipe.Serializer::new);
   public static final Supplier<RecipeType<ArmorSealingRecipe>> SEALING_TYPE =
@@ -287,6 +294,7 @@ public final class ProcessingRegistry {
       MACHINE_BLOCKS.values().forEach(block -> event.accept(new ItemStack(block.get())));
       PART_ITEMS.values().forEach(item -> event.accept(item.get()));
       event.accept(part("plate_press"));
+      BiomeMaterials.ALL.values().forEach(block -> event.accept(block.get()));
     }
   }
 }

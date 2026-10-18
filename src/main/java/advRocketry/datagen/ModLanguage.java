@@ -1,6 +1,7 @@
 package advRocketry.datagen;
 
 import advRocketry.Main;
+import advRocketry.space.BiomeMaterials;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +28,42 @@ final class ModLanguage extends LanguageProvider {
 
   @Override
   protected void addTranslations() {
+    for (String name : BiomeMaterials.ALL.keySet()) {
+      String title = javaTitle(name);
+      add("block.adv_rocketry." + name, title);
+    }
+    for (String name :
+        List.of(
+            "alien_forest",
+            "crystalchasms",
+            "deepswamp",
+            "hotdryrock",
+            "marsh",
+            "moon",
+            "moondark",
+            "oceanspires",
+            "space",
+            "stormland",
+            "volcanic",
+            "volcanicbarren",
+            "alien_river",
+            "root_caverns",
+            "fungal_caverns",
+            "mineral_caves",
+            "lava_tubes",
+            "lunar_tubes",
+            "subglacial_caves"))
+      add(
+          "biome.adv_rocketry." + name,
+          switch (name) {
+            case "crystalchasms" -> "Crystal Chasms";
+            case "deepswamp" -> "Deep Swamp";
+            case "hotdryrock" -> "Hot Dry Rock";
+            case "moondark" -> "Dark Lunar Plains";
+            case "oceanspires" -> "Ocean Spires";
+            case "volcanicbarren" -> "Barren Volcanic Wastes";
+            default -> javaTitle(name);
+          });
     add("hud.adv_rocketry.flight_altitude", "ALT %s m");
     add("hud.adv_rocketry.flight_vertical", "V/S %s m/s");
     add("message.adv_rocketry.assembly.protected", "Assembly is not allowed at %s");
@@ -201,6 +238,15 @@ final class ModLanguage extends LanguageProvider {
     add("item.adv_rocketry.space_leggings", "Space Leggings");
     add("item.adv_rocketry.space_station", "Space Station");
     add("item.adv_rocketry.station_id_chip", "Station Id Chip");
+  }
+
+  private static String javaTitle(String name) {
+    StringBuilder result = new StringBuilder();
+    for (String word : name.split("_")) {
+      if (!result.isEmpty()) result.append(' ');
+      result.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1));
+    }
+    return result.toString();
   }
 
   private void addBlock() {

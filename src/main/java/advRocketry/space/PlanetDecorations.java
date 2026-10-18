@@ -95,8 +95,9 @@ public final class PlanetDecorations {
                 planet);
         }
     }
-    PlanetCrystals.generate(chunk, seed, biomes);
-    if (chunk.getNoiseBiome(2, 16, 2).is(OCEAN_SPIRES)) oceanSpires(chunk, seed);
+    if (planet.generationVersion < 2) PlanetCrystals.generate(chunk, seed, biomes);
+    if (planet.generationVersion < 2 && chunk.getNoiseBiome(2, 16, 2).is(OCEAN_SPIRES))
+      oceanSpires(chunk, seed);
     if (GalaxyData.LUNA.equals(planet.location)) apolloLander(chunk);
   }
 

@@ -30,9 +30,12 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.levelgen.Aquifer;
+import net.minecraft.world.level.levelgen.Beardifier;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
@@ -63,6 +66,26 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
   private final Planet planet;
   private final long seed;
 
+  public long terrainSeed() {
+    return seed;
+  }
+
+  public double surfaceHeight(int x, int z) {
+    return PlanetWatershed.enabled(planet)
+        ? PlanetWatershed.height(seed, planet.seaLevel, planet.gravity, x, z)
+        : PlanetLandforms.height(
+            seed,
+            PlanetLandforms.profile(planet),
+            planet.seaLevel,
+            PlanetNoise.channels(planet),
+            x,
+            z);
+  }
+
+  Planet environment() {
+    return planet;
+  }
+
   public PlanetTerrain(
       BiomeSource source, Holder<NoiseGeneratorSettings> settings, Planet planet, long seed) {
     super(source, PlanetOres.noiseSettings(settings, planet));
@@ -88,6 +111,39 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
         && planet.structures
         && planet.terrain != TerrainType.SPACE)
       super.createStructures(registries, state, structures, chunk, templates);
+  }
+
+  @Override
+  public CompletableFuture<ChunkAccess> createBiomes(
+      RandomState random, Blender blender, StructureManager structures, ChunkAccess chunk) {
+    if (PlanetWatershed.enabled(planet)) {
+      Aquifer.FluidStatus ocean =
+          new Aquifer.FluidStatus(planet.seaLevel, Blocks.WATER.defaultBlockState());
+      Aquifer.FluidStatus ground =
+          new Aquifer.FluidStatus(
+              PlanetWatershed.waterLevel(planet.seaLevel) + 1, Blocks.WATER.defaultBlockState());
+      Aquifer.FluidStatus lava = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
+      Aquifer.FluidPicker fluids =
+          (x, y, z) -> {
+            if (y < Math.min(-54, planet.seaLevel)) return lava;
+            // Ocean aquifers retain sea level; inland aquifers share the underground river table.
+            // Surface rivers are filled separately so nearby aquifer nodes cannot flood their
+            // caves.
+            return PlanetLandforms.continents(seed, x, z) < -.35
+                ? ocean
+                : ground;
+          };
+      chunk.getOrCreateNoiseChunk(
+          access ->
+              NoiseChunk.forChunk(
+                  access,
+                  random,
+                  Beardifier.forStructuresInChunk(structures, access.getPos()),
+                  generatorSettings().value(),
+                  fluids,
+                  blender));
+    }
+    return super.createBiomes(random, blender, structures, chunk);
   }
 
   @Override
@@ -120,6 +176,17 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
       WorldGenRegion level, StructureManager structures, RandomState random, ChunkAccess chunk) {
     if (planet.terrain == TerrainType.SPACE) return;
     super.buildSurface(level, structures, random, chunk);
+    if (planet.generationVersion >= 2) {
+      PlanetDecorations.generate(
+          chunk,
+          planet,
+          seed,
+          (x, z) ->
+              getBiomeSource()
+                  .getNoiseBiome(
+                      x >> 2, ((int) surfaceHeight(x, z)) >> 2, z >> 2, random.sampler()));
+      return;
+    }
     BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
     for (int x = 0; x < 16; x++)
       for (int z = 0; z < 16; z++) {
@@ -169,11 +236,13 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
   public void applyBiomeDecoration(
       WorldGenLevel level, ChunkAccess chunk, StructureManager structures) {
     if (planet.terrain == TerrainType.SPACE) return;
-    boolean decorated = planet.breathable() || planet.biomeFeatures;
+    boolean decorated =
+        planet.generationVersion >= 2 || planet.breathable() || planet.biomeFeatures;
+    PlanetWatershed.finish(chunk, planet, seed);
     if (decorated) super.applyBiomeDecoration(level, chunk, structures);
     if (!PlanetOres.generate(level, chunk, this, planet, seed))
       PlanetDecorations.ores(chunk, planet, seed, decorated ? biomeOres(level, chunk) : Set.of());
-    PlanetDecorations.flora(level, chunk, seed);
+    if (planet.generationVersion < 2) PlanetDecorations.flora(level, chunk, seed);
   }
 
   private Set<String> biomeOres(WorldGenLevel level, ChunkAccess chunk) {

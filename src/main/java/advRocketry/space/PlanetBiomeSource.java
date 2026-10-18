@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -22,38 +23,117 @@ import net.minecraft.world.level.biome.Climate;
 
 /** Seeded biome regions for the original configurable planet biome lists. */
 public final class PlanetBiomeSource extends BiomeSource {
-  private record Definition(List<Holder<Biome>> biomes, List<Integer> weights, long seed,
-      Optional<Holder<Biome>> river, Optional<Holder<Biome>> frozenRiver) {}
+  private record Definition(
+      List<Holder<Biome>> biomes,
+      List<Integer> weights,
+      long seed,
+      Optional<Holder<Biome>> river,
+      Optional<Holder<Biome>> frozenRiver,
+      List<Holder<Biome>> caves,
+      String profile,
+      int sea,
+      boolean channels,
+      int version,
+      double gravity,
+      boolean watersheds,
+      List<Holder<Biome>> riparian) {}
 
   public static final MapCodec<PlanetBiomeSource> CODEC =
       RecordCodecBuilder.<Definition>mapCodec(
-          instance ->
-              instance
-                  .group(
-                      Biome.CODEC.listOf(1, 1024).fieldOf("biomes").forGetter(source -> source.biomes),
-                      Codec.intRange(1, 1000000)
-                          .listOf(0, 1024)
-                          .optionalFieldOf("weights", List.of())
-                          .forGetter(source -> source.weights),
-                      Codec.LONG.fieldOf("seed").forGetter(source -> source.seed),
-                      Biome.CODEC.optionalFieldOf("river").forGetter(source -> source.river),
-                      Biome.CODEC
-                          .optionalFieldOf("frozen_river")
-                          .forGetter(source -> source.frozenRiver))
-                  .apply(instance, Definition::new))
-          .flatXmap(definition -> {
-            if (!definition.weights.isEmpty() && definition.weights.size() != definition.biomes.size())
-              return DataResult.error(() -> "Planet biome weights must match the biome list");
-            return DataResult.success(new PlanetBiomeSource(definition.biomes, definition.weights,
-                definition.seed, definition.river, definition.frozenRiver));
-          }, source -> DataResult.success(new Definition(source.biomes, source.weights, source.seed,
-              source.river, source.frozenRiver)));
+              instance ->
+                  instance
+                      .group(
+                          Biome.CODEC
+                              .listOf(1, 1024)
+                              .fieldOf("biomes")
+                              .forGetter(source -> source.biomes),
+                          Codec.intRange(1, 1000000)
+                              .listOf(0, 1024)
+                              .optionalFieldOf("weights", List.of())
+                              .forGetter(source -> source.weights),
+                          Codec.LONG.fieldOf("seed").forGetter(source -> source.seed),
+                          Biome.CODEC.optionalFieldOf("river").forGetter(source -> source.river),
+                          Biome.CODEC
+                              .optionalFieldOf("frozen_river")
+                              .forGetter(source -> source.frozenRiver),
+                          Biome.CODEC
+                              .listOf()
+                              .optionalFieldOf("cave_biomes", List.of())
+                              .forGetter(source -> source.caves),
+                          PlanetDensity.PROFILE_CODEC
+                              .optionalFieldOf("profile", "temperate")
+                              .forGetter(source -> source.profile),
+                          Codec.intRange(-63, 319)
+                              .optionalFieldOf("sea_level", 63)
+                              .forGetter(source -> source.sea),
+                          Codec.BOOL
+                              .optionalFieldOf("channels", false)
+                              .forGetter(source -> source.channels),
+                          Codec.intRange(1, 3)
+                              .optionalFieldOf("generation_version", 1)
+                              .forGetter(source -> source.version),
+                          Codec.doubleRange(0, Double.MAX_VALUE)
+                              .optionalFieldOf("gravity", 1d)
+                              .forGetter(source -> source.gravity),
+                          Codec.BOOL
+                              .optionalFieldOf("watersheds", false)
+                              .forGetter(source -> source.watersheds),
+                          Biome.CODEC
+                              .listOf()
+                              .optionalFieldOf("riparian_biomes", List.of())
+                              .forGetter(source -> source.riparian))
+                      .apply(instance, Definition::new))
+          .flatXmap(
+              definition -> {
+                if (!definition.weights.isEmpty()
+                    && definition.weights.size() != definition.biomes.size())
+                  return DataResult.error(() -> "Planet biome weights must match the biome list");
+                return DataResult.success(
+                    new PlanetBiomeSource(
+                        definition.biomes,
+                        definition.weights,
+                        definition.seed,
+                        definition.river,
+                        definition.frozenRiver,
+                        definition.caves,
+                        definition.profile,
+                        definition.sea,
+                        definition.channels,
+                        definition.version,
+                        definition.gravity,
+                        definition.watersheds,
+                        definition.riparian));
+              },
+              source ->
+                  DataResult.success(
+                      new Definition(
+                          source.biomes,
+                          source.weights,
+                          source.seed,
+                          source.river,
+                          source.frozenRiver,
+                          source.caves,
+                          source.profile,
+                          source.sea,
+                          source.channels,
+                          source.version,
+                          source.gravity,
+                          source.watersheds,
+                          source.riparian)));
   private final List<Holder<Biome>> biomes;
   private final List<Integer> weights;
   private final long totalWeight;
   private final long seed;
   private final Optional<Holder<Biome>> river;
   private final Optional<Holder<Biome>> frozenRiver;
+  private final List<Holder<Biome>> caves;
+  private final String profile;
+  private final int sea;
+  private final boolean channels;
+  private final int version;
+  private final double gravity;
+  private final boolean watersheds;
+  private final List<Holder<Biome>> riparian;
 
   public PlanetBiomeSource(List<Holder<Biome>> biomes, long seed) {
     this(biomes, List.of(), seed);
@@ -69,6 +149,76 @@ public final class PlanetBiomeSource extends BiomeSource {
       long seed,
       Planet planet,
       Registry<Biome> registry) {
+    if (planet.generationVersion >= 2 && planet.terrain != TerrainType.SPACE) {
+      String profile = PlanetLandforms.profile(planet);
+      List<Holder<Biome>> caves = new ArrayList<>();
+      if (planet.caves) {
+        List<String> names =
+            profile.equals("lunar") || planet.atmosphere <= 25
+                ? List.of("adv_rocketry:lunar_tubes", "adv_rocketry:mineral_caves")
+                : profile.equals("volcanic")
+                    ? List.of("adv_rocketry:lava_tubes", "adv_rocketry:mineral_caves")
+                    : planet.temperature < 250
+                        ? List.of("adv_rocketry:subglacial_caves", "adv_rocketry:mineral_caves")
+                        : List.of(
+                            "adv_rocketry:root_caverns",
+                            "minecraft:lush_caves",
+                            "adv_rocketry:fungal_caverns",
+                            "minecraft:dripstone_caves",
+                            "adv_rocketry:mineral_caves");
+        for (String name : names)
+          registry
+              .getHolder(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(name)))
+              .ifPresent(caves::add);
+      }
+      boolean water = planet.ocean.equals(ResourceLocation.withDefaultNamespace("water"));
+      Optional<Holder<Biome>> river =
+          planet.hasRivers()
+                  && water
+                  && !profile.equals("lunar")
+                  && !profile.equals("volcanic")
+                  && !profile.equals("fractured")
+                  && !profile.equals("cavern")
+              ? registry
+                  .getHolder(ResourceKey.create(Registries.BIOME, BiomeMaterials.id("alien_river")))
+                  .map(b -> b)
+              : Optional.empty();
+      Optional<Holder<Biome>> frozen =
+          river.isPresent()
+              ? registry
+                  .getHolder(
+                      ResourceKey.create(
+                          Registries.BIOME, ResourceLocation.withDefaultNamespace("frozen_river")))
+                  .map(b -> b)
+              : Optional.empty();
+      List<Holder<Biome>> riparian = new ArrayList<>();
+      if (PlanetWatershed.enabled(planet)
+          && biomes.stream()
+              .anyMatch(
+                  b ->
+                      b.is(BiomeMaterials.id("alien_forest"))
+                          || b.is(BiomeMaterials.id("deepswamp"))
+                          || b.is(BiomeMaterials.id("marsh")))) {
+        for (String name : List.of("marsh", "deepswamp"))
+          registry
+              .getHolder(ResourceKey.create(Registries.BIOME, BiomeMaterials.id(name)))
+              .ifPresent(riparian::add);
+      }
+      return new PlanetBiomeSource(
+          biomes,
+          weights,
+          seed,
+          river,
+          frozen,
+          caves,
+          profile,
+          planet.seaLevel,
+          PlanetNoise.channels(planet),
+          planet.generationVersion,
+          planet.gravity,
+          PlanetWatershed.enabled(planet),
+          riparian);
+    }
     if (!planet.hasRivers()) return new PlanetBiomeSource(biomes, weights, seed);
     return new PlanetBiomeSource(
         biomes,
@@ -90,6 +240,36 @@ public final class PlanetBiomeSource extends BiomeSource {
       long seed,
       Optional<Holder<Biome>> river,
       Optional<Holder<Biome>> frozenRiver) {
+    this(
+        biomes,
+        weights,
+        seed,
+        river,
+        frozenRiver,
+        List.of(),
+        "temperate",
+        63,
+        river.isPresent(),
+        1,
+        1,
+        false,
+        List.of());
+  }
+
+  private PlanetBiomeSource(
+      List<Holder<Biome>> biomes,
+      List<Integer> weights,
+      long seed,
+      Optional<Holder<Biome>> river,
+      Optional<Holder<Biome>> frozenRiver,
+      List<Holder<Biome>> caves,
+      String profile,
+      int sea,
+      boolean channels,
+      int version,
+      double gravity,
+      boolean watersheds,
+      List<Holder<Biome>> riparian) {
     if (biomes.isEmpty()) throw new IllegalArgumentException("Planet requires at least one biome");
     if (!weights.isEmpty() && weights.size() != biomes.size()
         || weights.stream().anyMatch(weight -> weight <= 0 || weight > 1000000))
@@ -102,6 +282,14 @@ public final class PlanetBiomeSource extends BiomeSource {
     this.seed = seed;
     this.river = river;
     this.frozenRiver = frozenRiver;
+    this.caves = List.copyOf(caves);
+    this.profile = profile;
+    this.sea = sea;
+    this.channels = channels;
+    this.version = version;
+    this.gravity = gravity;
+    this.watersheds = watersheds;
+    this.riparian = List.copyOf(riparian);
   }
 
   @Override
@@ -111,11 +299,15 @@ public final class PlanetBiomeSource extends BiomeSource {
 
   @Override
   protected Stream<Holder<Biome>> collectPossibleBiomes() {
-    return Stream.concat(biomes.stream(), Stream.concat(river.stream(), frozenRiver.stream()));
+    return Stream.concat(
+            Stream.concat(caves.stream(), riparian.stream()),
+            Stream.concat(biomes.stream(), Stream.concat(river.stream(), frozenRiver.stream())))
+        .distinct();
   }
 
   @Override
   public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
+    if (version >= 2) return habitat(x * 4, y * 4, z * 4);
     long value = PlanetSeeds.cell(seed, Math.floorDiv(x, 32), Math.floorDiv(z, 32));
     value = (value ^ (value >>> 30)) * 0xbf58476d1ce4e5b9L;
     value = (value ^ (value >>> 27)) * 0x94d049bb133111ebL;
@@ -138,5 +330,80 @@ public final class PlanetBiomeSource extends BiomeSource {
             : river.get();
     }
     return biome;
+  }
+
+  private Holder<Biome> habitat(int x, int y, int z) {
+    double moisture = PlanetLandforms.moisture(seed, x, z);
+    double temperature = PlanetLandforms.temperature(seed, x, z);
+    double land = PlanetLandforms.continents(seed, x, z);
+    PlanetWatershed.Sample water = watersheds ? PlanetWatershed.sample(seed, gravity, x, z) : null;
+    double top =
+        watersheds
+            ? PlanetWatershed.height(seed, sea, gravity, x, z)
+            : PlanetLandforms.height(seed, profile, sea, channels, x, z);
+    double depth = top - y;
+    if (water != null) moisture = Math.min(1, moisture + water.banks() * .45);
+    if (!caves.isEmpty() && depth > 18 + 7 * PlanetLandforms.field(seed, 59, x, z, 95)) {
+      if (depth > 90 && !profile.equals("cavern") || y < -24) return caves.getLast();
+      if (caves.size() <= 2) return caves.getFirst();
+      if (water != null
+          && water.underground() < .09
+          && Math.abs(y - PlanetWatershed.waterLevel(sea)) < 18)
+        return caves.get(water.sediment() > 0 ? 0 : 1);
+      if (moisture > .18) return caves.get(temperature > 0 ? 0 : 1);
+      if (moisture < -.22) return caves.get(2);
+      return caves.get(Math.min(3, caves.size() - 1));
+    }
+    Holder<Biome> selected = biomes.getFirst();
+    double best = Double.POSITIVE_INFINITY;
+    for (int i = 0; i < biomes.size(); i++) {
+      Holder<Biome> b = biomes.get(i);
+      String name = b.unwrapKey().map(k -> k.location().toString()).orElse("");
+      double targetWet =
+          switch (name) {
+            case "adv_rocketry:deepswamp", "adv_rocketry:marsh", "adv_rocketry:stormland" -> .65;
+            case "adv_rocketry:alien_forest" -> .28;
+            case "adv_rocketry:hotdryrock", "adv_rocketry:volcanicbarren" -> -.65;
+            default -> b.value().hasPrecipitation() ? .1 : -.3;
+          };
+      double targetTemp = Math.clamp((b.value().getBaseTemperature() - .65) * .9, -.8, .8);
+      double targetLand =
+          b.is(BiomeTags.IS_OCEAN) || name.equals("adv_rocketry:oceanspires")
+              ? -.65
+              : name.equals("adv_rocketry:moondark") || name.equals("adv_rocketry:marsh")
+                  ? -.15
+                  : .3;
+      double variation = PlanetLandforms.field(seed ^ name.hashCode(), 61, x, z, 260);
+      double score =
+          Math.pow(moisture - targetWet, 2) * .45
+              + Math.pow(temperature - targetTemp, 2) * .35
+              + Math.pow(land - targetLand, 2) * .4
+              - variation * .35
+              - Math.log(weights.get(i)) * .08;
+      if (score < best) {
+        best = score;
+        selected = b;
+      }
+    }
+    if (river.isPresent()
+        && depth < 18
+        && (water != null ? water.river() : PlanetLandforms.channel(seed, x, z) < .045)
+        && land > -.35
+        && !selected.is(BiomeTags.IS_OCEAN))
+      return selected.value().getBaseTemperature() < .15
+          ? frozenRiver.orElse(river.get())
+          : river.get();
+    if (water != null
+        && !riparian.isEmpty()
+        && depth < 18
+        && water.floodplain()
+        && top > sea - 2
+        && top < sea + 7
+        && land > -.35
+        && !selected.is(BiomeTags.IS_OCEAN))
+      return water.wetness() > .72 && water.clearing() > -.15
+          ? riparian.getLast()
+          : riparian.getFirst();
+    return selected;
   }
 }

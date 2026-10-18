@@ -1,0 +1,25 @@
+{
+  "type": "adv_rocketry:processing",
+  "energy": 100,
+  "inputs": [
+    {
+      "count": 1,
+      "item": "adv_rocketry:enhanced_motor"
+    },
+    {
+      "count": 1,
+      "tag": "c:gears/titanium_iridium"
+    },
+    {
+      "count": 2,
+      "tag": "c:sheets/titanium_iridium"
+    }
+  ],
+  "machine": "precision_assembler",
+  "outputs": [
+    {
+      "id": "adv_rocketry:elite_motor"
+    }
+  ],
+  "ticks": 400
+}

@@ -7,6 +7,22 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
   private ModCraftingRecipes() {}
 
   static void build(RecipeOutput output) {
+    ModBiomeRecipes.build(output);
+    for (String log : List.of("rootwood_log", "stripped_rootwood_log")) {
+      shapeless(
+          output,
+          "rootwood_planks_from_" + log,
+          "adv_rocketry:rootwood_planks",
+          4,
+          item("adv_rocketry:" + log));
+      smelting(
+          output,
+          "charcoal_from_" + log,
+          item("adv_rocketry:" + log),
+          "minecraft:charcoal",
+          .15f,
+          200);
+    }
     shaped(
         output,
         "centrifuge_casing",
@@ -2032,7 +2048,7 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
         1,
         List.of(" d ", "aba", "ccc"),
         'd',
-        item("adv_rocketry:control_circuit_board"),
+        item("adv_rocketry:elevator_chip"),
         'a',
         item("adv_rocketry:advanced_circuit"),
         'b',

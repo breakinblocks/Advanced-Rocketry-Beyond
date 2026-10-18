@@ -1,5 +1,12 @@
 {
   "values": [
+    "adv_rocketry:alien_river",
+    "adv_rocketry:root_caverns",
+    "adv_rocketry:fungal_caverns",
+    "adv_rocketry:mineral_caves",
+    "adv_rocketry:lava_tubes",
+    "adv_rocketry:lunar_tubes",
+    "adv_rocketry:subglacial_caves",
     "minecraft:river",
     "minecraft:frozen_river",
     "minecraft:the_void",
@@ -13,7 +20,6 @@
     "minecraft:end_midlands",
     "minecraft:small_end_islands",
     "minecraft:end_barrens",
-    "adv_rocketry:alien_forest",
     "adv_rocketry:moon",
     "adv_rocketry:moondark",
     "adv_rocketry:hotdryrock",

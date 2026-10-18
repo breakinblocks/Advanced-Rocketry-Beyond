@@ -68,6 +68,8 @@ public final class Planet {
   public boolean volcanoes;
   public boolean geodes;
   public boolean caves = true;
+  public int generationVersion = 3;
+  public String noiseProfile = "auto";
   public boolean structures = true;
   public float craterFrequency = 1;
   public float volcanoFrequency = 1;
@@ -200,6 +202,8 @@ public final class Planet {
     tag.putBoolean("volcanoes", volcanoes);
     tag.putBoolean("geodes", geodes);
     tag.putBoolean("caves", caves);
+    tag.putInt("generation_version", generationVersion);
+    tag.putString("noise_profile", noiseProfile);
     tag.putBoolean("structures", structures);
     tag.putFloat("crater_frequency", craterFrequency);
     tag.putFloat("volcano_frequency", volcanoFrequency);
@@ -257,7 +261,11 @@ public final class Planet {
     planet.forceRivers = tag.getBoolean("force_rivers");
     planet.biomeFeatures = tag.getBoolean("biome_features");
     if (tag.contains("sky"))
-      planet.sky = SkySettings.CODEC.parse(NbtOps.INSTANCE, tag.get("sky")).result().orElse(SkySettings.DEFAULT);
+      planet.sky =
+          SkySettings.CODEC
+              .parse(NbtOps.INSTANCE, tag.get("sky"))
+              .result()
+              .orElse(SkySettings.DEFAULT);
     planet.skyColor = tag.getInt("sky_color");
     planet.fogColor = tag.getInt("fog_color");
     planet.ringColor = tag.getInt("ring_color");
@@ -268,6 +276,9 @@ public final class Planet {
     planet.volcanoes = tag.getBoolean("volcanoes");
     planet.geodes = tag.getBoolean("geodes");
     planet.caves = tag.getBoolean("caves");
+    planet.generationVersion =
+        tag.contains("generation_version") ? tag.getInt("generation_version") : 1;
+    planet.noiseProfile = tag.contains("noise_profile") ? tag.getString("noise_profile") : "auto";
     planet.structures = tag.getBoolean("structures");
     planet.craterFrequency = tag.getFloat("crater_frequency");
     planet.volcanoFrequency = tag.getFloat("volcano_frequency");

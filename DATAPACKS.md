@@ -153,8 +153,25 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   `ring_color`, `sky_render_override`, `color_override`, `shading`.
 - **Terrain:** `terrain` (`terrestrial`, `asteroid`, `cave`, `moon`,
   `volcanic`), `sea_level`, `filler_block`, `ocean_block`, `caves`,
-  `structures`, `force_rivers`, and `biome_features`, which runs the biomes'
-  own features (and biome modifiers) on a planet that is not breathable.
+  `structures`, `force_rivers`, `noise_profile`, `generation_version`, and
+  `biome_features`. Generation versions 2 and 3 run native biome features and modifiers;
+  individual planetary plants apply their own pressure, temperature, and attachment rules.
+  `noise_profile` accepts `auto`, `temperate`, `volcanic`, `lunar`, `fractured`,
+  or `cavern`. `auto` derives a profile from terrain, pressure, and temperature.
+  The selected profile is stored with the planet. `generation_version` defaults
+  to `3`; `1` selects the original terrain implementation and `2` selects
+  the continuous terrain without watershed habitats. The version is saved per planet.
+  Version `3` connects temperate water rivers to wet banks, marsh/swamp transitions,
+  underground waterways, and occasional sinkholes. This requires rivers, water oceans,
+  pressure above 25, and temperature from 250 through 450 K. Disabling `caves`
+  also disables underground waterways and sinkholes.
+  `gravity` scales river incision using `3 + 5 * sqrt(clamp(gravity, 0.15, 4))`
+  blocks at the channel center, plus local sediment variation. Higher gravity narrows
+  the bank transition and deepens the bed; it does not relocate the river network.
+  Forest and swamp palettes gain riparian transitions; other surface palettes retain
+  their own biome selection. Rootwood favors wet ground, while bluewood occupies
+  drier slopes. Young growth, old trees, dead snags, and fallen logs use their existing
+  wood, leaf, and plant blocks and normal harvest behavior.
 - **Biomes:** `biomes`, optionally weighted, e.g.
   `[{"biome": "minecraft:plains", "weight": 9}]`. `crater_biomes` limits craters
   to listed biomes.
@@ -166,6 +183,23 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
 - **Spawns:** `spawns`, e.g.
   `{"entity": "minecraft:sheep", "weight": 100, "min": 2, "max": 4}`, with an
   optional `data` compound for the spawned mob.
+
+Version 2 uses AR-owned density fields with continents, ridges, warped channels,
+noise chambers and tunnels, plus native carvers. Caves default to enabled.
+`caves: false` disables both
+underground carving and automatic cave-biome selection. Wet temperate planets
+retain vanilla lush and dripstone caves alongside root, fungal and mineral caves.
+Cold planets select subglacial caves; hot and airless profiles use mineral and
+lava/lunar tube habitats. River biomes follow the same channel field as terrain
+and stop at the cave layer. Fractured islands and enclosed caverns omit rivers.
+Terraforming resolves biomes at each vertical quart cell rather than flattening
+an entire column into its surface biome.
+
+The seven companion biome IDs are `alien_river`, `root_caverns`,
+`fungal_caverns`, `mineral_caves`, `lava_tubes`, `lunar_tubes`, and
+`subglacial_caves`, all under `adv_rocketry`. They are excluded from random
+surface palettes but remain available for explicit definitions. Generation is
+seeded per planet and independent of replacement Overworld/Nether noise graphs.
 
 The planet whose `dimension` is `minecraft:overworld` is Earth. A planet with no
 `dimension` uses its own id, so `adv_rocketry:luna` is the `adv_rocketry:luna`

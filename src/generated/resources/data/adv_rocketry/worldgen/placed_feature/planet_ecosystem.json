@@ -1,0 +1,8 @@
+{
+  "feature": "adv_rocketry:planet_ecosystem",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
