@@ -207,7 +207,9 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   Overworld-only injections to planets or import their terrain routing.
   Nautec's 1.21.1 ocean/beach feature modifiers apply through biome tags, including
   AR ocean spires. Their original placement filters and height ranges still apply.
-  Nautec's newer 26.1.2 biome release cannot be loaded in this 1.21.1 build.
+  Nautec 2.0.14 for 1.21.1 contributes abyssal trenches, bioluminescent groves,
+  hydrothermal vents, and prismarine reefs through these ocean tags. Common
+  `c:is_hot/overworld` and `c:is_cold/overworld` tags guide planet climate selection.
   Automatic selection applies when creating planets; existing saved palettes and
   explicitly supplied biome lists are retained. No third-party biome data is bundled.
 - **Biomes:** `biomes`, optionally weighted, e.g.

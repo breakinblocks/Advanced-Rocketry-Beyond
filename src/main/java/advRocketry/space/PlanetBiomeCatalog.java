@@ -63,10 +63,17 @@ public final class PlanetBiomeCatalog {
                         PlanetMarineHabitat.ocean(holder),
                         holder.is(
                                 TagKey.create(Registries.BIOME, ResourceLocation.parse("c:is_hot")))
+                            || holder.is(
+                                TagKey.create(
+                                    Registries.BIOME, ResourceLocation.parse("c:is_hot/overworld")))
                             || holder.value().getBaseTemperature() > 1,
                         holder.is(
                                 TagKey.create(
                                     Registries.BIOME, ResourceLocation.parse("c:is_cold")))
+                            || holder.is(
+                                TagKey.create(
+                                    Registries.BIOME,
+                                    ResourceLocation.parse("c:is_cold/overworld")))
                             || holder.value().getBaseTemperature() < .2f))
             .sorted((left, right) -> left.id().compareTo(right.id()))
             .toList();
@@ -135,7 +142,7 @@ public final class PlanetBiomeCatalog {
             || entry.ocean() && !PlanetMarineHabitat.supportsWater(planet)) continue;
         boolean eligible =
             planet.temperature > 325
-                ? entry.hot() || entry.ocean()
+                ? entry.hot() || entry.ocean() && !entry.cold()
                 : planet.temperature > 275
                     ? !entry.cold()
                     : planet.temperature > 250 ? !entry.hot() : entry.cold();
