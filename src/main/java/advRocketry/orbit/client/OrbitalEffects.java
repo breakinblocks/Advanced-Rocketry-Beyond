@@ -3,13 +3,10 @@ package advRocketry.orbit.client;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectRenderTypes;
-import advRocketry.client.effects.SceneDistortion;
 import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.RailgunLogic;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 
 /** Effects use authoritative operating state and deterministic local animation clocks. */
@@ -61,17 +58,7 @@ public final class OrbitalEffects {
             EffectGeometry.segments(profile));
       }
     } else if (entity.blackHoleGenerator() && entity.powerMadeLastTick > 0) {
-      SceneDistortion.submit(Vec3.atLowerCornerOf(entity.getBlockPos()).add(.5, 2, .5), .35f);
-      pose.translate(0, 1.5, 0);
-      EffectGeometry.sphere(pose, buffers.getBuffer(RenderType.debugQuads()), .35, 0xff020406);
-      vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
-      pose.mulPose(Axis.XP.rotationDegrees(14));
-      for (int i = 0; i < 12; i++) {
-        double radius = .45 + i * .075;
-        float glow = (float) (.55 + .15 * Math.sin(time * .04 - i));
-        EffectGeometry.ring(
-            pose, vertices, radius, 0, .045, profile.argb(glow), EffectGeometry.segments(profile));
-      }
+      BlackHoleContainment.render(entity, pose, buffers, profile, time);
     } else if (entity.railgun()) {
       double age = entity.getLevel().getGameTime() + partialTick - entity.railgunFiredAt;
       if (age >= 0 && age < 12) {
