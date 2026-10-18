@@ -44,6 +44,8 @@ These conditions apply to the offspring location. Ordinary placement rules remai
 
 ## Local plant ambience
 
+Suitable river and wetland banks can have short drift lines of fallen foliage, with reeds at their ends. These follow actual water edges, fit within their generating chunk, and leave occupied blocks and water channels intact.
+
 Fallen logs can carry shelf fungi on either side. Nearby empty soil supports young growth: rootwood logs favor reeds and sedges beside water and ferns elsewhere, while bluewood logs accumulate fallen foliage. Both can shelter spiral seedlings. These details respect plant support rules and leave occupied spaces intact.
 
 Root and fungal caverns have occasional water drips, mineral caves and crystal chasms have sparse crystal chimes, and volcanic habitats have occasional basalt-delta ambience. These biome sounds use Minecraft's ambient sound channel and can be adjusted through the generated biome datapack definitions. The probabilities are per client tick while the biome is active: .0015 for drips, .0008 for chimes, and .001 for volcanic additions. They are intermittent accents, not continuous loops.

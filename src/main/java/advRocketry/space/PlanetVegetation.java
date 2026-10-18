@@ -288,6 +288,7 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
     double patch = PlanetLandforms.field(seed, 239, pos.getX(), pos.getZ(), 13);
     if (patch < (wetland > .3 ? -.55 : -.25) || !natural(level.getBlockState(pos.below())))
       return true;
+    if (random.nextInt(10) == 0 && shorelineLitter(level, pos, random)) return true;
     if (random.nextInt(75) == 0 && level.isEmptyBlock(pos)) {
       level.setBlock(pos, Blocks.MOSSY_COBBLESTONE.defaultBlockState(), 2);
       Direction direction = Direction.from2DDataValue(random.nextInt(4));
@@ -312,6 +313,31 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
           plant(level, neighbor, plant, Direction.UP);
       }
     return true;
+  }
+
+  /** Short drift lines follow an actual water edge without filling the channel. */
+  static boolean shorelineLitter(WorldGenLevel level, BlockPos origin, RandomSource random) {
+    if (!riparian(biome(level, origin)) || !level.isEmptyBlock(origin)) return false;
+    Direction water = null;
+    for (Direction direction : Direction.Plane.HORIZONTAL)
+      if (level.getFluidState(origin.below().relative(direction)).is(FluidTags.WATER)) {
+        water = direction;
+        break;
+      }
+    if (water == null) return false;
+    Direction along = water.getClockWise();
+    boolean placed = false;
+    for (int offset = -2; offset <= 2; offset++) {
+      BlockPos pos = origin.relative(along, offset);
+      // Do not let a bank feature write into a neighboring chunk or cross a habitat boundary.
+      if (pos.getX() >> 4 != origin.getX() >> 4 || pos.getZ() >> 4 != origin.getZ() >> 4) continue;
+      if (!riparian(biome(level, pos)) || !waterNear(level, pos)) continue;
+      if (offset != 0 && random.nextInt(4) == 0) continue;
+      placed |=
+          plant(
+              level, pos, Math.abs(offset) == 2 ? "jointed_reeds" : "fallen_foliage", Direction.UP);
+    }
+    return placed;
   }
 
   private static boolean natural(BlockState state) {
