@@ -42,7 +42,19 @@ Bone meal on an established plant grows one offspring in an adjacent empty space
 
 These conditions apply to the offspring location. Ordinary placement rules remain unchanged, so decorative specimens on other sturdy blocks can still be kept.
 
+## Habitat deposits
+
+New planets using generation version 9 contain small exposed pockets in native AR biomes:
+
+| Habitat | Host material | Deposit and use |
+| --- | --- | --- |
+| Alien rivers, marshes, deep swamps | Alluvial silt | Clay for bricks and terracotta |
+| Mineral caves | Mineral crust | Calcite for building and mineral bloom cultivation |
+| Stormland | Strike glass | Fused glass; collect with Silk Touch |
+| Volcanic | Cooling crust | Magma for building, bubble columns and heat-plant cultivation |
+
+Pockets check the biome at their actual elevation, including underground habitats. Each chunk has four candidate columns with a one-in-six chance per eligible exposed layer; each successful pocket replaces at most nine host blocks. Buried ores, other substrates and optional mod biomes are not replaced. Existing planets retain their saved generation version and do not gain these deposits automatically.
+
 ## Remaining work
 
 - Most terrain blocks remain building and stone-crafting materials; this pass adds selective utility without making every rock an ore.
-- Habitat-specific resource deposits remain a separate generation task.

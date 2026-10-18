@@ -254,6 +254,7 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
     boolean decorated =
         planet.generationVersion >= 2 || planet.breathable() || planet.biomeFeatures;
     PlanetWatershed.finish(chunk, planet, seed);
+    PlanetHabitatDeposits.generate(chunk, planet, seed);
     if (decorated) super.applyBiomeDecoration(level, chunk, structures);
     if (!PlanetOres.generate(level, chunk, this, planet, seed))
       PlanetDecorations.ores(chunk, planet, seed, decorated ? biomeOres(level, chunk) : Set.of());
