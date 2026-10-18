@@ -74,8 +74,18 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
               || biome.equals("marsh")
               || biome.equals("alien_river"))) {
         var habitat = PlanetWatershed.sample(seed, planet.gravity, pos.getX(), pos.getZ());
-        if (cover > -.3 && (!biome.equals("marsh") || random.nextInt(4) == 0)) {
-          boolean roots = habitat.wetness() > .62 || biome.equals("deepswamp");
+        double wetland =
+            PlanetWatershed.wetlandStrength(seed, planet.seaLevel, pos.getX(), pos.getZ(), habitat);
+        // Rootwood stands occupy raised islands; open marsh remains mostly reeds and pools.
+        boolean island =
+            wetland > .3
+                && pos.getY() >= planet.seaLevel
+                && natural(level.getBlockState(pos.below()));
+        if (cover > -.3
+            && (!biome.equals("marsh")
+                || island && random.nextBoolean()
+                || random.nextInt(4) == 0)) {
+          boolean roots = island || habitat.wetness() > .62 || biome.equals("deepswamp");
           if (random.nextInt(12) == 0) fallenTree(level, pos, random, roots);
           else if (random.nextDouble() < .65 + Math.max(0, cover) * .3) {
             double slope =
@@ -261,17 +271,20 @@ public final class PlanetVegetation extends Feature<NoneFeatureConfiguration> {
     if (habitat.banks() < .35 || pos.getY() > planet.seaLevel + 7) return false;
     BlockPos floor = level.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, pos);
     int depth = pos.getY() - floor.getY();
+    double wetland =
+        PlanetWatershed.wetlandStrength(seed, planet.seaLevel, pos.getX(), pos.getZ(), habitat);
     if (depth > 0 && level.getFluidState(floor).is(FluidTags.WATER)) {
       if (depth <= 4 && random.nextInt(3) != 0) {
         plant(level, floor, "aquatic_frond", Direction.UP);
-        if (depth <= 2 && habitat.wetness() > .65 && random.nextInt(4) == 0)
+        if (depth <= 2 && habitat.wetness() > .65 && random.nextInt(wetland > .3 ? 2 : 4) == 0)
           plant(level, pos, "floating_leaves", Direction.UP);
       }
       return true;
     }
     // Smooth patches leave exposed bars between banks of sedges and ferns.
     double patch = PlanetLandforms.field(seed, 239, pos.getX(), pos.getZ(), 13);
-    if (patch < -.25 || !natural(level.getBlockState(pos.below()))) return true;
+    if (patch < (wetland > .3 ? -.55 : -.25) || !natural(level.getBlockState(pos.below())))
+      return true;
     if (random.nextInt(75) == 0 && level.isEmptyBlock(pos)) {
       level.setBlock(pos, Blocks.MOSSY_COBBLESTONE.defaultBlockState(), 2);
       Direction direction = Direction.from2DDataValue(random.nextInt(4));

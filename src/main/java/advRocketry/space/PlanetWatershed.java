@@ -83,6 +83,19 @@ public final class PlanetWatershed {
         PlanetLandforms.field(seed, 229, x, z, 85));
   }
 
+  /** Wet lowlands taper into uplands and leave the main channel's gravity incision intact. */
+  public static double wetlandStrength(long seed, int sea, double x, double z, Sample sample) {
+    return wetlandStrength(PlanetLandforms.height(seed, "temperate", sea, false, x, z), sea, sample);
+  }
+
+  private static double wetlandStrength(double original, int sea, Sample sample) {
+    double lowland = 1 - PlanetLandforms.smooth(Math.clamp((original - sea - 4) / 12, 0, 1));
+    double inland = PlanetLandforms.smooth(Math.clamp((original - sea + 2) / 4, 0, 1));
+    double moisture = PlanetLandforms.smooth(Math.clamp((sample.wetness() - .5) / .22, 0, 1));
+    double margin = PlanetLandforms.smooth(Math.clamp((sample.channel() - .035) / .035, 0, 1));
+    return lowland * inland * moisture * margin * sample.banks();
+  }
+
   public static double height(long seed, int sea, double gravity, double x, double z) {
     return height(seed, sea, gravity, x, z, sample(seed, gravity, x, z));
   }
@@ -97,6 +110,13 @@ public final class PlanetWatershed {
     double floodplain = sea + 1.5 + sample.sediment() * 1.2;
     double valley = PlanetLandforms.mix(channelTop, floodplain, bank);
     double result = PlanetLandforms.mix(original, Math.min(original, valley), sample.banks());
+    double wetland = wetlandStrength(original, sea, sample);
+    if (wetland > 0) {
+      double pools = PlanetLandforms.field(seed, 251, x, z, 24);
+      double islands = PlanetLandforms.field(seed, 257, x, z, 9);
+      double marsh = sea - 1.6 + pools * 4 + islands * .7;
+      result = PlanetLandforms.mix(result, marsh, wetland);
+    }
     // Keep the entire mapped river submerged, including the quart-biome sampling margin.
     if (sample.river()) result = Math.min(original, channelTop);
     return Math.clamp(result, -40, 280);
@@ -154,6 +174,11 @@ public final class PlanetWatershed {
               BlockState surface;
               if (slope > 2.5 || sample.sediment() > .45 && patch < .15)
                 surface = Blocks.GRAVEL.defaultBlockState();
+              else if (wetlandStrength(seed, sea, x, z, sample) > .3 && floor < sea + 2)
+                surface =
+                    floor < sea || patch < .1
+                        ? Blocks.MUD.defaultBlockState()
+                        : BiomeMaterials.block("rooted_loam").defaultBlockState();
               else if (floor >= sea && sample.wetness() > .55 && patch > -.25)
                 surface = BiomeMaterials.block("rooted_loam").defaultBlockState();
               else surface = BiomeMaterials.block("alluvial_silt").defaultBlockState();

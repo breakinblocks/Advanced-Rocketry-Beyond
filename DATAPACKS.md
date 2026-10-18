@@ -176,6 +176,9 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   Riverbanks blend silt and rooted soil into exposed gravel according to slope,
   moisture, and local patches. Reeds line the water, sedges and groundcover extend
   inland, and aquatic fronds and floating leaves favor shallow margins.
+  Moist low floodplains contain shallow pools and muddy islands. Rootwood stands
+  favor raised islands, with open sedge patches and floating leaves around shallow
+  water. These transitions taper out before uplands and preserve main-channel incision.
 - **Biomes:** `biomes`, optionally weighted, e.g.
   `[{"biome": "minecraft:plains", "weight": 9}]`. `crater_biomes` limits craters
   to listed biomes.
