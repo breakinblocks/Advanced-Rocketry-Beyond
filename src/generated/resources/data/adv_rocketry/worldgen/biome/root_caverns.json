@@ -4,6 +4,12 @@
   },
   "downfall": 0.95,
   "effects": {
+    "additions_sound": {
+      "sound": {
+        "sound_id": "minecraft:block.pointed_dripstone.drip_water"
+      },
+      "tick_chance": 0.0015
+    },
     "fog_color": 2636378,
     "foliage_color": 5636065,
     "grass_color": 5601092,

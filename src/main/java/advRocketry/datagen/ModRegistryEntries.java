@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalLong;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
@@ -23,12 +24,14 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.Carvers;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.biome.AmbientAdditionsSettings;
 import net.minecraft.world.level.biome.AmbientMoodSettings;
 import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
@@ -238,10 +241,23 @@ final class ModRegistryEntries {
             effects
                 .ambientParticle(
                     new AmbientParticleSettings(ParticleTypes.SPORE_BLOSSOM_AIR, .007f))
+                .ambientAdditionsSound(
+                    new AmbientAdditionsSettings(
+                        Holder.direct(SoundEvents.POINTED_DRIPSTONE_DRIP_WATER), .0015))
                 .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
         case "volcanic", "volcanicbarren", "lava_tubes" ->
-            effects.ambientParticle(new AmbientParticleSettings(ParticleTypes.ASH, .006f));
-        case "crystalchasms", "mineral_caves", "subglacial_caves" ->
+            effects
+                .ambientParticle(new AmbientParticleSettings(ParticleTypes.ASH, .006f))
+                .ambientAdditionsSound(
+                    new AmbientAdditionsSettings(
+                        SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS, .001));
+        case "crystalchasms", "mineral_caves" ->
+            effects
+                .ambientAdditionsSound(
+                    new AmbientAdditionsSettings(
+                        Holder.direct(SoundEvents.AMETHYST_BLOCK_CHIME), .0008))
+                .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
+        case "subglacial_caves" ->
             effects.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
         default -> {}
       }

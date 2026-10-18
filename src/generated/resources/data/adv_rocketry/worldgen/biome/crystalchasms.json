@@ -4,6 +4,12 @@
   },
   "downfall": 0.2,
   "effects": {
+    "additions_sound": {
+      "sound": {
+        "sound_id": "minecraft:block.amethyst_block.chime"
+      },
+      "tick_chance": 8.0E-4
+    },
     "fog_color": 10467583,
     "foliage_color": 10994670,
     "grass_color": 10798573,

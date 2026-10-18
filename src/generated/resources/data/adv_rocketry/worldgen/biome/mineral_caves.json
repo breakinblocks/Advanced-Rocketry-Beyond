@@ -5,6 +5,12 @@
   "creature_spawn_probability": 0.0,
   "downfall": 0.2,
   "effects": {
+    "additions_sound": {
+      "sound": {
+        "sound_id": "minecraft:block.amethyst_block.chime"
+      },
+      "tick_chance": 8.0E-4
+    },
     "fog_color": 2894384,
     "foliage_color": 7829367,
     "grass_color": 7829367,

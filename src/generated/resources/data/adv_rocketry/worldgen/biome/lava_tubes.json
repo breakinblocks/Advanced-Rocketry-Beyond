@@ -5,6 +5,10 @@
   "creature_spawn_probability": 0.0,
   "downfall": 0.0,
   "effects": {
+    "additions_sound": {
+      "sound": "minecraft:ambient.basalt_deltas.additions",
+      "tick_chance": 0.001
+    },
     "fog_color": 4469538,
     "foliage_color": 6110765,
     "grass_color": 7820346,
