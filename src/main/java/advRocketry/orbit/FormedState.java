@@ -50,6 +50,7 @@ public final class FormedState {
         || Math.floorMod(level.getGameTime() + entity.getBlockPos().hashCode(), INTERVAL) != 0)
       return;
     boolean formed = check(entity);
+    if (entity.blackHoleGenerator()) BlackHoleAssembly.update(entity, formed);
     if (formed == entity.formed) return;
     entity.formed = formed;
     entity.setChanged();

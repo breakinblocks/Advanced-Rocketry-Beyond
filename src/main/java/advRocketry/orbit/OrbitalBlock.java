@@ -109,7 +109,10 @@ public class OrbitalBlock extends Block implements EntityBlock {
   }
 
   public static void cleanup(OrbitalBlockEntity entity) {
-    if (entity.blackHoleGenerator()) HorizonSatelliteLogic.unlink(entity);
+    if (entity.blackHoleGenerator()) {
+      BlackHoleAssembly.update(entity, false);
+      HorizonSatelliteLogic.unlink(entity);
+    }
     if (entity.spaceElevator()) SpaceElevatorLogic.unlink(entity);
     if (entity.beacon()) BeaconLogic.remove(entity);
     if (entity.dockingPort()) DockingPortLogic.remove(entity);

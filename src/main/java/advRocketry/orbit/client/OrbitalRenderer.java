@@ -8,6 +8,7 @@ import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.MachineIndicators;
+import advRocketry.client.effects.ShaderCompatibility;
 import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.OrbitalRegistry;
@@ -19,6 +20,7 @@ import com.mojang.math.Axis;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -77,6 +79,12 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
           Main.MODID, "textures/machine/atmosphere_terraformer.png");
   private static final ResourceLocation BLACK_HOLE_MODEL =
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/black_hole_generator.obj");
+  private static final ResourceLocation BLACK_HOLE_GLASS =
+      ResourceLocation.fromNamespaceAndPath(
+          Main.MODID, "multiblock/black_hole_generator_glass.obj");
+  private static final ResourceLocation BLACK_HOLE_LIGHTS =
+      ResourceLocation.fromNamespaceAndPath(
+          Main.MODID, "multiblock/black_hole_generator_lights.obj");
   private static final ResourceLocation BLACK_HOLE_TEXTURE =
       ResourceLocation.fromNamespaceAndPath(
           Main.MODID, "textures/machine/black_hole_generator.png");
@@ -84,6 +92,8 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/microwave_receiver.obj");
   private static final ResourceLocation MICROWAVE_TEXTURE =
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/microwave_receiver.png");
+  private static final RenderType CONTAINMENT_GLASS =
+      EffectRenderTypes.containmentGlass(BLACK_HOLE_TEXTURE);
   private static final Map<ResourceLocation, ObjModel> MODELS = new HashMap<>();
 
   public OrbitalRenderer(BlockEntityRendererProvider.Context context) {}
@@ -164,10 +174,9 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     if (entity.blackHoleGenerator()) {
       if (!entity.formed) return;
       pose.pushPose();
-      pose.translate(.5, .5, .5);
+      pose.translate(.5, -1, .5);
       pose.mulPose(Axis.YP.rotationDegrees(yaw(front(entity)) + 90));
-      // Keep the formed shell clear of coplanar frame and port block faces.
-      pose.scale(1.002f, 1.002f, 1.002f);
+      pose.translate(0, 0, 1);
       model(BLACK_HOLE_MODEL)
           .renderAll(
               pose,
@@ -175,6 +184,21 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
               light,
               overlay,
               -1);
+      boolean active = entity.powerMadeLastTick > 0;
+      if (!ShaderCompatibility.shadowPass()) {
+        model(BLACK_HOLE_GLASS)
+            .renderAll(pose, buffers.getBuffer(CONTAINMENT_GLASS), light, overlay, -1);
+        model(BLACK_HOLE_LIGHTS)
+            .renderAll(
+                pose,
+                buffers.getBuffer(
+                    active
+                        ? RenderType.entityTranslucentEmissive(BLACK_HOLE_TEXTURE)
+                        : RenderType.entityCutoutNoCull(BLACK_HOLE_TEXTURE)),
+                active ? LightTexture.FULL_BRIGHT : light,
+                overlay,
+                active ? -1 : 0xff53606a);
+      }
       pose.popPose();
       return;
     }

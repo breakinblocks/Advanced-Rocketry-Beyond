@@ -56,6 +56,28 @@ public final class EffectRenderTypes extends RenderType {
             .createCompositeState(false));
   }
 
+  /** Containment glass must not occlude deferred emissive geometry inside its chamber. */
+  public static RenderType containmentGlass(ResourceLocation texture) {
+    return create(
+        "adv_rocketry_containment_glass",
+        DefaultVertexFormat.NEW_ENTITY,
+        VertexFormat.Mode.QUADS,
+        1536,
+        true,
+        true,
+        CompositeState.builder()
+            .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
+            .setLightmapState(LIGHTMAP)
+            .setTextureState(new TextureStateShard(texture, false, false))
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setCullState(NO_CULL)
+            .setOverlayState(OVERLAY)
+            .setWriteMaskState(COLOR_WRITE)
+            .setDepthTestState(LEQUAL_DEPTH_TEST)
+            .setOutputState(ITEM_ENTITY_TARGET)
+            .createCompositeState(false));
+  }
+
   private EffectRenderTypes() {
     super(
         "adv_rocketry_effects",
