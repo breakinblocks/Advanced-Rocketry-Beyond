@@ -71,6 +71,9 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
   }
 
   public double surfaceHeight(int x, int z) {
+    if (PlanetGeology.enabled(planet.generationVersion, PlanetLandforms.profile(planet)))
+      return PlanetGeology.height(
+          seed, PlanetLandforms.profile(planet), planet.seaLevel, planet.gravity, x, z);
     return PlanetWatershed.enabled(planet)
         ? PlanetWatershed.height(seed, planet.seaLevel, planet.gravity, x, z)
         : PlanetLandforms.height(

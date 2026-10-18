@@ -77,7 +77,8 @@ public final class PlanetNoise {
         p.caves,
         kind,
         PlanetWatershed.enabled(p),
-        p.gravity);
+        p.gravity,
+        PlanetGeology.enabled(p.generationVersion, PlanetLandforms.profile(p)));
   }
 
   private static SurfaceRules.RuleSource state(Block b) {

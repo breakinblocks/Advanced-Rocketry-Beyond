@@ -71,7 +71,7 @@ public final class PlanetBiomeSource extends BiomeSource {
                           Codec.BOOL
                               .optionalFieldOf("channels", false)
                               .forGetter(source -> source.channels),
-                          Codec.intRange(1, 3)
+                          Codec.intRange(1, 4)
                               .optionalFieldOf("generation_version", 1)
                               .forGetter(source -> source.version),
                           Codec.doubleRange(0, Double.MAX_VALUE)
@@ -166,14 +166,16 @@ public final class PlanetBiomeSource extends BiomeSource {
                 ? List.of("adv_rocketry:lunar_tubes", "adv_rocketry:mineral_caves")
                 : profile.equals("volcanic")
                     ? List.of("adv_rocketry:lava_tubes", "adv_rocketry:mineral_caves")
-                    : planet.temperature < 250
-                        ? List.of("adv_rocketry:subglacial_caves", "adv_rocketry:mineral_caves")
-                        : List.of(
-                            "adv_rocketry:root_caverns",
-                            "minecraft:lush_caves",
-                            "adv_rocketry:fungal_caverns",
-                            "minecraft:dripstone_caves",
-                            "adv_rocketry:mineral_caves");
+                    : profile.equals("arid")
+                        ? List.of("adv_rocketry:mineral_caves", "minecraft:dripstone_caves")
+                        : planet.temperature < 250
+                            ? List.of("adv_rocketry:subglacial_caves", "adv_rocketry:mineral_caves")
+                            : List.of(
+                                "adv_rocketry:root_caverns",
+                                "minecraft:lush_caves",
+                                "adv_rocketry:fungal_caverns",
+                                "minecraft:dripstone_caves",
+                                "adv_rocketry:mineral_caves");
         for (String name : names)
           registry
               .getHolder(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(name)))
@@ -208,6 +210,7 @@ public final class PlanetBiomeSource extends BiomeSource {
                   && !profile.equals("volcanic")
                   && !profile.equals("fractured")
                   && !profile.equals("cavern")
+                  && !profile.equals("arid")
               ? registry
                   .getHolder(ResourceKey.create(Registries.BIOME, BiomeMaterials.id("alien_river")))
                   .map(b -> b)
@@ -394,9 +397,11 @@ public final class PlanetBiomeSource extends BiomeSource {
     double land = PlanetLandforms.continents(seed, x, z);
     PlanetWatershed.Sample water = watersheds ? PlanetWatershed.sample(seed, gravity, x, z) : null;
     double top =
-        watersheds
-            ? PlanetWatershed.height(seed, sea, gravity, x, z)
-            : PlanetLandforms.height(seed, profile, sea, channels, x, z);
+        PlanetGeology.enabled(version, profile)
+            ? PlanetGeology.height(seed, profile, sea, gravity, x, z)
+            : watersheds
+                ? PlanetWatershed.height(seed, sea, gravity, x, z)
+                : PlanetLandforms.height(seed, profile, sea, channels, x, z);
     double depth = top - y;
     if (water != null) moisture = Math.min(1, moisture + water.banks() * .45);
     if (!caves.isEmpty() && depth > 18 + 7 * PlanetLandforms.field(seed, 59, x, z, 95)) {

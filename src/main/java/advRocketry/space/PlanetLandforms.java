@@ -8,6 +8,12 @@ public final class PlanetLandforms {
 
   public static String profile(Planet planet) {
     if (!planet.noiseProfile.equals("auto")) return planet.noiseProfile;
+    if (planet.generationVersion >= 4
+        && planet.terrain == TerrainType.TERRESTRIAL
+        && planet.atmosphere > 25
+        && !planet.biomes.isEmpty()
+        && planet.biomes.stream().allMatch(id -> id.equals(BiomeMaterials.id("hotdryrock"))))
+      return "arid";
     return switch (planet.terrain) {
       case MOON -> "lunar";
       case VOLCANIC -> "volcanic";

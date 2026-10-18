@@ -21,15 +21,28 @@ public record PlanetDensity(
     boolean caves,
     String field,
     boolean watersheds,
-    double gravity)
+    double gravity,
+    boolean hostileGeology)
     implements DensityFunction.SimpleFunction {
   public PlanetDensity(
       long seed, String profile, int sea, boolean channels, boolean caves, String field) {
-    this(seed, profile, sea, channels, caves, field, false, 1);
+    this(seed, profile, sea, channels, caves, field, false, 1, false);
+  }
+
+  public PlanetDensity(
+      long seed,
+      String profile,
+      int sea,
+      boolean channels,
+      boolean caves,
+      String field,
+      boolean watersheds,
+      double gravity) {
+    this(seed, profile, sea, channels, caves, field, watersheds, gravity, false);
   }
 
   public static final Codec<String> PROFILE_CODEC =
-      names("temperate", "volcanic", "lunar", "fractured", "cavern");
+      names("temperate", "volcanic", "lunar", "fractured", "cavern", "arid");
 
   private static Codec<String> names(String... allowed) {
     return Codec.STRING.validate(
@@ -64,7 +77,10 @@ public record PlanetDensity(
                           .forGetter(PlanetDensity::watersheds),
                       Codec.doubleRange(0, Double.MAX_VALUE)
                           .optionalFieldOf("gravity", 1d)
-                          .forGetter(PlanetDensity::gravity))
+                          .forGetter(PlanetDensity::gravity),
+                      Codec.BOOL
+                          .optionalFieldOf("hostile_geology", false)
+                          .forGetter(PlanetDensity::hostileGeology))
                   .apply(i, PlanetDensity::new));
   private static final DeferredRegister<MapCodec<? extends DensityFunction>> TYPES =
       DeferredRegister.create(Registries.DENSITY_FUNCTION_TYPE, Main.MODID);
@@ -89,16 +105,20 @@ public record PlanetDensity(
       case "depth" -> (height(x, z) - y) / 80;
       case "surface" -> (height(x, z) - y) / 22;
       default ->
-          watersheds
-              ? PlanetWatershed.density(seed, sea, gravity, caves, x, y, z)
-              : PlanetLandforms.density(seed, profile, sea, channels, caves, x, y, z);
+          hostileGeology
+              ? PlanetGeology.density(seed, profile, sea, gravity, caves, x, y, z)
+              : watersheds
+                  ? PlanetWatershed.density(seed, sea, gravity, caves, x, y, z)
+                  : PlanetLandforms.density(seed, profile, sea, channels, caves, x, y, z);
     };
   }
 
   private double height(int x, int z) {
-    return watersheds
-        ? PlanetWatershed.height(seed, sea, gravity, x, z)
-        : PlanetLandforms.height(seed, profile, sea, channels, x, z);
+    return hostileGeology
+        ? PlanetGeology.height(seed, profile, sea, gravity, x, z)
+        : watersheds
+            ? PlanetWatershed.height(seed, sea, gravity, x, z)
+            : PlanetLandforms.height(seed, profile, sea, channels, x, z);
   }
 
   @Override
