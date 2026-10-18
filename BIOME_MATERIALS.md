@@ -42,6 +42,10 @@ Bone meal on an established plant grows one offspring in an adjacent empty space
 
 These conditions apply to the offspring location. Ordinary placement rules remain unchanged, so decorative specimens on other sturdy blocks can still be kept.
 
+## Local plant ambience
+
+Luminous seed clusters shed occasional spores; cave blossoms and spark mushrooms emit soft glints. Mineral blooms produce golden flecks, vent growth produces tiny flames, and ember curls shed ash. Waterlogged aquatic fronds release bubbles. These are local cosmetic particles controlled by the client's particle settings; they do not spread fire or change growth and drops.
+
 ## Habitat deposits
 
 New planets using generation version 9 contain small exposed pockets in native AR biomes:

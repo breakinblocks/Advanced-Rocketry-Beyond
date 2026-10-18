@@ -5,6 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
@@ -100,6 +102,32 @@ public final class HabitatPlantBlock extends Block
         || below.is(BiomeMaterials.block("alluvial_silt"))
         || below.is(BiomeMaterials.block("luminous_moss"))
         || habitat.equals("aquatic") && below.isFaceSturdy(level, support, Direction.UP);
+  }
+
+  @Override
+  public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+    SimpleParticleType particle = ambientParticle(state);
+    if (particle == null || random.nextInt(24) != 0) return;
+    boolean submerged = state.getValue(BlockStateProperties.WATERLOGGED);
+    Direction facing = state.getValue(BlockStateProperties.FACING);
+    double x = pos.getX() + .25 + random.nextDouble() * .5;
+    double y = pos.getY() + (facing == Direction.DOWN ? .15 : .7);
+    double z = pos.getZ() + .25 + random.nextDouble() * .5;
+    level.addParticle(particle, x, y, z, 0, submerged ? .02 : .005, 0);
+  }
+
+  /** Uses vanilla particles so normal client particle settings control these local accents. */
+  SimpleParticleType ambientParticle(BlockState state) {
+    if (state.is(BiomeMaterials.block("aquatic_frond")))
+      return state.getValue(BlockStateProperties.WATERLOGGED) ? ParticleTypes.BUBBLE : null;
+    if (state.is(BiomeMaterials.block("luminous_seed_cluster")))
+      return ParticleTypes.FALLING_SPORE_BLOSSOM;
+    if (state.is(BiomeMaterials.block("cave_blossom"))
+        || state.is(BiomeMaterials.block("spark_mushroom"))) return ParticleTypes.GLOW;
+    if (state.is(BiomeMaterials.block("mineral_bloom"))) return ParticleTypes.WAX_ON;
+    if (state.is(BiomeMaterials.block("vent_growth"))) return ParticleTypes.SMALL_FLAME;
+    if (state.is(BiomeMaterials.block("ember_curl"))) return ParticleTypes.ASH;
+    return null;
   }
 
   @Override
