@@ -94,7 +94,7 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
 
   @Override
   public boolean hideParts() {
-    return machine() != MachineType.ELECTRIC_ARC_FURNACE;
+    return true;
   }
 
   @Override

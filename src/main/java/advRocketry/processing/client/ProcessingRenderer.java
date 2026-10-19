@@ -79,8 +79,11 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
       int light,
       int overlay) {
     MachineType machine = tile.machine();
-    if (machine == MachineType.ELECTRIC_ARC_FURNACE
-        || !tile.getBlockState().getValue(ProcessingBlock.FORMED)) return;
+    if (!tile.getBlockState().getValue(ProcessingBlock.FORMED)) return;
+    if (machine == MachineType.ELECTRIC_ARC_FURNACE) {
+      renderArcFurnace(tile, pose, buffers, light, overlay);
+      return;
+    }
     ObjModel model = MODELS.computeIfAbsent(machine, type -> new ObjModel(modelPath(type.id())));
     ResourceLocation texture = texturePath(machine.id());
     VertexConsumer vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(texture));
@@ -301,6 +304,35 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
       }
       default -> model.renderAll(pose, vertices, light, overlay, 0xffffffff);
     }
+    pose.popPose();
+  }
+
+  private static void renderArcFurnace(
+      ProcessingBlockEntity tile,
+      PoseStack pose,
+      MultiBufferSource buffers,
+      int light,
+      int overlay) {
+    Direction facing = tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+    float angle =
+        switch (facing) {
+          case EAST -> 90;
+          case SOUTH -> 180;
+          case WEST -> 270;
+          default -> 0;
+        };
+    pose.pushPose();
+    pose.translate(.5, 0, .5);
+    pose.mulPose(Axis.YP.rotationDegrees(angle));
+    MODELS
+        .computeIfAbsent(
+            MachineType.ELECTRIC_ARC_FURNACE, type -> new ObjModel(modelPath(type.id())))
+        .renderAll(
+            pose,
+            buffers.getBuffer(RenderType.entityCutoutNoCull(texturePath("electric_arc_furnace"))),
+            light,
+            overlay,
+            -1);
     pose.popPose();
   }
 
