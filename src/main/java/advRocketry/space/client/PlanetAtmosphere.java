@@ -31,7 +31,7 @@ public final class PlanetAtmosphere {
     RenderSystem.setShader(SkyLayerShader::color);
     var buffer =
         Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-    int segments = 48, bands = 16;
+    int segments = 96, bands = 32;
     Vec3 fog = Vec3.fromRGB24(planet.fogColor);
     double light = .025 + .55 * state.daylight();
     fog = fog.scale(light * Math.min(1, state.density()));
@@ -127,8 +127,8 @@ public final class PlanetAtmosphere {
       var buffer =
           Tesselator.getInstance()
               .begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-      int segments = AdvancedRocketryConfig.effectDetail() > 1 ? 48 : 24;
-      for (int y = 0; y < 24; y++)
+      int segments = AdvancedRocketryConfig.effectDetail() > 1 ? 96 : 48;
+      for (int y = 0; y < 32; y++)
         for (int x = 0; x < segments; x++) {
           cloudVertex(buffer, view, color, alpha, u, v, scale, x, y, segments);
           cloudVertex(buffer, view, color, alpha, u, v, scale, x + 1, y, segments);
@@ -152,15 +152,15 @@ public final class PlanetAtmosphere {
       int x,
       int y,
       int segments) {
-    double elevation = y * Math.PI / 48, azimuth = x * Math.PI * 2 / segments;
+    double elevation = y * Math.PI / 64, azimuth = x * Math.PI * 2 / segments;
     float sy = (float) Math.sin(elevation), sx = (float) (Math.cos(elevation) * Math.cos(azimuth));
     float sz = (float) (Math.cos(elevation) * Math.sin(azimuth));
     float fade = PlanetSkyState.smooth(0, .23f, sy);
+    // Stereographic projection stays smooth at the horizon instead of clamping a plane projection.
+    double projection = scale * .8 / (1 + sy);
     buffer
         .addVertex(view, sx * 100, sy * 100, sz * 100)
-        .setUv(
-            (float) (sx / Math.max(.12, sy) * scale * .4 + u % 1),
-            (float) (sz / Math.max(.12, sy) * scale * .4 + v % 1))
+        .setUv((float) (sx * projection + u % 1), (float) (sz * projection + v % 1))
         .setColor((float) color.x, (float) color.y, (float) color.z, alpha * fade);
   }
 
