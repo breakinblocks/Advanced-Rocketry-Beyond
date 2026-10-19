@@ -92,6 +92,10 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/microwave_receiver.obj");
   private static final ResourceLocation MICROWAVE_TEXTURE =
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/microwave_receiver.png");
+  private static final ResourceLocation WARP_CORE_MODEL =
+      ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/warp_core.obj");
+  private static final ResourceLocation WARP_CORE_TEXTURE =
+      ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/warp_core.png");
   private static final RenderType CONTAINMENT_GLASS =
       EffectRenderTypes.containmentGlass(BLACK_HOLE_TEXTURE);
   private static final Map<ResourceLocation, ObjModel> MODELS = new HashMap<>();
@@ -199,6 +203,21 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
                 overlay,
                 active ? -1 : 0xff53606a);
       }
+      pose.popPose();
+      return;
+    }
+    if (entity.warpCore()) {
+      if (!entity.formed) return;
+      pose.pushPose();
+      Direction back = front(entity).getOpposite();
+      pose.translate(.5 + back.getStepX(), 0, .5 + back.getStepZ());
+      ObjModel warp = model(WARP_CORE_MODEL);
+      VertexConsumer surface = buffers.getBuffer(RenderType.entityCutoutNoCull(WARP_CORE_TEXTURE));
+      warp.renderPart("Frame", pose, surface, light, overlay);
+      pose.translate(0, 1.47, 0);
+      pose.mulPose(Axis.YP.rotationDegrees((entity.getLevel().getGameTime() + partialTick) * 1.2f));
+      pose.translate(0, -1.47, 0);
+      warp.renderPart("Core", pose, surface, LightTexture.FULL_BRIGHT, overlay);
       pose.popPose();
       return;
     }

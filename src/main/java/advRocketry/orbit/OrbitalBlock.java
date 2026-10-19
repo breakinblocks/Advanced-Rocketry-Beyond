@@ -81,7 +81,8 @@ public class OrbitalBlock extends Block implements EntityBlock {
                   BEACON,
                   RAILGUN,
                   ASTROBODY_PROCESSOR,
-                  ATMOSPHERE_TERRAFORMER ->
+                  ATMOSPHERE_TERRAFORMER,
+                  WARP_CORE ->
               true;
           default -> false;
         }) return RenderShape.INVISIBLE;
