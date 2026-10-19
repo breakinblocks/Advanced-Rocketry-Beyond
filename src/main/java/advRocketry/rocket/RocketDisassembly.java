@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
@@ -64,7 +65,18 @@ final class RocketDisassembly {
                   new BlockEvent.EntityPlaceEvent(
                       BlockSnapshot.create(level.dimension(), level, position),
                       level.getBlockState(position.below()),
-                      placer))
+                      placer) {
+                    // Preflight runs before placement; listeners still need the proposed block.
+                    @Override
+                    public BlockState getState() {
+                      return cell.state();
+                    }
+
+                    @Override
+                    public BlockState getPlacedBlock() {
+                      return cell.state();
+                    }
+                  })
               .isCanceled()) {
         refuseDisassembly(
             player,
