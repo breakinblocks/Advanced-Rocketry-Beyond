@@ -30,7 +30,11 @@ public final class OrbitalAssembly {
                 ? "black_hole_generator"
                 : controller.biomeScanner()
                     ? "biome_scanner"
-                    : controller.warpCore() ? "warp_core" : null;
+                    : controller.warpCore()
+                        ? "warp_core"
+                        : controller.orbitalLaser()
+                            ? "orbital_laser"
+                            : controller.spaceElevator() ? "space_elevator" : null;
     if (id == null) return;
     var structure = PlacedMultiblock.of(controller, id);
     if (formed && structure != null) {
@@ -77,7 +81,9 @@ public final class OrbitalAssembly {
         && (controller.blackHoleGenerator()
             || controller.observatory()
             || controller.biomeScanner()
-            || controller.warpCore())
+            || controller.warpCore()
+            || controller.orbitalLaser()
+            || controller.spaceElevator())
         && controller.formed;
   }
 }

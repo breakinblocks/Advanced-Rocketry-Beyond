@@ -53,7 +53,9 @@ public final class FormedState {
     if (entity.blackHoleGenerator()
         || entity.observatory()
         || entity.biomeScanner()
-        || entity.warpCore()) OrbitalAssembly.update(entity, formed);
+        || entity.warpCore()
+        || entity.orbitalLaser()
+        || entity.spaceElevator()) OrbitalAssembly.update(entity, formed);
     boolean stateChanged = entity.getBlockState().getValue(OrbitalBlock.FORMED) != formed;
     if (formed == entity.formed && !stateChanged) return;
     entity.formed = formed;

@@ -150,7 +150,9 @@ public class OrbitalBlock extends Block implements EntityBlock {
     if (entity.blackHoleGenerator()
         || entity.observatory()
         || entity.biomeScanner()
-        || entity.warpCore()) OrbitalAssembly.update(entity, false);
+        || entity.warpCore()
+        || entity.orbitalLaser()
+        || entity.spaceElevator()) OrbitalAssembly.update(entity, false);
     if (entity.blackHoleGenerator()) {
       HorizonSatelliteLogic.unlink(entity);
     }
