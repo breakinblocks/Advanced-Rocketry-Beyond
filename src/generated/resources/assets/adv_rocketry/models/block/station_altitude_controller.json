@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "adv_rocketry:block/machineorientationcontrol"
+    "all": "adv_rocketry:block/controller_station_altitude_controller"
   }
 }

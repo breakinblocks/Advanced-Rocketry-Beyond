@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "front": "adv_rocketry:block/monitorfront",
+    "front": "adv_rocketry:block/controller_rocket_builder",
     "side": "adv_rocketry:block/machinegeneric",
     "top": "adv_rocketry:block/machinegeneric"
   }

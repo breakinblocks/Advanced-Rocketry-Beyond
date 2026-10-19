@@ -339,14 +339,14 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "all",
-        "block/batteryrf");
+        "block/controller_block_energy_input_block");
     model(
         "block/block_energy_output_block",
         "minecraft:block/cube_all",
         null,
         true,
         "all",
-        "block/batteryrf");
+        "block/controller_block_energy_output_block");
     model(
         "block/block_fluid_input_block",
         "minecraft:block/cube_all",
@@ -399,7 +399,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "top",
         "block/machinegeneric",
         "front",
-        "block/controlpanel",
+        "block/controller_centrifuge",
         "side",
         "block/machinegeneric");
     connected("block/centrifuge_casing", "block/ctm/panelside", -1);
@@ -420,7 +420,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "top",
         "block/machinegeneric",
         "front",
-        "block/controlpanel",
+        "block/controller_chemical_reactor",
         "side",
         "block/machinegeneric");
     connected("block/circle_light", "block/ctm/stationlight", -1);
@@ -464,7 +464,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "front",
-        "block/monitorfront",
+        "block/controller_deployable_rocket_builder",
         "top",
         "block/machinegeneric",
         "side",
@@ -630,7 +630,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "top",
         "block/machinegeneric",
         "front",
-        "block/controlpanel",
+        "block/controller_lathe",
         "side",
         "block/machinegeneric");
     model(
@@ -809,7 +809,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "front",
-        "block/monitorfront",
+        "block/controller_rocket_builder",
         "top",
         "block/machinegeneric",
         "side",
@@ -851,7 +851,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "top",
         "block/machinegeneric",
         "front",
-        "block/controlpanel",
+        "block/controller_rolling_machine",
         "side",
         "block/machinegeneric");
     model(
@@ -904,14 +904,14 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "all",
-        "block/machineorientationcontrol");
+        "block/controller_station_altitude_controller");
     model(
         "block/station_builder",
         "minecraft:block/orientable",
         null,
         true,
         "front",
-        "block/monitorfront",
+        "block/controller_station_builder",
         "top",
         "block/machinegeneric",
         "side",
@@ -929,7 +929,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "all",
-        "block/machineorientationcontrol");
+        "block/controller_station_orientation_controller");
     model(
         "block/structure_tower",
         "minecraft:block/cube_all",
