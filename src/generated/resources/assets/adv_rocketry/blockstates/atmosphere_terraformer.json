@@ -1,15 +1,27 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,formed=false": {
       "model": "adv_rocketry:block/atmosphere_terraformer"
     },
-    "facing=north": {
+    "facing=east,formed=true": {
       "model": "adv_rocketry:block/atmosphere_terraformer"
     },
-    "facing=south": {
+    "facing=north,formed=false": {
       "model": "adv_rocketry:block/atmosphere_terraformer"
     },
-    "facing=west": {
+    "facing=north,formed=true": {
+      "model": "adv_rocketry:block/atmosphere_terraformer"
+    },
+    "facing=south,formed=false": {
+      "model": "adv_rocketry:block/atmosphere_terraformer"
+    },
+    "facing=south,formed=true": {
+      "model": "adv_rocketry:block/atmosphere_terraformer"
+    },
+    "facing=west,formed=false": {
+      "model": "adv_rocketry:block/atmosphere_terraformer"
+    },
+    "facing=west,formed=true": {
       "model": "adv_rocketry:block/atmosphere_terraformer"
     }
   }

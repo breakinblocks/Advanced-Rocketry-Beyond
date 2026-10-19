@@ -1,6 +1,7 @@
 package advRocketry.datagen;
 
 import advRocketry.Main;
+import advRocketry.orbit.OrbitalBlock;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -70,16 +71,20 @@ abstract class ModBlockStateHelpers extends BlockStateProvider {
     VariantBlockStateBuilder builder = getVariantBuilder(block);
     for (int index = 0; index < models.length; index += 2)
       for (var rotation : rotations.entrySet()) {
-        VariantBlockStateBuilder.PartialBlockstate state = builder.partialState();
-        state = apply(block, state, models[index]);
-        state = apply(block, state, rotation.getKey());
-        builder.setModels(
-            state,
-            ConfiguredModel.builder()
-                .modelFile(unchecked(models[index + 1]))
-                .rotationX(rotation.getValue()[0])
-                .rotationY(rotation.getValue()[1])
-                .build());
+        for (boolean formed :
+            block instanceof OrbitalBlock ? new boolean[] {false, true} : new boolean[] {false}) {
+          VariantBlockStateBuilder.PartialBlockstate state = builder.partialState();
+          state = apply(block, state, models[index]);
+          state = apply(block, state, rotation.getKey());
+          if (block instanceof OrbitalBlock) state = state.with(OrbitalBlock.FORMED, formed);
+          builder.setModels(
+              state,
+              ConfiguredModel.builder()
+                  .modelFile(unchecked(models[index + 1]))
+                  .rotationX(rotation.getValue()[0])
+                  .rotationY(rotation.getValue()[1])
+                  .build());
+        }
       }
   }
 

@@ -1,15 +1,27 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,formed=false": {
       "model": "adv_rocketry:block/space_elevator"
     },
-    "facing=north": {
+    "facing=east,formed=true": {
       "model": "adv_rocketry:block/space_elevator"
     },
-    "facing=south": {
+    "facing=north,formed=false": {
       "model": "adv_rocketry:block/space_elevator"
     },
-    "facing=west": {
+    "facing=north,formed=true": {
+      "model": "adv_rocketry:block/space_elevator"
+    },
+    "facing=south,formed=false": {
+      "model": "adv_rocketry:block/space_elevator"
+    },
+    "facing=south,formed=true": {
+      "model": "adv_rocketry:block/space_elevator"
+    },
+    "facing=west,formed=false": {
+      "model": "adv_rocketry:block/space_elevator"
+    },
+    "facing=west,formed=true": {
       "model": "adv_rocketry:block/space_elevator"
     }
   }

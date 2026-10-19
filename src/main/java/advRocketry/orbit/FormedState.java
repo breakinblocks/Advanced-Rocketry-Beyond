@@ -51,10 +51,20 @@ public final class FormedState {
       return;
     boolean formed = check(entity);
     if (entity.blackHoleGenerator() || entity.observatory()) OrbitalAssembly.update(entity, formed);
-    if (formed == entity.formed) return;
+    boolean stateChanged = entity.getBlockState().getValue(OrbitalBlock.FORMED) != formed;
+    if (formed == entity.formed && !stateChanged) return;
     entity.formed = formed;
     entity.setChanged();
-    level.sendBlockUpdated(
-        entity.getBlockPos(), entity.getBlockState(), entity.getBlockState(), Block.UPDATE_CLIENTS);
+    if (stateChanged)
+      level.setBlock(
+          entity.getBlockPos(),
+          entity.getBlockState().setValue(OrbitalBlock.FORMED, formed),
+          Block.UPDATE_CLIENTS);
+    else
+      level.sendBlockUpdated(
+          entity.getBlockPos(),
+          entity.getBlockState(),
+          entity.getBlockState(),
+          Block.UPDATE_CLIENTS);
   }
 }

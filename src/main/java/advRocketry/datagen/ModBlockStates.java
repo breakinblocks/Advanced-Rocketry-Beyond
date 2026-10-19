@@ -246,17 +246,17 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "legacy/libvulpes/blocks/orealuminum");
     model(
         "block/area_gravity_controller",
-        "minecraft:block/block",
+        "minecraft:block/cube_all",
         null,
         true,
-        "particle",
+        "all",
         "block/machinegeneric");
     model(
         "block/astrobody_data_processor",
-        "minecraft:block/block",
+        "minecraft:block/cube_all",
         null,
         true,
-        "particle",
+        "all",
         "block/machinegeneric");
     model(
         "block/atmosphere_detector",
@@ -274,10 +274,10 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/atmospheredetector_active");
     model(
         "block/atmosphere_terraformer",
-        "minecraft:block/block",
+        "minecraft:block/cube_all",
         null,
         true,
-        "particle",
+        "all",
         "block/panelside");
     model(
         "block/basalt",
@@ -286,13 +286,13 @@ final class ModBlockStates extends ModBlockStateHelpers {
         true,
         "all",
         "legacy/advancedrocketry/blocks/basalt");
-    model("block/beacon", "minecraft:block/block", null, true, "particle", "block/machinegeneric");
+    model("block/beacon", "minecraft:block/cube_all", null, true, "all", "block/machinegeneric");
     model(
         "block/biome_scanner",
-        "minecraft:block/block",
+        "minecraft:block/cube_all",
         null,
         true,
-        "particle",
+        "all",
         "block/machinegeneric");
     obj("block/bipropellant_fuel_tank", "models/rocket/middletank.obj", "block/rocket/middletank");
     obj(
@@ -310,10 +310,10 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/rocket/bipropellantrocketmotor");
     model(
         "block/black_hole_generator",
-        "minecraft:block/block",
+        "minecraft:block/cube_all",
         null,
         true,
-        "particle",
+        "all",
         "block/machinegeneric");
     model(
         "block/blast_brick",
@@ -707,18 +707,13 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "models/rocket/nuclearrocketmotor.obj",
         "block/rocket/nuclearrocketmotor");
     model(
-        "block/observatory",
-        "minecraft:block/block",
-        null,
-        true,
-        "particle",
-        "block/machinegeneric");
+        "block/observatory", "minecraft:block/cube_all", null, true, "all", "block/machinegeneric");
     model(
         "block/orbital_laser",
-        "minecraft:block/block",
+        "minecraft:block/cube_all",
         null,
         true,
-        "particle",
+        "all",
         "block/machinegeneric");
     obj("block/oxidizer_fuel_tank", "models/rocket/middletank.obj", "block/rocket/middletank");
     obj(
@@ -793,7 +788,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/qcrucible_side",
         "inside",
         "block/qcrucible_inner");
-    model("block/railgun", "minecraft:block/block", null, true, "particle", "block/machinegeneric");
+    model("block/railgun", "minecraft:block/cube_all", null, true, "all", "block/machinegeneric");
     model(
         "block/rocket_builder",
         "minecraft:block/orientable",
@@ -874,20 +869,15 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "all",
         "item/sawbladeassembly");
     model(
-        "block/solar_array",
-        "minecraft:block/block",
-        null,
-        true,
-        "particle",
-        "block/machinegeneric");
+        "block/solar_array", "minecraft:block/cube_all", null, true, "all", "block/machinegeneric");
     connected("block/solar_array_panel", "block/ctm/solar", -1, "adv_rocketry:solar_panel");
     connected("block/solar_panel", "block/ctm/solar", -1, "adv_rocketry:solar_array_panel");
     model(
         "block/space_elevator",
-        "minecraft:block/block",
+        "minecraft:block/cube_all",
         null,
         true,
-        "particle",
+        "all",
         "block/machinegeneric");
     model(
         "block/station_altitude_controller",

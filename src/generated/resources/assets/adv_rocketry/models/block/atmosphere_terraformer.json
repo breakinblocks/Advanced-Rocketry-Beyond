@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/block",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "particle": "adv_rocketry:block/panelside"
+    "all": "adv_rocketry:block/panelside"
   }
 }

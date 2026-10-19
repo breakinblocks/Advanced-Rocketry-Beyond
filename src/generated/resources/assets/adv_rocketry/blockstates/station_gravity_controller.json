@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "formed=false": {
+      "model": "adv_rocketry:block/station_gravity_controller"
+    },
+    "formed=true": {
       "model": "adv_rocketry:block/station_gravity_controller"
     }
   }

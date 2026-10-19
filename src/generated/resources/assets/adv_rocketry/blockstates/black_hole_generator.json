@@ -1,15 +1,27 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,formed=false": {
       "model": "adv_rocketry:block/black_hole_generator"
     },
-    "facing=north": {
+    "facing=east,formed=true": {
       "model": "adv_rocketry:block/black_hole_generator"
     },
-    "facing=south": {
+    "facing=north,formed=false": {
       "model": "adv_rocketry:block/black_hole_generator"
     },
-    "facing=west": {
+    "facing=north,formed=true": {
+      "model": "adv_rocketry:block/black_hole_generator"
+    },
+    "facing=south,formed=false": {
+      "model": "adv_rocketry:block/black_hole_generator"
+    },
+    "facing=south,formed=true": {
+      "model": "adv_rocketry:block/black_hole_generator"
+    },
+    "facing=west,formed=false": {
+      "model": "adv_rocketry:block/black_hole_generator"
+    },
+    "facing=west,formed=true": {
       "model": "adv_rocketry:block/black_hole_generator"
     }
   }

@@ -19,6 +19,8 @@ import net.minecraft.resources.ResourceLocation;
 
 /** OBJ face data from the original MIT models, rendered through Minecraft's quad buffers. */
 public final class ObjModel {
+  private static final float SURFACE_CLEARANCE = 1f / 512f;
+
   private record Vertex(float x, float y, float z) {}
 
   private record UV(float u, float v) {}
@@ -125,7 +127,11 @@ public final class ObjModel {
         Vertex position = corner.position();
         Vertex normal = corner.normal() == null ? computedNormal : corner.normal();
         vertices
-            .addVertex(pose.last(), position.x, position.y, position.z)
+            .addVertex(
+                pose.last(),
+                position.x + computedNormal.x * SURFACE_CLEARANCE,
+                position.y + computedNormal.y * SURFACE_CLEARANCE,
+                position.z + computedNormal.z * SURFACE_CLEARANCE)
             .setColor(color)
             .setUv(corner.uv.u, 1 - corner.uv.v)
             .setOverlay(overlay)
