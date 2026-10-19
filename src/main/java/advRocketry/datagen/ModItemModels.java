@@ -55,13 +55,7 @@ final class ModItemModels extends ModItemModelHelpers {
     model("item/aluminum_sheet", "minecraft:item/generated", null, true, "layer0", "item/sheet");
     model("item/amethyst_crystal_block", "block/amethyst_crystal_block", null, true);
     bucket("item/ammonia_bucket", "adv_rocketry:ammonia");
-    model(
-        "item/area_gravity_controller",
-        "minecraft:block/cube_all",
-        null,
-        true,
-        "all",
-        "block/solar");
+    model("item/area_gravity_controller", "block/area_gravity_controller", null, true);
     model(
         "item/asteroid_chip",
         "minecraft:item/generated",
@@ -105,7 +99,7 @@ final class ModItemModels extends ModItemModelHelpers {
         "layer0",
         "item/satellitepowersource0");
     model("item/battery", "minecraft:item/generated", null, true, "layer0", "item/battery0");
-    model("item/beacon", "minecraft:block/cube_all", null, true, "all", "block/beacon");
+    model("item/beacon", "block/beacon", null, true);
     model(
         "item/beacon_finder",
         "minecraft:item/generated",
@@ -120,16 +114,10 @@ final class ModItemModels extends ModItemModelHelpers {
         true,
         "layer0",
         "item/biomechanger");
-    model("item/biome_scanner", "minecraft:block/cube_all", null, true, "all", "block/solar");
+    model("item/biome_scanner", "block/biome_scanner", null, true);
     model("item/bipropellant_fuel_tank", "block/bipropellant_fuel_tank", null, true);
     model("item/bipropellant_rocket_motor", "block/bipropellant_rocket_motor", null, true);
-    model(
-        "item/black_hole_generator",
-        "minecraft:block/cube_all",
-        null,
-        true,
-        "all",
-        "block/machinegeneric");
+    model("item/black_hole_generator", "block/black_hole_generator", null, true);
     model("item/blast_brick", "block/blast_brick", null, true);
     model(
         "item/block_advanced_structure_block", "block/block_advanced_structure_block", null, true);
@@ -338,7 +326,7 @@ final class ModItemModels extends ModItemModelHelpers {
     model("item/nuclear_core", "block/nuclear_core", null, true);
     model("item/nuclear_fuel_tank", "block/nuclear_fuel_tank", null, true);
     model("item/nuclear_rocket_motor", "block/nuclear_rocket_motor", null, true);
-    model("item/observatory", "minecraft:block/cube_all", null, true, "all", "block/solar");
+    model("item/observatory", "block/observatory", null, true);
     model(
         "item/optical_sensor",
         "minecraft:item/generated",
@@ -346,7 +334,7 @@ final class ModItemModels extends ModItemModelHelpers {
         true,
         "layer0",
         "item/satelliteprimaryfunction0");
-    model("item/orbital_laser", "minecraft:block/cube_all", null, true, "all", "block/solar");
+    model("item/orbital_laser", "block/orbital_laser", null, true);
     model(
         "item/ore_mapper",
         "minecraft:item/generated",
@@ -406,7 +394,7 @@ final class ModItemModels extends ModItemModelHelpers {
     model("item/precision_assembler", "block/precision_assembler", null, true);
     model("item/precision_laser_etcher", "block/precision_laser_etcher", null, true);
     model("item/quartz_crucible", "block/quartz_crucible", null, true);
-    model("item/railgun", "minecraft:block/cube_all", null, true, "all", "block/railgun");
+    model("item/railgun", "block/railgun", null, true);
     model("item/rocket_builder", "block/rocket_builder", null, true);
     model("item/rocket_fluid_loader", "block/rocket_fluid_loader", null, true);
     model("item/rocket_fluid_unloader", "block/rocket_fluid_unloader", null, true);
@@ -456,7 +444,7 @@ final class ModItemModels extends ModItemModelHelpers {
         true,
         "layer0",
         "item/siliconwafer");
-    model("item/solar_array", "minecraft:block/cube_all", null, true, "all", "block/solar");
+    model("item/solar_array", "block/solar_array", null, true);
     model("item/solar_array_panel", "block/solar_array_panel", null, true);
     model("item/solar_cell", "minecraft:item/generated", null, true, "layer0", "block/solar");
     model("item/solar_panel", "block/solar_panel", null, true);
@@ -468,7 +456,7 @@ final class ModItemModels extends ModItemModelHelpers {
         true,
         "layer0",
         "item/space_chestplate");
-    model("item/space_elevator", "minecraft:block/cube_all", null, true, "all", "block/solar");
+    model("item/space_elevator", "block/space_elevator", null, true);
     model(
         "item/space_helmet", "minecraft:item/generated", null, true, "layer0", "item/space_helmet");
     model(
@@ -640,12 +628,7 @@ final class ModItemModels extends ModItemModelHelpers {
         "layer0",
         "item/trackingcircuit");
     model(
-        "item/unlit_torch",
-        "minecraft:item/generated",
-        null,
-        true,
-        "layer0",
-        "block/unlit_torch");
+        "item/unlit_torch", "minecraft:item/generated", null, true, "layer0", "block/unlit_torch");
     model(
         "item/user_interface",
         "minecraft:item/generated",

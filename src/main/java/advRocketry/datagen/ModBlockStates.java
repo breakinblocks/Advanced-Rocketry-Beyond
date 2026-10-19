@@ -251,7 +251,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "all",
-        "block/machinegeneric");
+        "block/controller_area_gravity_controller");
     model(
         "block/astrobody_data_processor",
         "minecraft:block/orientable",
@@ -295,14 +295,14 @@ final class ModBlockStates extends ModBlockStateHelpers {
         true,
         "all",
         "legacy/advancedrocketry/blocks/basalt");
-    model("block/beacon", "minecraft:block/cube_all", null, true, "all", "block/machinegeneric");
+    model("block/beacon", "minecraft:block/cube_all", null, true, "all", "block/controller_beacon");
     model(
         "block/biome_scanner",
         "minecraft:block/cube_all",
         null,
         true,
         "all",
-        "block/machinegeneric");
+        "block/controller_biome_scanner");
     obj("block/bipropellant_fuel_tank", "models/rocket/middletank.obj", "block/rocket/middletank");
     obj(
         "block/bipropellant_fuel_tank_bottom",
@@ -323,7 +323,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "all",
-        "block/machinegeneric");
+        "block/controller_black_hole_generator");
     model(
         "block/blast_brick",
         "minecraft:block/cube_all",
@@ -715,14 +715,19 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "models/rocket/nuclearrocketmotor.obj",
         "block/rocket/nuclearrocketmotor");
     model(
-        "block/observatory", "minecraft:block/cube_all", null, true, "all", "block/machinegeneric");
+        "block/observatory",
+        "minecraft:block/cube_all",
+        null,
+        true,
+        "all",
+        "block/controller_observatory");
     model(
         "block/orbital_laser",
         "minecraft:block/cube_all",
         null,
         true,
         "all",
-        "block/machinegeneric");
+        "block/controller_orbital_laser");
     obj("block/oxidizer_fuel_tank", "models/rocket/middletank.obj", "block/rocket/middletank");
     obj(
         "block/oxidizer_fuel_tank_bottom",
@@ -796,7 +801,8 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/qcrucible_side",
         "inside",
         "block/qcrucible_inner");
-    model("block/railgun", "minecraft:block/cube_all", null, true, "all", "block/machinegeneric");
+    model(
+        "block/railgun", "minecraft:block/cube_all", null, true, "all", "block/controller_railgun");
     model(
         "block/rocket_builder",
         "minecraft:block/orientable",
@@ -877,7 +883,12 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "all",
         "item/sawbladeassembly");
     model(
-        "block/solar_array", "minecraft:block/cube_all", null, true, "all", "block/machinegeneric");
+        "block/solar_array",
+        "minecraft:block/cube_all",
+        null,
+        true,
+        "all",
+        "block/controller_solar_array");
     connected("block/solar_array_panel", "block/ctm/solar", -1, "adv_rocketry:solar_panel");
     connected("block/solar_panel", "block/ctm/solar", -1, "adv_rocketry:solar_array_panel");
     model(
@@ -886,7 +897,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "all",
-        "block/machinegeneric");
+        "block/controller_space_elevator");
     model(
         "block/station_altitude_controller",
         "minecraft:block/cube_all",
@@ -911,7 +922,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         null,
         true,
         "all",
-        "block/machinegeneric");
+        "block/controller_station_gravity_controller");
     model(
         "block/station_orientation_controller",
         "minecraft:block/cube_all",
