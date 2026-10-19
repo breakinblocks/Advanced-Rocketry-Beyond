@@ -657,7 +657,7 @@ final class ModItemModels extends ModItemModelHelpers {
         null,
         true,
         "layer0",
-        "minecraft:block/torch");
+        "block/unlit_torch");
     model(
         "item/user_interface",
         "minecraft:item/generated",
