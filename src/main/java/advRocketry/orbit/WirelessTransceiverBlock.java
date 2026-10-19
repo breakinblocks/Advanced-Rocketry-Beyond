@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -21,10 +22,16 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Original directional wireless data node with an in-world mode control. */
 public final class WirelessTransceiverBlock extends Block implements EntityBlock {
   public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+  private static final VoxelShape NORTH_SHAPE = Block.box(4, 4, 12, 12, 12, 16);
+  private static final VoxelShape SOUTH_SHAPE = Block.box(4, 4, 0, 12, 12, 4);
+  private static final VoxelShape EAST_SHAPE = Block.box(12, 4, 4, 16, 12, 12);
+  private static final VoxelShape WEST_SHAPE = Block.box(0, 4, 4, 4, 12, 12);
 
   public WirelessTransceiverBlock(Properties properties) {
     super(properties);
@@ -39,6 +46,18 @@ public final class WirelessTransceiverBlock extends Block implements EntityBlock
   @Override
   public BlockState getStateForPlacement(BlockPlaceContext context) {
     return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+  }
+
+  @Override
+  protected VoxelShape getShape(
+      BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    return switch (state.getValue(FACING)) {
+      case NORTH -> NORTH_SHAPE;
+      case SOUTH -> SOUTH_SHAPE;
+      case EAST -> EAST_SHAPE;
+      case WEST -> WEST_SHAPE;
+      default -> NORTH_SHAPE;
+    };
   }
 
   @Override

@@ -124,7 +124,9 @@ public final class OrbitalRegistry {
   public static final Supplier<WirelessTransceiverBlock> WIRELESS_TRANSCEIVER =
       block(
           "wireless_transceiver",
-          () -> new WirelessTransceiverBlock(BlockBehaviour.Properties.of().strength(3)));
+          () ->
+              new WirelessTransceiverBlock(
+                  BlockBehaviour.Properties.of().strength(3).noOcclusion()));
   public static final Supplier<LandingPadBlock> LANDING_PAD =
       block("landing_pad", () -> new LandingPadBlock(BlockBehaviour.Properties.of().strength(3)));
   public static final Supplier<HorizontalOrbitalBlock> ASTROBODY_PROCESSOR =

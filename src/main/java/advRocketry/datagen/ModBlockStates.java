@@ -945,14 +945,14 @@ final class ModBlockStates extends ModBlockStateHelpers {
     model(
         "block/unlit_torch",
         "minecraft:block/template_torch",
-        null,
+        "minecraft:cutout",
         true,
         "torch",
         "minecraft:block/torch");
     model(
         "block/unlit_wall_torch",
         "minecraft:block/template_torch_wall",
-        null,
+        "minecraft:cutout",
         true,
         "torch",
         "minecraft:block/torch");

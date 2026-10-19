@@ -18,7 +18,7 @@ public class MachinePartBlock extends Block {
   public static final BooleanProperty ASSEMBLED = BooleanProperty.create("assembled");
 
   public MachinePartBlock(Properties properties) {
-    super(properties);
+    super(properties.noOcclusion());
     registerDefaultState(stateDefinition.any().setValue(ASSEMBLED, false));
   }
 
