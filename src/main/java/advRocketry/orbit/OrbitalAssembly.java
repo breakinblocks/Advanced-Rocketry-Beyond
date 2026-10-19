@@ -23,9 +23,16 @@ public final class OrbitalAssembly {
     if (level == null || level.isClientSide) return;
     var owners = OWNERS.computeIfAbsent(level, ignored -> new HashMap<>());
     Set<BlockPos> target = new HashSet<>();
-    var structure =
-        PlacedMultiblock.of(
-            controller, controller.observatory() ? "observatory" : "black_hole_generator");
+    String id =
+        controller.observatory()
+            ? "observatory"
+            : controller.blackHoleGenerator()
+                ? "black_hole_generator"
+                : controller.biomeScanner()
+                    ? "biome_scanner"
+                    : controller.warpCore() ? "warp_core" : null;
+    if (id == null) return;
+    var structure = PlacedMultiblock.of(controller, id);
     if (formed && structure != null) {
       if (!structure.loaded()) return;
       for (var cell : structure.cells()) {
@@ -67,7 +74,10 @@ public final class OrbitalAssembly {
     if (owner == null) return false;
     if (!level.isLoaded(owner)) return true;
     return level.getBlockEntity(owner) instanceof OrbitalBlockEntity controller
-        && (controller.blackHoleGenerator() || controller.observatory())
+        && (controller.blackHoleGenerator()
+            || controller.observatory()
+            || controller.biomeScanner()
+            || controller.warpCore())
         && controller.formed;
   }
 }

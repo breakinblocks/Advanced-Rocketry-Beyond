@@ -50,7 +50,10 @@ public final class FormedState {
         || Math.floorMod(level.getGameTime() + entity.getBlockPos().hashCode(), INTERVAL) != 0)
       return;
     boolean formed = check(entity);
-    if (entity.blackHoleGenerator() || entity.observatory()) OrbitalAssembly.update(entity, formed);
+    if (entity.blackHoleGenerator()
+        || entity.observatory()
+        || entity.biomeScanner()
+        || entity.warpCore()) OrbitalAssembly.update(entity, formed);
     boolean stateChanged = entity.getBlockState().getValue(OrbitalBlock.FORMED) != formed;
     if (formed == entity.formed && !stateChanged) return;
     entity.formed = formed;

@@ -147,7 +147,10 @@ public class OrbitalBlock extends Block implements EntityBlock {
   public static void cleanup(OrbitalBlockEntity entity) {
     if (entity.getLevel() instanceof ServerLevel level)
       MachineChunkLoading.remove(level, entity.getBlockPos());
-    if (entity.blackHoleGenerator() || entity.observatory()) OrbitalAssembly.update(entity, false);
+    if (entity.blackHoleGenerator()
+        || entity.observatory()
+        || entity.biomeScanner()
+        || entity.warpCore()) OrbitalAssembly.update(entity, false);
     if (entity.blackHoleGenerator()) {
       HorizonSatelliteLogic.unlink(entity);
     }

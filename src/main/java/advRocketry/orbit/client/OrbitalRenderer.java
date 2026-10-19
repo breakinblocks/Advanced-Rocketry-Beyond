@@ -57,6 +57,8 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/orbital_laser.png");
   private static final ResourceLocation SCANNER_MODEL =
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/biome_scanner.obj");
+  private static final ResourceLocation SCANNER_BASE_MODEL =
+      ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/biome_scanner_base.obj");
   private static final ResourceLocation SCANNER_TEXTURE =
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/biome_scanner.png");
   private static final ResourceLocation BEACON_MODEL =
@@ -128,7 +130,8 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     if (entity.railgun()) return new AABB(entity.getBlockPos()).inflate(11);
     if (entity.astrobodyProcessor()) return new AABB(entity.getBlockPos()).inflate(3);
     if (entity.atmosphereTerraformer()) return new AABB(entity.getBlockPos()).inflate(16);
-    if (entity.blackHoleGenerator()) return new AABB(entity.getBlockPos()).inflate(5);
+    if (entity.blackHoleGenerator() || entity.warpCore())
+      return new AABB(entity.getBlockPos()).inflate(5);
     return new AABB(entity.getBlockPos()).inflate(entity.observatory() ? 6 : 3);
   }
 
@@ -208,6 +211,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     }
     if (entity.warpCore()) {
       if (!entity.formed) return;
+      light = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockPos().above(4));
       pose.pushPose();
       Direction back = front(entity).getOpposite();
       pose.translate(.5 + back.getStepX(), 0, .5 + back.getStepZ());
@@ -231,6 +235,16 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     }
     if (entity.biomeScanner()) {
       if (!entity.formed) return;
+      pose.pushPose();
+      pose.translate(.5, 0, .5);
+      model(SCANNER_BASE_MODEL)
+          .renderAll(
+              pose,
+              buffers.getBuffer(RenderType.entityCutoutNoCull(WARP_CORE_TEXTURE)),
+              LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockPos().above()),
+              overlay,
+              -1);
+      pose.popPose();
       pose.pushPose();
       pose.translate(0, 0, 1);
       model(SCANNER_MODEL)

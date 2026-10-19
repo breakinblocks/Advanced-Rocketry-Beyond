@@ -314,6 +314,7 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
       int light,
       int overlay) {
     Direction facing = tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+    light = LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos().above(5));
     float angle =
         switch (facing) {
           case EAST -> 90;
