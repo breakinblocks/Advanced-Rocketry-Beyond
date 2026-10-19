@@ -184,9 +184,10 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
       }
     }
     if (recipe == null) return;
+    // Missing ingredients pause the selected batch instead of discarding its chance roll.
     if (!ProcessingRecipe.available(
-            recipe.requiredItems(), recipe.fluidInputs(), itemContents(), fluidContents())
-        || !pendingOutputs.resolvable()) {
+        recipe.requiredItems(), recipe.fluidInputs(), itemContents(), fluidContents())) return;
+    if (!pendingOutputs.resolvable()) {
       reset();
       return;
     }
@@ -197,7 +198,7 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
     running = true;
     progress++;
     if (progress >= duration) {
-      consume(recipe.inputs(), recipe.fluidInputs());
+      consume(recipe.inputs(), recipe.fluidInputs(), recipe.catalysts());
       produceOutputs();
       reset();
     }
@@ -316,13 +317,38 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
   }
 
   private void consume(List<SizedIngredient> items, List<SizedFluidIngredient> fluids) {
+    consume(items, fluids, List.of());
+  }
+
+  private void consume(
+      List<SizedIngredient> items,
+      List<SizedFluidIngredient> fluids,
+      List<SizedIngredient> catalysts) {
+    // Match the same catalyst-first reservation used by ProcessingRecipe.available.
+    List<ItemStack> available = itemContents().stream().map(ItemStack::copy).toList();
+    for (var catalyst : catalysts) {
+      int remaining = catalyst.count();
+      for (ItemStack stack : available) {
+        if (remaining == 0) break;
+        if (stack.isEmpty() || !catalyst.ingredient().test(stack)) continue;
+        int reserved = Math.min(remaining, stack.getCount());
+        stack.shrink(reserved);
+        remaining -= reserved;
+      }
+    }
     for (var ingredient : items) {
       int remaining = ingredient.count();
+      int index = 0;
       for (var port : getItemInTiles())
         for (int slot = 0; slot < port.inventory.getSlots(); slot++) {
-          ItemStack stack = port.inventory.getStackInSlot(slot);
+          ItemStack stack = available.get(index++);
           if (remaining == 0 || stack.isEmpty() || !ingredient.ingredient().test(stack)) continue;
-          remaining -= port.inventory.extractItem(slot, remaining, false).getCount();
+          int consumed =
+              port.inventory
+                  .extractItem(slot, Math.min(remaining, stack.getCount()), false)
+                  .getCount();
+          stack.shrink(consumed);
+          remaining -= consumed;
         }
     }
     for (var ingredient : fluids) {

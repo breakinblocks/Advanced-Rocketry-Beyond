@@ -41,6 +41,13 @@ Outputs preserve their component patches when resolved through tags. Each operat
 may produce at most 4096 items, including weighted rolls; output pools have at most
 256 entries. Large results are split into stacks before saving.
 
+Processing reserves catalysts before consumables, including when their ingredient
+matches overlap. Ingredients are consumed only when the batch completes. Full
+outputs or insufficient power pause the batch without consuming ingredients or FE.
+Temporary missing inputs also pause the selected batch; restore its ingredients
+to resume it. Progress and selected chance outputs survive saving and loading or
+reforming the multiblock while retaining its controller.
+
 ### Common fluids and output overrides
 
 Suits, oxygen vents and chargers accept `#c:oxygen`; jetpacks and chargers accept
