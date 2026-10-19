@@ -32,7 +32,9 @@ import net.minecraft.world.phys.Vec3;
 /** Original 50-block laser: a short held beam mines a fixed block or strikes an entity. */
 public final class LaserGunItem extends Item {
   private static final int REACH = 50;
+  private static final int CHARGE_TICKS = 16;
   private final Map<LivingEntity, BlockPos> lockedTargets = new WeakHashMap<>();
+  private final Map<LivingEntity, Long> targetStartTicks = new WeakHashMap<>();
 
   public LaserGunItem(Properties properties) {
     super(
@@ -53,14 +55,14 @@ public final class LaserGunItem extends Item {
 
   @Override
   public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-    if (!level.isClientSide) lockedTargets.remove(player);
+    if (!level.isClientSide) clearTarget(player);
     player.startUsingItem(hand);
     return InteractionResultHolder.consume(player.getItemInHand(hand));
   }
 
   @Override
   public int getUseDuration(ItemStack stack, LivingEntity entity) {
-    return 16;
+    return 72000;
   }
 
   @Override
@@ -100,8 +102,7 @@ public final class LaserGunItem extends Item {
           SoundSource.PLAYERS,
           1,
           1);
-      player.stopUsingItem();
-      lockedTargets.remove(player);
+      clearTarget(player);
       return;
     }
     if (block.getType() == HitResult.Type.BLOCK && block instanceof BlockHitResult hit) {
@@ -116,30 +117,31 @@ public final class LaserGunItem extends Item {
             1);
       BlockPos previous = lockedTargets.putIfAbsent(player, hit.getBlockPos());
       if (previous != null && !previous.equals(hit.getBlockPos())) {
-        player.stopUsingItem();
-        lockedTargets.remove(player);
+        lockedTargets.put(player, hit.getBlockPos());
+        targetStartTicks.put(player, level.getGameTime());
+      } else if (previous == null) {
+        targetStartTicks.put(player, level.getGameTime());
+      } else if (level.getGameTime() - targetStartTicks.getOrDefault(player, level.getGameTime())
+              >= CHARGE_TICKS
+          && level.mayInteract(player, hit.getBlockPos())
+          && level.getBlockState(hit.getBlockPos()).getDestroySpeed(level, hit.getBlockPos()) >= 0
+          && player instanceof ServerPlayer shooter) {
+        shooter.gameMode.destroyBlock(hit.getBlockPos());
+        clearTarget(player);
       }
+    } else {
+      clearTarget(player);
     }
-  }
-
-  @Override
-  public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity user) {
-    if (level.isClientSide) return stack;
-    BlockPos target = lockedTargets.remove(user);
-    if (target != null && user instanceof ServerPlayer player) {
-      HitResult hit = player.pick(REACH, 1, false);
-      if (hit instanceof BlockHitResult block
-          && block.getBlockPos().equals(target)
-          && level.mayInteract(player, target)
-          && level.getBlockState(target).getDestroySpeed(level, target) >= 0)
-        player.gameMode.destroyBlock(target);
-    }
-    return stack;
   }
 
   @Override
   public void releaseUsing(ItemStack stack, Level level, LivingEntity user, int remaining) {
-    if (!level.isClientSide) lockedTargets.remove(user);
+    if (!level.isClientSide) clearTarget(user);
+  }
+
+  private void clearTarget(LivingEntity user) {
+    lockedTargets.remove(user);
+    targetStartTicks.remove(user);
   }
 
   BlockPos lockedTarget(LivingEntity user) {
