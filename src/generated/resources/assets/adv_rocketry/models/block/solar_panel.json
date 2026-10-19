@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/block",
+  "parent": "minecraft:block/cube_all",
   "connect_with": [
     "adv_rocketry:solar_array_panel"
   ],

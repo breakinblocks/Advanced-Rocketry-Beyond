@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/block",
+  "parent": "minecraft:block/cube_all",
   "loader": "adv_rocketry:connected",
   "textures": {
     "base": "adv_rocketry:block/ctm/concrete/base",

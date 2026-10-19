@@ -1030,6 +1030,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
     states("aluminum_block", NONE, "", "block/aluminum_block");
     states("aluminum_coil", NONE, "", "block/aluminum_coil");
     states("aluminum_ore", NONE, "", "block/aluminum_ore");
+    connected("block/amethyst_crystal_block", "block/ctm/crystal", 0);
     states("amethyst_crystal_block", NONE, "", "block/amethyst_crystal_block");
     states("ammonia", NONE, "", "minecraft:block/water");
     states("area_gravity_controller", NONE, "", "block/area_gravity_controller");
@@ -1097,6 +1098,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "state=true",
         "block/chemical_reactor_formed");
     states("circle_light", NONE, "", "block/circle_light");
+    connected("block/citrine_crystal_block", "block/ctm/crystal", 0);
     states("citrine_crystal_block", NONE, "", "block/citrine_crystal_block");
     states("coal_generator", HORIZONTAL, "", "block/coal_generator");
     states("fuel_generator", HORIZONTAL, "", "block/fuel_generator");
@@ -1144,6 +1146,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/elite_motor",
         "assembled=true",
         "block/elite_motor");
+    connected("block/emerald_crystal_block", "block/ctm/crystal", 0);
     states("emerald_crystal_block", NONE, "", "block/emerald_crystal_block");
     states(
         "enhanced_motor",
@@ -1321,7 +1324,9 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/rolling_machine",
         "state=true",
         "block/rolling_machine_formed");
+    connected("block/ruby_crystal_block", "block/ctm/crystal", 0);
     states("ruby_crystal_block", NONE, "", "block/ruby_crystal_block");
+    connected("block/sapphire_crystal_block", "block/ctm/crystal", 0);
     states("sapphire_crystal_block", NONE, "", "block/sapphire_crystal_block");
     states("satellite_builder", NONE, "", "block/satellite_builder");
     states("satellite_hatch", NONE, "", "block/satellite_hatch");
@@ -1354,6 +1359,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
     states("warp_controller", NONE, "", "block/warp_controller");
     states("warp_core", HORIZONTAL, "", "block/warp_core");
     states("wireless_transceiver", HORIZONTAL, "", "block/wireless_transceiver");
+    connected("block/wulfentite_crystal_block", "block/ctm/crystal", 0);
     states("wulfentite_crystal_block", NONE, "", "block/wulfentite_crystal_block");
   }
 }

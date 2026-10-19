@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "loader": "adv_rocketry:connected",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "base": "adv_rocketry:block/ctm/crystal/base",
+    "center": "adv_rocketry:block/ctm/crystal/center",
+    "corner": "adv_rocketry:block/ctm/crystal/corner",
+    "horizontal": "adv_rocketry:block/ctm/crystal/horizontal",
+    "particle": "adv_rocketry:block/ctm/crystal/base",
+    "vertical": "adv_rocketry:block/ctm/crystal/vertical"
+  },
+  "tint_index": 0
+}

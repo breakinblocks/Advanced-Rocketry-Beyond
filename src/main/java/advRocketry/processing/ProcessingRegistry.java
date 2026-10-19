@@ -258,6 +258,12 @@ public final class ProcessingRegistry {
                               .sound(SoundType.WOOD)
                               .lightLevel(state -> 15)
                               .ignitedByLava());
+                  case "amethyst_crystal_block", "citrine_crystal_block", "emerald_crystal_block",
+                      "ruby_crystal_block", "sapphire_crystal_block", "wulfentite_crystal_block" ->
+                      new CrystalBlock(
+                          BlockBehaviour.Properties.of()
+                              .strength(3f)
+                              .requiresCorrectToolForDrops());
                   default ->
                       new MachinePartBlock(
                           BlockBehaviour.Properties.of()

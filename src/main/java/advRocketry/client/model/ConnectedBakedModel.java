@@ -157,6 +157,13 @@ public final class ConnectedBakedModel implements IDynamicBakedModel {
       BlockState state, Direction side, RandomSource random, ModelData data, RenderType type) {
     if (insetTop && side == Direction.UP) return List.of();
     if (side == null) {
+      if (state == null) {
+        List<BakedQuad> itemQuads = new ArrayList<>(24);
+        for (Direction face : Direction.values())
+          for (int quadrant = 0; quadrant < 4; quadrant++)
+            itemQuads.add(quads[face.ordinal()][quadrant][0]);
+        return itemQuads;
+      }
       if (!insetTop) return List.of();
       side = Direction.UP;
     }
