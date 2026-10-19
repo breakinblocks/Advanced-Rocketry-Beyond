@@ -164,8 +164,9 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   `biome_features`. Generation versions 2 through 8 run native biome features and modifiers;
   individual planetary plants apply their own pressure, temperature, and attachment rules.
   `noise_profile` accepts `auto`, `temperate`, `volcanic`, `lunar`, `fractured`,
-  `cavern`, `arid`, `storm`, or `glacial`. `auto` derives a profile from terrain, pressure, temperature,
-  and an exclusively hot-dry-rock palette.
+  `cavern`, `arid`, `storm`, `glacial`, or `oceanic`. `auto` derives a profile from terrain, pressure, temperature,
+  and an exclusively hot-dry-rock palette. `oceanic` keeps the whole seabed at least six blocks under
+  `sea_level`, with ridged trenches, and lets ocean biomes cover the planet; `auto` never picks it.
   The selected profile is stored with the planet. `generation_version` defaults
   to `8`; `1` selects the original terrain implementation and `2` selects
   the continuous terrain without watershed habitats. The version is saved per planet.

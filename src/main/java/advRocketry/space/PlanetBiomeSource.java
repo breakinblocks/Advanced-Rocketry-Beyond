@@ -211,6 +211,7 @@ public final class PlanetBiomeSource extends BiomeSource {
                   && !profile.equals("fractured")
                   && !profile.equals("cavern")
                   && !profile.equals("arid")
+                  && !profile.equals("oceanic")
               ? registry
                   .getHolder(ResourceKey.create(Registries.BIOME, BiomeMaterials.id("alien_river")))
                   .map(b -> b)
@@ -397,7 +398,7 @@ public final class PlanetBiomeSource extends BiomeSource {
             ? PlanetCaverns.moisture(seed, x, y, z)
             : PlanetLandforms.moisture(seed, x, z);
     double temperature = PlanetLandforms.temperature(seed, x, z);
-    double land = PlanetLandforms.continents(seed, x, z);
+    double land = profile.equals("oceanic") ? -1 : PlanetLandforms.continents(seed, x, z);
     PlanetWatershed.Sample water = watersheds ? PlanetWatershed.sample(seed, gravity, x, z) : null;
     double top =
         PlanetGeology.enabled(version, profile)

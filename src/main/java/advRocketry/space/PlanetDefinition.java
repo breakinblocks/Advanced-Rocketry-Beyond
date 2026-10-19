@@ -274,7 +274,8 @@ public record PlanetDefinition(
                                                 "cavern",
                                                 "arid",
                                                 "storm",
-                                                "glacial")
+                                                "glacial",
+                                                "oceanic")
                                             .contains(value)
                                         ? DataResult.success(value)
                                         : DataResult.error(

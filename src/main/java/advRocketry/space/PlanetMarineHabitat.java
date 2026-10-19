@@ -41,7 +41,8 @@ public record PlanetMarineHabitat(
         && planet.atmosphere > 25
         && planet.temperature >= 175
         && planet.temperature <= 450
-        && PlanetLandforms.profile(planet).equals("temperate")
+        && (PlanetLandforms.profile(planet).equals("temperate")
+            || PlanetLandforms.profile(planet).equals("oceanic"))
         && planet.ocean.equals(ResourceLocation.withDefaultNamespace("water"));
   }
 

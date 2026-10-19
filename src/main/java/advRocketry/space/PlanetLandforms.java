@@ -98,6 +98,10 @@ public final class PlanetLandforms {
     }
     if (profile.equals("fractured")) h = sea + 40 + broad * 85 + detail * 15;
     if (profile.equals("cavern")) h = 285;
+    if (profile.equals("oceanic")) {
+      double trench = Math.pow(ridge, 6) * Math.max(0, .15 - broad) * 60;
+      h = Math.min(sea - 6, sea - 30 + land * 16 + broad * 12 + detail * 5 - trench);
+    }
     if (channels && !profile.equals("fractured") && !profile.equals("cavern")) {
       double bank = smooth(Math.clamp((channel(seed, x, z) - .045) / .085, 0, 1));
       h = Math.min(h, mix(sea - 5 + detail, h, bank));
