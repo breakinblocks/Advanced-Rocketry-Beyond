@@ -358,7 +358,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     pose.pushPose();
     pose.translate(.5, 0, .5);
     pose.mulPose(Axis.YP.rotationDegrees(yaw(front(entity))));
-    pose.translate(2.5, 0, 4.5);
+    pose.translate(-4, 0, 1);
     model(LASER_MODEL)
         .renderAll(
             pose,

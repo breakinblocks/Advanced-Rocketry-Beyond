@@ -70,14 +70,11 @@ public class OrbitalBlock extends Block implements EntityBlock {
   public RenderShape getRenderShape(BlockState state) {
     if (state.getValue(FORMED)
         && switch (kind) {
-          case MICROWAVE_RECEIVER,
-                  SOLAR_ARRAY,
+          case SOLAR_ARRAY,
                   BLACK_HOLE_GENERATOR,
                   OBSERVATORY,
                   SPACE_ELEVATOR,
                   AREA_GRAVITY_CONTROLLER,
-                  ORBITAL_LASER,
-                  BIOME_SCANNER,
                   BEACON,
                   RAILGUN,
                   ASTROBODY_PROCESSOR,
