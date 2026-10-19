@@ -77,9 +77,9 @@ public final class HovercraftEntity extends Entity {
   @Override
   public void tick() {
     super.tick();
-    if (level().isClientSide) return;
     boolean controlled =
         getFirstPassenger() instanceof Player && level().getGameTime() - lastInputTick <= 3;
+    if (level().isClientSide && !controlled) return;
     float forward = controlled ? forwardInput : 0;
     float turn = controlled ? turnInput : 0;
     boolean up = controlled && ascending;

@@ -41,14 +41,14 @@ public final class HovercraftClient {
   }
 
   public static void controls(MovementInputUpdateEvent event) {
-    if (!(event.getEntity().getVehicle() instanceof HovercraftEntity)) return;
+    if (!(event.getEntity().getVehicle() instanceof HovercraftEntity craft)) return;
     var input = event.getInput();
     boolean active = Minecraft.getInstance().screen == null;
-    PacketDistributor.sendToServer(
-        new HovercraftControl(
-            active ? input.forwardImpulse : 0,
-            active ? -input.leftImpulse : 0,
-            active && (UP.isDown() || input.jumping),
-            active && DOWN.isDown()));
+    float forward = active ? input.forwardImpulse : 0;
+    float turn = active ? -input.leftImpulse : 0;
+    boolean up = active && (UP.isDown() || input.jumping);
+    boolean down = active && DOWN.isDown();
+    craft.control(event.getEntity(), forward, turn, up, down);
+    PacketDistributor.sendToServer(new HovercraftControl(forward, turn, up, down));
   }
 }
