@@ -20,7 +20,8 @@ final class RocketDisassembly {
   private RocketDisassembly() {}
 
   static void disassemble(RocketEntity rocket, @Nullable Player player) {
-    if (!(rocket.level() instanceof ServerLevel level)
+    if (rocket.isRemoved()
+        || !(rocket.level() instanceof ServerLevel level)
         || rocket.flight() != 0
         || player != null && !player.mayBuild()
         || !rocket.getPassengers().isEmpty()) return;
