@@ -24,6 +24,7 @@ public final class ProcessingClient {
     ProcessingRegistry.clientMachineTick = MachineSounds::tick;
     event.registerBlockEntityRenderer(
         ProcessingRegistry.BLOCK_ENTITY.get(), ProcessingRenderer::new);
+    event.registerBlockEntityRenderer(MachinePorts.ENTITY.get(), PortMarkerRenderer::new);
   }
 
   public static void registerScreens(RegisterMenuScreensEvent event) {
