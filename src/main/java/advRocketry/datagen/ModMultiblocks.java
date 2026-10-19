@@ -113,7 +113,7 @@ final class ModMultiblocks {
         .key('T', "adv_rocketry:structure_tower")
         .key('V', "adv_rocketry:vacuum_laser")
         .key('a', true)
-        .key('s', "#minecraft:slabs")
+        .key('s', "#adv_rocketry:machine_slabs")
         .register();
     new Builder(context, "centrifuge", 8, true)
         .layer("aSl", "UUS", "UU ")
@@ -216,7 +216,7 @@ final class ModMultiblocks {
         .key('O', "adv_rocketry:block_item_output_block")
         .key('P', "adv_rocketry:block_energy_input_block")
         .key('d', "adv_rocketry:data_bus")
-        .key('s', "#minecraft:slabs")
+        .key('s', "#adv_rocketry:machine_slabs")
         .register();
     new Builder(context, "railgun", 19, true)
         .layer(
@@ -338,7 +338,7 @@ final class ModMultiblocks {
         .key('P', "adv_rocketry:block_energy_input_block")
         .key('S', "adv_rocketry:block_structure_block")
         .key('X', "adv_rocketry:titanium_block")
-        .key('s', "#minecraft:slabs")
+        .key('s', "#adv_rocketry:machine_slabs")
         .register();
     new Builder(context, "atmosphere_terraformer", 20, true)
         .layer(
@@ -620,7 +620,7 @@ final class ModMultiblocks {
         .key('M', "#adv_rocketry:motors")
         .key('P', "adv_rocketry:block_energy_input_block")
         .key('a', true)
-        .key('s', "#minecraft:slabs")
+        .key('s', "#adv_rocketry:machine_slabs")
         .register();
     new Builder(context, "observatory", 23, true)
         .layer("     ", " SnS ", " SSS ", " SSS ", "     ")

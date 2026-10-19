@@ -396,6 +396,7 @@ shipped letters for ports, motors, coils, lenses and panels.
 | `adv_rocketry:laser_drill_ores` | item | Orbital laser ore pool |
 | `adv_rocketry:geode_ores` | block | Geode ore pool |
 | `adv_rocketry:motors`, `coils`, `machine_ports` | block | Parts the multiblocks accept |
+| `adv_rocketry:machine_slabs` | block | Slabs accepted by the etcher, processor, railgun and elevator |
 
 ## Data maps
 

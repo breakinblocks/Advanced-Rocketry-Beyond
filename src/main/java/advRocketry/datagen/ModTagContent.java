@@ -38,6 +38,12 @@ final class ModTagContent {
   private ModTagContent() {}
 
   static void blocks(ModTagProvider<Block> tags) {
+    tags.values(
+        "adv_rocketry:machine_slabs",
+        "minecraft:smooth_stone_slab",
+        "minecraft:stone_slab",
+        "minecraft:polished_andesite_slab",
+        "minecraft:polished_deepslate_slab");
     RocketRegistry.PARTS
         .values()
         .forEach(

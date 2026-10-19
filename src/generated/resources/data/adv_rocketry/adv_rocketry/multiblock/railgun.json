@@ -48,7 +48,7 @@
     },
     "s": {
       "any": [
-        "#minecraft:slabs"
+        "#adv_rocketry:machine_slabs"
       ]
     }
   },
