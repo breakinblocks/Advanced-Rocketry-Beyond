@@ -98,6 +98,12 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/warp_core.obj");
   private static final ResourceLocation WARP_CORE_TEXTURE =
       ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/warp_core.png");
+  private static final ResourceLocation WARP_CORE_GLASS_TEXTURE =
+      ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/warp_core_glass.png");
+  private static final ResourceLocation WARP_CORE_RADIATION_TEXTURE =
+      ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/warp_core_radiation.png");
+  private static final RenderType WARP_CORE_GLASS =
+      EffectRenderTypes.containmentGlass(WARP_CORE_GLASS_TEXTURE);
   private static final RenderType CONTAINMENT_GLASS =
       EffectRenderTypes.containmentGlass(BLACK_HOLE_TEXTURE);
   private static final Map<ResourceLocation, ObjModel> MODELS = new HashMap<>();
@@ -216,12 +222,39 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
       Direction back = front(entity).getOpposite();
       pose.translate(.5 + back.getStepX(), 0, .5 + back.getStepZ());
       ObjModel warp = model(WARP_CORE_MODEL);
-      VertexConsumer surface = buffers.getBuffer(RenderType.entityCutoutNoCull(WARP_CORE_TEXTURE));
-      warp.renderPart("Frame", pose, surface, light, overlay);
-      pose.translate(0, 1.47, 0);
-      pose.mulPose(Axis.YP.rotationDegrees((entity.getLevel().getGameTime() + partialTick) * 1.2f));
-      pose.translate(0, -1.47, 0);
-      warp.renderPart("Core", pose, surface, LightTexture.FULL_BRIGHT, overlay);
+      warp.renderPart(
+          "Pedestal",
+          pose,
+          buffers.getBuffer(RenderType.entityCutoutNoCull(WARP_CORE_TEXTURE)),
+          light,
+          overlay);
+      if (!ShaderCompatibility.shadowPass()) {
+        float time = entity.getLevel().getGameTime() + partialTick;
+        int pulse = 190 + (int) (42 * Math.sin(time * .09));
+        pose.pushPose();
+        pose.mulPose(Axis.YP.rotationDegrees(time * 1.2f));
+        warp.renderPart(
+            "Radiation",
+            pose,
+            buffers.getBuffer(RenderType.entityTranslucentEmissive(WARP_CORE_RADIATION_TEXTURE)),
+            LightTexture.FULL_BRIGHT,
+            overlay,
+            pulse << 24 | 0x00ffffff);
+        pose.popPose();
+        VertexConsumer glow = buffers.getBuffer(EffectRenderTypes.GLOW);
+        EffectGeometry.beam(
+            pose,
+            glow,
+            new Vec3(0, .64, 0),
+            new Vec3(0, 4.08, 0),
+            .15,
+            0x444acaff);
+        for (int ring = 0; ring < 3; ring++) {
+          double height = .78 + ((ring * 1.14 + time * .025) % 3.2);
+          EffectGeometry.ring(pose, glow, .32, height, .035, 0x8854d5ff, 16);
+        }
+        warp.renderPart("Glass", pose, buffers.getBuffer(WARP_CORE_GLASS), light, overlay);
+      }
       pose.popPose();
       return;
     }
