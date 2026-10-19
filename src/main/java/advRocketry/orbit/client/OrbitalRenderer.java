@@ -227,7 +227,9 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     if (entity.beacon()) {
       if (!entity.beaconEnabled || !entity.formed) return;
       pose.pushPose();
-      pose.translate(-.5, 0, 1.5);
+      // The model's base overlays the still-visible support blocks.
+      pose.translate(-.5, .002, 1.5);
+      pose.scale(1.002f, 1.002f, 1.002f);
       model(BEACON_MODEL)
           .renderAll(
               pose,
