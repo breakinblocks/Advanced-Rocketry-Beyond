@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "adv_rocketry:block/solar"
-  }
+  "parent": "adv_rocketry:block/astrobody_data_processor"
 }

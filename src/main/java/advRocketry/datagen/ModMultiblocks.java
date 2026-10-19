@@ -184,7 +184,7 @@ final class ModMultiblocks {
         .key('I', "adv_rocketry:block_item_input_block")
         .key('S', "adv_rocketry:block_structure_block")
         .key('X', "adv_rocketry:titanium_block")
-        .key('g', "minecraft:gold_block")
+        .key('g', "adv_rocketry:titanium_block")
         .register();
     new Builder(context, "satellite_builder", 15, false)
         .layer("c")
@@ -563,7 +563,7 @@ final class ModMultiblocks {
         .key('P', "adv_rocketry:block_energy_input_block")
         .key('k', "adv_rocketry:concrete")
         .key('v', "adv_rocketry:oxygen_vent")
-        .key('y', "minecraft:clay")
+        .key('y', "adv_rocketry:concrete")
         .register();
     new Builder(context, "orbital_laser", 21, true)
         .layer(
@@ -628,7 +628,7 @@ final class ModMultiblocks {
         .layer(" SSS ", "SaaaS", "SaaaS", "SanaS", " SSS ")
         .layer(" *c* ", "*SSS*", "*SSS*", "*SSS*", " *** ")
         .layer(" *** ", "*TTT*", "*TMT*", "*TTT*", " *** ")
-        .key('*', "minecraft:iron_block", "#adv_rocketry:machine_ports")
+        .key('*', "adv_rocketry:steel_block", "#adv_rocketry:machine_ports")
         .key('M', "#adv_rocketry:motors")
         .key('S', "adv_rocketry:block_structure_block")
         .key('T', "adv_rocketry:structure_tower")

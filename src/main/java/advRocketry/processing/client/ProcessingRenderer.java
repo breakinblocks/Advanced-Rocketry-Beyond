@@ -33,6 +33,9 @@ import net.minecraft.world.phys.Vec3;
 /** Original model coordinates and animation transforms, using modern vertex buffers. */
 public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingBlockEntity> {
   private static final Map<MachineType, ObjModel> MODELS = new HashMap<>();
+  private static final ResourceLocation ARC_CONTROLS =
+      ResourceLocation.fromNamespaceAndPath(
+          Main.MODID, "textures/block/electric_arc_furnace_controls.png");
 
   public ProcessingRenderer(BlockEntityRendererProvider.Context context) {}
 
@@ -325,6 +328,9 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
     pose.pushPose();
     pose.translate(.5, 0, .5);
     pose.mulPose(Axis.YP.rotationDegrees(angle));
+    pose.translate(0, 1.5, 2);
+    pose.scale(1.008f, 1.008f, 1.008f);
+    pose.translate(0, -1.5, -2);
     MODELS
         .computeIfAbsent(
             MachineType.ELECTRIC_ARC_FURNACE, type -> new ObjModel(modelPath(type.id())))
@@ -334,6 +340,20 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
             light,
             overlay,
             -1);
+    VertexConsumer controls = buffers.getBuffer(RenderType.entityCutoutNoCull(ARC_CONTROLS));
+    int panelLight = LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos().relative(facing));
+    float[][] corners = {
+      {.5f, 1, -.56f}, {-.5f, 1, -.56f}, {-.5f, 0, -.56f}, {.5f, 0, -.56f}
+    };
+    float[][] uv = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
+    for (int i = 0; i < 4; i++)
+      controls
+          .addVertex(pose.last(), corners[i][0], corners[i][1], corners[i][2])
+          .setColor(-1)
+          .setUv(uv[i][0], uv[i][1])
+          .setOverlay(overlay)
+          .setLight(panelLight)
+          .setNormal(pose.last(), 0, 0, -1);
     pose.popPose();
   }
 

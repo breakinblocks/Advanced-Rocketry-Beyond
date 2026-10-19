@@ -69,23 +69,11 @@ final class ModItemModels extends ModItemModelHelpers {
         true,
         "layer0",
         "item/asteroididchip");
-    model(
-        "item/astrobody_data_processor",
-        "minecraft:block/cube_all",
-        null,
-        true,
-        "all",
-        "block/solar");
+    model("item/astrobody_data_processor", "block/astrobody_data_processor", null, true);
     model(
         "item/atm_analyzer", "minecraft:item/generated", null, true, "layer0", "item/atmanalyzer");
     model("item/atmosphere_detector", "block/atmosphere_detector", null, true);
-    model(
-        "item/atmosphere_terraformer",
-        "minecraft:block/cube_all",
-        null,
-        true,
-        "all",
-        "block/solar");
+    model("item/atmosphere_terraformer", "block/atmosphere_terraformer", null, true);
     model(
         "item/atmosphere_upgrade",
         "minecraft:item/generated",

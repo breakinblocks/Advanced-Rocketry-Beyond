@@ -236,6 +236,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         true,
         "cross",
         "block/bluewood_sapling");
+    connected("block/aluminum_block", "block/ctm/aluminum_block", -1);
     connected("block/aluminum_coil", "block/ctm/coilside", 0);
     model(
         "block/aluminum_ore",
@@ -253,11 +254,15 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/machinegeneric");
     model(
         "block/astrobody_data_processor",
-        "minecraft:block/cube_all",
+        "minecraft:block/orientable",
         null,
         true,
-        "all",
-        "block/machinegeneric");
+        "front",
+        "block/astrobody_data_processor_front",
+        "side",
+        "block/astrobody_data_processor_side",
+        "top",
+        "block/astrobody_data_processor_top");
     model(
         "block/atmosphere_detector",
         "minecraft:block/cube_all",
@@ -274,11 +279,15 @@ final class ModBlockStates extends ModBlockStateHelpers {
         "block/atmospheredetector_active");
     model(
         "block/atmosphere_terraformer",
-        "minecraft:block/cube_all",
+        "minecraft:block/orientable",
         null,
         true,
-        "all",
-        "block/panelside");
+        "front",
+        "block/atmosphere_terraformer_front",
+        "side",
+        "block/atmosphere_terraformer_side",
+        "top",
+        "block/atmosphere_terraformer_top");
     model(
         "block/basalt",
         "minecraft:block/cube_all",
@@ -417,8 +426,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
     connected("block/circle_light", "block/ctm/stationlight", -1);
     model("block/coal_generator", "adv_rocketry:block/art/coal_generator", null, true);
     model("block/fuel_generator", "adv_rocketry:block/art/fuel_generator", null, true);
-    model(
-        "block/concrete", "minecraft:block/cube_all", null, true, "all", "block/rocketpad_noedge");
+    connected("block/concrete", "block/ctm/concrete", -1);
     connected("block/copper_coil", "block/ctm/coilside", 0);
     model(
         "block/creative_energy_input",

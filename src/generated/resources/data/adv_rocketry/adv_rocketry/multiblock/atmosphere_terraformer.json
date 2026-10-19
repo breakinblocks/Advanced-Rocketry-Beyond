@@ -33,7 +33,7 @@
     },
     "y": {
       "any": [
-        "minecraft:clay"
+        "adv_rocketry:concrete"
       ]
     }
   },

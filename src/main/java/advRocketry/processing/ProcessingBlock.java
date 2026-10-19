@@ -13,6 +13,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -38,6 +39,13 @@ public final class ProcessingBlock extends Block implements EntityBlock {
 
   public MachineType machine() {
     return machine;
+  }
+
+  @Override
+  public RenderShape getRenderShape(BlockState state) {
+    return machine == MachineType.ELECTRIC_ARC_FURNACE && state.getValue(FORMED)
+        ? RenderShape.INVISIBLE
+        : RenderShape.MODEL;
   }
 
   @Override

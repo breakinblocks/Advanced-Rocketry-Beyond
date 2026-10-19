@@ -7,11 +7,15 @@ import advRocketry.orbit.OrbitalAssembly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Native state used to hide the constituent blocks beneath the original machine model. */
 public class MachinePartBlock extends Block {
@@ -30,6 +34,18 @@ public class MachinePartBlock extends Block {
   @Override
   public RenderShape getRenderShape(BlockState state) {
     return state.getValue(ASSEMBLED) ? RenderShape.INVISIBLE : RenderShape.MODEL;
+  }
+
+  @Override
+  protected VoxelShape getShape(
+      BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    return state.getValue(ASSEMBLED) ? Shapes.empty() : super.getShape(state, level, pos, context);
+  }
+
+  @Override
+  protected VoxelShape getCollisionShape(
+      BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    return Shapes.block();
   }
 
   @Override

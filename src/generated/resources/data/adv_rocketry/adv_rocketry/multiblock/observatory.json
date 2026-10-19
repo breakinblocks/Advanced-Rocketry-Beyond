@@ -3,7 +3,7 @@
   "keys": {
     "*": {
       "any": [
-        "minecraft:iron_block",
+        "adv_rocketry:steel_block",
         "#adv_rocketry:machine_ports"
       ]
     },
