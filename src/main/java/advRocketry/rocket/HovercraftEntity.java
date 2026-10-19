@@ -10,6 +10,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +25,12 @@ public final class HovercraftEntity extends Entity {
   private boolean ascending;
   private boolean descending;
   private long lastInputTick = Long.MIN_VALUE;
+  private int lerpSteps;
+  private double lerpX;
+  private double lerpY;
+  private double lerpZ;
+  private double lerpYRot;
+  private double lerpXRot;
 
   public HovercraftEntity(EntityType<? extends HovercraftEntity> type, Level level) {
     super(type, level);
@@ -45,6 +52,59 @@ public final class HovercraftEntity extends Entity {
   @Override
   protected boolean canAddPassenger(Entity passenger) {
     return getPassengers().isEmpty();
+  }
+
+  @Override
+  public LivingEntity getControllingPassenger() {
+    return getFirstPassenger() instanceof LivingEntity rider
+        ? rider
+        : super.getControllingPassenger();
+  }
+
+  @Override
+  public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+    lerpX = x;
+    lerpY = y;
+    lerpZ = z;
+    lerpYRot = yRot;
+    lerpXRot = xRot;
+    lerpSteps = 10;
+  }
+
+  @Override
+  public double lerpTargetX() {
+    return lerpSteps > 0 ? lerpX : getX();
+  }
+
+  @Override
+  public double lerpTargetY() {
+    return lerpSteps > 0 ? lerpY : getY();
+  }
+
+  @Override
+  public double lerpTargetZ() {
+    return lerpSteps > 0 ? lerpZ : getZ();
+  }
+
+  @Override
+  public float lerpTargetYRot() {
+    return lerpSteps > 0 ? (float) lerpYRot : getYRot();
+  }
+
+  @Override
+  public float lerpTargetXRot() {
+    return lerpSteps > 0 ? (float) lerpXRot : getXRot();
+  }
+
+  private void tickLerp() {
+    if (isControlledByLocalInstance()) {
+      lerpSteps = 0;
+      syncPacketPositionCodec(getX(), getY(), getZ());
+    }
+    if (lerpSteps > 0) {
+      lerpPositionAndRotationStep(lerpSteps, lerpX, lerpY, lerpZ, lerpYRot, lerpXRot);
+      lerpSteps--;
+    }
   }
 
   @Override
@@ -77,9 +137,13 @@ public final class HovercraftEntity extends Entity {
   @Override
   public void tick() {
     super.tick();
+    tickLerp();
+    if (!isControlledByLocalInstance()) {
+      setDeltaMovement(Vec3.ZERO);
+      return;
+    }
     boolean controlled =
         getFirstPassenger() instanceof Player && level().getGameTime() - lastInputTick <= 3;
-    if (level().isClientSide && !controlled) return;
     float forward = controlled ? forwardInput : 0;
     float turn = controlled ? turnInput : 0;
     boolean up = controlled && ascending;
