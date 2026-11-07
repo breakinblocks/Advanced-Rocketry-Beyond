@@ -3,7 +3,7 @@
   "keys": {
     "*": {
       "any": [
-        "adv_rocketry:steel_block",
+        "#c:storage_blocks/steel",
         "#adv_rocketry:machine_ports"
       ]
     },

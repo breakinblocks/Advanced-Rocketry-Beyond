@@ -8,7 +8,7 @@
     },
     "B": {
       "any": [
-        "adv_rocketry:steel_block"
+        "#c:storage_blocks/steel"
       ]
     },
     "M": {

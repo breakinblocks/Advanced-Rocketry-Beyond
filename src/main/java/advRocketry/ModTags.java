@@ -36,6 +36,9 @@ public final class ModTags {
       tag(Registries.BLOCK, "plant_substrates/shore");
   public static final TagKey<Item> LASER_DRILL_ORES = tag(Registries.ITEM, "laser_drill_ores");
   public static final TagKey<Block> GEODE_ORES = tag(Registries.BLOCK, "geode_ores");
+  public static final TagKey<Item> SILICON_WAFERS = tag(Registries.ITEM, "silicon_wafers");
+  public static final TagKey<Item> STEEL_PLATES = common(Registries.ITEM, "plates/steel");
+  public static final TagKey<Item> TITANIUM_RODS = common(Registries.ITEM, "rods/titanium");
   public static final TagKey<Block> MOTORS = tag(Registries.BLOCK, "motors");
   public static final TagKey<Block> COILS = tag(Registries.BLOCK, "coils");
   public static final TagKey<Block> MACHINE_PORTS = tag(Registries.BLOCK, "machine_ports");
@@ -59,5 +62,9 @@ public final class ModTags {
 
   private static <T> TagKey<T> tag(ResourceKey<? extends Registry<T>> registry, String path) {
     return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath(Main.MODID, path));
+  }
+
+  private static <T> TagKey<T> common(ResourceKey<? extends Registry<T>> registry, String path) {
+    return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath("c", path));
   }
 }

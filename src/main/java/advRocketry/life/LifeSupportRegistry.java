@@ -4,6 +4,7 @@
 package advRocketry.life;
 
 import advRocketry.Main;
+import advRocketry.ModTags;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.ProcessingRegistry;
 import java.util.List;
@@ -59,7 +60,7 @@ public final class LifeSupportRegistry {
                       1),
                   15,
                   SoundEvents.ARMOR_EQUIP_LEATHER,
-                  () -> Ingredient.of(ProcessingRegistry.PART_ITEMS.get("steel_plate").get()),
+                  () -> Ingredient.of(ModTags.STEEL_PLATES),
                   List.of(
                       new ArmorMaterial.Layer(
                           ResourceLocation.fromNamespaceAndPath(Main.MODID, "spacesuit"))),

@@ -13,12 +13,12 @@
     },
     "X": {
       "any": [
-        "adv_rocketry:titanium_block"
+        "#c:storage_blocks/titanium"
       ]
     },
     "g": {
       "any": [
-        "adv_rocketry:titanium_block"
+        "#c:storage_blocks/titanium"
       ]
     }
   },

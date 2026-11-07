@@ -18,7 +18,7 @@
     },
     {
       "count": 4,
-      "item": "adv_rocketry:silicon_wafer"
+      "tag": "adv_rocketry:silicon_wafers"
     }
   ],
   "machine": "precision_laser_etcher",

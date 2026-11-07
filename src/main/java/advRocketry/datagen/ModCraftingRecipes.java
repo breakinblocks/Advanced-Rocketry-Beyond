@@ -515,7 +515,7 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
         'p',
         item("adv_rocketry:basic_circuit"),
         'r',
-        item("adv_rocketry:silicon_wafer"));
+        tag("adv_rocketry:silicon_wafers"));
     shaped(
         output,
         "legacy/controlcircuitboard",
@@ -1080,7 +1080,7 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
         'p',
         item("adv_rocketry:basic_circuit"),
         'r',
-        item("adv_rocketry:silicon_wafer"));
+        tag("adv_rocketry:silicon_wafers"));
     shaped(
         output,
         "legacy/microwavereciever",
@@ -1112,7 +1112,7 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
         'p',
         item("adv_rocketry:basic_circuit"),
         'r',
-        item("adv_rocketry:silicon_wafer"));
+        tag("adv_rocketry:silicon_wafers"));
     shaped(
         output,
         "legacy/monitoringstation",

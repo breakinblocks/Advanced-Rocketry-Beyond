@@ -3,6 +3,7 @@
 
 package advRocketry.processing;
 
+import advRocketry.ModTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
@@ -22,6 +23,6 @@ public final class JackhammerItem extends PickaxeItem {
 
   @Override
   public boolean isValidRepairItem(ItemStack stack, ItemStack material) {
-    return material.is(ProcessingRegistry.PART_ITEMS.get("titanium_rod").get());
+    return material.is(ModTags.TITANIUM_RODS);
   }
 }

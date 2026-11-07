@@ -110,7 +110,7 @@ final class ModTagContent {
         "minecraft:iron_ore",
         "minecraft:gold_ore",
         "minecraft:copper_ore",
-        "adv_rocketry:tin_ore",
+        "#c:ores/tin",
         "minecraft:redstone_ore");
     tags.values(
         "adv_rocketry:rocket_blacklist",
@@ -159,6 +159,12 @@ final class ModTagContent {
       ores.add("#c:ores/" + material);
     }
     tags.values("c:ores", ores.toArray(String[]::new));
+    for (Block block : BuiltInRegistries.BLOCK) {
+      ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+      if (!id.getNamespace().equals(Main.MODID) || !id.getPath().endsWith("_block")) continue;
+      String material = id.getPath().substring(0, id.getPath().length() - "_block".length());
+      if (material(material)) tags.value(tags.key("c:storage_blocks/" + material), id);
+    }
     tags.values(
         "minecraft:mineable/pickaxe",
         "adv_rocketry:block_advanced_structure_block",
@@ -232,9 +238,10 @@ final class ModTagContent {
         "minecraft:iron_ore",
         "minecraft:gold_ore",
         "minecraft:copper_ore",
-        "adv_rocketry:tin_ore",
+        "#c:ores/tin",
         "minecraft:redstone_ore",
         "minecraft:diamond_ore");
+    tags.values(ModTags.SILICON_WAFERS, "adv_rocketry:silicon_wafer");
     tags.values(
         "adv_rocketry:motors",
         "adv_rocketry:block_motor_block",

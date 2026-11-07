@@ -35,7 +35,7 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
         List.of(
             stack("#c:ingots/gold", 1),
             stack("minecraft:redstone_block", 1),
-            stack("adv_rocketry:silicon_wafer", 1)),
+            stack("#adv_rocketry:silicon_wafers", 1)),
         List.of(stack("adv_rocketry:advanced_circuit_plate", 1)));
     processing(
         output,
@@ -47,7 +47,7 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
             kept("#c:lenses/precision_laser_etcher", 1),
             stack("#c:plates/gold", 1),
             stack("minecraft:redstone_block", 1),
-            stack("adv_rocketry:silicon_wafer", 4)),
+            stack("#adv_rocketry:silicon_wafers", 4)),
         List.of(stack("adv_rocketry:advanced_circuit_plate", 2)));
     processing(
         output,
@@ -99,7 +99,7 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
         List.of(
             stack("#c:ingots/gold", 1),
             stack("#c:dusts/redstone", 1),
-            stack("adv_rocketry:silicon_wafer", 1)),
+            stack("#adv_rocketry:silicon_wafers", 1)),
         List.of(stack("adv_rocketry:basic_circuit_plate", 1)));
     processing(
         output,
@@ -111,7 +111,7 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
             kept("#c:lenses/precision_laser_etcher", 1),
             stack("#c:plates/gold", 1),
             stack("#c:dusts/redstone", 1),
-            stack("adv_rocketry:silicon_wafer", 4)),
+            stack("#adv_rocketry:silicon_wafers", 4)),
         List.of(stack("adv_rocketry:basic_circuit_plate", 2)));
     processing(
         output,
@@ -132,7 +132,7 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
             stack("#c:rods/copper", 2),
             stack("#c:rods/titanium", 1),
             stack("adv_rocketry:advanced_circuit", 1),
-            stack("adv_rocketry:silicon_wafer", 2)),
+            stack("#adv_rocketry:silicon_wafers", 2)),
         List.of(stack("adv_rocketry:satellite_biome_changer", 1)));
     processing(
         output,

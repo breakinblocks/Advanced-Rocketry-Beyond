@@ -23,7 +23,7 @@
     },
     "Z": {
       "any": [
-        "adv_rocketry:aluminum_block"
+        "#c:storage_blocks/aluminum"
       ]
     }
   },

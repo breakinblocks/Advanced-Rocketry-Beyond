@@ -3,7 +3,7 @@
     "minecraft:iron_ore",
     "minecraft:gold_ore",
     "minecraft:copper_ore",
-    "adv_rocketry:tin_ore",
+    "#c:ores/tin",
     "minecraft:redstone_ore",
     "minecraft:diamond_ore"
   ]

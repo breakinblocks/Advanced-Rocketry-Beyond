@@ -9,7 +9,7 @@
       "item": "adv_rocketry:basic_circuit"
     },
     "r": {
-      "item": "adv_rocketry:silicon_wafer"
+      "tag": "adv_rocketry:silicon_wafers"
     },
     "w": {
       "tag": "c:gems/dilithium"
