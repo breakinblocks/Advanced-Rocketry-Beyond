@@ -43,7 +43,8 @@ public record PlanetDefinition(
       Optional<ResourceLocation> parent,
       Optional<ResourceLocation> dimension,
       boolean known,
-      String icon) {
+      String icon,
+      boolean home) {
     static final MapCodec<Identity> CODEC =
         RecordCodecBuilder.mapCodec(
             instance ->
@@ -58,7 +59,8 @@ public record PlanetDefinition(
                             .optionalFieldOf("dimension")
                             .forGetter(Identity::dimension),
                         Codec.BOOL.optionalFieldOf("known", true).forGetter(Identity::known),
-                        Codec.STRING.optionalFieldOf("icon", "").forGetter(Identity::icon))
+                        Codec.STRING.optionalFieldOf("icon", "").forGetter(Identity::icon),
+                        Codec.BOOL.optionalFieldOf("home", false).forGetter(Identity::home))
                     .apply(instance, Identity::new));
   }
 

@@ -152,6 +152,10 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
 `data/<namespace>/adv_rocketry/planet/`. Required: `name` and `star`.
 
 - **Identity:** `parent` (makes it a moon), `dimension`, `known`, `icon`.
+- **Home planet:** `home` (default `false`). The home planet is the galaxy's Earth: rockets launched
+  from an unlisted dimension count as leaving it, and a return flight comes back to its dimension. A
+  planet with `home: true` is used; with none, the planet whose `dimension` is `minecraft:overworld`
+  is home, as before. Set it when a pack's home world is not the overworld, and reset the galaxy after.
 - **Physics:** `gas_giant`, `atmosphere`, `oxygen`, `temperature`, `gravity`,
   `gases`.
 - **Orbit:** `orbital_distance`, `orbital_theta`, `orbital_phi`,

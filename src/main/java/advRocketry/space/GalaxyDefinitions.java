@@ -94,7 +94,11 @@ public final class GalaxyDefinitions {
   private static void populate(GalaxyData galaxy, Definitions definitions, long seed) {
     var planets = sorted(definitions.planets());
     var home =
-        planets.stream().filter(entry -> overworld(entry.getValue())).findFirst().orElse(null);
+        planets.stream()
+            .filter(entry -> entry.getValue().identity().home())
+            .findFirst()
+            .or(() -> planets.stream().filter(entry -> overworld(entry.getValue())).findFirst())
+            .orElse(null);
     var stars = new ArrayList<>(sorted(definitions.stars()));
     if (stars.isEmpty()) throw new IllegalStateException("No star definitions are loaded");
     if (home != null)

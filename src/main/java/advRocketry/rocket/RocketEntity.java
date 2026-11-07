@@ -873,7 +873,8 @@ public final class RocketEntity extends ServerDrivenEntity {
   }
 
   int findLandingHeight(ServerLevel level, double centerX, double centerZ) {
-    int top = level.getMinBuildHeight() + 1;
+    int floor = level.getMinBuildHeight() + 1;
+    int top = floor;
     BlockPos origin =
         BlockPos.containing(centerX - structure.width / 2d, 0, centerZ - structure.depth / 2d);
     for (int x = 0; x < structure.width; x++)
@@ -883,9 +884,9 @@ public final class RocketEntity extends ServerDrivenEntity {
             SectionPos.blockToSectionCoord(blockX), SectionPos.blockToSectionCoord(blockZ));
         top =
             Math.max(
-                top, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockX, blockZ));
+                top, LandingFloatLogic.groundHeight(level, blockX, blockZ, structure.height + 1));
       }
-    return top;
+    return top > floor ? top : LandingFloatLogic.voidLandingHeight(level);
   }
 
   private void enterSpaceFlight(ServerLevel level) {
