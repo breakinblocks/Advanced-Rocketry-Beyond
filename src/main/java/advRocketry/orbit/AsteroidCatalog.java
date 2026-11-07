@@ -4,6 +4,7 @@
 package advRocketry.orbit;
 
 import advRocketry.DataRegistries;
+import advRocketry.util.IdOrTag;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.items.IItemHandler;
 
 /** Original asteroid definitions, seeded surveys and research-weighted harvests. */
 public final class AsteroidCatalog {
@@ -46,7 +48,31 @@ public final class AsteroidCatalog {
       float probability,
       float timeMultiplier,
       ResourceLocation base,
-      List<Ore> ores) {
+      List<Ore> ores,
+      List<IdOrTag> requiredArtifacts) {
+    public Definition(
+        int distance,
+        int mass,
+        float massVariability,
+        float richness,
+        float richnessVariability,
+        float probability,
+        float timeMultiplier,
+        ResourceLocation base,
+        List<Ore> ores) {
+      this(
+          distance,
+          mass,
+          massVariability,
+          richness,
+          richnessVariability,
+          probability,
+          timeMultiplier,
+          base,
+          ores,
+          List.of());
+    }
+
     private static final Codec<Float> NON_NEGATIVE = Codec.floatRange(0, Float.MAX_VALUE);
     public static final Codec<Definition> CODEC =
         RecordCodecBuilder.create(
@@ -79,7 +105,11 @@ public final class AsteroidCatalog {
                         Ore.CODEC
                             .listOf()
                             .optionalFieldOf("ores", List.of())
-                            .forGetter(Definition::ores))
+                            .forGetter(Definition::ores),
+                        IdOrTag.CODEC
+                            .listOf()
+                            .optionalFieldOf("required_artifacts", List.of())
+                            .forGetter(Definition::requiredArtifacts))
                     .apply(instance, Definition::new));
 
     public Asteroid named(ResourceLocation id) {
@@ -94,7 +124,8 @@ public final class AsteroidCatalog {
           probability,
           timeMultiplier,
           base,
-          ores);
+          ores,
+          requiredArtifacts);
     }
   }
 
@@ -109,9 +140,22 @@ public final class AsteroidCatalog {
       float probability,
       float timeMultiplier,
       ResourceLocation base,
-      List<Ore> ores) {
+      List<Ore> ores,
+      List<IdOrTag> requiredArtifacts) {
     public Component displayName() {
       return Component.translatable(name);
+    }
+
+    public boolean unlocked(IItemHandler artifacts) {
+      for (IdOrTag requirement : requiredArtifacts) {
+        int found = 0;
+        for (int slot = 0; slot < artifacts.getSlots(); slot++) {
+          ItemStack stack = artifacts.getStackInSlot(slot);
+          if (requirement.matches(stack)) found += stack.getCount();
+        }
+        if (found < requirement.count()) return false;
+      }
+      return true;
     }
   }
 
@@ -127,6 +171,20 @@ public final class AsteroidCatalog {
                     .map(entry -> entry.getValue().named(entry.getKey().location()))
                     .toList())
         .orElse(List.of());
+  }
+
+  public static boolean usesArtifacts(RegistryAccess registries) {
+    for (Asteroid asteroid : types(registries))
+      if (!asteroid.requiredArtifacts().isEmpty()) return true;
+    return false;
+  }
+
+  public static boolean isArtifact(RegistryAccess registries, ItemStack stack) {
+    if (stack.isEmpty()) return false;
+    for (Asteroid asteroid : types(registries))
+      for (IdOrTag requirement : asteroid.requiredArtifacts())
+        if (requirement.matches(stack)) return true;
+    return false;
   }
 
   public static Asteroid get(RegistryAccess registries, String id) {
@@ -159,6 +217,8 @@ public final class AsteroidCatalog {
       ores.add(data);
     }
     tag.put("ores", ores);
+    if (!asteroid.requiredArtifacts().isEmpty())
+      tag.put("required_artifacts", IdOrTag.save(asteroid.requiredArtifacts()));
     return tag;
   }
 
@@ -179,7 +239,8 @@ public final class AsteroidCatalog {
         tag.getFloat("probability"),
         tag.getFloat("time_multiplier"),
         ResourceLocation.parse(tag.getString("base")),
-        List.copyOf(ores));
+        List.copyOf(ores),
+        IdOrTag.load(tag.getList("required_artifacts", Tag.TAG_COMPOUND)));
   }
 
   public static List<ItemStack> harvest(

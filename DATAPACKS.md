@@ -372,6 +372,13 @@ both beats one matching one. A planet's own `ores` list overrides all profiles.
 `time_multiplier`, a `base` item and weighted `ores`. The display name comes
 from the `asteroid.<namespace>.<id>` translation key.
 
+`required_artifacts` is an optional list of item ids or `#tags`, each with an optional `count`,
+in the same shape as a planet's `warp_artifacts`. An Observatory only lists the asteroid in a scan,
+and only programs a chip for it, while its artifact slots hold every one of them. The artifacts are
+checked, not used up. The artifact slots appear in the Observatory only when some asteroid names a
+requirement, and they accept only items an asteroid asks for: the screen shows each artifact held
+plus one free slot, and scrolls once there are more than seven.
+
 ## Multiblocks
 
 `data/<namespace>/adv_rocketry/multiblock/`. Each definition names its

@@ -901,6 +901,7 @@
   "status.adv_rocketry.horizon.modules": "Use a Microwave Transmitter with Horizon modules, without solar modules",
   "status.adv_rocketry.observatory.asteroid_chip_programmed": "Asteroid chip programmed",
   "status.adv_rocketry.observatory.found_asteroid_targets": "Found %s asteroid targets",
+  "status.adv_rocketry.observatory.missing_required_artifacts": "Observatory is missing required artifacts for that target",
   "status.adv_rocketry.observatory.scan_needs_100_distance_data": "Scan needs 100 distance data",
   "status.adv_rocketry.orbital.array_chunk_is_not_loaded": "Array chunk is not loaded",
   "status.adv_rocketry.orbital.array_lane_is_obstructed_at": "Array lane is obstructed at %s",

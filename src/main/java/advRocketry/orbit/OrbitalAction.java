@@ -53,10 +53,12 @@ public enum OrbitalAction {
   SELECTOR_SIZE_DOWN(47),
   SELECTOR_REDSTONE(48),
   COPY_CHIP(49),
-  NEXT_ASTEROID(50);
+  NEXT_ASTEROID(50),
+  ARTIFACTS_BACK(51),
+  ARTIFACTS_FORWARD(52);
 
   private final int id;
-  private static final OrbitalAction[] BY_ID = new OrbitalAction[51];
+  private static final OrbitalAction[] BY_ID = new OrbitalAction[53];
 
   static {
     for (OrbitalAction action : values()) {

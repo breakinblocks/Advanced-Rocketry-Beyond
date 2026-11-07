@@ -17,6 +17,8 @@ Supply distance data to find asteroid targets. With the telescope open, spend **
 
 Research the chip in the [Astrobody Data Processor](astrobody_data_processor.md) before preparing a mining rocket.
 
+Some asteroids only appear while the right artifact sits in the Observatory's artifact slots. When a pack uses them, the slots show every artifact held plus one free slot, and scroll once there are more than seven. Artifacts are checked, not used up.
+
 ## Build example
 
 <GameScene zoom="2.40" interactive={true}>

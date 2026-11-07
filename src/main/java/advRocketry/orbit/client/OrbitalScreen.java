@@ -11,6 +11,7 @@ import advRocketry.orbit.AsteroidCatalog;
 import advRocketry.orbit.BeaconLogic;
 import advRocketry.orbit.DockingPortConfig;
 import advRocketry.orbit.OrbitalAction;
+import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.OrbitalMenu;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.WarpCoreLogic;
@@ -36,6 +37,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
   private int scannerPage;
   private int asteroidPreviewScroll;
+  private Button artifactsBack;
+  private Button artifactsForward;
   private List<ResourceLocation> earthBiomes;
   private SurveyKey surveyKey;
   private List<SurveyRow> surveyRows = List.of();
@@ -46,11 +49,13 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
     super(menu, inventory, title);
     imageWidth = menu.entity.observatory() ? 320 : 176;
     imageHeight =
-        menu.entity.warpController()
-                || menu.entity.builder()
-                || menu.entity.observatory()
-                || menu.entity.stationOrientationController()
-            ? 245
+        menu.artifactStrip()
+            ? 277
+            : menu.entity.warpController()
+                    || menu.entity.builder()
+                    || menu.entity.observatory()
+                    || menu.entity.stationOrientationController()
+                ? 245
             : menu.entity.areaGravityController()
                     || menu.entity.orbitalLaser()
                     || menu.entity.biomeScanner()
@@ -221,6 +226,18 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
                           menu.containerId, OrbitalAction.NEXT_ASTEROID.id()))
               .bounds(leftPos + 8, topPos + 105, 76, 20)
               .build());
+      if (menu.artifactStrip()) {
+        artifactsBack =
+            addRenderableWidget(
+                UiButton.builder(Component.literal("<"), button -> scrollArtifacts(-1))
+                    .bounds(leftPos + 136, topPos + 153, 16, 18)
+                    .build());
+        artifactsForward =
+            addRenderableWidget(
+                UiButton.builder(Component.literal(">"), button -> scrollArtifacts(1))
+                    .bounds(leftPos + 154, topPos + 153, 16, 18)
+                    .build());
+      }
     } else if (menu.entity.spaceElevator()) {
       addRenderableWidget(
           UiButton.builder(
@@ -627,7 +644,16 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
           131,
           UiTheme.TEXT,
           false);
-      drawText(graphics, playerInventoryTitle, 8, 143, UiTheme.TEXT, false);
+      if (menu.artifactStrip()) {
+        drawText(
+            graphics,
+            Component.translatable("gui.adv_rocketry.orbital.required_artifacts"),
+            8,
+            143,
+            UiTheme.MUTED,
+            false);
+        drawText(graphics, playerInventoryTitle, 8, 175, UiTheme.TEXT, false);
+      } else drawText(graphics, playerInventoryTitle, 8, 143, UiTheme.TEXT, false);
       renderAsteroidSurvey(graphics, candidate);
       return;
     }
@@ -1015,8 +1041,40 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
 
   private record SurveyRow(AsteroidCatalog.SurveyEntry entry, ItemStack stack) {}
 
+  private void scrollArtifacts(int delta) {
+    int before = menu.artifactOffset();
+    menu.scrollArtifacts(delta);
+    if (menu.artifactOffset() != before)
+      minecraft.gameMode.handleInventoryButtonClick(
+          menu.containerId,
+          delta < 0 ? OrbitalAction.ARTIFACTS_BACK.id() : OrbitalAction.ARTIFACTS_FORWARD.id());
+  }
+
+  @Override
+  public void containerTick() {
+    super.containerTick();
+    if (artifactsBack != null) {
+      boolean scroll = menu.artifactsScroll();
+      artifactsBack.visible = scroll;
+      artifactsForward.visible = scroll;
+      artifactsBack.active = menu.artifactOffset() > 0;
+      artifactsForward.active = menu.visibleArtifactSlots() == OrbitalMenu.ARTIFACT_WINDOW
+          && menu.artifactOffset() + OrbitalMenu.ARTIFACT_WINDOW
+              < Math.min(OrbitalBlockEntity.ARTIFACT_SLOTS, menu.artifactsInUse() + 1);
+    }
+  }
+
   @Override
   public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    if (menu.artifactStrip()
+        && menu.artifactsScroll()
+        && mouseX >= leftPos + 8
+        && mouseX < leftPos + 176
+        && mouseY >= topPos + 150
+        && mouseY < topPos + 174) {
+      scrollArtifacts(scrollY > 0 ? -1 : 1);
+      return true;
+    }
     if (menu.entity.observatory()
         && mouseX >= leftPos + 176
         && mouseX < leftPos + imageWidth

@@ -622,6 +622,9 @@ final class ModLanguage extends LanguageProvider {
     add("status.adv_rocketry.holographic_selector.showing_stars", "Showing stars");
     add("status.adv_rocketry.holographic_selector.station_targeting", "Station targeting %s");
     add("status.adv_rocketry.observatory.asteroid_chip_programmed", "Asteroid chip programmed");
+    add(
+        "status.adv_rocketry.observatory.missing_required_artifacts",
+        "Observatory is missing required artifacts for that target");
     add("status.adv_rocketry.observatory.found_asteroid_targets", "Found %s asteroid targets");
     add(
         "status.adv_rocketry.observatory.scan_needs_100_distance_data",

@@ -14,6 +14,7 @@ import java.util.Random;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 /** Original observatory scan selection, service ports, and asteroid-chip programming. */
@@ -107,23 +108,32 @@ public final class ObservatoryLogic {
     return true;
   }
 
-  private static void findAsteroids(OrbitalBlockEntity controller) {
-    int range = ObservatoryStructure.range(controller);
-    List<AsteroidCatalog.Asteroid> types =
-        AsteroidCatalog.types(controller.getLevel().registryAccess());
+  public static int[] scanOptions(
+      List<AsteroidCatalog.Asteroid> types, int range, IItemHandler artifacts, long seed) {
     float total = 0;
     for (AsteroidCatalog.Asteroid type : types)
-      if (type.distance() <= range) total += type.probability();
-    Random random = new Random(controller.observation.seed);
+      if (type.distance() <= range && type.unlocked(artifacts)) total += type.probability();
+    Random random = new Random(seed);
     List<Integer> options = new ArrayList<>();
     if (total > 0)
       for (int index = 0; index < types.size(); index++) {
         AsteroidCatalog.Asteroid type = types.get(index);
-        if (type.distance() > range) continue;
+        if (type.distance() > range || !type.unlocked(artifacts)) continue;
         for (int trial = 0; trial < 10; trial++)
           if (type.probability() / total >= random.nextFloat()) options.add(index);
       }
-    controller.observation.options = options.stream().mapToInt(Integer::intValue).toArray();
+    return options.stream().mapToInt(Integer::intValue).toArray();
+  }
+
+  private static void findAsteroids(OrbitalBlockEntity controller) {
+    List<AsteroidCatalog.Asteroid> types =
+        AsteroidCatalog.types(controller.getLevel().registryAccess());
+    controller.observation.options =
+        scanOptions(
+            types,
+            ObservatoryStructure.range(controller),
+            controller.artifacts,
+            controller.observation.seed);
     controller.observation.catalogHash = types.hashCode();
     controller.observation.optionIndex = -1;
     controller.observation.candidate = -1;
@@ -174,6 +184,12 @@ public final class ObservatoryLogic {
         AsteroidCatalog.types(controller.getLevel().registryAccess())
             .get(controller.observation.candidate);
     if (asteroid.distance() > controller.observatoryRange()) return false;
+    if (!asteroid.unlocked(controller.artifacts)) {
+      controller.status =
+          Component.translatable("status.adv_rocketry.observatory.missing_required_artifacts");
+      controller.setChanged();
+      return false;
+    }
     ItemStack chip = controller.inventory.extractItem(0, 1, false);
     AsteroidChipItem.program(chip, asteroid.id(), controller.observation.seed);
     data(controller, ResearchType.COMPOSITION, 1000, true);

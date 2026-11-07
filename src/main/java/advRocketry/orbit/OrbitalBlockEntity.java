@@ -23,6 +23,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 /** Original satellite builder and launch hatch roles, backed by native inventory and FE storage. */
 public final class OrbitalBlockEntity extends BlockEntity implements MenuProvider {
@@ -30,6 +31,26 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   public final ObservationState observation = new ObservationState();
   public final HologramState hologram = new HologramState();
   public final OrbitalInventory inventory = new OrbitalInventory(this);
+  public static final int ARTIFACT_SLOTS = 32;
+  public final ItemStackHandler artifacts =
+      new ItemStackHandler(ARTIFACT_SLOTS) {
+        @Override
+        protected void onContentsChanged(int slot) {
+          setChanged();
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+          return 1;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+          return level != null
+              && observatory()
+              && AsteroidCatalog.isArtifact(level.registryAccess(), stack);
+        }
+      };
   public final MachineEnergy energy =
       new MachineEnergy(100000, 100000, 100000, this::setChanged) {
         @Override
@@ -322,6 +343,12 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     return kind() == OrbitalBlock.Kind.FORCE_FIELD_PROJECTOR;
   }
 
+  public int artifactsInUse() {
+    for (int slot = ARTIFACT_SLOTS - 1; slot >= 0; slot--)
+      if (!artifacts.getStackInSlot(slot).isEmpty()) return slot + 1;
+    return 0;
+  }
+
   @Override
   public Component getDisplayName() {
     return getBlockState().getBlock().getName();
@@ -336,6 +363,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
     super.saveAdditional(tag, registries);
     tag.put("inventory", inventory.serializeNBT(registries));
+    if (artifactsInUse() > 0) tag.put("artifacts", artifacts.serializeNBT(registries));
     tag.put("energy", energy.serializeNBT(registries));
     tag.putString("status", Component.Serializer.toJson(status, registries));
     tag.putInt("builder_progress", builderProgress);
@@ -393,6 +421,9 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     CompoundTag savedInventory = tag.getCompound("inventory").copy();
     savedInventory.putInt("Size", 12);
     inventory.deserializeNBT(registries, savedInventory);
+    CompoundTag savedArtifacts = tag.getCompound("artifacts").copy();
+    savedArtifacts.putInt("Size", ARTIFACT_SLOTS);
+    artifacts.deserializeNBT(registries, savedArtifacts);
     if (tag.contains("energy")) energy.deserializeNBT(registries, tag.get("energy"));
     status = ComponentText.read(tag.getString("status"), registries);
     builderProgress = Math.clamp(tag.getInt("builder_progress"), 0, 100);

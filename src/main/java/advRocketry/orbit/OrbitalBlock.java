@@ -137,6 +137,8 @@ public class OrbitalBlock extends Block implements EntityBlock {
       if (!level.isClientSide) cleanup(entity);
       for (int slot = 0; slot < entity.inventory.getSlots(); slot++)
         popResource(level, pos, entity.inventory.storedStackInSlot(slot));
+      for (int slot = 0; slot < entity.artifacts.getSlots(); slot++)
+        popResource(level, pos, entity.artifacts.getStackInSlot(slot));
     }
     super.onRemove(state, level, pos, replacement, moved);
   }

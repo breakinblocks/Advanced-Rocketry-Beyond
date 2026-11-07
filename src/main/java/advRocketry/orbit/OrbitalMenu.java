@@ -19,11 +19,14 @@ import net.neoforged.neoforge.items.ItemHandlerCopySlot;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 public final class OrbitalMenu extends ModMenu {
-  private static final int COUNT = 40;
+  private static final int COUNT = 41;
+  public static final int ARTIFACT_WINDOW = 7;
   public final OrbitalBlockEntity entity;
   private final SplitIntData data;
   private final Level level;
   private final int machineSlots;
+  private final boolean artifactStrip;
+  private int artifactOffset;
 
   public OrbitalMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buffer) {
     this(id, inventory, readOpening(inventory, buffer), SplitIntData.client(COUNT));
@@ -133,6 +136,7 @@ public final class OrbitalMenu extends ModMenu {
       case 38 ->
           entity.observatory() ? ObservatoryLogic.researchData(entity, ResearchType.MASS) : 0;
       case 39 -> entity.horizonBonus;
+      case 40 -> entity.observatory() ? entity.artifactsInUse() : 0;
       default -> 0;
     };
   }
@@ -155,6 +159,9 @@ public final class OrbitalMenu extends ModMenu {
     } else if (entity.observatory()) {
       for (int slot = 0; slot <= 4; slot++)
         addSlot(new SlotItemHandler(entity.inventory, slot, 8 + slot * 30, 42));
+      if (AsteroidCatalog.usesArtifacts(level.registryAccess()))
+        for (int window = 0; window < ARTIFACT_WINDOW; window++)
+          addSlot(new ArtifactSlot(this, window, 8 + window * 18, 154));
     } else if (entity.warpController()) {
       for (int slot = 0; slot < 4; slot++)
         addSlot(new SlotItemHandler(entity.inventory, slot, 8 + slot * 46, 40));
@@ -170,10 +177,13 @@ public final class OrbitalMenu extends ModMenu {
       addSlot(new SlotItemHandler(entity.inventory, 11, 60, 68));
     }
     machineSlots = slots.size();
+    artifactStrip = entity.observatory() && AsteroidCatalog.usesArtifacts(level.registryAccess());
     int inventoryTop =
         entity.warpController()
             ? 165
-            : entity.builder() || entity.observatory() || entity.stationOrientationController()
+            : artifactStrip
+                ? 187
+                : entity.builder() || entity.observatory() || entity.stationOrientationController()
                 ? 155
                 : entity.areaGravityController()
                         || entity.orbitalLaser()
@@ -189,6 +199,36 @@ public final class OrbitalMenu extends ModMenu {
 
   public int energy() {
     return data.value(0);
+  }
+
+  public boolean artifactStrip() {
+    return artifactStrip;
+  }
+
+  public int artifactsInUse() {
+    return data.value(40);
+  }
+
+  public int artifactOffset() {
+    return artifactOffset;
+  }
+
+  private int shownArtifactSlots() {
+    return Math.min(OrbitalBlockEntity.ARTIFACT_SLOTS, artifactsInUse() + 1);
+  }
+
+  public int visibleArtifactSlots() {
+    return Math.clamp(shownArtifactSlots() - artifactOffset, 0, ARTIFACT_WINDOW);
+  }
+
+  public boolean artifactsScroll() {
+    return shownArtifactSlots() > ARTIFACT_WINDOW;
+  }
+
+  public void scrollArtifacts(int delta) {
+    artifactOffset =
+        Math.clamp(
+            artifactOffset + delta, 0, Math.max(0, shownArtifactSlots() - ARTIFACT_WINDOW));
   }
 
   public int warpDestination() {
@@ -365,6 +405,14 @@ public final class OrbitalMenu extends ModMenu {
   @Override
   public boolean clickMenuButton(Player player, int button) {
     if (!stillValid(player) || player.level().isClientSide) return false;
+    if (button == OrbitalAction.ARTIFACTS_BACK.id() && artifactStrip) {
+      scrollArtifacts(-1);
+      return true;
+    }
+    if (button == OrbitalAction.ARTIFACTS_FORWARD.id() && artifactStrip) {
+      scrollArtifacts(1);
+      return true;
+    }
     if (button == OrbitalAction.BUILD.id() && entity.builder()) SatelliteBuilderLogic.build(entity);
     else if (button == OrbitalAction.TRANSFER_DATA.id() && entity.terminal())
       SatelliteTerminalLogic.transferData(entity);
