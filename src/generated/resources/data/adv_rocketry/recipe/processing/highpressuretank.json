@@ -10,7 +10,7 @@
   "inputs": [
     {
       "count": 2,
-      "tag": "c:sheets/aluminum"
+      "tag": "c:sheets/titanium"
     }
   ],
   "machine": "rolling_machine",

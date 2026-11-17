@@ -271,7 +271,7 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
         "rolling_machine",
         100,
         4,
-        List.of(stack("#c:sheets/aluminum", 2), fluid("#c:water", 100)),
+        List.of(stack("#c:sheets/titanium", 2), fluid("#c:water", 100)),
         List.of(stack("adv_rocketry:portable_pressure_tank_titanium", 1)));
     processing(
         output,
@@ -341,7 +341,7 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
         "rolling_machine",
         100,
         1,
-        List.of(stack("#c:sheets/iron", 2), fluid("#c:water", 100)),
+        List.of(stack("#c:sheets/aluminum", 2), fluid("#c:water", 100)),
         List.of(stack("adv_rocketry:portable_pressure_tank_aluminum", 1)));
     processing(
         output,
@@ -797,7 +797,7 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
         "rolling_machine",
         400,
         8,
-        List.of(stack("#c:sheets/titanium", 2), fluid("#c:water", 100)),
+        List.of(stack("#c:sheets/titanium_iridium", 2), fluid("#c:water", 100)),
         List.of(stack("adv_rocketry:portable_pressure_tank_iridium", 1)));
     processing(
         output,

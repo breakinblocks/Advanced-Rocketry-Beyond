@@ -10,7 +10,7 @@
   "inputs": [
     {
       "count": 2,
-      "tag": "c:sheets/titanium"
+      "tag": "c:sheets/titanium_iridium"
     }
   ],
   "machine": "rolling_machine",
