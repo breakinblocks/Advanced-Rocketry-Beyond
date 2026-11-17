@@ -35,7 +35,6 @@ final class ModBiomeRecipes extends ModRecipeHelpers {
         "minecraft:string",
         1,
         item("adv_rocketry:jointed_reeds"),
-        item("adv_rocketry:jointed_reeds"),
         item("adv_rocketry:jointed_reeds"));
     smelting(
         output,
