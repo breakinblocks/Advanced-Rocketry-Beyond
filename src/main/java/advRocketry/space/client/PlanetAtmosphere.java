@@ -13,12 +13,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 /** Layered sky geometry using standard textured/color passes understood by shader packs. */
 public final class PlanetAtmosphere {
     private static final ResourceLocation SPARSE = texture("cloud_sparse");
     private static final ResourceLocation BROAD = texture("cloud_broad");
     private static final ResourceLocation WISPS = texture("cloud_wisps");
+    private static final Grid BACKGROUND = Grid.background(96, 32);
+    private static final Grid CLOUDS_LOW = Grid.clouds(48, 32);
+    private static final Grid CLOUDS_HIGH = Grid.clouds(96, 32);
+    private static final Vector3f POINT = new Vector3f();
+    private static float[] positions = new float[0];
+    private static float[] colors = new float[0];
+    private static float[] uvs = new float[0];
 
     private PlanetAtmosphere() {}
 
@@ -26,52 +34,121 @@ public final class PlanetAtmosphere {
         return ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/sky/" + name + ".png");
     }
 
+    private record Grid(int segments, int bands, float[] x, float[] y, float[] z, float[] a, float[] b) {
+        int points() {
+            return (segments + 1) * (bands + 1);
+        }
+
+        static Grid background(int segments, int bands) {
+            Grid grid = allocate(segments, bands);
+            for (int row = 0; row <= bands; row++)
+                for (int column = 0; column <= segments; column++)
+                    grid.set(
+                            row * (segments + 1) + column,
+                            Math.PI * (row / (double) bands - .5),
+                            column * Math.PI * 2 / segments);
+            for (int index = 0; index < grid.points(); index++) {
+                float sy = grid.y[index];
+                grid.a[index] = (float) Math.pow(1 - Math.abs(sy), 4);
+                grid.b[index] = .68f + .32f * Math.max(0, sy);
+            }
+            return grid;
+        }
+
+        static Grid clouds(int segments, int bands) {
+            Grid grid = allocate(segments, bands);
+            for (int row = 0; row <= bands; row++)
+                for (int column = 0; column <= segments; column++)
+                    grid.set(row * (segments + 1) + column, row * Math.PI / 64, column * Math.PI * 2 / segments);
+            for (int index = 0; index < grid.points(); index++) {
+                float sy = grid.y[index];
+                grid.a[index] = PlanetSkyState.smooth(0, .23f, sy);
+                grid.b[index] = .8f / (1 + sy);
+            }
+            return grid;
+        }
+
+        private static Grid allocate(int segments, int bands) {
+            int points = (segments + 1) * (bands + 1);
+            return new Grid(
+                    segments,
+                    bands,
+                    new float[points],
+                    new float[points],
+                    new float[points],
+                    new float[points],
+                    new float[points]);
+        }
+
+        private void set(int index, double elevation, double azimuth) {
+            y[index] = (float) Math.sin(elevation);
+            x[index] = (float) (Math.cos(elevation) * Math.cos(azimuth));
+            z[index] = (float) (Math.cos(elevation) * Math.sin(azimuth));
+        }
+    }
+
+    private static void prepare(Matrix4f view, Grid grid) {
+        int points = grid.points();
+        if (positions.length < points * 3) {
+            positions = new float[points * 3];
+            colors = new float[points * 4];
+            uvs = new float[points * 2];
+        }
+        for (int index = 0; index < points; index++) {
+            view.transformPosition(grid.x[index] * 100, grid.y[index] * 100, grid.z[index] * 100, POINT);
+            positions[index * 3] = POINT.x;
+            positions[index * 3 + 1] = POINT.y;
+            positions[index * 3 + 2] = POINT.z;
+        }
+    }
+
+    private static void emit(BufferBuilder buffer, Grid grid, boolean textured) {
+        int width = grid.segments + 1;
+        for (int row = 0; row < grid.bands; row++)
+            for (int column = 0; column < grid.segments; column++) {
+                int corner = row * width + column;
+                vertex(buffer, corner, textured);
+                vertex(buffer, corner + 1, textured);
+                vertex(buffer, corner + width + 1, textured);
+                vertex(buffer, corner + width, textured);
+            }
+    }
+
+    private static void vertex(BufferBuilder buffer, int index, boolean textured) {
+        buffer.addVertex(positions[index * 3], positions[index * 3 + 1], positions[index * 3 + 2]);
+        if (textured) buffer.setUv(uvs[index * 2], uvs[index * 2 + 1]);
+        buffer.setColor(colors[index * 4], colors[index * 4 + 1], colors[index * 4 + 2], colors[index * 4 + 3]);
+    }
+
     public static void background(Matrix4f view, Planet planet, PlanetSkyState state, Vec3 base, float angle) {
-        RenderSystem.setShader(SkyLayerShader::color);
-        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        int segments = 96, bands = 32;
+        Grid grid = BACKGROUND;
+        prepare(view, grid);
         Vec3 fog = Vec3.fromRGB24(planet.fogColor);
         double light = .025 + .55 * state.daylight();
         fog = fog.scale(light * Math.min(1, state.density()));
-        for (int y = 0; y < bands; y++)
-            for (int x = 0; x < segments; x++) {
-                backgroundVertex(buffer, view, planet, state, base, fog, angle, x, y, segments, bands);
-                backgroundVertex(buffer, view, planet, state, base, fog, angle, x + 1, y, segments, bands);
-                backgroundVertex(buffer, view, planet, state, base, fog, angle, x + 1, y + 1, segments, bands);
-                backgroundVertex(buffer, view, planet, state, base, fog, angle, x, y + 1, segments, bands);
-            }
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-    }
-
-    private static void backgroundVertex(
-            BufferBuilder buffer,
-            Matrix4f view,
-            Planet planet,
-            PlanetSkyState state,
-            Vec3 base,
-            Vec3 fog,
-            float angle,
-            int x,
-            int y,
-            int segments,
-            int bands) {
-        double latitude = Math.PI * (y / (double) bands - .5), longitude = x * Math.PI * 2 / segments;
-        float sy = (float) Math.sin(latitude), sx = (float) (Math.cos(latitude) * Math.cos(longitude));
-        float sz = (float) (Math.cos(latitude) * Math.sin(longitude));
-        double horizon = Math.pow(1 - Math.abs(sy), 4) * Math.min(1, state.density() * planet.sky.haze());
-        double mix = sy < 0 ? .8 : horizon * .65;
-        double weight = (.68 + .32 * Math.max(0, sy)) * (1 - mix);
-        double red = base.x * weight + fog.x * mix;
-        double green = base.y * weight + fog.y * mix;
-        double blue = base.z * weight + fog.z * mix;
-        double facing = Math.max(0, -Math.sin(angle * Math.PI * 2) * sx);
-        double sunset = Math.min(
-                .85, state.twilight() * planet.sky.sunset() * horizon * (.12 + .65 * facing * facing * facing));
+        double haze = Math.min(1, state.density() * planet.sky.haze());
+        double sun = -Math.sin(angle * Math.PI * 2);
+        double twilight = state.twilight() * planet.sky.sunset();
         double dim = 1 - state.weather() * .35;
-        red = (red * (1 - sunset) + (.7 + ((planet.skyColor >> 16) & 255) / 255d * .3) * sunset) * dim;
-        green = (green * (1 - sunset) + (.224 + ((planet.skyColor >> 8) & 255) / 255d * .3) * sunset) * dim;
-        blue = (blue * (1 - sunset) + (.07 + (planet.skyColor & 255) / 255d * .3) * sunset) * dim;
-        buffer.addVertex(view, sx * 100, sy * 100, sz * 100).setColor((float) red, (float) green, (float) blue, 1);
+        double sunsetRed = .7 + ((planet.skyColor >> 16) & 255) / 255d * .3;
+        double sunsetGreen = .224 + ((planet.skyColor >> 8) & 255) / 255d * .3;
+        double sunsetBlue = .07 + (planet.skyColor & 255) / 255d * .3;
+        for (int index = 0; index < grid.points(); index++) {
+            double horizon = grid.a[index] * haze;
+            double mix = grid.y[index] < 0 ? .8 : horizon * .65;
+            double weight = grid.b[index] * (1 - mix);
+            double facing = Math.max(0, sun * grid.x[index]);
+            double sunset = Math.min(.85, twilight * horizon * (.12 + .65 * facing * facing * facing));
+            double keep = 1 - sunset;
+            colors[index * 4] = (float) (((base.x * weight + fog.x * mix) * keep + sunsetRed * sunset) * dim);
+            colors[index * 4 + 1] = (float) (((base.y * weight + fog.y * mix) * keep + sunsetGreen * sunset) * dim);
+            colors[index * 4 + 2] = (float) (((base.z * weight + fog.z * mix) * keep + sunsetBlue * sunset) * dim);
+            colors[index * 4 + 3] = 1;
+        }
+        RenderSystem.setShader(SkyLayerShader::color);
+        var buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        emit(buffer, grid, false);
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
     }
 
     public static void clouds(Matrix4f view, Planet planet, PlanetSkyState state, double ticks, Vec3 camera) {
@@ -89,15 +166,28 @@ public final class PlanetAtmosphere {
         Vec3 color = state.cloudColor().scale((.14 + state.daylight() * .86) * (1 - state.weather() * .4));
         color = color.lerp(new Vec3(1, .48, .25), Math.min(.55, state.twilight() * planet.sky.sunset() * .5));
         float opacity = Math.min(1, state.coverage() * 1.7f);
-        layer(view, SPARSE, color, opacity * (1 - broad), u, v, 1);
-        layer(view, BROAD, color, opacity * broad, u, v, 1);
+        Grid grid = AdvancedRocketryConfig.effectDetail() > 1 ? CLOUDS_HIGH : CLOUDS_LOW;
+        prepare(view, grid);
+        layer(grid, SPARSE, color, opacity * (1 - broad), u, v, 1);
+        layer(grid, BROAD, color, opacity * broad, u, v, 1);
         if (AdvancedRocketryConfig.effectDetail() > 1)
-            layer(view, WISPS, color, opacity * .4f, u * .63 + .3, v * .7, 1.25);
+            layer(grid, WISPS, color, opacity * .4f, u * .63 + .3, v * .7, 1.25);
     }
 
     private static void layer(
-            Matrix4f view, ResourceLocation texture, Vec3 color, float alpha, double u, double v, double scale) {
+            Grid grid, ResourceLocation texture, Vec3 color, float alpha, double u, double v, double scale) {
         if (alpha < .001) return;
+        float offsetU = (float) (u % 1), offsetV = (float) (v % 1);
+        float red = (float) color.x, green = (float) color.y, blue = (float) color.z;
+        for (int index = 0; index < grid.points(); index++) {
+            float projection = (float) (scale * grid.b[index]);
+            uvs[index * 2] = grid.x[index] * projection + offsetU;
+            uvs[index * 2 + 1] = grid.z[index] * projection + offsetV;
+            colors[index * 4] = red;
+            colors[index * 4 + 1] = green;
+            colors[index * 4 + 2] = blue;
+            colors[index * 4 + 3] = alpha * grid.a[index];
+        }
         RenderSystem.setShader(SkyLayerShader::texture);
         RenderSystem.setShaderTexture(0, texture);
         var skyTexture = Minecraft.getInstance().getTextureManager().getTexture(texture);
@@ -105,40 +195,11 @@ public final class PlanetAtmosphere {
         try {
             var buffer =
                     Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            int segments = AdvancedRocketryConfig.effectDetail() > 1 ? 96 : 48;
-            for (int y = 0; y < 32; y++)
-                for (int x = 0; x < segments; x++) {
-                    cloudVertex(buffer, view, color, alpha, u, v, scale, x, y, segments);
-                    cloudVertex(buffer, view, color, alpha, u, v, scale, x + 1, y, segments);
-                    cloudVertex(buffer, view, color, alpha, u, v, scale, x + 1, y + 1, segments);
-                    cloudVertex(buffer, view, color, alpha, u, v, scale, x, y + 1, segments);
-                }
+            emit(buffer, grid, true);
             BufferUploader.drawWithShader(buffer.buildOrThrow());
         } finally {
             skyTexture.restoreLastBlurMipmap();
         }
-    }
-
-    private static void cloudVertex(
-            BufferBuilder buffer,
-            Matrix4f view,
-            Vec3 color,
-            float alpha,
-            double u,
-            double v,
-            double scale,
-            int x,
-            int y,
-            int segments) {
-        double elevation = y * Math.PI / 64, azimuth = x * Math.PI * 2 / segments;
-        float sy = (float) Math.sin(elevation), sx = (float) (Math.cos(elevation) * Math.cos(azimuth));
-        float sz = (float) (Math.cos(elevation) * Math.sin(azimuth));
-        float fade = PlanetSkyState.smooth(0, .23f, sy);
-        // Stereographic projection stays smooth at the horizon instead of clamping a plane projection.
-        double projection = scale * .8 / (1 + sy);
-        buffer.addVertex(view, sx * 100, sy * 100, sz * 100)
-                .setUv((float) (sx * projection + u % 1), (float) (sz * projection + v % 1))
-                .setColor((float) color.x, (float) color.y, (float) color.z, alpha * fade);
     }
 
     public static void night(Matrix4f view, Planet planet, PlanetSkyState state, double ticks) {
