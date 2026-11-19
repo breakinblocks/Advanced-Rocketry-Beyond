@@ -475,11 +475,13 @@ public final class RocketEntity extends ServerDrivenEntity {
 
     @Override
     protected AABB makeBoundingBox() {
-        if (structure == null || flight() != 3 && !asteroidRcs()) return super.makeBoundingBox();
+        if (structure == null) return super.makeBoundingBox();
+        AABB local = cellBounds();
+        if (flight() != 3 && !asteroidRcs()) return local.move(getX(), getY(), getZ());
         double minX = Double.POSITIVE_INFINITY, minZ = Double.POSITIVE_INFINITY;
         double maxX = Double.NEGATIVE_INFINITY, maxZ = Double.NEGATIVE_INFINITY;
-        for (double x : new double[] {-structure.width / 2d, structure.width / 2d})
-            for (double z : new double[] {0, structure.height}) {
+        for (double x : new double[] {local.minX, local.maxX})
+            for (double z : new double[] {local.minY, local.maxY}) {
                 Vec3 corner = new Vec3(x, 0, z).yRot((float) -Math.toRadians(getYRot()));
                 minX = Math.min(minX, corner.x);
                 maxX = Math.max(maxX, corner.x);
@@ -487,12 +489,26 @@ public final class RocketEntity extends ServerDrivenEntity {
                 maxZ = Math.max(maxZ, corner.z);
             }
         return new AABB(
-                getX() + minX,
-                getY() - structure.depth / 2d,
-                getZ() + minZ,
-                getX() + maxX,
-                getY() + structure.depth / 2d,
-                getZ() + maxZ);
+                getX() + minX, getY() - local.maxZ, getZ() + minZ, getX() + maxX, getY() - local.minZ, getZ() + maxZ);
+    }
+
+    private AABB cellBounds() {
+        double halfWidth = structure.width / 2d;
+        double halfDepth = structure.depth / 2d;
+        if (structure.cells.isEmpty())
+            return new AABB(-halfWidth, 0, -halfDepth, halfWidth, structure.height, halfDepth);
+        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+        for (RocketStructure.Cell cell : structure.cells) {
+            BlockPos pos = cell.position();
+            minX = Math.min(minX, pos.getX());
+            minY = Math.min(minY, pos.getY());
+            minZ = Math.min(minZ, pos.getZ());
+            maxX = Math.max(maxX, pos.getX());
+            maxY = Math.max(maxY, pos.getY());
+            maxZ = Math.max(maxZ, pos.getZ());
+        }
+        return new AABB(minX - halfWidth, minY, minZ - halfDepth, maxX + 1 - halfWidth, maxY + 1, maxZ + 1 - halfDepth);
     }
 
     @Override
