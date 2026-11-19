@@ -5,11 +5,11 @@ package advRocketry.rocket;
 
 /** Native ground infrastructure selected with the in-mod linker. */
 public interface RocketInfrastructure {
-  boolean link(RocketEntity rocket);
+    boolean link(RocketEntity rocket);
 
-  boolean linkBuilder(RocketBlockEntity builder);
+    boolean linkBuilder(RocketBlockEntity builder);
 
-  void unlink();
+    void unlink();
 
-  void tick();
+    void tick();
 }

@@ -5,6 +5,7 @@ import org.slf4j.event.Level
 plugins {
     id 'java-library'
     id 'net.neoforged.moddev' version '1.0.21'
+    id 'com.diffplug.spotless' version '8.10.3'
 }
 
 version = mod_version
@@ -141,3 +142,15 @@ def verifySources = tasks.register('verifySources') {
     }
 }
 tasks.named('compileJava') { dependsOn verifySources }
+
+spotless {
+    lineEndings = com.diffplug.spotless.LineEnding.UNIX
+    java {
+        target 'src/*/java/**/*.java'
+        palantirJavaFormat()
+        importOrder()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}

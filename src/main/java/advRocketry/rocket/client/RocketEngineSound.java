@@ -13,39 +13,37 @@ import net.minecraft.util.RandomSource;
 
 /** Follows an active rocket and stops the original engine recording when thrust ends. */
 final class RocketEngineSound extends AbstractTickableSoundInstance {
-  private final RocketEntity rocket;
-  private float spool;
+    private final RocketEntity rocket;
+    private float spool;
 
-  RocketEngineSound(RocketEntity rocket) {
-    super(RocketRegistry.ENGINE_SOUND.get(), SoundSource.NEUTRAL, RandomSource.create());
-    this.rocket = rocket;
-    looping = true;
-    volume = .02f;
-    tick();
-  }
-
-  static boolean active(RocketEntity rocket) {
-    return rocket.enginesActive();
-  }
-
-  @Override
-  public void tick() {
-    var profile = EffectProfiles.get("audio");
-    if (rocket.isRemoved()
-        || Minecraft.getInstance().level != rocket.level()
-        || !profile.enabled()) {
-      stop();
-      return;
+    RocketEngineSound(RocketEntity rocket) {
+        super(RocketRegistry.ENGINE_SOUND.get(), SoundSource.NEUTRAL, RandomSource.create());
+        this.rocket = rocket;
+        looping = true;
+        volume = .02f;
+        tick();
     }
-    x = rocket.getX();
-    y = rocket.getY();
-    z = rocket.getZ();
-    spool = Math.clamp(spool + (active(rocket) ? .05f : -.08f), 0, 1);
-    if (spool <= 0) {
-      stop();
-      return;
+
+    static boolean active(RocketEntity rocket) {
+        return rocket.enginesActive();
     }
-    volume = .85f * spool;
-    pitch = .65f + .35f * spool;
-  }
+
+    @Override
+    public void tick() {
+        var profile = EffectProfiles.get("audio");
+        if (rocket.isRemoved() || Minecraft.getInstance().level != rocket.level() || !profile.enabled()) {
+            stop();
+            return;
+        }
+        x = rocket.getX();
+        y = rocket.getY();
+        z = rocket.getZ();
+        spool = Math.clamp(spool + (active(rocket) ? .05f : -.08f), 0, 1);
+        if (spool <= 0) {
+            stop();
+            return;
+        }
+        volume = .85f * spool;
+        pitch = .65f + .35f * spool;
+    }
 }

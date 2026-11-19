@@ -22,82 +22,79 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 /** Native counterpart of LibVulpes' machine-bound repeating sound. */
 @EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public final class MachineSounds {
-  private static final float IDLE_PITCH = .72f;
-  private static final Map<ProcessingBlockEntity, MachineLoop> SOUNDS = new HashMap<>();
+    private static final float IDLE_PITCH = .72f;
+    private static final Map<ProcessingBlockEntity, MachineLoop> SOUNDS = new HashMap<>();
 
-  private MachineSounds() {}
+    private MachineSounds() {}
 
-  public static void tick(ProcessingBlockEntity machine) {
-    if (!machine.running() || SOUNDS.containsKey(machine) || !EffectProfiles.get("audio").enabled())
-      return;
-    var client = Minecraft.getInstance();
-    if (client.options.getSoundSourceVolume(SoundSource.BLOCKS) == 0
-        || client.options.getSoundSourceVolume(SoundSource.MASTER) == 0) return;
-    var sound = ProcessingRegistry.MACHINE_SOUNDS.get(machine.machine());
-    if (sound == null) return;
-    var loop = new MachineLoop(machine, sound.get());
-    SOUNDS.put(machine, loop);
-    Minecraft.getInstance().getSoundManager().play(loop);
-  }
+    public static void tick(ProcessingBlockEntity machine) {
+        if (!machine.running()
+                || SOUNDS.containsKey(machine)
+                || !EffectProfiles.get("audio").enabled()) return;
+        var client = Minecraft.getInstance();
+        if (client.options.getSoundSourceVolume(SoundSource.BLOCKS) == 0
+                || client.options.getSoundSourceVolume(SoundSource.MASTER) == 0) return;
+        var sound = ProcessingRegistry.MACHINE_SOUNDS.get(machine.machine());
+        if (sound == null) return;
+        var loop = new MachineLoop(machine, sound.get());
+        SOUNDS.put(machine, loop);
+        Minecraft.getInstance().getSoundManager().play(loop);
+    }
 
-  public static void clear() {
-    var manager = Minecraft.getInstance().getSoundManager();
-    SOUNDS.values().forEach(manager::stop);
-    SOUNDS.clear();
-  }
+    public static void clear() {
+        var manager = Minecraft.getInstance().getSoundManager();
+        SOUNDS.values().forEach(manager::stop);
+        SOUNDS.clear();
+    }
 
-  @SubscribeEvent
-  public static void cleanup(ClientTickEvent.Post event) {
-    var client = Minecraft.getInstance();
-    SOUNDS
-        .entrySet()
-        .removeIf(
-            entry -> {
-              var machine = entry.getKey();
-              var loop = entry.getValue();
-              if (client.level == null
-                  || machine.isRemoved()
-                  || machine.getLevel() != client.level
-                  || loop.isStopped()
-                  || !client.getSoundManager().isActive(loop)
-                      && client.level.getGameTime() - loop.createdAt > 5) {
+    @SubscribeEvent
+    public static void cleanup(ClientTickEvent.Post event) {
+        var client = Minecraft.getInstance();
+        SOUNDS.entrySet().removeIf(entry -> {
+            var machine = entry.getKey();
+            var loop = entry.getValue();
+            if (client.level == null
+                    || machine.isRemoved()
+                    || machine.getLevel() != client.level
+                    || loop.isStopped()
+                    || !client.getSoundManager().isActive(loop) && client.level.getGameTime() - loop.createdAt > 5) {
                 client.getSoundManager().stop(loop);
                 return true;
-              }
-              return false;
-            });
-  }
-
-  private static final class MachineLoop extends AbstractTickableSoundInstance {
-    private final ProcessingBlockEntity machine;
-    private final long createdAt;
-    private float spool;
-
-    MachineLoop(ProcessingBlockEntity machine, SoundEvent event) {
-      super(event, SoundSource.BLOCKS, RandomSource.create());
-      this.machine = machine;
-      createdAt = machine.getLevel().getGameTime();
-      looping = true;
-      delay = 0;
-      volume = .02f;
-      pitch = IDLE_PITCH;
-      x = machine.getBlockPos().getX() + .5;
-      y = machine.getBlockPos().getY() + .5;
-      z = machine.getBlockPos().getZ() + .5;
+            }
+            return false;
+        });
     }
 
-    @Override
-    public void tick() {
-      if (machine.isRemoved()
-          || machine.getLevel() != Minecraft.getInstance().level
-          || !EffectProfiles.get("audio").enabled()) {
-        stop();
-        return;
-      }
-      spool = Math.clamp(spool + (machine.running() ? .08f : -.06f), 0, 1);
-      if (spool <= 0) stop();
-      volume = spool * .85f;
-      pitch = IDLE_PITCH + spool * (1 - IDLE_PITCH);
+    private static final class MachineLoop extends AbstractTickableSoundInstance {
+        private final ProcessingBlockEntity machine;
+        private final long createdAt;
+        private float spool;
+
+        MachineLoop(ProcessingBlockEntity machine, SoundEvent event) {
+            super(event, SoundSource.BLOCKS, RandomSource.create());
+            this.machine = machine;
+            createdAt = machine.getLevel().getGameTime();
+            looping = true;
+            delay = 0;
+            volume = .02f;
+            pitch = IDLE_PITCH;
+            x = machine.getBlockPos().getX() + .5;
+            y = machine.getBlockPos().getY() + .5;
+            z = machine.getBlockPos().getZ() + .5;
+        }
+
+        @Override
+        public void tick() {
+            if (machine.isRemoved()
+                    || machine.getLevel() != Minecraft.getInstance().level
+                    || !EffectProfiles.get("audio").enabled()) {
+                stop();
+                return;
+            }
+            spool = Math.clamp(spool + (machine.running() ? .08f : -.06f), 0, 1);
+            if (spool <= 0) stop();
+            volume = spool * .85f;
+            pitch = IDLE_PITCH + spool * (1 - IDLE_PITCH);
+        }
     }
-  }
 }

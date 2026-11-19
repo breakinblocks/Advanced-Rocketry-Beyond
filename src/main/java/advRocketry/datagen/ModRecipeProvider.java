@@ -7,13 +7,13 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 
 final class ModRecipeProvider extends RecipeProvider {
-  ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
-    super(output, lookup);
-  }
+    ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
+        super(output, lookup);
+    }
 
-  @Override
-  protected void buildRecipes(RecipeOutput output) {
-    ModCraftingRecipes.build(output);
-    ModProcessingRecipes.build(output);
-  }
+    @Override
+    protected void buildRecipes(RecipeOutput output) {
+        ModCraftingRecipes.build(output);
+        ModProcessingRecipes.build(output);
+    }
 }

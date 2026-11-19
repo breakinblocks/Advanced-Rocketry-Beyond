@@ -27,71 +27,69 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Original directional wireless data node with an in-world mode control. */
 public final class WirelessTransceiverBlock extends Block implements EntityBlock {
-  public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-  private static final VoxelShape NORTH_SHAPE = Block.box(4, 4, 12, 12, 12, 16);
-  private static final VoxelShape SOUTH_SHAPE = Block.box(4, 4, 0, 12, 12, 4);
-  private static final VoxelShape EAST_SHAPE = Block.box(12, 4, 4, 16, 12, 12);
-  private static final VoxelShape WEST_SHAPE = Block.box(0, 4, 4, 4, 12, 12);
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    private static final VoxelShape NORTH_SHAPE = Block.box(4, 4, 12, 12, 12, 16);
+    private static final VoxelShape SOUTH_SHAPE = Block.box(4, 4, 0, 12, 12, 4);
+    private static final VoxelShape EAST_SHAPE = Block.box(12, 4, 4, 16, 12, 12);
+    private static final VoxelShape WEST_SHAPE = Block.box(0, 4, 4, 4, 12, 12);
 
-  public WirelessTransceiverBlock(Properties properties) {
-    super(properties);
-    registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
-  }
-
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(FACING);
-  }
-
-  @Override
-  public BlockState getStateForPlacement(BlockPlaceContext context) {
-    return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-  }
-
-  @Override
-  protected VoxelShape getShape(
-      BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-    return switch (state.getValue(FACING)) {
-      case NORTH -> NORTH_SHAPE;
-      case SOUTH -> SOUTH_SHAPE;
-      case EAST -> EAST_SHAPE;
-      case WEST -> WEST_SHAPE;
-      default -> NORTH_SHAPE;
-    };
-  }
-
-  @Override
-  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new WirelessTransceiverBlockEntity(pos, state);
-  }
-
-  @Override
-  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-      Level level, BlockState state, BlockEntityType<T> type) {
-    return !level.isClientSide && type == OrbitalRegistry.WIRELESS_ENTITY.get()
-        ? (world, pos, blockState, entity) -> ((WirelessTransceiverBlockEntity) entity).tick()
-        : null;
-  }
-
-  @Override
-  protected InteractionResult useWithoutItem(
-      BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-    if (player instanceof ServerPlayer serverPlayer
-        && level.getBlockEntity(pos) instanceof WirelessTransceiverBlockEntity node) {
-      node.cycleMode();
-      serverPlayer.displayClientMessage(
-          Texts.translate(
-              "message.adv_rocketry.wireless_transceiver_block.wireless_data", node.mode()),
-          true);
+    public WirelessTransceiverBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
     }
-    return InteractionResult.sidedSuccess(level.isClientSide);
-  }
 
-  @Override
-  protected void onRemove(
-      BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
-    if (!state.is(next.getBlock())
-        && level.getBlockEntity(pos) instanceof WirelessTransceiverBlockEntity node) node.unlink();
-    super.onRemove(state, level, pos, next, moving);
-  }
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return switch (state.getValue(FACING)) {
+            case NORTH -> NORTH_SHAPE;
+            case SOUTH -> SOUTH_SHAPE;
+            case EAST -> EAST_SHAPE;
+            case WEST -> WEST_SHAPE;
+            default -> NORTH_SHAPE;
+        };
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new WirelessTransceiverBlockEntity(pos, state);
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, BlockEntityType<T> type) {
+        return !level.isClientSide && type == OrbitalRegistry.WIRELESS_ENTITY.get()
+                ? (world, pos, blockState, entity) -> ((WirelessTransceiverBlockEntity) entity).tick()
+                : null;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(
+            BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (player instanceof ServerPlayer serverPlayer
+                && level.getBlockEntity(pos) instanceof WirelessTransceiverBlockEntity node) {
+            node.cycleMode();
+            serverPlayer.displayClientMessage(
+                    Texts.translate("message.adv_rocketry.wireless_transceiver_block.wireless_data", node.mode()),
+                    true);
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
+        if (!state.is(next.getBlock()) && level.getBlockEntity(pos) instanceof WirelessTransceiverBlockEntity node)
+            node.unlink();
+        super.onRemove(state, level, pos, next, moving);
+    }
 }

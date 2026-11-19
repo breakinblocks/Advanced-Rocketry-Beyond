@@ -12,17 +12,17 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Original diamond-tier jackhammer speed, repaired with titanium rods. */
 public final class JackhammerItem extends PickaxeItem {
-  public JackhammerItem(Properties properties) {
-    super(Tiers.DIAMOND, properties);
-  }
+    public JackhammerItem(Properties properties) {
+        super(Tiers.DIAMOND, properties);
+    }
 
-  @Override
-  public float getDestroySpeed(ItemStack stack, BlockState state) {
-    return state.is(BlockTags.MINEABLE_WITH_PICKAXE) ? 50 : super.getDestroySpeed(stack, state);
-  }
+    @Override
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
+        return state.is(BlockTags.MINEABLE_WITH_PICKAXE) ? 50 : super.getDestroySpeed(stack, state);
+    }
 
-  @Override
-  public boolean isValidRepairItem(ItemStack stack, ItemStack material) {
-    return material.is(ModTags.TITANIUM_RODS);
-  }
+    @Override
+    public boolean isValidRepairItem(ItemStack stack, ItemStack material) {
+        return material.is(ModTags.TITANIUM_RODS);
+    }
 }

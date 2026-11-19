@@ -20,62 +20,57 @@ import net.minecraft.world.phys.Vec3;
 
 /** A precision lance with focusing rings and a concentrated impact. */
 public final class LaserNodeRenderer extends EntityRenderer<LaserNodeEntity> {
-  public LaserNodeRenderer(EntityRendererProvider.Context context) {
-    super(context);
-  }
-
-  @Override
-  public boolean shouldRender(
-      LaserNodeEntity entity, Frustum frustum, double x, double y, double z) {
-    return Math.abs(entity.getX() - x) < 128
-        && Math.abs(entity.getZ() - z) < 128
-        && frustum.isVisible(
-            new AABB(
-                entity.getX() - 1,
-                entity.getY(),
-                entity.getZ() - 1,
-                entity.getX() + 1,
-                entity.getY() + 200,
-                entity.getZ() + 1));
-  }
-
-  @Override
-  public void render(
-      LaserNodeEntity entity,
-      float yaw,
-      float partialTick,
-      PoseStack pose,
-      MultiBufferSource buffers,
-      int packedLight) {
-    var profile = EffectProfiles.get("laser");
-    if (!profile.enabled()) return;
-    VertexConsumer vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
-    EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, 200, 0), .04, profile.argb(.4f));
-    if (EffectGeometry.visible(entity.position(), profile) && EffectGeometry.reserve()) {
-      EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, 200, 0), .09, profile.argb(.5f));
-      EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, 200, 0), .22, profile.argb(.08f));
-      for (int ring = 0; ring < 3; ring++) {
-        EffectGeometry.ring(
-            pose,
-            vertices,
-            .3,
-            1.5 + ring * 1.5,
-            .025,
-            profile.argb(.5f),
-            EffectGeometry.segments(profile));
-      }
-      EffectGeometry.ring(
-          pose, vertices, .65, .03, .035, profile.argb(.8f), EffectGeometry.segments(profile));
-      EffectGeometry.beam(
-          pose, vertices, new Vec3(-.2, .05, 0), new Vec3(.2, .05, 0), .12, 0xe0eafff8);
-      EffectGeometry.beam(
-          pose, vertices, new Vec3(0, .05, -.2), new Vec3(0, .05, .2), .12, 0xe0eafff8);
+    public LaserNodeRenderer(EntityRendererProvider.Context context) {
+        super(context);
     }
-    super.render(entity, yaw, partialTick, pose, buffers, packedLight);
-  }
 
-  @Override
-  public ResourceLocation getTextureLocation(LaserNodeEntity entity) {
-    return InventoryMenu.BLOCK_ATLAS;
-  }
+    @Override
+    public boolean shouldRender(LaserNodeEntity entity, Frustum frustum, double x, double y, double z) {
+        return Math.abs(entity.getX() - x) < 128
+                && Math.abs(entity.getZ() - z) < 128
+                && frustum.isVisible(new AABB(
+                        entity.getX() - 1,
+                        entity.getY(),
+                        entity.getZ() - 1,
+                        entity.getX() + 1,
+                        entity.getY() + 200,
+                        entity.getZ() + 1));
+    }
+
+    @Override
+    public void render(
+            LaserNodeEntity entity,
+            float yaw,
+            float partialTick,
+            PoseStack pose,
+            MultiBufferSource buffers,
+            int packedLight) {
+        var profile = EffectProfiles.get("laser");
+        if (!profile.enabled()) return;
+        VertexConsumer vertices = buffers.getBuffer(EffectRenderTypes.GLOW);
+        EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, 200, 0), .04, profile.argb(.4f));
+        if (EffectGeometry.visible(entity.position(), profile) && EffectGeometry.reserve()) {
+            EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, 200, 0), .09, profile.argb(.5f));
+            EffectGeometry.beam(pose, vertices, Vec3.ZERO, new Vec3(0, 200, 0), .22, profile.argb(.08f));
+            for (int ring = 0; ring < 3; ring++) {
+                EffectGeometry.ring(
+                        pose,
+                        vertices,
+                        .3,
+                        1.5 + ring * 1.5,
+                        .025,
+                        profile.argb(.5f),
+                        EffectGeometry.segments(profile));
+            }
+            EffectGeometry.ring(pose, vertices, .65, .03, .035, profile.argb(.8f), EffectGeometry.segments(profile));
+            EffectGeometry.beam(pose, vertices, new Vec3(-.2, .05, 0), new Vec3(.2, .05, 0), .12, 0xe0eafff8);
+            EffectGeometry.beam(pose, vertices, new Vec3(0, .05, -.2), new Vec3(0, .05, .2), .12, 0xe0eafff8);
+        }
+        super.render(entity, yaw, partialTick, pose, buffers, packedLight);
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(LaserNodeEntity entity) {
+        return InventoryMenu.BLOCK_ATLAS;
+    }
 }

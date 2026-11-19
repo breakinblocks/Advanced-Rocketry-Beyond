@@ -31,120 +31,114 @@ import net.minecraft.world.phys.Vec3;
 
 /** Original 50-block laser: a short held beam mines a fixed block or strikes an entity. */
 public final class LaserGunItem extends Item {
-  private static final int REACH = 50;
-  private static final int CHARGE_TICKS = 16;
-  private final Map<LivingEntity, BlockPos> lockedTargets = new WeakHashMap<>();
-  private final Map<LivingEntity, Long> targetStartTicks = new WeakHashMap<>();
+    private static final int REACH = 50;
+    private static final int CHARGE_TICKS = 16;
+    private final Map<LivingEntity, BlockPos> lockedTargets = new WeakHashMap<>();
+    private final Map<LivingEntity, Long> targetStartTicks = new WeakHashMap<>();
 
-  public LaserGunItem(Properties properties) {
-    super(
-        properties
-            .stacksTo(1)
-            .component(
-                DataComponents.TOOL,
-                new Tool(
-                    List.of(
-                        Tool.Rule.deniesDrops(Tiers.DIAMOND.getIncorrectBlocksForDrops()),
-                        new Tool.Rule(
-                            BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.MINEABLE_WITH_PICKAXE),
-                            Optional.empty(),
-                            Optional.of(true))),
-                    0,
-                    0)));
-  }
-
-  @Override
-  public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-    if (!level.isClientSide) clearTarget(player);
-    player.startUsingItem(hand);
-    return InteractionResultHolder.consume(player.getItemInHand(hand));
-  }
-
-  @Override
-  public int getUseDuration(ItemStack stack, LivingEntity entity) {
-    return 72000;
-  }
-
-  @Override
-  public UseAnim getUseAnimation(ItemStack stack) {
-    return UseAnim.NONE;
-  }
-
-  @Override
-  public void onUseTick(Level level, LivingEntity user, ItemStack stack, int remaining) {
-    if (!(user instanceof Player player) || level.isClientSide) return;
-    Vec3 start = player.getEyePosition();
-    Vec3 end = start.add(player.getLookAngle().scale(REACH));
-    HitResult block = player.pick(REACH, 1, false);
-    double limit =
-        block.getType() == HitResult.Type.BLOCK
-            ? start.distanceToSqr(block.getLocation())
-            : REACH * REACH;
-    Entity target = null;
-    Vec3 impact = block.getLocation();
-    double nearest = limit;
-    for (Entity candidate : level.getEntities(player, new AABB(start, end).inflate(1))) {
-      if (!candidate.isPickable() || candidate.isSpectator()) continue;
-      var hit = candidate.getBoundingBox().inflate(candidate.getPickRadius()).clip(start, end);
-      if (hit.isPresent() && start.distanceToSqr(hit.get()) < nearest) {
-        target = candidate;
-        nearest = start.distanceToSqr(hit.get());
-        impact = hit.get();
-      }
+    public LaserGunItem(Properties properties) {
+        super(properties
+                .stacksTo(1)
+                .component(
+                        DataComponents.TOOL,
+                        new Tool(
+                                List.of(
+                                        Tool.Rule.deniesDrops(Tiers.DIAMOND.getIncorrectBlocksForDrops()),
+                                        new Tool.Rule(
+                                                BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.MINEABLE_WITH_PICKAXE),
+                                                Optional.empty(),
+                                                Optional.of(true))),
+                                0,
+                                0)));
     }
-    if (target != null) {
-      if (player instanceof ServerPlayer shooter) LaserBeamSync.send(shooter, impact);
-      target.hurt(player.damageSources().playerAttack(player), 1);
-      level.playSound(
-          null,
-          player.blockPosition(),
-          ProcessingRegistry.LASER_GUN_SOUND.get(),
-          SoundSource.PLAYERS,
-          1,
-          1);
-      clearTarget(player);
-      return;
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (!level.isClientSide) clearTarget(player);
+        player.startUsingItem(hand);
+        return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
-    if (block.getType() == HitResult.Type.BLOCK && block instanceof BlockHitResult hit) {
-      if (player instanceof ServerPlayer shooter) LaserBeamSync.send(shooter, impact);
-      if (remaining % 5 == 0)
-        level.playSound(
-            null,
-            player.blockPosition(),
-            ProcessingRegistry.LASER_GUN_SOUND.get(),
-            SoundSource.PLAYERS,
-            1,
-            1);
-      BlockPos previous = lockedTargets.putIfAbsent(player, hit.getBlockPos());
-      if (previous != null && !previous.equals(hit.getBlockPos())) {
-        lockedTargets.put(player, hit.getBlockPos());
-        targetStartTicks.put(player, level.getGameTime());
-      } else if (previous == null) {
-        targetStartTicks.put(player, level.getGameTime());
-      } else if (level.getGameTime() - targetStartTicks.getOrDefault(player, level.getGameTime())
-              >= CHARGE_TICKS
-          && level.mayInteract(player, hit.getBlockPos())
-          && level.getBlockState(hit.getBlockPos()).getDestroySpeed(level, hit.getBlockPos()) >= 0
-          && player instanceof ServerPlayer shooter) {
-        shooter.gameMode.destroyBlock(hit.getBlockPos());
-        clearTarget(player);
-      }
-    } else {
-      clearTarget(player);
+
+    @Override
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
+        return 72000;
     }
-  }
 
-  @Override
-  public void releaseUsing(ItemStack stack, Level level, LivingEntity user, int remaining) {
-    if (!level.isClientSide) clearTarget(user);
-  }
+    @Override
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.NONE;
+    }
 
-  private void clearTarget(LivingEntity user) {
-    lockedTargets.remove(user);
-    targetStartTicks.remove(user);
-  }
+    @Override
+    public void onUseTick(Level level, LivingEntity user, ItemStack stack, int remaining) {
+        if (!(user instanceof Player player) || level.isClientSide) return;
+        Vec3 start = player.getEyePosition();
+        Vec3 end = start.add(player.getLookAngle().scale(REACH));
+        HitResult block = player.pick(REACH, 1, false);
+        double limit =
+                block.getType() == HitResult.Type.BLOCK ? start.distanceToSqr(block.getLocation()) : REACH * REACH;
+        Entity target = null;
+        Vec3 impact = block.getLocation();
+        double nearest = limit;
+        for (Entity candidate : level.getEntities(player, new AABB(start, end).inflate(1))) {
+            if (!candidate.isPickable() || candidate.isSpectator()) continue;
+            var hit = candidate
+                    .getBoundingBox()
+                    .inflate(candidate.getPickRadius())
+                    .clip(start, end);
+            if (hit.isPresent() && start.distanceToSqr(hit.get()) < nearest) {
+                target = candidate;
+                nearest = start.distanceToSqr(hit.get());
+                impact = hit.get();
+            }
+        }
+        if (target != null) {
+            if (player instanceof ServerPlayer shooter) LaserBeamSync.send(shooter, impact);
+            target.hurt(player.damageSources().playerAttack(player), 1);
+            level.playSound(
+                    null, player.blockPosition(), ProcessingRegistry.LASER_GUN_SOUND.get(), SoundSource.PLAYERS, 1, 1);
+            clearTarget(player);
+            return;
+        }
+        if (block.getType() == HitResult.Type.BLOCK && block instanceof BlockHitResult hit) {
+            if (player instanceof ServerPlayer shooter) LaserBeamSync.send(shooter, impact);
+            if (remaining % 5 == 0)
+                level.playSound(
+                        null,
+                        player.blockPosition(),
+                        ProcessingRegistry.LASER_GUN_SOUND.get(),
+                        SoundSource.PLAYERS,
+                        1,
+                        1);
+            BlockPos previous = lockedTargets.putIfAbsent(player, hit.getBlockPos());
+            if (previous != null && !previous.equals(hit.getBlockPos())) {
+                lockedTargets.put(player, hit.getBlockPos());
+                targetStartTicks.put(player, level.getGameTime());
+            } else if (previous == null) {
+                targetStartTicks.put(player, level.getGameTime());
+            } else if (level.getGameTime() - targetStartTicks.getOrDefault(player, level.getGameTime()) >= CHARGE_TICKS
+                    && level.mayInteract(player, hit.getBlockPos())
+                    && level.getBlockState(hit.getBlockPos()).getDestroySpeed(level, hit.getBlockPos()) >= 0
+                    && player instanceof ServerPlayer shooter) {
+                shooter.gameMode.destroyBlock(hit.getBlockPos());
+                clearTarget(player);
+            }
+        } else {
+            clearTarget(player);
+        }
+    }
 
-  BlockPos lockedTarget(LivingEntity user) {
-    return lockedTargets.get(user);
-  }
+    @Override
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity user, int remaining) {
+        if (!level.isClientSide) clearTarget(user);
+    }
+
+    private void clearTarget(LivingEntity user) {
+        lockedTargets.remove(user);
+        targetStartTicks.remove(user);
+    }
+
+    BlockPos lockedTarget(LivingEntity user) {
+        return lockedTargets.get(user);
+    }
 }

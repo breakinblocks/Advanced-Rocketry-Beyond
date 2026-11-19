@@ -19,51 +19,47 @@ import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public final class ModBlockLoot extends BlockLootSubProvider {
-  public ModBlockLoot(HolderLookup.Provider registries) {
-    super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
-  }
-
-  private static Block block(String path) {
-    return BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Main.MODID, path));
-  }
-
-  @Override
-  protected void generate() {
-    for (Block block : getKnownBlocks()) {
-      String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
-      switch (path) {
-        case "rootwood_leaves" ->
-            add(
-                block,
-                createLeavesDrops(block, block("rootwood_sapling"), NORMAL_LEAVES_SAPLING_CHANCES));
-        case "alien_leaves" ->
-            add(block, createLeavesDrops(block, block("alien_sapling"), NORMAL_LEAVES_SAPLING_CHANCES));
-        case "liquid_tank" ->
-            add(
-                block,
-                LootTable.lootTable()
-                    .withPool(
-                        LootPool.lootPool()
-                            .setRolls(ConstantValue.exactly(1))
-                            .add(
-                                LootItem.lootTableItem(block)
-                                    .apply(
-                                        CopyComponentsFunction.copyComponents(
-                                                CopyComponentsFunction.Source.BLOCK_ENTITY)
-                                            .include(ModComponents.TANK_CONTENT.get())))));
-        case "airlock_door" -> add(block, createDoorTable(block));
-        case "thermite_wall_torch" -> dropOther(block, block("thermite_torch"));
-        case "unlit_torch", "unlit_wall_torch" -> dropOther(block, Items.TORCH);
-        default -> dropSelf(block);
-      }
+    public ModBlockLoot(HolderLookup.Provider registries) {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
     }
-  }
 
-  @Override
-  protected List<Block> getKnownBlocks() {
-    return BuiltInRegistries.BLOCK.stream()
-        .filter(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(Main.MODID))
-        .filter(block -> block.getLootTable() != BuiltInLootTables.EMPTY)
-        .toList();
-  }
+    private static Block block(String path) {
+        return BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Main.MODID, path));
+    }
+
+    @Override
+    protected void generate() {
+        for (Block block : getKnownBlocks()) {
+            String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
+            switch (path) {
+                case "rootwood_leaves" ->
+                    add(block, createLeavesDrops(block, block("rootwood_sapling"), NORMAL_LEAVES_SAPLING_CHANCES));
+                case "alien_leaves" ->
+                    add(block, createLeavesDrops(block, block("alien_sapling"), NORMAL_LEAVES_SAPLING_CHANCES));
+                case "liquid_tank" ->
+                    add(
+                            block,
+                            LootTable.lootTable()
+                                    .withPool(LootPool.lootPool()
+                                            .setRolls(ConstantValue.exactly(1))
+                                            .add(LootItem.lootTableItem(block)
+                                                    .apply(CopyComponentsFunction.copyComponents(
+                                                                    CopyComponentsFunction.Source.BLOCK_ENTITY)
+                                                            .include(ModComponents.TANK_CONTENT.get())))));
+                case "airlock_door" -> add(block, createDoorTable(block));
+                case "thermite_wall_torch" -> dropOther(block, block("thermite_torch"));
+                case "unlit_torch", "unlit_wall_torch" -> dropOther(block, Items.TORCH);
+                default -> dropSelf(block);
+            }
+        }
+    }
+
+    @Override
+    protected List<Block> getKnownBlocks() {
+        return BuiltInRegistries.BLOCK.stream()
+                .filter(block ->
+                        BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(Main.MODID))
+                .filter(block -> block.getLootTable() != BuiltInLootTables.EMPTY)
+                .toList();
+    }
 }

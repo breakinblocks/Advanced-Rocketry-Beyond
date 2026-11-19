@@ -9,12 +9,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 /** Original thermite fuel burn duration. */
 public final class ThermiteItem extends Item {
-  public ThermiteItem(Properties properties) {
-    super(properties);
-  }
+    public ThermiteItem(Properties properties) {
+        super(properties);
+    }
 
-  @Override
-  public int getBurnTime(ItemStack stack, RecipeType<?> recipeType) {
-    return 6000;
-  }
+    @Override
+    public int getBurnTime(ItemStack stack, RecipeType<?> recipeType) {
+        return 6000;
+    }
 }

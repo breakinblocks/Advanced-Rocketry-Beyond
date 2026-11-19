@@ -12,13 +12,13 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** Six-direction redstone force-field projector. */
 public final class ForceFieldProjectorBlock extends DirectionalOrbitalBlock {
-  public ForceFieldProjectorBlock(Properties properties) {
-    super(Kind.FORCE_FIELD_PROJECTOR, properties);
-  }
+    public ForceFieldProjectorBlock(Properties properties) {
+        super(Kind.FORCE_FIELD_PROJECTOR, properties);
+    }
 
-  @Override
-  protected InteractionResult useWithoutItem(
-      BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-    return InteractionResult.PASS;
-  }
+    @Override
+    protected InteractionResult useWithoutItem(
+            BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        return InteractionResult.PASS;
+    }
 }

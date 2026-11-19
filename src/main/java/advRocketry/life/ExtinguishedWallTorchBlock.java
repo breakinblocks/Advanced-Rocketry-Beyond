@@ -17,22 +17,22 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** Wall-mounted companion of the extinguished floor torch. */
 public final class ExtinguishedWallTorchBlock extends WallTorchBlock {
-  public ExtinguishedWallTorchBlock(Properties properties) {
-    super(ParticleTypes.FLAME, properties);
-  }
+    public ExtinguishedWallTorchBlock(Properties properties) {
+        super(ParticleTypes.FLAME, properties);
+    }
 
-  @Override
-  public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {}
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 
-  @Override
-  protected ItemInteractionResult useItemOn(
-      ItemStack stack,
-      BlockState state,
-      Level level,
-      BlockPos pos,
-      Player player,
-      InteractionHand hand,
-      BlockHitResult hit) {
-    return LightingRegistry.relight(stack, level, pos, state);
-  }
+    @Override
+    protected ItemInteractionResult useItemOn(
+            ItemStack stack,
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit) {
+        return LightingRegistry.relight(stack, level, pos, state);
+    }
 }

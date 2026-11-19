@@ -10,16 +10,16 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public final class ProcessingRecipeSerializer implements RecipeSerializer<ProcessingRecipe> {
-  private static final StreamCodec<RegistryFriendlyByteBuf, ProcessingRecipe> STREAM_CODEC =
-      ByteBufCodecs.fromCodecWithRegistries(ProcessingRecipe.CODEC);
+    private static final StreamCodec<RegistryFriendlyByteBuf, ProcessingRecipe> STREAM_CODEC =
+            ByteBufCodecs.fromCodecWithRegistries(ProcessingRecipe.CODEC);
 
-  @Override
-  public MapCodec<ProcessingRecipe> codec() {
-    return ProcessingRecipe.MAP_CODEC;
-  }
+    @Override
+    public MapCodec<ProcessingRecipe> codec() {
+        return ProcessingRecipe.MAP_CODEC;
+    }
 
-  @Override
-  public StreamCodec<RegistryFriendlyByteBuf, ProcessingRecipe> streamCodec() {
-    return STREAM_CODEC;
-  }
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, ProcessingRecipe> streamCodec() {
+        return STREAM_CODEC;
+    }
 }

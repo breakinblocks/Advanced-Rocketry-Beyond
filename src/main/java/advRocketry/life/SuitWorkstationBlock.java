@@ -21,44 +21,44 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** Original suit work station, with the suit retained in the block. */
 public final class SuitWorkstationBlock extends Block implements EntityBlock {
-  public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-  public SuitWorkstationBlock(Properties properties) {
-    super(properties);
-    registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
-  }
+    public SuitWorkstationBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
+    }
 
-  @Override
-  public BlockState getStateForPlacement(BlockPlaceContext context) {
-    return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-  }
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
 
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(FACING);
-  }
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
 
-  @Override
-  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new SuitWorkstationBlockEntity(pos, state);
-  }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new SuitWorkstationBlockEntity(pos, state);
+    }
 
-  @Override
-  protected InteractionResult useWithoutItem(
-      BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-    if (player instanceof ServerPlayer serverPlayer
-        && level.getBlockEntity(pos) instanceof SuitWorkstationBlockEntity entity)
-      serverPlayer.openMenu(entity, buffer -> buffer.writeBlockPos(pos));
-    return InteractionResult.sidedSuccess(level.isClientSide);
-  }
+    @Override
+    protected InteractionResult useWithoutItem(
+            BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (player instanceof ServerPlayer serverPlayer
+                && level.getBlockEntity(pos) instanceof SuitWorkstationBlockEntity entity)
+            serverPlayer.openMenu(entity, buffer -> buffer.writeBlockPos(pos));
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
 
-  @Override
-  protected void onRemove(
-      BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
-    if (!state.is(next.getBlock())
-        && !level.isClientSide
-        && level.getBlockEntity(pos) instanceof SuitWorkstationBlockEntity entity)
-      popResource(level, pos, entity.suit.extractItem(0, 1, false));
-    super.onRemove(state, level, pos, next, moving);
-  }
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
+        if (!state.is(next.getBlock())
+                && !level.isClientSide
+                && level.getBlockEntity(pos) instanceof SuitWorkstationBlockEntity entity)
+            popResource(level, pos, entity.suit.extractItem(0, 1, false));
+        super.onRemove(state, level, pos, next, moving);
+    }
 }

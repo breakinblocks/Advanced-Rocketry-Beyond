@@ -9,25 +9,25 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 
 public abstract class DirectionalOrbitalBlock extends OrbitalBlock {
-  public static final DirectionProperty FACING = DirectionalBlock.FACING;
+    public static final DirectionProperty FACING = DirectionalBlock.FACING;
 
-  protected DirectionalOrbitalBlock(Kind kind, Properties properties) {
-    super(kind, properties);
-    registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
-  }
+    protected DirectionalOrbitalBlock(Kind kind, Properties properties) {
+        super(kind, properties);
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
+    }
 
-  protected Direction placementFacing(BlockPlaceContext context) {
-    return context.getNearestLookingDirection().getOpposite();
-  }
+    protected Direction placementFacing(BlockPlaceContext context) {
+        return context.getNearestLookingDirection().getOpposite();
+    }
 
-  @Override
-  public BlockState getStateForPlacement(BlockPlaceContext context) {
-    return defaultBlockState().setValue(FACING, placementFacing(context));
-  }
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(FACING, placementFacing(context));
+    }
 
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    super.createBlockStateDefinition(builder);
-    builder.add(FACING);
-  }
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(FACING);
+    }
 }

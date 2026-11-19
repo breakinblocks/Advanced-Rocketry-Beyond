@@ -23,56 +23,56 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 /** Original 5-bucket rocket fueling station, powered at 30 FE per operation. */
 public final class FuelingStationBlock extends RocketInfrastructureBlock {
-  public FuelingStationBlock(Properties properties) {
-    super(properties, RocketRegistry.FUELING_STATION_ENTITY);
-  }
+    public FuelingStationBlock(Properties properties) {
+        super(properties, RocketRegistry.FUELING_STATION_ENTITY);
+    }
 
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    super.createBlockStateDefinition(builder);
-    builder.add(POWERED);
-  }
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(POWERED);
+    }
 
-  @Override
-  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new FuelingStationBlockEntity(pos, state);
-  }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new FuelingStationBlockEntity(pos, state);
+    }
 
-  @Override
-  protected IItemHandler contents(BlockEntity entity) {
-    return entity instanceof FuelingStationBlockEntity station ? station.inventory : null;
-  }
+    @Override
+    protected IItemHandler contents(BlockEntity entity) {
+        return entity instanceof FuelingStationBlockEntity station ? station.inventory : null;
+    }
 
-  @Override
-  protected ItemInteractionResult useItemOn(
-      ItemStack stack,
-      BlockState state,
-      Level level,
-      BlockPos pos,
-      Player player,
-      InteractionHand hand,
-      BlockHitResult hit) {
-    return FluidUtil.interactWithFluidHandler(player, hand, level, pos, hit.getDirection())
-        ? ItemInteractionResult.SUCCESS
-        : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-  }
+    @Override
+    protected ItemInteractionResult useItemOn(
+            ItemStack stack,
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit) {
+        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, hit.getDirection())
+                ? ItemInteractionResult.SUCCESS
+                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
 
-  @Override
-  protected InteractionResult useWithoutItem(
-      BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-    if (player instanceof ServerPlayer serverPlayer
-        && level.getBlockEntity(pos) instanceof FuelingStationBlockEntity entity)
-      serverPlayer.openMenu(entity, buffer -> buffer.writeBlockPos(pos));
-    return InteractionResult.sidedSuccess(level.isClientSide);
-  }
+    @Override
+    protected InteractionResult useWithoutItem(
+            BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (player instanceof ServerPlayer serverPlayer
+                && level.getBlockEntity(pos) instanceof FuelingStationBlockEntity entity)
+            serverPlayer.openMenu(entity, buffer -> buffer.writeBlockPos(pos));
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
 
-  @Override
-  protected boolean isSignalSource(BlockState state) {
-    return true;
-  }
+    @Override
+    protected boolean isSignalSource(BlockState state) {
+        return true;
+    }
 
-  @Override
-  protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
-    return state.getValue(POWERED) ? 15 : 0;
-  }
+    @Override
+    protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
+        return state.getValue(POWERED) ? 15 : 0;
+    }
 }

@@ -10,18 +10,18 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 public final class AssemblyAccess {
-  private AssemblyAccess() {}
+    private AssemblyAccess() {}
 
-  public static void checkBreak(ServerLevel level, List<BlockPos> positions, ServerPlayer player) {
-    for (BlockPos pos : positions)
-      if (player == null
-          || !level.hasChunkAt(pos)
-          || !level.mayInteract(player, pos)
-          || !player.mayBuild()
-          || NeoForge.EVENT_BUS
-              .post(new BlockEvent.BreakEvent(level, pos, level.getBlockState(pos), player))
-              .isCanceled())
-        throw new AssemblyFailure(
-            Component.translatable("message.adv_rocketry.assembly.protected", pos.toShortString()));
-  }
+    public static void checkBreak(ServerLevel level, List<BlockPos> positions, ServerPlayer player) {
+        for (BlockPos pos : positions)
+            if (player == null
+                    || !level.hasChunkAt(pos)
+                    || !level.mayInteract(player, pos)
+                    || !player.mayBuild()
+                    || NeoForge.EVENT_BUS
+                            .post(new BlockEvent.BreakEvent(level, pos, level.getBlockState(pos), player))
+                            .isCanceled())
+                throw new AssemblyFailure(
+                        Component.translatable("message.adv_rocketry.assembly.protected", pos.toShortString()));
+    }
 }

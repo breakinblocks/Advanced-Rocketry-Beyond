@@ -44,236 +44,203 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 /** Native noise generation plus the original planet surface and decoration rules. */
 public final class PlanetTerrain extends NoiseBasedChunkGenerator {
-  public static final MapCodec<PlanetTerrain> CODEC =
-      RecordCodecBuilder.mapCodec(
-          instance ->
-              instance
-                  .group(
-                      BiomeSource.CODEC
-                          .fieldOf("biome_source")
-                          .forGetter(PlanetTerrain::getBiomeSource),
-                      NoiseGeneratorSettings.CODEC
-                          .fieldOf("settings")
-                          .forGetter(PlanetTerrain::generatorSettings),
-                      CompoundTag.CODEC
-                          .fieldOf("planet")
-                          .forGetter(generator -> generator.planet.save()),
-                      Codec.LONG.fieldOf("seed").forGetter(generator -> generator.seed))
-                  .apply(
-                      instance,
-                      (biomes, settings, tag, seed) ->
-                          new PlanetTerrain(biomes, settings, Planet.load(tag), seed)));
-  private final Planet planet;
-  private final long seed;
+    public static final MapCodec<PlanetTerrain> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                    BiomeSource.CODEC.fieldOf("biome_source").forGetter(PlanetTerrain::getBiomeSource),
+                    NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(PlanetTerrain::generatorSettings),
+                    CompoundTag.CODEC.fieldOf("planet").forGetter(generator -> generator.planet.save()),
+                    Codec.LONG.fieldOf("seed").forGetter(generator -> generator.seed))
+            .apply(
+                    instance,
+                    (biomes, settings, tag, seed) -> new PlanetTerrain(biomes, settings, Planet.load(tag), seed)));
+    private final Planet planet;
+    private final long seed;
 
-  public long terrainSeed() {
-    return seed;
-  }
-
-  public double surfaceHeight(int x, int z) {
-    if (PlanetGeology.enabled(planet.generationVersion, PlanetLandforms.profile(planet)))
-      return PlanetGeology.height(
-          seed, PlanetLandforms.profile(planet), planet.seaLevel, planet.gravity, x, z);
-    return PlanetWatershed.enabled(planet)
-        ? PlanetWatershed.height(seed, planet.seaLevel, planet.gravity, x, z)
-        : PlanetLandforms.height(
-            seed,
-            PlanetLandforms.profile(planet),
-            planet.seaLevel,
-            PlanetNoise.channels(planet),
-            x,
-            z);
-  }
-
-  Planet environment() {
-    return planet;
-  }
-
-  public PlanetTerrain(
-      BiomeSource source, Holder<NoiseGeneratorSettings> settings, Planet planet, long seed) {
-    super(source, PlanetOres.noiseSettings(settings, planet));
-    // Worldgen workers only see this private snapshot, never live terraforming state.
-    this.planet = Planet.load(planet.save());
-    this.seed = seed;
-    generationSettingsGetter = PlanetOres.settings(this.planet);
-  }
-
-  @Override
-  protected MapCodec<? extends ChunkGenerator> codec() {
-    return CODEC;
-  }
-
-  @Override
-  public void createStructures(
-      RegistryAccess registries,
-      ChunkGeneratorStructureState state,
-      StructureManager structures,
-      ChunkAccess chunk,
-      StructureTemplateManager templates) {
-    if (AdvancedRocketryConfig.generateVanillaStructures()
-        && planet.structures
-        && planet.terrain != TerrainType.SPACE)
-      super.createStructures(registries, state, structures, chunk, templates);
-  }
-
-  @Override
-  public CompletableFuture<ChunkAccess> createBiomes(
-      RandomState random, Blender blender, StructureManager structures, ChunkAccess chunk) {
-    if (planet.generationVersion >= 6 && PlanetLandforms.profile(planet).equals("fractured")) {
-      Aquifer.FluidStatus air =
-          new Aquifer.FluidStatus(chunk.getMinBuildHeight(), Blocks.AIR.defaultBlockState());
-      chunk.getOrCreateNoiseChunk(
-          access ->
-              NoiseChunk.forChunk(
-                  access,
-                  random,
-                  Beardifier.forStructuresInChunk(structures, access.getPos()),
-                  generatorSettings().value(),
-                  (x, y, z) -> air,
-                  blender));
-    } else if (PlanetWatershed.enabled(planet)) {
-      Aquifer.FluidStatus ocean =
-          new Aquifer.FluidStatus(planet.seaLevel, Blocks.WATER.defaultBlockState());
-      Aquifer.FluidStatus ground =
-          new Aquifer.FluidStatus(
-              PlanetWatershed.waterLevel(planet.seaLevel) + 1, Blocks.WATER.defaultBlockState());
-      Aquifer.FluidStatus lava = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
-      Aquifer.FluidPicker fluids =
-          (x, y, z) -> {
-            if (y < Math.min(-54, planet.seaLevel)) return lava;
-            // Ocean aquifers retain sea level; inland aquifers share the underground river table.
-            // Surface rivers are filled separately so nearby aquifer nodes cannot flood their
-            // caves.
-            return PlanetLandforms.continents(seed, x, z) < -.35
-                ? ocean
-                : ground;
-          };
-      chunk.getOrCreateNoiseChunk(
-          access ->
-              NoiseChunk.forChunk(
-                  access,
-                  random,
-                  Beardifier.forStructuresInChunk(structures, access.getPos()),
-                  generatorSettings().value(),
-                  fluids,
-                  blender));
+    public long terrainSeed() {
+        return seed;
     }
-    return super.createBiomes(random, blender, structures, chunk);
-  }
 
-  @Override
-  public CompletableFuture<ChunkAccess> fillFromNoise(
-      Blender blender, RandomState random, StructureManager structures, ChunkAccess chunk) {
-    if (planet.terrain == TerrainType.SPACE) return CompletableFuture.completedFuture(chunk);
-    return super.fillFromNoise(blender, random, structures, chunk);
-  }
-
-  @Override
-  public void applyCarvers(
-      WorldGenRegion level,
-      long seed,
-      RandomState random,
-      BiomeManager biomes,
-      StructureManager structures,
-      ChunkAccess chunk,
-      GenerationStep.Carving step) {
-    if (planet.caves && planet.terrain != TerrainType.SPACE)
-      super.applyCarvers(level, seed, random, biomes, structures, chunk, step);
-  }
-
-  @Override
-  public void spawnOriginalMobs(WorldGenRegion level) {
-    if (planet.breathable()) super.spawnOriginalMobs(level);
-  }
-
-  @Override
-  public void buildSurface(
-      WorldGenRegion level, StructureManager structures, RandomState random, ChunkAccess chunk) {
-    if (planet.terrain == TerrainType.SPACE) return;
-    super.buildSurface(level, structures, random, chunk);
-    if (planet.generationVersion >= 2) {
-      PlanetDecorations.generate(
-          chunk,
-          planet,
-          seed,
-          (x, z) ->
-              getBiomeSource()
-                  .getNoiseBiome(
-                      x >> 2, ((int) surfaceHeight(x, z)) >> 2, z >> 2, random.sampler()));
-      return;
+    public double surfaceHeight(int x, int z) {
+        if (PlanetGeology.enabled(planet.generationVersion, PlanetLandforms.profile(planet)))
+            return PlanetGeology.height(seed, PlanetLandforms.profile(planet), planet.seaLevel, planet.gravity, x, z);
+        return PlanetWatershed.enabled(planet)
+                ? PlanetWatershed.height(seed, planet.seaLevel, planet.gravity, x, z)
+                : PlanetLandforms.height(
+                        seed, PlanetLandforms.profile(planet), planet.seaLevel, PlanetNoise.channels(planet), x, z);
     }
-    BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-    for (int x = 0; x < 16; x++)
-      for (int z = 0; z < 16; z++) {
-        int top = chunk.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z);
-        String biome =
-            chunk
-                .getNoiseBiome(x >> 2, top >> 2, z >> 2)
-                .unwrapKey()
-                .map(key -> key.location().getPath())
-                .orElse("");
-        BlockState surface =
-            switch (biome) {
-              case "moon" -> ProcessingRegistry.part("moon_turf").defaultBlockState();
-              case "moondark" -> ProcessingRegistry.part("moon_turf_dark").defaultBlockState();
-              case "hotdryrock", "volcanic" ->
-                  ProcessingRegistry.part("hot_turf").defaultBlockState();
-              case "volcanicbarren" -> ProcessingRegistry.part("basalt").defaultBlockState();
-              case "crystalchasms" -> Blocks.SNOW_BLOCK.defaultBlockState();
-              case "oceanspires" -> Blocks.GRAVEL.defaultBlockState();
-              default ->
-                  switch (planet.terrain) {
-                    case MOON -> ProcessingRegistry.part("moon_turf").defaultBlockState();
-                    case VOLCANIC -> ProcessingRegistry.part("hot_turf").defaultBlockState();
-                    default -> null;
-                  };
+
+    Planet environment() {
+        return planet;
+    }
+
+    public PlanetTerrain(BiomeSource source, Holder<NoiseGeneratorSettings> settings, Planet planet, long seed) {
+        super(source, PlanetOres.noiseSettings(settings, planet));
+        // Worldgen workers only see this private snapshot, never live terraforming state.
+        this.planet = Planet.load(planet.save());
+        this.seed = seed;
+        generationSettingsGetter = PlanetOres.settings(this.planet);
+    }
+
+    @Override
+    protected MapCodec<? extends ChunkGenerator> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public void createStructures(
+            RegistryAccess registries,
+            ChunkGeneratorStructureState state,
+            StructureManager structures,
+            ChunkAccess chunk,
+            StructureTemplateManager templates) {
+        if (AdvancedRocketryConfig.generateVanillaStructures()
+                && planet.structures
+                && planet.terrain != TerrainType.SPACE)
+            super.createStructures(registries, state, structures, chunk, templates);
+    }
+
+    @Override
+    public CompletableFuture<ChunkAccess> createBiomes(
+            RandomState random, Blender blender, StructureManager structures, ChunkAccess chunk) {
+        if (planet.generationVersion >= 6 && PlanetLandforms.profile(planet).equals("fractured")) {
+            Aquifer.FluidStatus air =
+                    new Aquifer.FluidStatus(chunk.getMinBuildHeight(), Blocks.AIR.defaultBlockState());
+            chunk.getOrCreateNoiseChunk(access -> NoiseChunk.forChunk(
+                    access,
+                    random,
+                    Beardifier.forStructuresInChunk(structures, access.getPos()),
+                    generatorSettings().value(),
+                    (x, y, z) -> air,
+                    blender));
+        } else if (PlanetWatershed.enabled(planet)) {
+            Aquifer.FluidStatus ocean = new Aquifer.FluidStatus(planet.seaLevel, Blocks.WATER.defaultBlockState());
+            Aquifer.FluidStatus ground = new Aquifer.FluidStatus(
+                    PlanetWatershed.waterLevel(planet.seaLevel) + 1, Blocks.WATER.defaultBlockState());
+            Aquifer.FluidStatus lava = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
+            Aquifer.FluidPicker fluids = (x, y, z) -> {
+                if (y < Math.min(-54, planet.seaLevel)) return lava;
+                // Ocean aquifers retain sea level; inland aquifers share the underground river table.
+                // Surface rivers are filled separately so nearby aquifer nodes cannot flood their
+                // caves.
+                return PlanetLandforms.continents(seed, x, z) < -.35 ? ocean : ground;
             };
-        if (surface == null) continue;
-        for (int y = top; y > top - 4 && y > chunk.getMinBuildHeight(); y--) {
-          pos.set(chunk.getPos().getMinBlockX() + x, y, chunk.getPos().getMinBlockZ() + z);
-          if (!chunk.getBlockState(pos).isAir())
-            chunk.setBlockState(
-                pos,
-                biome.equals("crystalchasms") && y < top
-                    ? Blocks.PACKED_ICE.defaultBlockState()
-                    : surface,
-                false);
+            chunk.getOrCreateNoiseChunk(access -> NoiseChunk.forChunk(
+                    access,
+                    random,
+                    Beardifier.forStructuresInChunk(structures, access.getPos()),
+                    generatorSettings().value(),
+                    fluids,
+                    blender));
         }
-      }
-    PlanetDecorations.generate(
-        chunk,
-        planet,
-        seed,
-        (x, z) -> getBiomeSource().getNoiseBiome(x >> 2, 16, z >> 2, random.sampler()));
-  }
-
-  @Override
-  public void applyBiomeDecoration(
-      WorldGenLevel level, ChunkAccess chunk, StructureManager structures) {
-    if (planet.terrain == TerrainType.SPACE) return;
-    boolean decorated =
-        planet.generationVersion >= 2 || planet.breathable() || planet.biomeFeatures;
-    PlanetWatershed.finish(chunk, planet, seed);
-    PlanetHabitatDeposits.generate(chunk, planet, seed);
-    if (decorated) super.applyBiomeDecoration(level, chunk, structures);
-    if (!PlanetOres.generate(level, chunk, this, planet, seed))
-      PlanetDecorations.ores(chunk, planet, seed, decorated ? biomeOres(level, chunk) : Set.of());
-    if (planet.generationVersion < 2) PlanetDecorations.flora(level, chunk, seed);
-  }
-
-  private Set<String> biomeOres(WorldGenLevel level, ChunkAccess chunk) {
-    Set<Holder<Biome>> biomes = new HashSet<>();
-    for (LevelChunkSection section : chunk.getSections()) section.getBiomes().getAll(biomes::add);
-    var registry = level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
-    Set<String> placed = new HashSet<>();
-    for (String name : OreWorldgen.NAMES) {
-      PlacedFeature feature =
-          registry.get(ResourceLocation.fromNamespaceAndPath(Main.MODID, name + "_ore"));
-      if (feature != null
-          && biomes.stream()
-              .anyMatch(biome -> generationSettingsGetter.apply(biome).hasFeature(feature)))
-        placed.add(name);
+        return super.createBiomes(random, blender, structures, chunk);
     }
-    return placed;
-  }
+
+    @Override
+    public CompletableFuture<ChunkAccess> fillFromNoise(
+            Blender blender, RandomState random, StructureManager structures, ChunkAccess chunk) {
+        if (planet.terrain == TerrainType.SPACE) return CompletableFuture.completedFuture(chunk);
+        return super.fillFromNoise(blender, random, structures, chunk);
+    }
+
+    @Override
+    public void applyCarvers(
+            WorldGenRegion level,
+            long seed,
+            RandomState random,
+            BiomeManager biomes,
+            StructureManager structures,
+            ChunkAccess chunk,
+            GenerationStep.Carving step) {
+        if (planet.caves && planet.terrain != TerrainType.SPACE)
+            super.applyCarvers(level, seed, random, biomes, structures, chunk, step);
+    }
+
+    @Override
+    public void spawnOriginalMobs(WorldGenRegion level) {
+        if (planet.breathable()) super.spawnOriginalMobs(level);
+    }
+
+    @Override
+    public void buildSurface(WorldGenRegion level, StructureManager structures, RandomState random, ChunkAccess chunk) {
+        if (planet.terrain == TerrainType.SPACE) return;
+        super.buildSurface(level, structures, random, chunk);
+        if (planet.generationVersion >= 2) {
+            PlanetDecorations.generate(
+                    chunk,
+                    planet,
+                    seed,
+                    (x, z) -> getBiomeSource()
+                            .getNoiseBiome(x >> 2, ((int) surfaceHeight(x, z)) >> 2, z >> 2, random.sampler()));
+            return;
+        }
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int x = 0; x < 16; x++)
+            for (int z = 0; z < 16; z++) {
+                int top = chunk.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z);
+                String biome = chunk.getNoiseBiome(x >> 2, top >> 2, z >> 2)
+                        .unwrapKey()
+                        .map(key -> key.location().getPath())
+                        .orElse("");
+                BlockState surface =
+                        switch (biome) {
+                            case "moon" -> ProcessingRegistry.part("moon_turf").defaultBlockState();
+                            case "moondark" ->
+                                ProcessingRegistry.part("moon_turf_dark").defaultBlockState();
+                            case "hotdryrock", "volcanic" ->
+                                ProcessingRegistry.part("hot_turf").defaultBlockState();
+                            case "volcanicbarren" ->
+                                ProcessingRegistry.part("basalt").defaultBlockState();
+                            case "crystalchasms" -> Blocks.SNOW_BLOCK.defaultBlockState();
+                            case "oceanspires" -> Blocks.GRAVEL.defaultBlockState();
+                            default ->
+                                switch (planet.terrain) {
+                                    case MOON ->
+                                        ProcessingRegistry.part("moon_turf").defaultBlockState();
+                                    case VOLCANIC ->
+                                        ProcessingRegistry.part("hot_turf").defaultBlockState();
+                                    default -> null;
+                                };
+                        };
+                if (surface == null) continue;
+                for (int y = top; y > top - 4 && y > chunk.getMinBuildHeight(); y--) {
+                    pos.set(chunk.getPos().getMinBlockX() + x, y, chunk.getPos().getMinBlockZ() + z);
+                    if (!chunk.getBlockState(pos).isAir())
+                        chunk.setBlockState(
+                                pos,
+                                biome.equals("crystalchasms") && y < top
+                                        ? Blocks.PACKED_ICE.defaultBlockState()
+                                        : surface,
+                                false);
+                }
+            }
+        PlanetDecorations.generate(
+                chunk, planet, seed, (x, z) -> getBiomeSource().getNoiseBiome(x >> 2, 16, z >> 2, random.sampler()));
+    }
+
+    @Override
+    public void applyBiomeDecoration(WorldGenLevel level, ChunkAccess chunk, StructureManager structures) {
+        if (planet.terrain == TerrainType.SPACE) return;
+        boolean decorated = planet.generationVersion >= 2 || planet.breathable() || planet.biomeFeatures;
+        PlanetWatershed.finish(chunk, planet, seed);
+        PlanetHabitatDeposits.generate(chunk, planet, seed);
+        if (decorated) super.applyBiomeDecoration(level, chunk, structures);
+        if (!PlanetOres.generate(level, chunk, this, planet, seed))
+            PlanetDecorations.ores(chunk, planet, seed, decorated ? biomeOres(level, chunk) : Set.of());
+        if (planet.generationVersion < 2) PlanetDecorations.flora(level, chunk, seed);
+    }
+
+    private Set<String> biomeOres(WorldGenLevel level, ChunkAccess chunk) {
+        Set<Holder<Biome>> biomes = new HashSet<>();
+        for (LevelChunkSection section : chunk.getSections())
+            section.getBiomes().getAll(biomes::add);
+        var registry = level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+        Set<String> placed = new HashSet<>();
+        for (String name : OreWorldgen.NAMES) {
+            PlacedFeature feature = registry.get(ResourceLocation.fromNamespaceAndPath(Main.MODID, name + "_ore"));
+            if (feature != null
+                    && biomes.stream()
+                            .anyMatch(biome ->
+                                    generationSettingsGetter.apply(biome).hasFeature(feature))) placed.add(name);
+        }
+        return placed;
+    }
 }

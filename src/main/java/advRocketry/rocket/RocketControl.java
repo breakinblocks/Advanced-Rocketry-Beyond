@@ -12,25 +12,19 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 /** Flight requests are accepted only from the rocket's seated pilot. */
 public record RocketControl() implements CustomPacketPayload {
-  public static final Type<RocketControl> TYPE =
-      new Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "rocket_launch"));
-  public static final StreamCodec<RegistryFriendlyByteBuf, RocketControl> CODEC =
-      StreamCodec.unit(new RocketControl());
+    public static final Type<RocketControl> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "rocket_launch"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, RocketControl> CODEC =
+            StreamCodec.unit(new RocketControl());
 
-  @Override
-  public Type<RocketControl> type() {
-    return TYPE;
-  }
+    @Override
+    public Type<RocketControl> type() {
+        return TYPE;
+    }
 
-  public static void register(RegisterPayloadHandlersEvent event) {
-    event
-        .registrar("1")
-        .playToServer(
-            TYPE,
-            CODEC,
-            (payload, context) -> {
-              if (context.player().getVehicle() instanceof RocketEntity rocket)
-                rocket.launch(context.player());
-            });
-  }
+    public static void register(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(TYPE, CODEC, (payload, context) -> {
+            if (context.player().getVehicle() instanceof RocketEntity rocket) rocket.launch(context.player());
+        });
+    }
 }

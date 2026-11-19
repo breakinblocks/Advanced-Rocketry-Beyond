@@ -18,108 +18,103 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 final class RocketDisassembly {
-  private RocketDisassembly() {}
+    private RocketDisassembly() {}
 
-  static void disassemble(RocketEntity rocket, @Nullable Player player) {
-    if (rocket.isRemoved()
-        || !(rocket.level() instanceof ServerLevel level)
-        || rocket.flight() != 0
-        || player != null && !player.mayBuild()
-        || !rocket.getPassengers().isEmpty()) return;
-    BlockPos origin = rocket.origin();
-    for (var cell : rocket.structure.cells) {
-      BlockPos position = origin.offset(cell.position());
-      if (!level.isInWorldBounds(position)
-          || !level.getWorldBorder().isWithinBounds(position)
-          || !level.getBlockState(position).canBeReplaced()) {
-        refuseDisassembly(
-            player,
-            Component.translatable(
-                "message.adv_rocketry.rocket.the_rocket_needs_clear_space_before"));
-        return;
-      }
-    }
-    int primary = Math.max(0, (int) Math.floor(rocket.propellant - rocket.primaryFuelCarry + 1e-9));
-    int secondary =
-        Math.max(0, (int) Math.floor(rocket.oxidizer - rocket.oxidizerFuelCarry + 1e-9));
-    int primaryTanks = 0, secondaryTanks = 0;
-    for (var cell : rocket.structure.cells)
-      if (cell.state().getBlock() instanceof RocketPartBlock part
-          && part.kind == RocketPartBlock.Kind.TANK) {
-        if (part.fuel == RocketPartBlock.Fuel.OXIDIZER) secondaryTanks++;
-        else primaryTanks++;
-      }
-    int perTank = RocketBlockEntity.tankCapacity();
-    if ((long) primaryTanks * perTank < primary || (long) secondaryTanks * perTank < secondary) {
-      refuseDisassembly(
-          player,
-          Component.translatable("message.adv_rocketry.rocket.the_rocket_tanks_cannot_hold_its"));
-      return;
-    }
-    Entity placer = player == null ? rocket : player;
-    for (var cell : rocket.structure.cells) {
-      BlockPos position = origin.offset(cell.position());
-      if (player != null && !level.mayInteract(player, position)
-          || NeoForge.EVENT_BUS
-              .post(
-                  new BlockEvent.EntityPlaceEvent(
-                      BlockSnapshot.create(level.dimension(), level, position),
-                      level.getBlockState(position.below()),
-                      placer) {
-                    // Preflight runs before placement; listeners still need the proposed block.
-                    @Override
-                    public BlockState getState() {
-                      return cell.state();
-                    }
-
-                    @Override
-                    public BlockState getPlacedBlock() {
-                      return cell.state();
-                    }
-                  })
-              .isCanceled()) {
-        refuseDisassembly(
-            player,
-            Component.translatable(
-                "message.adv_rocketry.rocket.the_rocket_cannot_be_disassembled_here"));
-        return;
-      }
-    }
-    for (var cell : rocket.structure.cells) {
-      BlockPos position = origin.offset(cell.position());
-      level.setBlock(position, cell.state(), 2);
-      var entity = level.getBlockEntity(position);
-      if (entity != null) {
-        entity.loadWithComponents(cell.data(), rocket.registryAccess());
-        if (entity instanceof RocketBlockEntity component
-            && cell.state().getBlock() instanceof RocketPartBlock part
-            && part.kind == RocketPartBlock.Kind.TANK) {
-          boolean oxidizerTank = part.fuel == RocketPartBlock.Fuel.OXIDIZER;
-          int amount = Math.min(perTank, oxidizerTank ? secondary : primary);
-          ResourceLocation fuel = oxidizerTank ? rocket.oxidizerFluid : rocket.primaryFluid;
-          component.tank.setFluid(new FluidStack(BuiltInRegistries.FLUID.get(fuel), amount));
-          if (oxidizerTank) secondary -= amount;
-          else primary -= amount;
+    static void disassemble(RocketEntity rocket, @Nullable Player player) {
+        if (rocket.isRemoved()
+                || !(rocket.level() instanceof ServerLevel level)
+                || rocket.flight() != 0
+                || player != null && !player.mayBuild()
+                || !rocket.getPassengers().isEmpty()) return;
+        BlockPos origin = rocket.origin();
+        for (var cell : rocket.structure.cells) {
+            BlockPos position = origin.offset(cell.position());
+            if (!level.isInWorldBounds(position)
+                    || !level.getWorldBorder().isWithinBounds(position)
+                    || !level.getBlockState(position).canBeReplaced()) {
+                refuseDisassembly(
+                        player,
+                        Component.translatable("message.adv_rocketry.rocket.the_rocket_needs_clear_space_before"));
+                return;
+            }
         }
-        entity.setChanged();
-      }
-    }
-    for (ItemStack cargo : rocket.missionCargo) {
-      ItemStack remaining = cargo.copy();
-      for (var cell : rocket.structure.cells) {
-        BlockPos position = origin.offset(cell.position());
-        var handler = level.getCapability(Capabilities.ItemHandler.BLOCK, position, null);
-        if (handler == null) continue;
-        for (int slot = 0; slot < handler.getSlots() && !remaining.isEmpty(); slot++)
-          remaining = handler.insertItem(slot, remaining, false);
-        if (remaining.isEmpty()) break;
-      }
-      if (!remaining.isEmpty()) Block.popResource(level, origin, remaining);
-    }
-    rocket.discard();
-  }
+        int primary = Math.max(0, (int) Math.floor(rocket.propellant - rocket.primaryFuelCarry + 1e-9));
+        int secondary = Math.max(0, (int) Math.floor(rocket.oxidizer - rocket.oxidizerFuelCarry + 1e-9));
+        int primaryTanks = 0, secondaryTanks = 0;
+        for (var cell : rocket.structure.cells)
+            if (cell.state().getBlock() instanceof RocketPartBlock part && part.kind == RocketPartBlock.Kind.TANK) {
+                if (part.fuel == RocketPartBlock.Fuel.OXIDIZER) secondaryTanks++;
+                else primaryTanks++;
+            }
+        int perTank = RocketBlockEntity.tankCapacity();
+        if ((long) primaryTanks * perTank < primary || (long) secondaryTanks * perTank < secondary) {
+            refuseDisassembly(
+                    player, Component.translatable("message.adv_rocketry.rocket.the_rocket_tanks_cannot_hold_its"));
+            return;
+        }
+        Entity placer = player == null ? rocket : player;
+        for (var cell : rocket.structure.cells) {
+            BlockPos position = origin.offset(cell.position());
+            if (player != null && !level.mayInteract(player, position)
+                    || NeoForge.EVENT_BUS
+                            .post(
+                                    new BlockEvent.EntityPlaceEvent(
+                                            BlockSnapshot.create(level.dimension(), level, position),
+                                            level.getBlockState(position.below()),
+                                            placer) {
+                                        // Preflight runs before placement; listeners still need the proposed block.
+                                        @Override
+                                        public BlockState getState() {
+                                            return cell.state();
+                                        }
 
-  static void refuseDisassembly(@Nullable Player player, Component message) {
-    if (player != null) player.displayClientMessage(message, true);
-  }
+                                        @Override
+                                        public BlockState getPlacedBlock() {
+                                            return cell.state();
+                                        }
+                                    })
+                            .isCanceled()) {
+                refuseDisassembly(
+                        player,
+                        Component.translatable("message.adv_rocketry.rocket.the_rocket_cannot_be_disassembled_here"));
+                return;
+            }
+        }
+        for (var cell : rocket.structure.cells) {
+            BlockPos position = origin.offset(cell.position());
+            level.setBlock(position, cell.state(), 2);
+            var entity = level.getBlockEntity(position);
+            if (entity != null) {
+                entity.loadWithComponents(cell.data(), rocket.registryAccess());
+                if (entity instanceof RocketBlockEntity component
+                        && cell.state().getBlock() instanceof RocketPartBlock part
+                        && part.kind == RocketPartBlock.Kind.TANK) {
+                    boolean oxidizerTank = part.fuel == RocketPartBlock.Fuel.OXIDIZER;
+                    int amount = Math.min(perTank, oxidizerTank ? secondary : primary);
+                    ResourceLocation fuel = oxidizerTank ? rocket.oxidizerFluid : rocket.primaryFluid;
+                    component.tank.setFluid(new FluidStack(BuiltInRegistries.FLUID.get(fuel), amount));
+                    if (oxidizerTank) secondary -= amount;
+                    else primary -= amount;
+                }
+                entity.setChanged();
+            }
+        }
+        for (ItemStack cargo : rocket.missionCargo) {
+            ItemStack remaining = cargo.copy();
+            for (var cell : rocket.structure.cells) {
+                BlockPos position = origin.offset(cell.position());
+                var handler = level.getCapability(Capabilities.ItemHandler.BLOCK, position, null);
+                if (handler == null) continue;
+                for (int slot = 0; slot < handler.getSlots() && !remaining.isEmpty(); slot++)
+                    remaining = handler.insertItem(slot, remaining, false);
+                if (remaining.isEmpty()) break;
+            }
+            if (!remaining.isEmpty()) Block.popResource(level, origin, remaining);
+        }
+        rocket.discard();
+    }
+
+    static void refuseDisassembly(@Nullable Player player, Component message) {
+        if (player != null) player.displayClientMessage(message, true);
+    }
 }

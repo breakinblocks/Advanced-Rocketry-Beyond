@@ -13,62 +13,56 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 public final class OxygenMenu extends ModMenu {
-  private static final int VALUES = 5;
-  private final OxygenBlockEntity entity;
-  private final SplitIntData data;
+    private static final int VALUES = 5;
+    private final OxygenBlockEntity entity;
+    private final SplitIntData data;
 
-  public OxygenMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buffer) {
-    this(
-        id,
-        new OxygenBlockEntity(buffer.readBlockPos(), Block.stateById(buffer.readVarInt())),
-        SplitIntData.client(VALUES));
-  }
+    public OxygenMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buffer) {
+        this(
+                id,
+                new OxygenBlockEntity(buffer.readBlockPos(), Block.stateById(buffer.readVarInt())),
+                SplitIntData.client(VALUES));
+    }
 
-  public static void writeOpeningData(RegistryFriendlyByteBuf buffer, OxygenBlockEntity entity) {
-    buffer.writeBlockPos(entity.getBlockPos());
-    buffer.writeVarInt(Block.getId(entity.getBlockState()));
-  }
+    public static void writeOpeningData(RegistryFriendlyByteBuf buffer, OxygenBlockEntity entity) {
+        buffer.writeBlockPos(entity.getBlockPos());
+        buffer.writeVarInt(Block.getId(entity.getBlockState()));
+    }
 
-  public OxygenMenu(int id, Inventory inventory, OxygenBlockEntity entity) {
-    this(
-        id,
-        entity,
-        SplitIntData.server(
-            VALUES,
-            index ->
-                switch (index) {
-                  case 0 -> entity.energy.getEnergyStored();
-                  case 1 -> entity.tank.getFluidAmount();
-                  case 2 -> entity.room().size();
-                  case 4 -> entity.tank.getFluid().is(ProcessingFluids.HYDROGEN) ? 1 : 0;
-                  default -> entity.active ? 1 : 0;
-                }));
-  }
+    public OxygenMenu(int id, Inventory inventory, OxygenBlockEntity entity) {
+        this(id, entity, SplitIntData.server(VALUES, index -> switch (index) {
+            case 0 -> entity.energy.getEnergyStored();
+            case 1 -> entity.tank.getFluidAmount();
+            case 2 -> entity.room().size();
+            case 4 -> entity.tank.getFluid().is(ProcessingFluids.HYDROGEN) ? 1 : 0;
+            default -> entity.active ? 1 : 0;
+        }));
+    }
 
-  private OxygenMenu(int id, OxygenBlockEntity entity, SplitIntData data) {
-    super(LifeSupportRegistry.OXYGEN_MENU.get(), id);
-    this.entity = entity;
-    this.data = data;
-    addDataSlots(data);
-  }
+    private OxygenMenu(int id, OxygenBlockEntity entity, SplitIntData data) {
+        super(LifeSupportRegistry.OXYGEN_MENU.get(), id);
+        this.entity = entity;
+        this.data = data;
+        addDataSlots(data);
+    }
 
-  public int value(int index) {
-    return data.value(index);
-  }
+    public int value(int index) {
+        return data.value(index);
+    }
 
-  public boolean charger() {
-    return entity != null && entity.charger();
-  }
+    public boolean charger() {
+        return entity != null && entity.charger();
+    }
 
-  @Override
-  public boolean stillValid(Player player) {
-    return entity != null
-        && !entity.isRemoved()
-        && player.distanceToSqr(entity.getBlockPos().getCenter()) <= 64;
-  }
+    @Override
+    public boolean stillValid(Player player) {
+        return entity != null
+                && !entity.isRemoved()
+                && player.distanceToSqr(entity.getBlockPos().getCenter()) <= 64;
+    }
 
-  @Override
-  public ItemStack quickMoveStack(Player player, int index) {
-    return quickMove(player, index, 0);
-  }
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        return quickMove(player, index, 0);
+    }
 }

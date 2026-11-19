@@ -15,49 +15,45 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 /** Original cross-mod plate and rod recipes, resolved from modern common material tags. */
 public final class MaterialRecipes {
-  private MaterialRecipes() {}
+    private MaterialRecipes() {}
 
-  public static ProcessingRecipe candidate(MachineType machine, ItemStack input) {
-    if (input.isEmpty() || machine != MachineType.ROLLING_MACHINE && machine != MachineType.LATHE)
-      return null;
-    for (TagKey<Item> tag : input.getTags().toList()) {
-      ResourceLocation id = tag.location();
-      if (!id.getNamespace().equals("c") || !id.getPath().startsWith("ingots/")) continue;
-      String material = id.getPath().substring("ingots/".length());
-      if (material.isEmpty() || material.contains("/")) continue;
-      Item output =
-          machine == MachineType.ROLLING_MACHINE
-              ? first("plates/" + material)
-              : first("rods/" + material);
-      if (output == null && machine == MachineType.LATHE) output = first("sticks/" + material);
-      if (output == null) continue;
-      return new ProcessingRecipe(
-          machine,
-          300,
-          20,
-          List.of(SizedIngredient.of(tag, 1)),
-          machine == MachineType.ROLLING_MACHINE
-              ? List.of(SizedFluidIngredient.of(Fluids.WATER, 100))
-              : List.of(),
-          List.of(ProcessingOutput.of(output, machine == MachineType.LATHE ? 2 : 1)));
+    public static ProcessingRecipe candidate(MachineType machine, ItemStack input) {
+        if (input.isEmpty() || machine != MachineType.ROLLING_MACHINE && machine != MachineType.LATHE) return null;
+        for (TagKey<Item> tag : input.getTags().toList()) {
+            ResourceLocation id = tag.location();
+            if (!id.getNamespace().equals("c") || !id.getPath().startsWith("ingots/")) continue;
+            String material = id.getPath().substring("ingots/".length());
+            if (material.isEmpty() || material.contains("/")) continue;
+            Item output =
+                    machine == MachineType.ROLLING_MACHINE ? first("plates/" + material) : first("rods/" + material);
+            if (output == null && machine == MachineType.LATHE) output = first("sticks/" + material);
+            if (output == null) continue;
+            return new ProcessingRecipe(
+                    machine,
+                    300,
+                    20,
+                    List.of(SizedIngredient.of(tag, 1)),
+                    machine == MachineType.ROLLING_MACHINE
+                            ? List.of(SizedFluidIngredient.of(Fluids.WATER, 100))
+                            : List.of(),
+                    List.of(ProcessingOutput.of(output, machine == MachineType.LATHE ? 2 : 1)));
+        }
+        return null;
     }
-    return null;
-  }
 
-  public static String material(ItemStack input) {
-    for (TagKey<Item> tag : input.getTags().toList()) {
-      ResourceLocation id = tag.location();
-      if (!id.getNamespace().equals("c") || !id.getPath().startsWith("ingots/")) continue;
-      String material = id.getPath().substring("ingots/".length());
-      if (!material.isEmpty() && !material.contains("/")) return material;
+    public static String material(ItemStack input) {
+        for (TagKey<Item> tag : input.getTags().toList()) {
+            ResourceLocation id = tag.location();
+            if (!id.getNamespace().equals("c") || !id.getPath().startsWith("ingots/")) continue;
+            String material = id.getPath().substring("ingots/".length());
+            if (!material.isEmpty() && !material.contains("/")) return material;
+        }
+        return null;
     }
-    return null;
-  }
 
-  private static Item first(String path) {
-    TagKey<Item> tag =
-        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", path));
-    ItemStack first = TagItems.representative(tag);
-    return first.isEmpty() ? null : first.getItem();
-  }
+    private static Item first(String path) {
+        TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", path));
+        ItemStack first = TagItems.representative(tag);
+        return first.isEmpty() ? null : first.getItem();
+    }
 }

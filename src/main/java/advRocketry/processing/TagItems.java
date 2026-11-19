@@ -7,14 +7,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public final class TagItems {
-  private TagItems() {}
+    private TagItems() {}
 
-  public static ItemStack representative(TagKey<Item> tag) {
-    return representative(BuiltInRegistries.ITEM.getTagOrEmpty(tag));
-  }
+    public static ItemStack representative(TagKey<Item> tag) {
+        return representative(BuiltInRegistries.ITEM.getTagOrEmpty(tag));
+    }
 
-  public static ItemStack representative(Iterable<Holder<Item>> items) {
-    for (Holder<Item> item : items) return new ItemStack(item.value());
-    return ItemStack.EMPTY;
-  }
+    public static ItemStack representative(Iterable<Holder<Item>> items) {
+        for (Holder<Item> item : items) return new ItemStack(item.value());
+        return ItemStack.EMPTY;
+    }
 }

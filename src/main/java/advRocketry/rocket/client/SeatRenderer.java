@@ -11,12 +11,12 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 /** The rider renders normally; the mount has no visible geometry. */
 public final class SeatRenderer extends EntityRenderer<SeatEntity> {
-  public SeatRenderer(EntityRendererProvider.Context context) {
-    super(context);
-  }
+    public SeatRenderer(EntityRendererProvider.Context context) {
+        super(context);
+    }
 
-  @Override
-  public ResourceLocation getTextureLocation(SeatEntity entity) {
-    return InventoryMenu.BLOCK_ATLAS;
-  }
+    @Override
+    public ResourceLocation getTextureLocation(SeatEntity entity) {
+        return InventoryMenu.BLOCK_ATLAS;
+    }
 }

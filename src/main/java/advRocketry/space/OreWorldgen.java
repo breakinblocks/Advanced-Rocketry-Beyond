@@ -28,83 +28,78 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 /** Native ore features use the original per-ore count and clump settings at generation time. */
 public final class OreWorldgen {
-  private static final DeferredRegister<Feature<?>> FEATURES =
-      DeferredRegister.create(Registries.FEATURE, Main.MODID);
-  private static final DeferredRegister<PlacementModifierType<?>> MODIFIERS =
-      DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, Main.MODID);
-  static final Supplier<PlacementModifierType<ConfigurableCount>> ORE_COUNT =
-      MODIFIERS.register("ore_count", () -> () -> ConfigurableCount.CODEC);
-  public static final List<String> NAMES =
-      List.of("tin", "aluminum", "titanium", "dilithium", "iridium");
-  private static final Map<String, Supplier<ConfigurableOre>> ORES = new LinkedHashMap<>();
+    private static final DeferredRegister<Feature<?>> FEATURES =
+            DeferredRegister.create(Registries.FEATURE, Main.MODID);
+    private static final DeferredRegister<PlacementModifierType<?>> MODIFIERS =
+            DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, Main.MODID);
+    static final Supplier<PlacementModifierType<ConfigurableCount>> ORE_COUNT =
+            MODIFIERS.register("ore_count", () -> () -> ConfigurableCount.CODEC);
+    public static final List<String> NAMES = List.of("tin", "aluminum", "titanium", "dilithium", "iridium");
+    private static final Map<String, Supplier<ConfigurableOre>> ORES = new LinkedHashMap<>();
 
-  static {
-    for (String name : NAMES)
-      ORES.put(name, FEATURES.register(name + "_ore", () -> new ConfigurableOre(name)));
-  }
-
-  private OreWorldgen() {}
-
-  public static ConfigurableOre feature(String name) {
-    return ORES.get(name).get();
-  }
-
-  public static ConfigurableCount count(String name) {
-    return new ConfigurableCount(name);
-  }
-
-  public static void register(IEventBus bus) {
-    FEATURES.register(bus);
-    MODIFIERS.register(bus);
-  }
-
-  public static final class ConfigurableOre extends OreFeature {
-    private final String name;
-
-    ConfigurableOre(String name) {
-      super(OreConfiguration.CODEC);
-      this.name = name;
+    static {
+        for (String name : NAMES) ORES.put(name, FEATURES.register(name + "_ore", () -> new ConfigurableOre(name)));
     }
 
-    @Override
-    public boolean place(FeaturePlaceContext<OreConfiguration> context) {
-      if (!AdvancedRocketryConfig.oreEnabled(name)) return false;
-      OreConfiguration original = context.config();
-      OreConfiguration current =
-          new OreConfiguration(
-              original.targetStates,
-              AdvancedRocketryConfig.oreClumpSize(name),
-              original.discardChanceOnAirExposure);
-      return Feature.ORE.place(
-          new FeaturePlaceContext<>(
-              context.topFeature(),
-              context.level(),
-              context.chunkGenerator(),
-              context.random(),
-              context.origin(),
-              current));
-    }
-  }
+    private OreWorldgen() {}
 
-  public static final class ConfigurableCount extends PlacementModifier {
-    static final MapCodec<ConfigurableCount> CODEC =
-        Codec.STRING.fieldOf("ore").xmap(ConfigurableCount::new, value -> value.ore);
-    private final String ore;
-
-    ConfigurableCount(String ore) {
-      this.ore = ore;
+    public static ConfigurableOre feature(String name) {
+        return ORES.get(name).get();
     }
 
-    @Override
-    public Stream<BlockPos> getPositions(
-        PlacementContext context, RandomSource random, BlockPos origin) {
-      return IntStream.range(0, AdvancedRocketryConfig.orePerChunk(ore, false))
-          .mapToObj(index -> origin);
+    public static ConfigurableCount count(String name) {
+        return new ConfigurableCount(name);
     }
 
-    @Override
-    public PlacementModifierType<?> type() {
-      return ORE_COUNT.get();
+    public static void register(IEventBus bus) {
+        FEATURES.register(bus);
+        MODIFIERS.register(bus);
     }
-  }
+
+    public static final class ConfigurableOre extends OreFeature {
+        private final String name;
+
+        ConfigurableOre(String name) {
+            super(OreConfiguration.CODEC);
+            this.name = name;
+        }
+
+        @Override
+        public boolean place(FeaturePlaceContext<OreConfiguration> context) {
+            if (!AdvancedRocketryConfig.oreEnabled(name)) return false;
+            OreConfiguration original = context.config();
+            OreConfiguration current = new OreConfiguration(
+                    original.targetStates,
+                    AdvancedRocketryConfig.oreClumpSize(name),
+                    original.discardChanceOnAirExposure);
+            return Feature.ORE.place(new FeaturePlaceContext<>(
+                    context.topFeature(),
+                    context.level(),
+                    context.chunkGenerator(),
+                    context.random(),
+                    context.origin(),
+                    current));
+        }
+    }
+
+    public static final class ConfigurableCount extends PlacementModifier {
+        static final MapCodec<ConfigurableCount> CODEC =
+                Codec.STRING.fieldOf("ore").xmap(ConfigurableCount::new, value -> value.ore);
+        private final String ore;
+
+        ConfigurableCount(String ore) {
+            this.ore = ore;
+        }
+
+        @Override
+        public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos origin) {
+            return IntStream.range(0, AdvancedRocketryConfig.orePerChunk(ore, false))
+                    .mapToObj(index -> origin);
+        }
+
+        @Override
+        public PlacementModifierType<?> type() {
+            return ORE_COUNT.get();
+        }
+    }
 }

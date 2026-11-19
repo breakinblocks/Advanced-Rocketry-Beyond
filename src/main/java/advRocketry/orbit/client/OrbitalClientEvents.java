@@ -8,10 +8,10 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 
 @EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public final class OrbitalClientEvents {
-  private OrbitalClientEvents() {}
+    private OrbitalClientEvents() {}
 
-  @SubscribeEvent
-  public static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
-    LaserNodeSounds.clear();
-  }
+    @SubscribeEvent
+    public static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        LaserNodeSounds.clear();
+    }
 }

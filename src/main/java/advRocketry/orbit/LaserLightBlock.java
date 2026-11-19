@@ -9,12 +9,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Invisible full-bright shaft marker from the original orbital terrain drill. */
 public final class LaserLightBlock extends Block {
-  public LaserLightBlock(Properties properties) {
-    super(properties);
-  }
+    public LaserLightBlock(Properties properties) {
+        super(properties);
+    }
 
-  @Override
-  public RenderShape getRenderShape(BlockState state) {
-    return RenderShape.INVISIBLE;
-  }
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
+    }
 }

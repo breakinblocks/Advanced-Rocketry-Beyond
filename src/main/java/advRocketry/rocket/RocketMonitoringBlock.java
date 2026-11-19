@@ -14,33 +14,33 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** Redstone launch controller and rocket telemetry display. */
 public final class RocketMonitoringBlock extends RocketInfrastructureBlock {
-  public RocketMonitoringBlock(Properties properties) {
-    super(properties, RocketRegistry.MONITORING_STATION_ENTITY);
-  }
+    public RocketMonitoringBlock(Properties properties) {
+        super(properties, RocketRegistry.MONITORING_STATION_ENTITY);
+    }
 
-  @Override
-  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new RocketMonitoringBlockEntity(pos, state);
-  }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new RocketMonitoringBlockEntity(pos, state);
+    }
 
-  @Override
-  protected InteractionResult useWithoutItem(
-      BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-    if (player instanceof ServerPlayer serverPlayer
-        && level.getBlockEntity(pos) instanceof RocketMonitoringBlockEntity monitor)
-      serverPlayer.openMenu(monitor, buffer -> buffer.writeBlockPos(pos));
-    return InteractionResult.sidedSuccess(level.isClientSide);
-  }
+    @Override
+    protected InteractionResult useWithoutItem(
+            BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (player instanceof ServerPlayer serverPlayer
+                && level.getBlockEntity(pos) instanceof RocketMonitoringBlockEntity monitor)
+            serverPlayer.openMenu(monitor, buffer -> buffer.writeBlockPos(pos));
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
 
-  @Override
-  protected boolean hasAnalogOutputSignal(BlockState state) {
-    return true;
-  }
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
 
-  @Override
-  protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-    return level.getBlockEntity(pos) instanceof RocketMonitoringBlockEntity monitor
-        ? monitor.comparatorSignal()
-        : 0;
-  }
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof RocketMonitoringBlockEntity monitor
+                ? monitor.comparatorSignal()
+                : 0;
+    }
 }

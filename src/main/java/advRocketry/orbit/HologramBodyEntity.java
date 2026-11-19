@@ -19,119 +19,114 @@ import net.minecraft.world.phys.Vec3;
 
 /** Transient planet, star and back-button interaction roles from the original holographic UI. */
 public final class HologramBodyEntity extends Entity {
-  private static final EntityDataAccessor<Float> RADIUS =
-      SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.FLOAT);
-  private static final EntityDataAccessor<Integer> COLOR =
-      SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.INT);
-  private static final EntityDataAccessor<Boolean> SELECTED =
-      SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BOOLEAN);
-  private static final EntityDataAccessor<BlockPos> PROJECTOR =
-      SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BLOCK_POS);
-  private static final EntityDataAccessor<Boolean> ORBIT =
-      SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BOOLEAN);
-  private OrbitalBlockEntity owner;
-  private HolographicSelectorLogic.Kind kind;
-  private int bodyId;
+    private static final EntityDataAccessor<Float> RADIUS =
+            SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> COLOR =
+            SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> SELECTED =
+            SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<BlockPos> PROJECTOR =
+            SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<Boolean> ORBIT =
+            SynchedEntityData.defineId(HologramBodyEntity.class, EntityDataSerializers.BOOLEAN);
+    private OrbitalBlockEntity owner;
+    private HolographicSelectorLogic.Kind kind;
+    private int bodyId;
 
-  public HologramBodyEntity(EntityType<? extends HologramBodyEntity> type, Level level) {
-    super(type, level);
-    noPhysics = true;
-    setInvulnerable(true);
-  }
+    public HologramBodyEntity(EntityType<? extends HologramBodyEntity> type, Level level) {
+        super(type, level);
+        noPhysics = true;
+        setInvulnerable(true);
+    }
 
-  @Override
-  protected void defineSynchedData(SynchedEntityData.Builder builder) {
-    builder.define(RADIUS, .15f);
-    builder.define(COLOR, 0xd07feaff);
-    builder.define(SELECTED, false);
-    builder.define(PROJECTOR, BlockPos.ZERO);
-    builder.define(ORBIT, false);
-  }
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(RADIUS, .15f);
+        builder.define(COLOR, 0xd07feaff);
+        builder.define(SELECTED, false);
+        builder.define(PROJECTOR, BlockPos.ZERO);
+        builder.define(ORBIT, false);
+    }
 
-  boolean matches(HolographicSelectorLogic.Body body) {
-    return kind == body.kind() && bodyId == body.id();
-  }
+    boolean matches(HolographicSelectorLogic.Body body) {
+        return kind == body.kind() && bodyId == body.id();
+    }
 
-  void update(OrbitalBlockEntity selector, HolographicSelectorLogic.Body body) {
-    owner = selector;
-    kind = body.kind();
-    bodyId = body.id();
-    entityData.set(RADIUS, body.radius());
-    entityData.set(COLOR, body.color());
-    entityData.set(SELECTED, body.selected());
-    entityData.set(PROJECTOR, selector.getBlockPos());
-    entityData.set(ORBIT, body.kind() == HolographicSelectorLogic.Kind.PLANET);
-    setCustomName(body.name());
-    Vec3 center = Vec3.atLowerCornerOf(selector.getBlockPos()).add(.5, 1.05, .5).add(body.offset());
-    setPos(center);
-    updateBounds();
-  }
+    void update(OrbitalBlockEntity selector, HolographicSelectorLogic.Body body) {
+        owner = selector;
+        kind = body.kind();
+        bodyId = body.id();
+        entityData.set(RADIUS, body.radius());
+        entityData.set(COLOR, body.color());
+        entityData.set(SELECTED, body.selected());
+        entityData.set(PROJECTOR, selector.getBlockPos());
+        entityData.set(ORBIT, body.kind() == HolographicSelectorLogic.Kind.PLANET);
+        setCustomName(body.name());
+        Vec3 center =
+                Vec3.atLowerCornerOf(selector.getBlockPos()).add(.5, 1.05, .5).add(body.offset());
+        setPos(center);
+        updateBounds();
+    }
 
-  public float radius() {
-    return entityData.get(RADIUS);
-  }
+    public float radius() {
+        return entityData.get(RADIUS);
+    }
 
-  public int color() {
-    return entityData.get(COLOR);
-  }
+    public int color() {
+        return entityData.get(COLOR);
+    }
 
-  public boolean selected() {
-    return entityData.get(SELECTED);
-  }
+    public boolean selected() {
+        return entityData.get(SELECTED);
+    }
 
-  public Vec3 projectionCenter() {
-    return Vec3.atLowerCornerOf(entityData.get(PROJECTOR)).add(.5, 1.15, .5);
-  }
+    public Vec3 projectionCenter() {
+        return Vec3.atLowerCornerOf(entityData.get(PROJECTOR)).add(.5, 1.15, .5);
+    }
 
-  public boolean showOrbit() {
-    return entityData.get(ORBIT);
-  }
+    public boolean showOrbit() {
+        return entityData.get(ORBIT);
+    }
 
-  private void updateBounds() {
-    double radius = Math.max(.1, radius());
-    setBoundingBox(
-        new AABB(
-            getX() - radius,
-            getY() - radius,
-            getZ() - radius,
-            getX() + radius,
-            getY() + radius,
-            getZ() + radius));
-  }
+    private void updateBounds() {
+        double radius = Math.max(.1, radius());
+        setBoundingBox(new AABB(
+                getX() - radius, getY() - radius, getZ() - radius, getX() + radius, getY() + radius, getZ() + radius));
+    }
 
-  private boolean validOwner() {
-    return owner != null
-        && !owner.isRemoved()
-        && level().hasChunkAt(owner.getBlockPos())
-        && level().getBlockEntity(owner.getBlockPos()) == owner
-        && HolographicSelectorLogic.enabled(owner);
-  }
+    private boolean validOwner() {
+        return owner != null
+                && !owner.isRemoved()
+                && level().hasChunkAt(owner.getBlockPos())
+                && level().getBlockEntity(owner.getBlockPos()) == owner
+                && HolographicSelectorLogic.enabled(owner);
+    }
 
-  @Override
-  public InteractionResult interact(Player player, InteractionHand hand) {
-    if (player.isSpectator() || isRemoved()) return InteractionResult.PASS;
-    if (level().isClientSide) return InteractionResult.SUCCESS;
-    if (!validOwner() || !player.canInteractWithEntity(this, 1)) return InteractionResult.PASS;
-    return HolographicSelectorLogic.select(owner, kind, bodyId)
-        ? InteractionResult.CONSUME
-        : InteractionResult.PASS;
-  }
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        if (player.isSpectator() || isRemoved()) return InteractionResult.PASS;
+        if (level().isClientSide) return InteractionResult.SUCCESS;
+        if (!validOwner() || !player.canInteractWithEntity(this, 1)) return InteractionResult.PASS;
+        return HolographicSelectorLogic.select(owner, kind, bodyId)
+                ? InteractionResult.CONSUME
+                : InteractionResult.PASS;
+    }
 
-  @Override
-  public boolean isPickable() {
-    return !isRemoved();
-  }
+    @Override
+    public boolean isPickable() {
+        return !isRemoved();
+    }
 
-  @Override
-  public void tick() {
-    super.tick();
-    updateBounds();
-    if (!level().isClientSide && !validOwner()) discard();
-  }
+    @Override
+    public void tick() {
+        super.tick();
+        updateBounds();
+        if (!level().isClientSide && !validOwner()) discard();
+    }
 
-  @Override
-  protected void readAdditionalSaveData(CompoundTag tag) {}
+    @Override
+    protected void readAdditionalSaveData(CompoundTag tag) {}
 
-  @Override
-  protected void addAdditionalSaveData(CompoundTag tag) {}
+    @Override
+    protected void addAdditionalSaveData(CompoundTag tag) {}
 }

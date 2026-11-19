@@ -11,12 +11,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Original stackable sixteen-bucket fluid tank. */
 public final class FluidTankBlock extends Block implements EntityBlock {
-  public FluidTankBlock(Properties properties) {
-    super(properties);
-  }
+    public FluidTankBlock(Properties properties) {
+        super(properties);
+    }
 
-  @Override
-  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new FluidTankBlockEntity(pos, state);
-  }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new FluidTankBlockEntity(pos, state);
+    }
 }

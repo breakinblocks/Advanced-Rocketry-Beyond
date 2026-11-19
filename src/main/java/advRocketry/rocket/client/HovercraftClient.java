@@ -16,39 +16,37 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 public final class HovercraftClient {
-  private static final KeyMapping UP =
-      new KeyMapping(
-          "key.adv_rocketry.hovercraft_up",
-          InputConstants.Type.KEYSYM,
-          GLFW.GLFW_KEY_Z,
-          "key.categories.adv_rocketry");
-  private static final KeyMapping DOWN =
-      new KeyMapping(
-          "key.adv_rocketry.hovercraft_down",
-          InputConstants.Type.KEYSYM,
-          GLFW.GLFW_KEY_X,
-          "key.categories.adv_rocketry");
+    private static final KeyMapping UP = new KeyMapping(
+            "key.adv_rocketry.hovercraft_up",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_Z,
+            "key.categories.adv_rocketry");
+    private static final KeyMapping DOWN = new KeyMapping(
+            "key.adv_rocketry.hovercraft_down",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_X,
+            "key.categories.adv_rocketry");
 
-  private HovercraftClient() {}
+    private HovercraftClient() {}
 
-  public static void keys(RegisterKeyMappingsEvent event) {
-    event.register(UP);
-    event.register(DOWN);
-  }
+    public static void keys(RegisterKeyMappingsEvent event) {
+        event.register(UP);
+        event.register(DOWN);
+    }
 
-  public static void renderers(EntityRenderersEvent.RegisterRenderers event) {
-    event.registerEntityRenderer(HovercraftRegistry.ENTITY.get(), HovercraftRenderer::new);
-  }
+    public static void renderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(HovercraftRegistry.ENTITY.get(), HovercraftRenderer::new);
+    }
 
-  public static void controls(MovementInputUpdateEvent event) {
-    if (!(event.getEntity().getVehicle() instanceof HovercraftEntity craft)) return;
-    var input = event.getInput();
-    boolean active = Minecraft.getInstance().screen == null;
-    float forward = active ? input.forwardImpulse : 0;
-    float turn = active ? -input.leftImpulse : 0;
-    boolean up = active && (UP.isDown() || input.jumping);
-    boolean down = active && DOWN.isDown();
-    craft.control(event.getEntity(), forward, turn, up, down);
-    PacketDistributor.sendToServer(new HovercraftControl(forward, turn, up, down));
-  }
+    public static void controls(MovementInputUpdateEvent event) {
+        if (!(event.getEntity().getVehicle() instanceof HovercraftEntity craft)) return;
+        var input = event.getInput();
+        boolean active = Minecraft.getInstance().screen == null;
+        float forward = active ? input.forwardImpulse : 0;
+        float turn = active ? -input.leftImpulse : 0;
+        boolean up = active && (UP.isDown() || input.jumping);
+        boolean down = active && DOWN.isDown();
+        craft.control(event.getEntity(), forward, turn, up, down);
+        PacketDistributor.sendToServer(new HovercraftControl(forward, turn, up, down));
+    }
 }

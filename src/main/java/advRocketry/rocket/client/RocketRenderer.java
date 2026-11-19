@@ -16,49 +16,49 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 
 public final class RocketRenderer extends EntityRenderer<RocketEntity> {
-  private final BlockRenderDispatcher blocks;
+    private final BlockRenderDispatcher blocks;
 
-  public RocketRenderer(EntityRendererProvider.Context context) {
-    super(context);
-    blocks = context.getBlockRenderDispatcher();
-  }
-
-  @Override
-  public boolean shouldRender(RocketEntity rocket, Frustum frustum, double x, double y, double z) {
-    if (super.shouldRender(rocket, frustum, x, y, z)) return true;
-    return rocket.enginesActive()
-        && rocket.shouldRender(x, y, z)
-        && frustum.isVisible(rocket.getBoundingBoxForCulling().expandTowards(0, -10, 0).inflate(2.5));
-  }
-
-  @Override
-  public void render(
-      RocketEntity rocket,
-      float yaw,
-      float partialTick,
-      PoseStack pose,
-      MultiBufferSource buffers,
-      int light) {
-    var structure = rocket.structure();
-    pose.pushPose();
-    if (rocket.flight() == 3 || rocket.asteroidRcs()) {
-      pose.mulPose(Axis.YP.rotationDegrees(-yaw));
-      pose.mulPose(Axis.XP.rotationDegrees(90));
+    public RocketRenderer(EntityRendererProvider.Context context) {
+        super(context);
+        blocks = context.getBlockRenderDispatcher();
     }
-    pose.translate(-structure.width / 2d, 0, -structure.depth / 2d);
-    for (var cell : structure.cells) {
-      pose.pushPose();
-      pose.translate(cell.position().getX(), cell.position().getY(), cell.position().getZ());
-      blocks.renderSingleBlock(cell.state(), pose, buffers, light, OverlayTexture.NO_OVERLAY);
-      pose.popPose();
-    }
-    RocketExhaust.render(rocket, partialTick, pose, buffers);
-    pose.popPose();
-    super.render(rocket, yaw, partialTick, pose, buffers, light);
-  }
 
-  @Override
-  public ResourceLocation getTextureLocation(RocketEntity rocket) {
-    return InventoryMenu.BLOCK_ATLAS;
-  }
+    @Override
+    public boolean shouldRender(RocketEntity rocket, Frustum frustum, double x, double y, double z) {
+        if (super.shouldRender(rocket, frustum, x, y, z)) return true;
+        return rocket.enginesActive()
+                && rocket.shouldRender(x, y, z)
+                && frustum.isVisible(rocket.getBoundingBoxForCulling()
+                        .expandTowards(0, -10, 0)
+                        .inflate(2.5));
+    }
+
+    @Override
+    public void render(
+            RocketEntity rocket, float yaw, float partialTick, PoseStack pose, MultiBufferSource buffers, int light) {
+        var structure = rocket.structure();
+        pose.pushPose();
+        if (rocket.flight() == 3 || rocket.asteroidRcs()) {
+            pose.mulPose(Axis.YP.rotationDegrees(-yaw));
+            pose.mulPose(Axis.XP.rotationDegrees(90));
+        }
+        pose.translate(-structure.width / 2d, 0, -structure.depth / 2d);
+        for (var cell : structure.cells) {
+            pose.pushPose();
+            pose.translate(
+                    cell.position().getX(),
+                    cell.position().getY(),
+                    cell.position().getZ());
+            blocks.renderSingleBlock(cell.state(), pose, buffers, light, OverlayTexture.NO_OVERLAY);
+            pose.popPose();
+        }
+        RocketExhaust.render(rocket, partialTick, pose, buffers);
+        pose.popPose();
+        super.render(rocket, yaw, partialTick, pose, buffers, light);
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(RocketEntity rocket) {
+        return InventoryMenu.BLOCK_ATLAS;
+    }
 }

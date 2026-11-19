@@ -18,28 +18,28 @@ import net.minecraft.resources.ResourceLocation;
 
 /** Original gas-giant fluid choices, gravity bounds and independent spawn chances. */
 public final class GasGiantGases {
-  private GasGiantGases() {}
+    private GasGiantGases() {}
 
-  public static List<ResourceLocation> select(float gravity, Random random) {
-    List<ResourceLocation> selected = new ArrayList<>();
-    var gases =
-        BuiltInRegistries.FLUID.getDataMap(DataMaps.GAS_GIANT_GAS).entrySet().stream()
-            .sorted(Map.Entry.comparingByKey(Comparator.comparing(ResourceKey::location)))
-            .toList();
-    for (var entry : gases) {
-      DataMaps.GasGiantGas gas = entry.getValue();
-      if (gravity >= gas.minGravity()
-          && gravity <= gas.maxGravity()
-          && gas.chance() > 0
-          && random.nextDouble() < gas.chance()) selected.add(entry.getKey().location());
+    public static List<ResourceLocation> select(float gravity, Random random) {
+        List<ResourceLocation> selected = new ArrayList<>();
+        var gases = BuiltInRegistries.FLUID.getDataMap(DataMaps.GAS_GIANT_GAS).entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(Comparator.comparing(ResourceKey::location)))
+                .toList();
+        for (var entry : gases) {
+            DataMaps.GasGiantGas gas = entry.getValue();
+            if (gravity >= gas.minGravity()
+                    && gravity <= gas.maxGravity()
+                    && gas.chance() > 0
+                    && random.nextDouble() < gas.chance())
+                selected.add(entry.getKey().location());
+        }
+        return selected;
     }
-    return selected;
-  }
 
-  public static List<ResourceLocation> harvestable(Planet giant) {
-    Set<ResourceLocation> available = new LinkedHashSet<>(giant.gases);
-    for (var fluid : BuiltInRegistries.FLUID.getTagOrEmpty(ModTags.HARVESTABLE_GASES))
-      fluid.unwrapKey().ifPresent(key -> available.add(key.location()));
-    return List.copyOf(available);
-  }
+    public static List<ResourceLocation> harvestable(Planet giant) {
+        Set<ResourceLocation> available = new LinkedHashSet<>(giant.gases);
+        for (var fluid : BuiltInRegistries.FLUID.getTagOrEmpty(ModTags.HARVESTABLE_GASES))
+            fluid.unwrapKey().ifPresent(key -> available.add(key.location()));
+        return List.copyOf(available);
+    }
 }

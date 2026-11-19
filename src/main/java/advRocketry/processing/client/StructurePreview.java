@@ -28,130 +28,122 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 /** Colored outlines show every required cell without modifying the world. */
 public final class StructurePreview {
-  private static List<ProjectorBlueprint.Cell> cells = List.of();
-  private static List<Integer> layers = List.of();
-  private static int selectedLayer = -1;
-  private static ResourceKey<Level> dimension;
+    private static List<ProjectorBlueprint.Cell> cells = List.of();
+    private static List<Integer> layers = List.of();
+    private static int selectedLayer = -1;
+    private static ResourceKey<Level> dimension;
 
-  private StructurePreview() {}
+    private StructurePreview() {}
 
-  public static void clear() {
-    cells = List.of();
-    layers = List.of();
-    selectedLayer = -1;
-    dimension = null;
-  }
-
-  public static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
-    clear();
-  }
-
-  private static boolean inSelectedDimension(Minecraft minecraft) {
-    if (cells.isEmpty()) return false;
-    if (minecraft.level != null && minecraft.level.dimension() == dimension) return true;
-    clear();
-    return false;
-  }
-
-  public static void select(ResourceLocation id, BlockPos anchor, Direction facing) {
-    var level = Minecraft.getInstance().level;
-    if (level == null) return;
-    dimension = level.dimension();
-    cells = ProjectorBlueprint.cells(level.registryAccess(), id, anchor, facing);
-    layers =
-        cells.stream()
-            .map(cell -> cell.position().getY())
-            .distinct()
-            .sorted(Comparator.reverseOrder())
-            .toList();
-    selectedLayer = -1;
-  }
-
-  public static void scroll(InputEvent.MouseScrollingEvent event) {
-    Minecraft minecraft = Minecraft.getInstance();
-    if (!inSelectedDimension(minecraft)
-        || minecraft.player == null
-        || minecraft.screen != null
-        || !minecraft.player.isShiftKeyDown()
-        || !(minecraft.player.getMainHandItem().getItem() instanceof HoloProjectorItem)
-            && !(minecraft.player.getOffhandItem().getItem() instanceof HoloProjectorItem)
-        || event.getScrollDeltaY() == 0) return;
-    int count = layers.size();
-    if (count == 0) return;
-    int step = event.getScrollDeltaY() < 0 ? 1 : -1;
-    selectedLayer = Math.floorMod(selectedLayer + step + 1, count + 1) - 1;
-    minecraft.player.displayClientMessage(
-        selectedLayer < 0
-            ? Component.translatable("gui.adv_rocketry.structure_preview.projector_all_layers")
-            : Texts.translate(
-                "gui.adv_rocketry.structure_preview.projector_layer", (selectedLayer + 1), count),
-        true);
-    event.setCanceled(true);
-  }
-
-  public static void render(RenderLevelStageEvent event) {
-    Minecraft minecraft = Minecraft.getInstance();
-    if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS
-        || !inSelectedDimension(minecraft)
-        || minecraft.player == null
-        || !(minecraft.player.getMainHandItem().getItem() instanceof HoloProjectorItem)
-            && !(minecraft.player.getOffhandItem().getItem() instanceof HoloProjectorItem)) return;
-    var camera = event.getCamera().getPosition();
-    var pose = event.getPoseStack();
-    var buffer = minecraft.renderBuffers().bufferSource();
-    var vertices = buffer.getBuffer(RenderType.lines());
-    pose.pushPose();
-    pose.translate(-camera.x, -camera.y, -camera.z);
-    var profile = EffectProfiles.get("diagnostics");
-    boolean exploded =
-        AdvancedRocketryConfig.advancedVfx()
-            && profile.enabled()
-            && minecraft.player.isShiftKeyDown();
-    int bottom = layers.isEmpty() ? 0 : layers.getLast();
-    int drawn = 0;
-    for (ProjectorBlueprint.Cell cell : cells) {
-      if (++drawn > 4096) break;
-      if (selectedLayer >= 0 && cell.position().getY() != layers.get(selectedLayer)) continue;
-      if (!minecraft.level.hasChunkAt(cell.position())
-          || cell.position().distToCenterSqr(camera) > 64 * 64) continue;
-      BlockState state = minecraft.level.getBlockState(cell.position());
-      boolean matches = cell.matches().test(state);
-      if (state.isAir() && matches) continue;
-      pose.pushPose();
-      double lift = exploded ? (cell.position().getY() - bottom) * .75 : 0;
-      pose.translate(0, lift, 0);
-      draw(
-          pose,
-          vertices,
-          cell.position(),
-          matches,
-          exploded ? profile.color() : 0x1affff,
-          exploded ? profile.opacity() : .7f);
-      pose.popPose();
+    public static void clear() {
+        cells = List.of();
+        layers = List.of();
+        selectedLayer = -1;
+        dimension = null;
     }
-    pose.popPose();
-    buffer.endBatch(RenderType.lines());
-  }
 
-  private static void draw(
-      PoseStack pose,
-      VertexConsumer vertices,
-      BlockPos pos,
-      boolean matches,
-      int color,
-      float opacity) {
-    LevelRenderer.renderLineBox(
-        pose,
-        vertices,
-        pos.getX() + .01,
-        pos.getY() + .01,
-        pos.getZ() + .01,
-        pos.getX() + .99,
-        pos.getY() + .99,
-        pos.getZ() + .99,
-        matches ? ((color >> 16) & 255) / 255f : .8f,
-        matches ? ((color >> 8) & 255) / 255f : .3f,
-        matches ? (color & 255) / 255f : 1f,
-        opacity);
-  }
+    public static void loggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        clear();
+    }
+
+    private static boolean inSelectedDimension(Minecraft minecraft) {
+        if (cells.isEmpty()) return false;
+        if (minecraft.level != null && minecraft.level.dimension() == dimension) return true;
+        clear();
+        return false;
+    }
+
+    public static void select(ResourceLocation id, BlockPos anchor, Direction facing) {
+        var level = Minecraft.getInstance().level;
+        if (level == null) return;
+        dimension = level.dimension();
+        cells = ProjectorBlueprint.cells(level.registryAccess(), id, anchor, facing);
+        layers = cells.stream()
+                .map(cell -> cell.position().getY())
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .toList();
+        selectedLayer = -1;
+    }
+
+    public static void scroll(InputEvent.MouseScrollingEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!inSelectedDimension(minecraft)
+                || minecraft.player == null
+                || minecraft.screen != null
+                || !minecraft.player.isShiftKeyDown()
+                || !(minecraft.player.getMainHandItem().getItem() instanceof HoloProjectorItem)
+                        && !(minecraft.player.getOffhandItem().getItem() instanceof HoloProjectorItem)
+                || event.getScrollDeltaY() == 0) return;
+        int count = layers.size();
+        if (count == 0) return;
+        int step = event.getScrollDeltaY() < 0 ? 1 : -1;
+        selectedLayer = Math.floorMod(selectedLayer + step + 1, count + 1) - 1;
+        minecraft.player.displayClientMessage(
+                selectedLayer < 0
+                        ? Component.translatable("gui.adv_rocketry.structure_preview.projector_all_layers")
+                        : Texts.translate(
+                                "gui.adv_rocketry.structure_preview.projector_layer", (selectedLayer + 1), count),
+                true);
+        event.setCanceled(true);
+    }
+
+    public static void render(RenderLevelStageEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS
+                || !inSelectedDimension(minecraft)
+                || minecraft.player == null
+                || !(minecraft.player.getMainHandItem().getItem() instanceof HoloProjectorItem)
+                        && !(minecraft.player.getOffhandItem().getItem() instanceof HoloProjectorItem)) return;
+        var camera = event.getCamera().getPosition();
+        var pose = event.getPoseStack();
+        var buffer = minecraft.renderBuffers().bufferSource();
+        var vertices = buffer.getBuffer(RenderType.lines());
+        pose.pushPose();
+        pose.translate(-camera.x, -camera.y, -camera.z);
+        var profile = EffectProfiles.get("diagnostics");
+        boolean exploded =
+                AdvancedRocketryConfig.advancedVfx() && profile.enabled() && minecraft.player.isShiftKeyDown();
+        int bottom = layers.isEmpty() ? 0 : layers.getLast();
+        int drawn = 0;
+        for (ProjectorBlueprint.Cell cell : cells) {
+            if (++drawn > 4096) break;
+            if (selectedLayer >= 0 && cell.position().getY() != layers.get(selectedLayer)) continue;
+            if (!minecraft.level.hasChunkAt(cell.position()) || cell.position().distToCenterSqr(camera) > 64 * 64)
+                continue;
+            BlockState state = minecraft.level.getBlockState(cell.position());
+            boolean matches = cell.matches().test(state);
+            if (state.isAir() && matches) continue;
+            pose.pushPose();
+            double lift = exploded ? (cell.position().getY() - bottom) * .75 : 0;
+            pose.translate(0, lift, 0);
+            draw(
+                    pose,
+                    vertices,
+                    cell.position(),
+                    matches,
+                    exploded ? profile.color() : 0x1affff,
+                    exploded ? profile.opacity() : .7f);
+            pose.popPose();
+        }
+        pose.popPose();
+        buffer.endBatch(RenderType.lines());
+    }
+
+    private static void draw(
+            PoseStack pose, VertexConsumer vertices, BlockPos pos, boolean matches, int color, float opacity) {
+        LevelRenderer.renderLineBox(
+                pose,
+                vertices,
+                pos.getX() + .01,
+                pos.getY() + .01,
+                pos.getZ() + .01,
+                pos.getX() + .99,
+                pos.getY() + .99,
+                pos.getZ() + .99,
+                matches ? ((color >> 16) & 255) / 255f : .8f,
+                matches ? ((color >> 8) & 255) / 255f : .3f,
+                matches ? (color & 255) / 255f : 1f,
+                opacity);
+    }
 }

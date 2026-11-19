@@ -19,40 +19,39 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Native state used to hide the constituent blocks beneath the original machine model. */
 public class MachinePartBlock extends Block {
-  public static final BooleanProperty ASSEMBLED = BooleanProperty.create("assembled");
+    public static final BooleanProperty ASSEMBLED = BooleanProperty.create("assembled");
 
-  public MachinePartBlock(Properties properties) {
-    super(properties.noOcclusion());
-    registerDefaultState(stateDefinition.any().setValue(ASSEMBLED, false));
-  }
+    public MachinePartBlock(Properties properties) {
+        super(properties.noOcclusion());
+        registerDefaultState(stateDefinition.any().setValue(ASSEMBLED, false));
+    }
 
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(ASSEMBLED);
-  }
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(ASSEMBLED);
+    }
 
-  @Override
-  public RenderShape getRenderShape(BlockState state) {
-    return state.getValue(ASSEMBLED) ? RenderShape.INVISIBLE : RenderShape.MODEL;
-  }
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return state.getValue(ASSEMBLED) ? RenderShape.INVISIBLE : RenderShape.MODEL;
+    }
 
-  @Override
-  protected VoxelShape getShape(
-      BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-    return state.getValue(ASSEMBLED) ? Shapes.empty() : super.getShape(state, level, pos, context);
-  }
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return state.getValue(ASSEMBLED) ? Shapes.empty() : super.getShape(state, level, pos, context);
+    }
 
-  @Override
-  protected VoxelShape getCollisionShape(
-      BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-    return Shapes.block();
-  }
+    @Override
+    protected VoxelShape getCollisionShape(
+            BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return Shapes.block();
+    }
 
-  @Override
-  protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-    if (!state.getValue(ASSEMBLED)) return;
-    if (MultiblockMachine.isPartClaimed(level, pos) || OrbitalAssembly.isClaimed(level, pos))
-      level.scheduleTick(pos, this, 40);
-    else level.setBlock(pos, state.setValue(ASSEMBLED, false), Block.UPDATE_CLIENTS);
-  }
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (!state.getValue(ASSEMBLED)) return;
+        if (MultiblockMachine.isPartClaimed(level, pos) || OrbitalAssembly.isClaimed(level, pos))
+            level.scheduleTick(pos, this, 40);
+        else level.setBlock(pos, state.setValue(ASSEMBLED, false), Block.UPDATE_CLIENTS);
+    }
 }

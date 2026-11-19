@@ -20,52 +20,47 @@ import net.minecraft.resources.ResourceLocation;
 
 /** Original space-elevator capsule mesh with its original texture. */
 public final class ElevatorCapsuleRenderer extends EntityRenderer<ElevatorCapsule> {
-  private static final ResourceLocation MODEL =
-      ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/space_elevator.obj");
-  private static final ResourceLocation TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/space_elevator.png");
-  private static ObjModel model;
+    private static final ResourceLocation MODEL =
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/space_elevator.obj");
+    private static final ResourceLocation TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/space_elevator.png");
+    private static ObjModel model;
 
-  public ElevatorCapsuleRenderer(EntityRendererProvider.Context context) {
-    super(context);
-  }
-
-  public static void clearModel() {
-    model = null;
-  }
-
-  @Override
-  public void render(
-      ElevatorCapsule capsule,
-      float yaw,
-      float partialTick,
-      PoseStack pose,
-      MultiBufferSource buffers,
-      int light) {
-    if (model == null) model = new ObjModel(MODEL);
-    pose.pushPose();
-    pose.translate(0, 1, 0);
-    pose.mulPose(Axis.YP.rotationDegrees(yaw));
-    var vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
-    model.renderPart("Capsule", pose, vertices, light, OverlayTexture.NO_OVERLAY);
-    if (capsule.inMotion())
-      model.renderPart("Door", pose, vertices, light, OverlayTexture.NO_OVERLAY);
-    pose.popPose();
-    var profile = EffectProfiles.get("elevator");
-    if (capsule.inMotion()
-        && EffectGeometry.visible(capsule.position(), profile)
-        && EffectGeometry.reserve()) {
-      var glow = buffers.getBuffer(EffectRenderTypes.GLOW);
-      EffectGeometry.ring(
-          pose, glow, 2.25, .15, .025, profile.argb(.6f), EffectGeometry.segments(profile));
-      EffectGeometry.ring(
-          pose, glow, 2.25, 4.1, .025, profile.argb(.6f), EffectGeometry.segments(profile));
+    public ElevatorCapsuleRenderer(EntityRendererProvider.Context context) {
+        super(context);
     }
-    super.render(capsule, yaw, partialTick, pose, buffers, light);
-  }
 
-  @Override
-  public ResourceLocation getTextureLocation(ElevatorCapsule capsule) {
-    return TEXTURE;
-  }
+    public static void clearModel() {
+        model = null;
+    }
+
+    @Override
+    public void render(
+            ElevatorCapsule capsule,
+            float yaw,
+            float partialTick,
+            PoseStack pose,
+            MultiBufferSource buffers,
+            int light) {
+        if (model == null) model = new ObjModel(MODEL);
+        pose.pushPose();
+        pose.translate(0, 1, 0);
+        pose.mulPose(Axis.YP.rotationDegrees(yaw));
+        var vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+        model.renderPart("Capsule", pose, vertices, light, OverlayTexture.NO_OVERLAY);
+        if (capsule.inMotion()) model.renderPart("Door", pose, vertices, light, OverlayTexture.NO_OVERLAY);
+        pose.popPose();
+        var profile = EffectProfiles.get("elevator");
+        if (capsule.inMotion() && EffectGeometry.visible(capsule.position(), profile) && EffectGeometry.reserve()) {
+            var glow = buffers.getBuffer(EffectRenderTypes.GLOW);
+            EffectGeometry.ring(pose, glow, 2.25, .15, .025, profile.argb(.6f), EffectGeometry.segments(profile));
+            EffectGeometry.ring(pose, glow, 2.25, 4.1, .025, profile.argb(.6f), EffectGeometry.segments(profile));
+        }
+        super.render(capsule, yaw, partialTick, pose, buffers, light);
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(ElevatorCapsule capsule) {
+        return TEXTURE;
+    }
 }

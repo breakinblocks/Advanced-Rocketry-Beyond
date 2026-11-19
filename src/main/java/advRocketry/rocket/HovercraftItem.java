@@ -15,30 +15,26 @@ import net.minecraft.world.phys.HitResult;
 
 /** Places the original hovercraft at a targeted surface. */
 public final class HovercraftItem extends Item {
-  public HovercraftItem(Properties properties) {
-    super(properties.stacksTo(1));
-  }
+    public HovercraftItem(Properties properties) {
+        super(properties.stacksTo(1));
+    }
 
-  @Override
-  public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-    ItemStack stack = player.getItemInHand(hand);
-    BlockHitResult hit =
-        level.clip(
-            new ClipContext(
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        BlockHitResult hit = level.clip(new ClipContext(
                 player.getEyePosition(),
                 player.getEyePosition().add(player.getLookAngle().scale(5)),
                 ClipContext.Block.OUTLINE,
                 ClipContext.Fluid.ANY,
                 player));
-    if (hit.getType() != HitResult.Type.BLOCK) return InteractionResultHolder.pass(stack);
-    HovercraftEntity craft = HovercraftRegistry.ENTITY.get().create(level);
-    if (craft == null) return InteractionResultHolder.fail(stack);
-    craft.setPos(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z);
-    craft.setYRot(player.getYRot());
-    if (!level.noCollision(craft, craft.getBoundingBox()))
-      return InteractionResultHolder.fail(stack);
-    if (!level.isClientSide && level.addFreshEntity(craft) && !player.getAbilities().instabuild)
-      stack.shrink(1);
-    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
-  }
+        if (hit.getType() != HitResult.Type.BLOCK) return InteractionResultHolder.pass(stack);
+        HovercraftEntity craft = HovercraftRegistry.ENTITY.get().create(level);
+        if (craft == null) return InteractionResultHolder.fail(stack);
+        craft.setPos(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z);
+        craft.setYRot(player.getYRot());
+        if (!level.noCollision(craft, craft.getBoundingBox())) return InteractionResultHolder.fail(stack);
+        if (!level.isClientSide && level.addFreshEntity(craft) && !player.getAbilities().instabuild) stack.shrink(1);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
 }

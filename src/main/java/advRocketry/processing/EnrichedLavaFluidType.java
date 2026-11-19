@@ -14,32 +14,30 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 /** Native adapter for the original enriched-lava material's movement and item buoyancy. */
 public final class EnrichedLavaFluidType extends FluidType {
-  public EnrichedLavaFluidType(Properties properties) {
-    super(properties);
-  }
+    public EnrichedLavaFluidType(Properties properties) {
+        super(properties);
+    }
 
-  @Override
-  public double motionScale(Entity entity) {
-    return NeoForgeMod.LAVA_TYPE.value().motionScale(entity);
-  }
+    @Override
+    public double motionScale(Entity entity) {
+        return NeoForgeMod.LAVA_TYPE.value().motionScale(entity);
+    }
 
-  @Override
-  public void setItemMovement(ItemEntity entity) {
-    NeoForgeMod.LAVA_TYPE.value().setItemMovement(entity);
-  }
+    @Override
+    public void setItemMovement(ItemEntity entity) {
+        NeoForgeMod.LAVA_TYPE.value().setItemMovement(entity);
+    }
 
-  @Override
-  public boolean move(FluidState state, LivingEntity entity, Vec3 input, double gravity) {
-    entity.moveRelative(.02f, input);
-    entity.move(MoverType.SELF, entity.getDeltaMovement());
-    Vec3 velocity = entity.getDeltaMovement().scale(.5);
-    if (!entity.isNoGravity()) velocity = velocity.add(0, -gravity * .25, 0);
-    if (entity.horizontalCollision
-        && entity
-            .level()
-            .noCollision(entity, entity.getBoundingBox().move(velocity.x, .6, velocity.z)))
-      velocity = new Vec3(velocity.x, .3, velocity.z);
-    entity.setDeltaMovement(velocity);
-    return true;
-  }
+    @Override
+    public boolean move(FluidState state, LivingEntity entity, Vec3 input, double gravity) {
+        entity.moveRelative(.02f, input);
+        entity.move(MoverType.SELF, entity.getDeltaMovement());
+        Vec3 velocity = entity.getDeltaMovement().scale(.5);
+        if (!entity.isNoGravity()) velocity = velocity.add(0, -gravity * .25, 0);
+        if (entity.horizontalCollision
+                && entity.level().noCollision(entity, entity.getBoundingBox().move(velocity.x, .6, velocity.z)))
+            velocity = new Vec3(velocity.x, .3, velocity.z);
+        entity.setDeltaMovement(velocity);
+        return true;
+    }
 }

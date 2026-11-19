@@ -17,30 +17,28 @@ import org.lwjgl.glfw.GLFW;
 
 /** Sends held jump input only while a jetpack-equipped chest suit is worn. */
 public final class JetpackClient {
-  private static final KeyMapping TOGGLE =
-      new KeyMapping(
-          "key.adv_rocketry.toggle_jetpack",
-          InputConstants.Type.KEYSYM,
-          GLFW.GLFW_KEY_X,
-          "key.categories.adv_rocketry");
+    private static final KeyMapping TOGGLE = new KeyMapping(
+            "key.adv_rocketry.toggle_jetpack",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_X,
+            "key.categories.adv_rocketry");
 
-  private JetpackClient() {}
+    private JetpackClient() {}
 
-  public static void registerKeys(RegisterKeyMappingsEvent event) {
-    event.register(TOGGLE);
-  }
-
-  public static void tick(ClientTickEvent.Post event) {
-    while (TOGGLE.consumeClick()) {
-      var player = Minecraft.getInstance().player;
-      if (player != null)
-        PacketDistributor.sendToServer(new JetpackToggle(player.isShiftKeyDown()));
+    public static void registerKeys(RegisterKeyMappingsEvent event) {
+        event.register(TOGGLE);
     }
-  }
 
-  public static void controls(MovementInputUpdateEvent event) {
-    var chest = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
-    if (event.getInput().jumping && JetpackControl.enabled(chest))
-      PacketDistributor.sendToServer(new JetpackControl());
-  }
+    public static void tick(ClientTickEvent.Post event) {
+        while (TOGGLE.consumeClick()) {
+            var player = Minecraft.getInstance().player;
+            if (player != null) PacketDistributor.sendToServer(new JetpackToggle(player.isShiftKeyDown()));
+        }
+    }
+
+    public static void controls(MovementInputUpdateEvent event) {
+        var chest = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
+        if (event.getInput().jumping && JetpackControl.enabled(chest))
+            PacketDistributor.sendToServer(new JetpackControl());
+    }
 }

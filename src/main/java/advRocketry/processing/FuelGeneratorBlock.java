@@ -17,61 +17,59 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 public final class FuelGeneratorBlock extends GeneratorBlock implements EntityBlock {
-  public FuelGeneratorBlock(Properties properties) {
-    super(properties);
-  }
-
-  @Override
-  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new FuelGeneratorBlockEntity(pos, state);
-  }
-
-  @Override
-  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-      Level level, BlockState state, BlockEntityType<T> type) {
-    return !level.isClientSide && type == MachinePorts.FUEL_GENERATOR_ENTITY.get()
-        ? (world, pos, current, entity) -> ((FuelGeneratorBlockEntity) entity).tick()
-        : null;
-  }
-
-  @Override
-  protected ItemInteractionResult useItemOn(
-      ItemStack stack,
-      BlockState state,
-      Level level,
-      BlockPos pos,
-      Player player,
-      InteractionHand hand,
-      BlockHitResult hit) {
-    if (player.isSpectator() || !player.mayBuild())
-      return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-    if (FluidUtil.getFluidHandler(stack).isPresent()) {
-      if (!level.isClientSide
-          && level.getBlockEntity(pos) instanceof FuelGeneratorBlockEntity generator)
-        FluidUtil.interactWithFluidHandler(player, hand, generator.tank);
-      return ItemInteractionResult.SUCCESS;
+    public FuelGeneratorBlock(Properties properties) {
+        super(properties);
     }
-    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-  }
 
-  @Override
-  protected InteractionResult useWithoutItem(
-      BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-    if (player instanceof ServerPlayer server
-        && level.getBlockEntity(pos) instanceof FuelGeneratorBlockEntity generator)
-      server.openMenu(generator, buffer -> buffer.writeBlockPos(pos));
-    return InteractionResult.sidedSuccess(level.isClientSide);
-  }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new FuelGeneratorBlockEntity(pos, state);
+    }
 
-  @Override
-  protected boolean hasAnalogOutputSignal(BlockState state) {
-    return true;
-  }
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, BlockEntityType<T> type) {
+        return !level.isClientSide && type == MachinePorts.FUEL_GENERATOR_ENTITY.get()
+                ? (world, pos, current, entity) -> ((FuelGeneratorBlockEntity) entity).tick()
+                : null;
+    }
 
-  @Override
-  protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-    return level.getBlockEntity(pos) instanceof FuelGeneratorBlockEntity generator
-        ? generator.energyStored() * 15 / FuelGeneratorBlockEntity.CAPACITY
-        : 0;
-  }
+    @Override
+    protected ItemInteractionResult useItemOn(
+            ItemStack stack,
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit) {
+        if (player.isSpectator() || !player.mayBuild()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (FluidUtil.getFluidHandler(stack).isPresent()) {
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof FuelGeneratorBlockEntity generator)
+                FluidUtil.interactWithFluidHandler(player, hand, generator.tank);
+            return ItemInteractionResult.SUCCESS;
+        }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(
+            BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (player instanceof ServerPlayer server
+                && level.getBlockEntity(pos) instanceof FuelGeneratorBlockEntity generator)
+            server.openMenu(generator, buffer -> buffer.writeBlockPos(pos));
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof FuelGeneratorBlockEntity generator
+                ? generator.energyStored() * 15 / FuelGeneratorBlockEntity.CAPACITY
+                : 0;
+    }
 }

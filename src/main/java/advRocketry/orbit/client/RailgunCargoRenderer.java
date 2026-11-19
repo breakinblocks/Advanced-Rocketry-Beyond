@@ -20,54 +20,54 @@ import net.minecraft.world.phys.Vec3;
 
 /** Renders the original railgun's rising item without creating a collectible duplicate. */
 public final class RailgunCargoRenderer extends EntityRenderer<RailgunCargoEntity> {
-  private final ItemRenderer items;
+    private final ItemRenderer items;
 
-  public RailgunCargoRenderer(EntityRendererProvider.Context context) {
-    super(context);
-    items = context.getItemRenderer();
-  }
-
-  @Override
-  public void render(
-      RailgunCargoEntity entity,
-      float yaw,
-      float partialTick,
-      PoseStack pose,
-      MultiBufferSource buffers,
-      int packedLight) {
-    if (entity.display().isEmpty()) return;
-    pose.pushPose();
-    pose.scale(.7f, .7f, .7f);
-    items.renderStatic(
-        entity.display(),
-        ItemDisplayContext.GROUND,
-        packedLight,
-        OverlayTexture.NO_OVERLAY,
-        pose,
-        buffers,
-        entity.level(),
-        entity.getId());
-    pose.popPose();
-    var profile = EffectProfiles.get("railgun");
-    if (EffectGeometry.visible(entity.position(), profile)) {
-      var trail = buffers.getBuffer(EffectRenderTypes.GLOW);
-      EffectGeometry.beam(pose, trail, Vec3.ZERO, new Vec3(0, -6, 0), .025, profile.argb(.65f));
-      for (int i = 0; i < 4; i++) {
-        EffectGeometry.ring(
-            pose,
-            trail,
-            .25 + i * .08,
-            -i * 1.5,
-            .015,
-            profile.argb(.6f - i * .12f),
-            EffectGeometry.segments(profile));
-      }
+    public RailgunCargoRenderer(EntityRendererProvider.Context context) {
+        super(context);
+        items = context.getItemRenderer();
     }
-    super.render(entity, yaw, partialTick, pose, buffers, packedLight);
-  }
 
-  @Override
-  public ResourceLocation getTextureLocation(RailgunCargoEntity entity) {
-    return InventoryMenu.BLOCK_ATLAS;
-  }
+    @Override
+    public void render(
+            RailgunCargoEntity entity,
+            float yaw,
+            float partialTick,
+            PoseStack pose,
+            MultiBufferSource buffers,
+            int packedLight) {
+        if (entity.display().isEmpty()) return;
+        pose.pushPose();
+        pose.scale(.7f, .7f, .7f);
+        items.renderStatic(
+                entity.display(),
+                ItemDisplayContext.GROUND,
+                packedLight,
+                OverlayTexture.NO_OVERLAY,
+                pose,
+                buffers,
+                entity.level(),
+                entity.getId());
+        pose.popPose();
+        var profile = EffectProfiles.get("railgun");
+        if (EffectGeometry.visible(entity.position(), profile)) {
+            var trail = buffers.getBuffer(EffectRenderTypes.GLOW);
+            EffectGeometry.beam(pose, trail, Vec3.ZERO, new Vec3(0, -6, 0), .025, profile.argb(.65f));
+            for (int i = 0; i < 4; i++) {
+                EffectGeometry.ring(
+                        pose,
+                        trail,
+                        .25 + i * .08,
+                        -i * 1.5,
+                        .015,
+                        profile.argb(.6f - i * .12f),
+                        EffectGeometry.segments(profile));
+            }
+        }
+        super.render(entity, yaw, partialTick, pose, buffers, packedLight);
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(RailgunCargoEntity entity) {
+        return InventoryMenu.BLOCK_ATLAS;
+    }
 }

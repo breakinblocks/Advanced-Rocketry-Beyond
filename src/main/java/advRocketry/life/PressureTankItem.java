@@ -15,33 +15,28 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 
 /** Original 1,000 / 2,000 / 4,000 / 8,000 mB tank tiers before the server multiplier. */
 public final class PressureTankItem extends Item {
-  private final int capacity;
+    private final int capacity;
 
-  public PressureTankItem(int capacity, Properties properties) {
-    super(properties.stacksTo(1));
-    this.capacity = capacity;
-  }
+    public PressureTankItem(int capacity, Properties properties) {
+        super(properties.stacksTo(1));
+        this.capacity = capacity;
+    }
 
-  public int capacity() {
-    return Math.max(
-        0, (int) Math.round(capacity * AdvancedRocketryConfig.suitTankCapacityMultiplier()));
-  }
+    public int capacity() {
+        return Math.max(0, (int) Math.round(capacity * AdvancedRocketryConfig.suitTankCapacityMultiplier()));
+    }
 
-  public FluidHandlerItemStack handler(ItemStack stack) {
-    return new FluidHandlerItemStack(ModComponents.TANK_CONTENT, stack, capacity());
-  }
+    public FluidHandlerItemStack handler(ItemStack stack) {
+        return new FluidHandlerItemStack(ModComponents.TANK_CONTENT, stack, capacity());
+    }
 
-  @Override
-  public void appendHoverText(
-      ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-    var fluid = handler(stack).getFluid();
-    tooltip.add(
-        Texts.translate(
-            "message.adv_rocketry.pressure_tank.mb",
-            fluid.isEmpty()
-                ? Component.translatable("gui.adv_rocketry.fluid.empty")
-                : fluid.getHoverName(),
-            fluid.getAmount(),
-            capacity()));
-  }
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        var fluid = handler(stack).getFluid();
+        tooltip.add(Texts.translate(
+                "message.adv_rocketry.pressure_tank.mb",
+                fluid.isEmpty() ? Component.translatable("gui.adv_rocketry.fluid.empty") : fluid.getHoverName(),
+                fluid.getAmount(),
+                capacity()));
+    }
 }

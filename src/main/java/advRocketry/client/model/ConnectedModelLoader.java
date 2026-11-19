@@ -22,58 +22,53 @@ import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
 public final class ConnectedModelLoader implements IGeometryLoader<ConnectedModelLoader.Geometry> {
-  public static final ResourceLocation ID =
-      ResourceLocation.fromNamespaceAndPath(Main.MODID, "connected");
-  static final String[] VARIANTS = {"base", "horizontal", "vertical", "corner", "center"};
-  private static final ConnectedModelLoader INSTANCE = new ConnectedModelLoader();
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Main.MODID, "connected");
+    static final String[] VARIANTS = {"base", "horizontal", "vertical", "corner", "center"};
+    private static final ConnectedModelLoader INSTANCE = new ConnectedModelLoader();
 
-  private ConnectedModelLoader() {}
+    private ConnectedModelLoader() {}
 
-  public static void register(ModelEvent.RegisterGeometryLoaders event) {
-    event.register(ID, INSTANCE);
-  }
-
-  @Override
-  public Geometry read(JsonObject json, JsonDeserializationContext context) {
-    List<ResourceLocation> connectWith = new ArrayList<>();
-    if (json.has("connect_with"))
-      for (JsonElement element : json.getAsJsonArray("connect_with"))
-        connectWith.add(ResourceLocation.parse(element.getAsString()));
-    int tint = json.has("tint_index") ? json.get("tint_index").getAsInt() : -1;
-    float height = json.has("height") ? json.get("height").getAsFloat() : 16;
-    if (!Float.isFinite(height) || height <= 0 || height > 16)
-      throw new IllegalArgumentException("Connected model height must be in (0,16]");
-    return new Geometry(Set.copyOf(connectWith), tint, height);
-  }
-
-  public record Geometry(Set<ResourceLocation> connectWith, int tint, float height)
-      implements IUnbakedGeometry<Geometry> {
-    @Override
-    public BakedModel bake(
-        IGeometryBakingContext context,
-        ModelBaker baker,
-        Function<Material, TextureAtlasSprite> sprites,
-        ModelState state,
-        ItemOverrides overrides) {
-      TextureAtlasSprite[] variants = new TextureAtlasSprite[VARIANTS.length];
-      for (int i = 0; i < VARIANTS.length; i++)
-        variants[i] = sprites.apply(context.getMaterial(VARIANTS[i]));
-      TextureAtlasSprite particle =
-          context.hasMaterial("particle")
-              ? sprites.apply(context.getMaterial("particle"))
-              : variants[0];
-      ResourceLocation hint = context.getRenderTypeHint();
-      RenderTypeGroup renderTypes =
-          hint == null ? RenderTypeGroup.EMPTY : context.getRenderType(hint);
-      return new ConnectedBakedModel(
-          ConnectedBakedModel.bake(variants, state, tint, height),
-          particle,
-          context.getTransforms(),
-          context.useAmbientOcclusion(),
-          context.useBlockLight(),
-          renderTypes,
-          connectWith,
-          height < 16);
+    public static void register(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(ID, INSTANCE);
     }
-  }
+
+    @Override
+    public Geometry read(JsonObject json, JsonDeserializationContext context) {
+        List<ResourceLocation> connectWith = new ArrayList<>();
+        if (json.has("connect_with"))
+            for (JsonElement element : json.getAsJsonArray("connect_with"))
+                connectWith.add(ResourceLocation.parse(element.getAsString()));
+        int tint = json.has("tint_index") ? json.get("tint_index").getAsInt() : -1;
+        float height = json.has("height") ? json.get("height").getAsFloat() : 16;
+        if (!Float.isFinite(height) || height <= 0 || height > 16)
+            throw new IllegalArgumentException("Connected model height must be in (0,16]");
+        return new Geometry(Set.copyOf(connectWith), tint, height);
+    }
+
+    public record Geometry(Set<ResourceLocation> connectWith, int tint, float height)
+            implements IUnbakedGeometry<Geometry> {
+        @Override
+        public BakedModel bake(
+                IGeometryBakingContext context,
+                ModelBaker baker,
+                Function<Material, TextureAtlasSprite> sprites,
+                ModelState state,
+                ItemOverrides overrides) {
+            TextureAtlasSprite[] variants = new TextureAtlasSprite[VARIANTS.length];
+            for (int i = 0; i < VARIANTS.length; i++) variants[i] = sprites.apply(context.getMaterial(VARIANTS[i]));
+            TextureAtlasSprite particle =
+                    context.hasMaterial("particle") ? sprites.apply(context.getMaterial("particle")) : variants[0];
+            ResourceLocation hint = context.getRenderTypeHint();
+            RenderTypeGroup renderTypes = hint == null ? RenderTypeGroup.EMPTY : context.getRenderType(hint);
+            return new ConnectedBakedModel(
+                    ConnectedBakedModel.bake(variants, state, tint, height),
+                    particle,
+                    context.getTransforms(),
+                    context.useAmbientOcclusion(),
+                    context.useBlockLight(),
+                    renderTypes,
+                    connectWith,
+                    height < 16);
+        }
+    }
 }

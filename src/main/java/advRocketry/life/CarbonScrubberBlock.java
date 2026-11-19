@@ -23,74 +23,72 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** A vent-adjacent cartridge hatch from the original oxygen system. */
 public final class CarbonScrubberBlock extends Block implements EntityBlock {
-  public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-  public CarbonScrubberBlock(Properties properties) {
-    super(properties);
-    registerDefaultState(defaultBlockState().setValue(POWERED, false));
-  }
-
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(POWERED);
-  }
-
-  @Override
-  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new CarbonScrubberBlockEntity(pos, state);
-  }
-
-  @Override
-  protected ItemInteractionResult useItemOn(
-      ItemStack stack,
-      BlockState state,
-      Level level,
-      BlockPos pos,
-      Player player,
-      InteractionHand hand,
-      BlockHitResult hit) {
-    if (!stack.is(ProcessingRegistry.PART_ITEMS.get("carbon_scrubber_cartridge").get()))
-      return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-    if (!level.isClientSide
-        && level.getBlockEntity(pos) instanceof CarbonScrubberBlockEntity scrubber) {
-      if (scrubber.cartridge.getStackInSlot(0).isEmpty()) {
-        scrubber.cartridge.setStackInSlot(0, stack.copyWithCount(1));
-        if (!player.getAbilities().instabuild) stack.shrink(1);
-      }
+    public CarbonScrubberBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(defaultBlockState().setValue(POWERED, false));
     }
-    return ItemInteractionResult.sidedSuccess(level.isClientSide);
-  }
 
-  @Override
-  protected InteractionResult useWithoutItem(
-      BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-    if (player instanceof ServerPlayer
-        && level.getBlockEntity(pos) instanceof CarbonScrubberBlockEntity scrubber) {
-      ItemStack removed = scrubber.cartridge.extractItem(0, 1, false);
-      if (!removed.isEmpty() && !player.addItem(removed)) player.drop(removed, false);
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(POWERED);
     }
-    return InteractionResult.sidedSuccess(level.isClientSide);
-  }
 
-  @Override
-  protected void onRemove(
-      BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
-    if (!state.is(next.getBlock())
-        && !level.isClientSide
-        && level.getBlockEntity(pos) instanceof CarbonScrubberBlockEntity scrubber)
-      popResource(level, pos, scrubber.cartridge.extractItem(0, 1, false));
-    super.onRemove(state, level, pos, next, moving);
-  }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new CarbonScrubberBlockEntity(pos, state);
+    }
 
-  @Override
-  protected boolean hasAnalogOutputSignal(BlockState state) {
-    return true;
-  }
+    @Override
+    protected ItemInteractionResult useItemOn(
+            ItemStack stack,
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit) {
+        if (!stack.is(
+                ProcessingRegistry.PART_ITEMS.get("carbon_scrubber_cartridge").get()))
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof CarbonScrubberBlockEntity scrubber) {
+            if (scrubber.cartridge.getStackInSlot(0).isEmpty()) {
+                scrubber.cartridge.setStackInSlot(0, stack.copyWithCount(1));
+                if (!player.getAbilities().instabuild) stack.shrink(1);
+            }
+        }
+        return ItemInteractionResult.sidedSuccess(level.isClientSide);
+    }
 
-  @Override
-  protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-    return level.getBlockEntity(pos) instanceof CarbonScrubberBlockEntity scrubber
-        ? scrubber.comparatorOutput()
-        : 0;
-  }
+    @Override
+    protected InteractionResult useWithoutItem(
+            BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (player instanceof ServerPlayer && level.getBlockEntity(pos) instanceof CarbonScrubberBlockEntity scrubber) {
+            ItemStack removed = scrubber.cartridge.extractItem(0, 1, false);
+            if (!removed.isEmpty() && !player.addItem(removed)) player.drop(removed, false);
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
+        if (!state.is(next.getBlock())
+                && !level.isClientSide
+                && level.getBlockEntity(pos) instanceof CarbonScrubberBlockEntity scrubber)
+            popResource(level, pos, scrubber.cartridge.extractItem(0, 1, false));
+        super.onRemove(state, level, pos, next, moving);
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof CarbonScrubberBlockEntity scrubber
+                ? scrubber.comparatorOutput()
+                : 0;
+    }
 }

@@ -16,38 +16,33 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 /** Original laser impact packet, sent to the shooter and tracking observers. */
 public final class LaserBeamSync {
-  public static Consumer<Payload> client = payload -> {};
+    public static Consumer<Payload> client = payload -> {};
 
-  private LaserBeamSync() {}
+    private LaserBeamSync() {}
 
-  public record Payload(ResourceLocation dimension, int shooter, Vec3 impact)
-      implements CustomPacketPayload {
-    public static final Type<Payload> TYPE =
-        new Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "laser_beam"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, Payload> CODEC =
-        StreamCodec.of(
-            (buffer, payload) -> {
-              buffer.writeResourceLocation(payload.dimension());
-              buffer.writeVarInt(payload.shooter());
-              buffer.writeVec3(payload.impact());
-            },
-            buffer ->
-                new Payload(buffer.readResourceLocation(), buffer.readVarInt(), buffer.readVec3()));
+    public record Payload(ResourceLocation dimension, int shooter, Vec3 impact) implements CustomPacketPayload {
+        public static final Type<Payload> TYPE =
+                new Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "laser_beam"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, Payload> CODEC = StreamCodec.of(
+                (buffer, payload) -> {
+                    buffer.writeResourceLocation(payload.dimension());
+                    buffer.writeVarInt(payload.shooter());
+                    buffer.writeVec3(payload.impact());
+                },
+                buffer -> new Payload(buffer.readResourceLocation(), buffer.readVarInt(), buffer.readVec3()));
 
-    @Override
-    public Type<Payload> type() {
-      return TYPE;
+        @Override
+        public Type<Payload> type() {
+            return TYPE;
+        }
     }
-  }
 
-  public static void register(RegisterPayloadHandlersEvent event) {
-    event
-        .registrar("1")
-        .playToClient(Payload.TYPE, Payload.CODEC, (payload, context) -> client.accept(payload));
-  }
+    public static void register(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToClient(Payload.TYPE, Payload.CODEC, (payload, context) -> client.accept(payload));
+    }
 
-  public static void send(ServerPlayer player, Vec3 impact) {
-    PacketDistributor.sendToPlayersTrackingEntityAndSelf(
-        player, new Payload(player.level().dimension().location(), player.getId(), impact));
-  }
+    public static void send(ServerPlayer player, Vec3 impact) {
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                player, new Payload(player.level().dimension().location(), player.getId(), impact));
+    }
 }

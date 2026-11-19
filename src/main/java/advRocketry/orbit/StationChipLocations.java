@@ -16,107 +16,98 @@ import net.minecraft.world.item.ItemStack;
 
 /** Per-planet destinations and the protected last departure from the original station chip. */
 public final class StationChipLocations {
-  public static final int LIMIT = 128;
+    public static final int LIMIT = 128;
 
-  public record Location(String name, BlockPos pos) {
-    public static final Codec<Location> CODEC =
-        RecordCodecBuilder.create(
-            instance ->
-                instance
-                    .group(
+    public record Location(String name, BlockPos pos) {
+        public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                         Codec.string(0, 32).fieldOf("name").forGetter(Location::name),
                         BlockPos.CODEC.fieldOf("position").forGetter(Location::pos))
-                    .apply(instance, Location::new));
-    public static final StreamCodec<ByteBuf, Location> STREAM_CODEC =
-        StreamCodec.composite(
-            ByteBufCodecs.stringUtf8(32),
-            Location::name,
-            BlockPos.STREAM_CODEC,
-            Location::pos,
-            Location::new);
+                .apply(instance, Location::new));
+        public static final StreamCodec<ByteBuf, Location> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.stringUtf8(32), Location::name, BlockPos.STREAM_CODEC, Location::pos, Location::new);
 
-    public Location {
-      pos = pos.immutable();
+        public Location {
+            pos = pos.immutable();
+        }
     }
-  }
 
-  private StationChipLocations() {}
+    private StationChipLocations() {}
 
-  private static StationDestinations destinations(ItemStack chip) {
-    return chip.getOrDefault(ModComponents.STATION_DESTINATIONS, StationDestinations.EMPTY);
-  }
-
-  public static List<Location> list(ItemStack chip, int planet) {
-    var entries = destinations(chip).route(planet).locations();
-    List<Location> result = new ArrayList<>();
-    for (int i = 0; i < Math.min(entries.size(), LIMIT); i++) {
-      var entry = entries.get(i);
-      result.add(i == 0 ? new Location("Last", entry.pos()) : entry);
+    private static StationDestinations destinations(ItemStack chip) {
+        return chip.getOrDefault(ModComponents.STATION_DESTINATIONS, StationDestinations.EMPTY);
     }
-    return result;
-  }
 
-  public static int selection(ItemStack chip, int planet) {
-    int selected = destinations(chip).route(planet).selected();
-    return selected >= 0 && selected < list(chip, planet).size() ? selected : 0;
-  }
+    public static List<Location> list(ItemStack chip, int planet) {
+        var entries = destinations(chip).route(planet).locations();
+        List<Location> result = new ArrayList<>();
+        for (int i = 0; i < Math.min(entries.size(), LIMIT); i++) {
+            var entry = entries.get(i);
+            result.add(i == 0 ? new Location("Last", entry.pos()) : entry);
+        }
+        return result;
+    }
 
-  public static Location destination(ItemStack chip, int planet) {
-    var locations = list(chip, planet);
-    return locations.isEmpty() ? null : locations.get(selection(chip, planet));
-  }
+    public static int selection(ItemStack chip, int planet) {
+        int selected = destinations(chip).route(planet).selected();
+        return selected >= 0 && selected < list(chip, planet).size() ? selected : 0;
+    }
 
-  private static void save(ItemStack chip, int planet, List<Location> locations, int selected) {
-    chip.set(
-        ModComponents.STATION_DESTINATIONS,
-        destinations(chip)
-            .with(
-                planet,
-                new StationDestinations.Route(
-                    locations, selected >= 0 && selected < locations.size() ? selected : 0)));
-  }
+    public static Location destination(ItemStack chip, int planet) {
+        var locations = list(chip, planet);
+        return locations.isEmpty() ? null : locations.get(selection(chip, planet));
+    }
 
-  public static void remember(ItemStack chip, int planet, BlockPos pos) {
-    var locations = list(chip, planet);
-    var last = new Location("Last", pos.immutable());
-    if (locations.isEmpty()) locations.add(last);
-    else locations.set(0, last);
-    save(chip, planet, locations, selection(chip, planet));
-  }
+    private static void save(ItemStack chip, int planet, List<Location> locations, int selected) {
+        chip.set(
+                ModComponents.STATION_DESTINATIONS,
+                destinations(chip)
+                        .with(
+                                planet,
+                                new StationDestinations.Route(
+                                        locations, selected >= 0 && selected < locations.size() ? selected : 0)));
+    }
 
-  public static boolean select(ItemStack chip, int planet, int index) {
-    var locations = list(chip, planet);
-    if (index < 0 || index >= locations.size()) return false;
-    save(chip, planet, locations, index);
-    return true;
-  }
+    public static void remember(ItemStack chip, int planet, BlockPos pos) {
+        var locations = list(chip, planet);
+        var last = new Location("Last", pos.immutable());
+        if (locations.isEmpty()) locations.add(last);
+        else locations.set(0, last);
+        save(chip, planet, locations, selection(chip, planet));
+    }
 
-  public static boolean add(ItemStack chip, int planet, BlockPos pos, String name) {
-    if (!destinations(chip).canStore(planet)) return false;
-    var locations = list(chip, planet);
-    if (locations.size() >= LIMIT) return false;
-    // A chip used before its first flight still needs a protected Last entry.
-    if (locations.isEmpty()) locations.add(new Location("Last", pos.immutable()));
-    String label = name.strip().replaceAll("[\\p{Cntrl}]", "");
-    if (label.length() > 32) label = label.substring(0, 32);
-    locations.add(new Location(label, pos.immutable()));
-    save(chip, planet, locations, selection(chip, planet));
-    return true;
-  }
+    public static boolean select(ItemStack chip, int planet, int index) {
+        var locations = list(chip, planet);
+        if (index < 0 || index >= locations.size()) return false;
+        save(chip, planet, locations, index);
+        return true;
+    }
 
-  public static boolean delete(ItemStack chip, int planet) {
-    var locations = list(chip, planet);
-    int selected = selection(chip, planet);
-    if (selected == 0 || locations.isEmpty()) return false;
-    locations.remove(selected);
-    save(chip, planet, locations, 0);
-    return true;
-  }
+    public static boolean add(ItemStack chip, int planet, BlockPos pos, String name) {
+        if (!destinations(chip).canStore(planet)) return false;
+        var locations = list(chip, planet);
+        if (locations.size() >= LIMIT) return false;
+        // A chip used before its first flight still needs a protected Last entry.
+        if (locations.isEmpty()) locations.add(new Location("Last", pos.immutable()));
+        String label = name.strip().replaceAll("[\\p{Cntrl}]", "");
+        if (label.length() > 32) label = label.substring(0, 32);
+        locations.add(new Location(label, pos.immutable()));
+        save(chip, planet, locations, selection(chip, planet));
+        return true;
+    }
 
-  public static boolean clear(ItemStack chip, int planet) {
-    var locations = list(chip, planet);
-    if (locations.size() <= 1) return false;
-    save(chip, planet, locations.subList(0, 1), 0);
-    return true;
-  }
+    public static boolean delete(ItemStack chip, int planet) {
+        var locations = list(chip, planet);
+        int selected = selection(chip, planet);
+        if (selected == 0 || locations.isEmpty()) return false;
+        locations.remove(selected);
+        save(chip, planet, locations, 0);
+        return true;
+    }
+
+    public static boolean clear(ItemStack chip, int planet) {
+        var locations = list(chip, planet);
+        if (locations.size() <= 1) return false;
+        save(chip, planet, locations.subList(0, 1), 0);
+        return true;
+    }
 }

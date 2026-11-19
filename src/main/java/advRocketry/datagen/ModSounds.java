@@ -10,25 +10,26 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 
 final class ModSounds extends SoundDefinitionsProvider {
-  private static final Set<String> INDUSTRIAL_LOOPS =
-      Set.of("crystallizer", "cuttingmachine", "electricarcfurnace", "electrolyser", "precass");
+    private static final Set<String> INDUSTRIAL_LOOPS =
+            Set.of("crystallizer", "cuttingmachine", "electricarcfurnace", "electrolyser", "precass");
 
-  ModSounds(PackOutput output, ExistingFileHelper files) {
-    super(output, Main.MODID, files);
-  }
+    ModSounds(PackOutput output, ExistingFileHelper files) {
+        super(output, Main.MODID, files);
+    }
 
-  @Override
-  public void registerSounds() {
-    for (SoundEvent event : BuiltInRegistries.SOUND_EVENT)
-      if (event.getLocation().getNamespace().equals(Main.MODID))
-        add(
-            event,
-            definition()
-                .with(
-                    sound(
-                        INDUSTRIAL_LOOPS.contains(event.getLocation().getPath())
-                            ? ResourceLocation.fromNamespaceAndPath(Main.MODID, "machinelarge")
-                            : event.getLocation()))
-                .subtitle("subtitles." + Main.MODID + "." + event.getLocation().getPath()));
-  }
+    @Override
+    public void registerSounds() {
+        for (SoundEvent event : BuiltInRegistries.SOUND_EVENT)
+            if (event.getLocation().getNamespace().equals(Main.MODID))
+                add(
+                        event,
+                        definition()
+                                .with(sound(
+                                        INDUSTRIAL_LOOPS.contains(
+                                                        event.getLocation().getPath())
+                                                ? ResourceLocation.fromNamespaceAndPath(Main.MODID, "machinelarge")
+                                                : event.getLocation()))
+                                .subtitle("subtitles." + Main.MODID + "."
+                                        + event.getLocation().getPath()));
+    }
 }

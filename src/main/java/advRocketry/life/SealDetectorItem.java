@@ -11,19 +11,18 @@ import net.minecraft.world.item.context.UseOnContext;
 
 /** Reports the same airtightness predicate used by the room flood-fill. */
 public final class SealDetectorItem extends Item {
-  public SealDetectorItem(Properties properties) {
-    super(properties);
-  }
-
-  @Override
-  public InteractionResult useOn(UseOnContext context) {
-    if (context.getPlayer() instanceof ServerPlayer player) {
-      boolean sealed = SealedRooms.seals(context.getLevel(), context.getClickedPos());
-      player.displayClientMessage(
-          Component.translatable(
-              sealed ? "message.adv_rocketry.sealed" : "message.adv_rocketry.unsealed"),
-          true);
+    public SealDetectorItem(Properties properties) {
+        super(properties);
     }
-    return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
-  }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        if (context.getPlayer() instanceof ServerPlayer player) {
+            boolean sealed = SealedRooms.seals(context.getLevel(), context.getClickedPos());
+            player.displayClientMessage(
+                    Component.translatable(sealed ? "message.adv_rocketry.sealed" : "message.adv_rocketry.unsealed"),
+                    true);
+        }
+        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+    }
 }

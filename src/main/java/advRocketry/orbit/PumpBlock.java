@@ -14,20 +14,20 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Original powered fluid pump with a native block entity. */
 public final class PumpBlock extends Block implements EntityBlock {
-  public PumpBlock(Properties properties) {
-    super(properties);
-  }
+    public PumpBlock(Properties properties) {
+        super(properties);
+    }
 
-  @Override
-  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new PumpBlockEntity(pos, state);
-  }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new PumpBlockEntity(pos, state);
+    }
 
-  @Override
-  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-      Level level, BlockState state, BlockEntityType<T> type) {
-    return !level.isClientSide && type == OrbitalRegistry.PUMP_ENTITY.get()
-        ? (world, pos, blockState, entity) -> ((PumpBlockEntity) entity).tick()
-        : null;
-  }
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, BlockEntityType<T> type) {
+        return !level.isClientSide && type == OrbitalRegistry.PUMP_ENTITY.get()
+                ? (world, pos, blockState, entity) -> ((PumpBlockEntity) entity).tick()
+                : null;
+    }
 }

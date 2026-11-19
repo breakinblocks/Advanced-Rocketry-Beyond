@@ -20,38 +20,35 @@ import net.minecraft.world.level.Level;
 
 /** Original handheld atmosphere type, pressure and breathability readout. */
 public final class AtmosphereAnalyzerItem extends Item {
-  public AtmosphereAnalyzerItem(Properties properties) {
-    super(properties.stacksTo(1));
-  }
-
-  @Override
-  public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-    ItemStack analyzer = player.getItemInHand(hand);
-    if (level instanceof ServerLevel serverLevel) {
-      BlockPos position = player.blockPosition();
-      AtmosphereDetectorBlockEntity.Target type =
-          AtmosphereDetectorBlockEntity.atmosphere(serverLevel, position);
-      Planet planet = GalaxyData.get(serverLevel.getServer()).planet(serverLevel);
-      boolean pressurized = type == AtmosphereDetectorBlockEntity.Target.PRESSURIZED_AIR;
-      float pressure = pressurized ? 1f : planet.atmosphere / 100f;
-      for (Component line : readout(type, pressure)) player.displayClientMessage(line, false);
+    public AtmosphereAnalyzerItem(Properties properties) {
+        super(properties.stacksTo(1));
     }
-    return InteractionResultHolder.sidedSuccess(analyzer, level.isClientSide);
-  }
 
-  public static List<Component> readout(AtmosphereDetectorBlockEntity.Target type, float pressure) {
-    boolean breathable =
-        type == AtmosphereDetectorBlockEntity.Target.PRESSURIZED_AIR
-            || type == AtmosphereDetectorBlockEntity.Target.AIR;
-    return List.of(
-        Texts.translate(
-            "message.adv_rocketry.atmosphere_readout",
-            Component.translatable(
-                "atmosphere.adv_rocketry." + type.name().toLowerCase(Locale.ROOT)),
-            String.format(Locale.ROOT, "%.2f", pressure)),
-        Texts.translate(
-            "message.adv_rocketry.breathable_readout",
-            Component.translatable(
-                breathable ? "message.adv_rocketry.yes" : "message.adv_rocketry.no")));
-  }
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack analyzer = player.getItemInHand(hand);
+        if (level instanceof ServerLevel serverLevel) {
+            BlockPos position = player.blockPosition();
+            AtmosphereDetectorBlockEntity.Target type = AtmosphereDetectorBlockEntity.atmosphere(serverLevel, position);
+            Planet planet = GalaxyData.get(serverLevel.getServer()).planet(serverLevel);
+            boolean pressurized = type == AtmosphereDetectorBlockEntity.Target.PRESSURIZED_AIR;
+            float pressure = pressurized ? 1f : planet.atmosphere / 100f;
+            for (Component line : readout(type, pressure)) player.displayClientMessage(line, false);
+        }
+        return InteractionResultHolder.sidedSuccess(analyzer, level.isClientSide);
+    }
+
+    public static List<Component> readout(AtmosphereDetectorBlockEntity.Target type, float pressure) {
+        boolean breathable = type == AtmosphereDetectorBlockEntity.Target.PRESSURIZED_AIR
+                || type == AtmosphereDetectorBlockEntity.Target.AIR;
+        return List.of(
+                Texts.translate(
+                        "message.adv_rocketry.atmosphere_readout",
+                        Component.translatable(
+                                "atmosphere.adv_rocketry." + type.name().toLowerCase(Locale.ROOT)),
+                        String.format(Locale.ROOT, "%.2f", pressure)),
+                Texts.translate(
+                        "message.adv_rocketry.breathable_readout",
+                        Component.translatable(breathable ? "message.adv_rocketry.yes" : "message.adv_rocketry.no")));
+    }
 }

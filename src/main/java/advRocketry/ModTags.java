@@ -12,59 +12,44 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 public final class ModTags {
-  public static final TagKey<Biome> CLAY_DEPOSIT_BIOMES =
-      tag(Registries.BIOME, "habitat_deposits/clay");
-  public static final TagKey<Biome> CALCITE_DEPOSIT_BIOMES =
-      tag(Registries.BIOME, "habitat_deposits/calcite");
-  public static final TagKey<Biome> GLASS_DEPOSIT_BIOMES =
-      tag(Registries.BIOME, "habitat_deposits/glass");
-  public static final TagKey<Biome> MAGMA_DEPOSIT_BIOMES =
-      tag(Registries.BIOME, "habitat_deposits/magma");
-  public static final TagKey<Block> CLAY_DEPOSIT_HOSTS =
-      tag(Registries.BLOCK, "habitat_deposits/clay");
-  public static final TagKey<Block> CALCITE_DEPOSIT_HOSTS =
-      tag(Registries.BLOCK, "habitat_deposits/calcite");
-  public static final TagKey<Block> GLASS_DEPOSIT_HOSTS =
-      tag(Registries.BLOCK, "habitat_deposits/glass");
-  public static final TagKey<Block> MAGMA_DEPOSIT_HOSTS =
-      tag(Registries.BLOCK, "habitat_deposits/magma");
-  public static final TagKey<Block> HEAT_PLANT_SUBSTRATES =
-      tag(Registries.BLOCK, "plant_substrates/heat");
-  public static final TagKey<Block> MINERAL_PLANT_SUBSTRATES =
-      tag(Registries.BLOCK, "plant_substrates/mineral");
-  public static final TagKey<Block> SHORE_PLANT_SUBSTRATES =
-      tag(Registries.BLOCK, "plant_substrates/shore");
-  public static final TagKey<Item> LASER_DRILL_ORES = tag(Registries.ITEM, "laser_drill_ores");
-  public static final TagKey<Block> GEODE_ORES = tag(Registries.BLOCK, "geode_ores");
-  public static final TagKey<Item> SILICON_WAFERS = tag(Registries.ITEM, "silicon_wafers");
-  public static final TagKey<Item> STEEL_PLATES = common(Registries.ITEM, "plates/steel");
-  public static final TagKey<Item> TITANIUM_RODS = common(Registries.ITEM, "rods/titanium");
-  public static final TagKey<Block> MOTORS = tag(Registries.BLOCK, "motors");
-  public static final TagKey<Block> COILS = tag(Registries.BLOCK, "coils");
-  public static final TagKey<Block> MACHINE_PORTS = tag(Registries.BLOCK, "machine_ports");
-  public static final TagKey<Block> ROCKET_BLACKLIST = tag(Registries.BLOCK, "rocket_blacklist");
-  public static final TagKey<Block> TORCHES = tag(Registries.BLOCK, "torches");
-  public static final TagKey<Block> SEALABLE = tag(Registries.BLOCK, "sealable");
-  public static final TagKey<Block> UNSEALABLE = tag(Registries.BLOCK, "unsealable");
-  public static final TagKey<EntityType<?>> ATMOSPHERE_IMMUNE =
-      tag(Registries.ENTITY_TYPE, "atmosphere_immune");
-  public static final TagKey<Fluid> HARVESTABLE_GASES = tag(Registries.FLUID, "harvestable_gases");
-  public static final TagKey<Biome> EXCLUDED_PLANET_BIOMES =
-      tag(Registries.BIOME, "planet_biomes/excluded");
-  public static final TagKey<Biome> HIGH_PRESSURE_BIOMES =
-      tag(Registries.BIOME, "planet_biomes/high_pressure");
-  public static final TagKey<Biome> SINGLE_BIOMES = tag(Registries.BIOME, "planet_biomes/single");
-  public static final TagKey<Biome> AIRLESS_BIOMES = tag(Registries.BIOME, "planet_biomes/airless");
-  public static final TagKey<Biome> SCORCHED_BIOMES =
-      tag(Registries.BIOME, "planet_biomes/scorched");
+    public static final TagKey<Biome> CLAY_DEPOSIT_BIOMES = tag(Registries.BIOME, "habitat_deposits/clay");
+    public static final TagKey<Biome> CALCITE_DEPOSIT_BIOMES = tag(Registries.BIOME, "habitat_deposits/calcite");
+    public static final TagKey<Biome> GLASS_DEPOSIT_BIOMES = tag(Registries.BIOME, "habitat_deposits/glass");
+    public static final TagKey<Biome> MAGMA_DEPOSIT_BIOMES = tag(Registries.BIOME, "habitat_deposits/magma");
+    public static final TagKey<Block> CLAY_DEPOSIT_HOSTS = tag(Registries.BLOCK, "habitat_deposits/clay");
+    public static final TagKey<Block> CALCITE_DEPOSIT_HOSTS = tag(Registries.BLOCK, "habitat_deposits/calcite");
+    public static final TagKey<Block> GLASS_DEPOSIT_HOSTS = tag(Registries.BLOCK, "habitat_deposits/glass");
+    public static final TagKey<Block> MAGMA_DEPOSIT_HOSTS = tag(Registries.BLOCK, "habitat_deposits/magma");
+    public static final TagKey<Block> HEAT_PLANT_SUBSTRATES = tag(Registries.BLOCK, "plant_substrates/heat");
+    public static final TagKey<Block> MINERAL_PLANT_SUBSTRATES = tag(Registries.BLOCK, "plant_substrates/mineral");
+    public static final TagKey<Block> SHORE_PLANT_SUBSTRATES = tag(Registries.BLOCK, "plant_substrates/shore");
+    public static final TagKey<Item> LASER_DRILL_ORES = tag(Registries.ITEM, "laser_drill_ores");
+    public static final TagKey<Block> GEODE_ORES = tag(Registries.BLOCK, "geode_ores");
+    public static final TagKey<Item> SILICON_WAFERS = tag(Registries.ITEM, "silicon_wafers");
+    public static final TagKey<Item> STEEL_PLATES = common(Registries.ITEM, "plates/steel");
+    public static final TagKey<Item> TITANIUM_RODS = common(Registries.ITEM, "rods/titanium");
+    public static final TagKey<Block> MOTORS = tag(Registries.BLOCK, "motors");
+    public static final TagKey<Block> COILS = tag(Registries.BLOCK, "coils");
+    public static final TagKey<Block> MACHINE_PORTS = tag(Registries.BLOCK, "machine_ports");
+    public static final TagKey<Block> ROCKET_BLACKLIST = tag(Registries.BLOCK, "rocket_blacklist");
+    public static final TagKey<Block> TORCHES = tag(Registries.BLOCK, "torches");
+    public static final TagKey<Block> SEALABLE = tag(Registries.BLOCK, "sealable");
+    public static final TagKey<Block> UNSEALABLE = tag(Registries.BLOCK, "unsealable");
+    public static final TagKey<EntityType<?>> ATMOSPHERE_IMMUNE = tag(Registries.ENTITY_TYPE, "atmosphere_immune");
+    public static final TagKey<Fluid> HARVESTABLE_GASES = tag(Registries.FLUID, "harvestable_gases");
+    public static final TagKey<Biome> EXCLUDED_PLANET_BIOMES = tag(Registries.BIOME, "planet_biomes/excluded");
+    public static final TagKey<Biome> HIGH_PRESSURE_BIOMES = tag(Registries.BIOME, "planet_biomes/high_pressure");
+    public static final TagKey<Biome> SINGLE_BIOMES = tag(Registries.BIOME, "planet_biomes/single");
+    public static final TagKey<Biome> AIRLESS_BIOMES = tag(Registries.BIOME, "planet_biomes/airless");
+    public static final TagKey<Biome> SCORCHED_BIOMES = tag(Registries.BIOME, "planet_biomes/scorched");
 
-  private ModTags() {}
+    private ModTags() {}
 
-  private static <T> TagKey<T> tag(ResourceKey<? extends Registry<T>> registry, String path) {
-    return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath(Main.MODID, path));
-  }
+    private static <T> TagKey<T> tag(ResourceKey<? extends Registry<T>> registry, String path) {
+        return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath(Main.MODID, path));
+    }
 
-  private static <T> TagKey<T> common(ResourceKey<? extends Registry<T>> registry, String path) {
-    return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath("c", path));
-  }
+    private static <T> TagKey<T> common(ResourceKey<? extends Registry<T>> registry, String path) {
+        return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath("c", path));
+    }
 }
