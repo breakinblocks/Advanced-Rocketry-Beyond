@@ -13,6 +13,7 @@ import advRocketry.rocket.RocketEntity;
 import advRocketry.space.AtmosphereVisuals;
 import advRocketry.space.GalaxySync;
 import advRocketry.space.Planet;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -34,6 +35,7 @@ import org.joml.Matrix4f;
 /** Atmosphere-dependent native sky behavior, using synchronized original planet properties. */
 public final class PlanetEffects extends DimensionSpecialEffects {
     private static final float OVERWORLD_CLOUDS = 192;
+    private static final float SHADER_CLOUDS_BELOW = -100000;
     private final boolean space;
     private final boolean overworld;
 
@@ -172,11 +174,27 @@ public final class PlanetEffects extends DimensionSpecialEffects {
     @Override
     public float getCloudHeight() {
         Planet planet = planet();
+        if (space || planet != null && planet.atmosphere <= 75)
+            return ShaderCompatibility.shaderPackActive() ? SHADER_CLOUDS_BELOW : Float.NaN;
         if (planet == null) return super.getCloudHeight();
         boolean custom = !planet.skyRenderOverride
                 && (overworld
                         ? AdvancedRocketryConfig.overworldSkyOverride()
                         : AdvancedRocketryConfig.skyOverride(space));
-        return custom || space || planet.atmosphere <= 75 ? Float.NaN : OVERWORLD_CLOUDS;
+        return custom ? Float.NaN : OVERWORLD_CLOUDS;
+    }
+
+    @Override
+    public boolean renderClouds(
+            ClientLevel level,
+            int ticks,
+            float partialTick,
+            PoseStack poseStack,
+            double camX,
+            double camY,
+            double camZ,
+            Matrix4f modelViewMatrix,
+            Matrix4f projectionMatrix) {
+        return getCloudHeight() == SHADER_CLOUDS_BELOW;
     }
 }
