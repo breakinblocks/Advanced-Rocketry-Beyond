@@ -212,6 +212,7 @@ public final class RocketAssembly {
             throw new AssemblyFailure(
                     Texts.translate("message.adv_rocketry.rocket_assembly.assembly_was_cancelled", name));
         builder.lastAssembledRocket = rocket;
+        BreakDebug.assembled(level, structure, origin, builder.assemblyPlayer(level));
         for (var cell : structure.cells) level.removeBlockEntity(origin.offset(cell.position()));
         for (var cell : structure.cells)
             level.setBlock(origin.offset(cell.position()), Blocks.AIR.defaultBlockState(), 2);

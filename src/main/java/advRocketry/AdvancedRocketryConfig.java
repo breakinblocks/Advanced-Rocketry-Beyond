@@ -43,6 +43,7 @@ public final class AdvancedRocketryConfig {
     private static final ModConfigSpec.BooleanValue LASER_DRILL_PLANET;
     private static final ModConfigSpec.DoubleValue CRYSTALLIZER_MAXIMUM_GRAVITY;
     private static final ModConfigSpec.BooleanValue LAUNCH_BLOCK_DESTRUCTION;
+    private static final ModConfigSpec.BooleanValue DEBUG_BLOCK_BREAKS;
     private static final ModConfigSpec.IntValue FUEL_POINTS_PER_DILITHIUM;
     private static final ModConfigSpec.IntValue STATION_BUILD_RADIUS;
     private static final ModConfigSpec.BooleanValue ALLOW_ZERO_G_STATIONS;
@@ -188,6 +189,11 @@ public final class AdvancedRocketryConfig {
                         builder.defineInRange("IridiumPerClump", 16, 1, 64),
                         null));
         ORE_SETTINGS = Map.copyOf(ores);
+        builder.pop();
+        builder.push("debug");
+        DEBUG_BLOCK_BREAKS = builder.comment(
+                        "Log every break attempt on Advanced Rocketry blocks and blocks near rockets, with the result at each event priority and one tick later")
+                .define("logBlockBreaks", false);
         builder.pop();
         builder.push("machines");
         ENABLE_GRAVITY_CONTROLLER = builder.define("enableGravityMachine", true);
@@ -447,6 +453,10 @@ public final class AdvancedRocketryConfig {
 
     public static double crystallizerMaximumGravity() {
         return get(CRYSTALLIZER_MAXIMUM_GRAVITY);
+    }
+
+    public static boolean debugBlockBreaks() {
+        return get(DEBUG_BLOCK_BREAKS);
     }
 
     public static boolean launchBlockDestruction() {

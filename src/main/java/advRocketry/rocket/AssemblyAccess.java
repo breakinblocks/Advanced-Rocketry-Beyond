@@ -13,6 +13,15 @@ public final class AssemblyAccess {
     private AssemblyAccess() {}
 
     public static void checkBreak(ServerLevel level, List<BlockPos> positions, ServerPlayer player) {
+        BreakDebug.assemblyCheck = true;
+        try {
+            checkEach(level, positions, player);
+        } finally {
+            BreakDebug.assemblyCheck = false;
+        }
+    }
+
+    private static void checkEach(ServerLevel level, List<BlockPos> positions, ServerPlayer player) {
         for (BlockPos pos : positions)
             if (player == null
                     || !level.hasChunkAt(pos)

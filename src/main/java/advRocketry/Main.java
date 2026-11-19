@@ -27,6 +27,7 @@ import advRocketry.processing.MachinePorts;
 import advRocketry.processing.ProcessingFluids;
 import advRocketry.processing.ProcessingRegistry;
 import advRocketry.processing.ProjectorSelection;
+import advRocketry.rocket.BreakDebug;
 import advRocketry.rocket.HovercraftControl;
 import advRocketry.rocket.HovercraftRegistry;
 import advRocketry.rocket.RocketControl;
@@ -77,6 +78,7 @@ public final class Main {
         TransportRegistry.register(bus);
         NeoForge.EVENT_BUS.addListener(TransportNetworks::unload);
         NeoForge.EVENT_BUS.addListener(RocketryCommands::register);
+        BreakDebug.register();
         NeoForge.EVENT_BUS.addListener(TransportNetworks::levelTick);
         NeoForge.EVENT_BUS.addListener(TransportInteraction::bucket);
         ProcessingFluids.register(bus);
