@@ -13,6 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -166,6 +167,7 @@ public final class RocketPartBlock extends Block implements EntityBlock {
                 && AdvancedRocketryConfig.canBeFueledByHand()
                 && FluidUtil.interactWithFluidHandler(player, hand, level, pos, hit.getDirection()))
             return ItemInteractionResult.SUCCESS;
+        if (stack.getItem() instanceof BlockItem) return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
@@ -197,10 +199,9 @@ public final class RocketPartBlock extends Block implements EntityBlock {
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
-        if (player instanceof ServerPlayer serverPlayer
-                && level.getBlockEntity(pos) instanceof RocketBlockEntity entity) {
+        if (!(level.getBlockEntity(pos) instanceof RocketBlockEntity entity)) return InteractionResult.PASS;
+        if (player instanceof ServerPlayer serverPlayer)
             serverPlayer.openMenu(entity, buffer -> RocketMenu.writeOpeningData(buffer, entity));
-        }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 }
