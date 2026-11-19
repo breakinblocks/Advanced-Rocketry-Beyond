@@ -1004,6 +1004,8 @@
   "status.adv_rocketry.warp.warp_core_frame_is_incomplete": "Warp core frame is incomplete",
   "status.adv_rocketry.warp.warping_to_fuel": "Warping to %s (%s fuel)",
   "subtitles.adv_rocketry.airhissloop": "Air hisses",
+  "subtitles.adv_rocketry.airlock_close": "Airlock slides shut",
+  "subtitles.adv_rocketry.airlock_open": "Airlock slides open",
   "subtitles.adv_rocketry.basic_laser_gun": "Laser fires",
   "subtitles.adv_rocketry.buttonblipa": "Button blips",
   "subtitles.adv_rocketry.combustionrocket": "Rocket engine roars",

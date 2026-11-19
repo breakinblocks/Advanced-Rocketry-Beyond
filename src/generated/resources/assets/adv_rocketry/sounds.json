@@ -5,6 +5,18 @@
     ],
     "subtitle": "subtitles.adv_rocketry.airhissloop"
   },
+  "airlock_close": {
+    "sounds": [
+      "adv_rocketry:airlock_close"
+    ],
+    "subtitle": "subtitles.adv_rocketry.airlock_close"
+  },
+  "airlock_open": {
+    "sounds": [
+      "adv_rocketry:airlock_open"
+    ],
+    "subtitle": "subtitles.adv_rocketry.airlock_open"
+  },
   "basic_laser_gun": {
     "sounds": [
       "adv_rocketry:basic_laser_gun"

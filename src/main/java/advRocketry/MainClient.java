@@ -9,6 +9,7 @@ import advRocketry.compat.guideme.RocketryGuide;
 import advRocketry.life.LifeSupportRegistry;
 import advRocketry.life.SuitMenu;
 import advRocketry.life.SuitWorkstationMenu;
+import advRocketry.life.client.AirlockDoorRenderer;
 import advRocketry.life.client.FlightInstruments;
 import advRocketry.life.client.JetpackClient;
 import advRocketry.life.client.JetpackLayer;
@@ -16,6 +17,7 @@ import advRocketry.life.client.OxygenScreen;
 import advRocketry.life.client.SpaceHelmetLayer;
 import advRocketry.life.client.SuitHud;
 import advRocketry.life.client.SuitScreen;
+import advRocketry.life.client.ZeroGravityClient;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.client.ElevatorCapsuleRenderer;
 import advRocketry.orbit.client.HologramBodyRenderer;
@@ -104,6 +106,7 @@ public final class MainClient {
         NeoForge.EVENT_BUS.addListener(HovercraftClient::controls);
         NeoForge.EVENT_BUS.addListener(JetpackClient::controls);
         NeoForge.EVENT_BUS.addListener(JetpackClient::tick);
+        NeoForge.EVENT_BUS.addListener(ZeroGravityClient::tick);
         NeoForge.EVENT_BUS.addListener(PlanetEffects::fog);
         NeoForge.EVENT_BUS.addListener(PlanetEffects::afterSky);
         NeoForge.EVENT_BUS.addListener(PlanetEffects::disconnected);
@@ -127,6 +130,7 @@ public final class MainClient {
 
     private static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(TransportRegistry.ENTITY.get(), TransportRenderer::new);
+        event.registerBlockEntityRenderer(LifeSupportRegistry.AIRLOCK_ENTITY.get(), AirlockDoorRenderer::new);
         event.registerEntityRenderer(OrbitalRegistry.HOLOGRAM_BODY.get(), HologramBodyRenderer::new);
         event.registerBlockEntityRenderer(OrbitalRegistry.BLOCK_ENTITY.get(), OrbitalRenderer::new);
         event.registerEntityRenderer(OrbitalRegistry.ELEVATOR_CAPSULE.get(), ElevatorCapsuleRenderer::new);

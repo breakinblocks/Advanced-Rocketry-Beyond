@@ -2,7 +2,9 @@ package advRocketry.datagen;
 
 import advRocketry.space.BiomeMaterials;
 import java.util.Map;
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 final class ModBlockStates extends ModBlockStateHelpers {
@@ -123,78 +125,8 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/rocket/advbipropellantrocketmotor");
         obj("block/advanced_motor", "models/libvulpes/advancedmotor.obj", "block/motor/advancedmotor");
         obj("block/advanced_rocket_motor", "models/rocket/advrocketmotor.obj", "block/rocket/advrocketmotor");
-        model(
-                "block/airlock_door_bottom_left",
-                "minecraft:block/door_bottom_left",
-                "minecraft:cutout",
-                true,
-                "top",
-                "block/smallairlockdoor_upper",
-                "bottom",
-                "block/smallairlockdoor_lower");
-        model(
-                "block/airlock_door_bottom_left_open",
-                "minecraft:block/door_bottom_left_open",
-                "minecraft:cutout",
-                true,
-                "top",
-                "block/smallairlockdoor_upper",
-                "bottom",
-                "block/smallairlockdoor_lower");
-        model(
-                "block/airlock_door_bottom_right",
-                "minecraft:block/door_bottom_right",
-                "minecraft:cutout",
-                true,
-                "top",
-                "block/smallairlockdoor_upper",
-                "bottom",
-                "block/smallairlockdoor_lower");
-        model(
-                "block/airlock_door_bottom_right_open",
-                "minecraft:block/door_bottom_right_open",
-                "minecraft:cutout",
-                true,
-                "top",
-                "block/smallairlockdoor_upper",
-                "bottom",
-                "block/smallairlockdoor_lower");
-        model(
-                "block/airlock_door_top_left",
-                "minecraft:block/door_top_left",
-                "minecraft:cutout",
-                true,
-                "top",
-                "block/smallairlockdoor_upper",
-                "bottom",
-                "block/smallairlockdoor_lower");
-        model(
-                "block/airlock_door_top_left_open",
-                "minecraft:block/door_top_left_open",
-                "minecraft:cutout",
-                true,
-                "top",
-                "block/smallairlockdoor_upper",
-                "bottom",
-                "block/smallairlockdoor_lower");
-        model(
-                "block/airlock_door_top_right",
-                "minecraft:block/door_top_right",
-                "minecraft:cutout",
-                true,
-                "top",
-                "block/smallairlockdoor_upper",
-                "bottom",
-                "block/smallairlockdoor_lower");
-        model(
-                "block/airlock_door_top_right_open",
-                "minecraft:block/door_top_right_open",
-                "minecraft:cutout",
-                true,
-                "top",
-                "block/smallairlockdoor_upper",
-                "bottom",
-                "block/smallairlockdoor_lower");
+        airlockFrame("block/airlock_door_lower", "block/smallairlockdoor_lower", false);
+        airlockFrame("block/airlock_door_upper", "block/smallairlockdoor_upper", true);
         model("block/alien_leaves", "minecraft:block/leaves", "minecraft:cutout", true, "all", "block/bluewood_leaves");
         model(
                 "block/alien_log",
@@ -792,22 +724,10 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states(
                 "airlock_door",
                 HORIZONTAL_EAST,
-                "half=lower,hinge=left,open=false",
-                "block/airlock_door_bottom_left",
-                "half=lower,hinge=left,open=true",
-                "block/airlock_door_bottom_left_open",
-                "half=lower,hinge=right,open=false",
-                "block/airlock_door_bottom_right",
-                "half=lower,hinge=right,open=true",
-                "block/airlock_door_bottom_right_open",
-                "half=upper,hinge=left,open=false",
-                "block/airlock_door_top_left",
-                "half=upper,hinge=left,open=true",
-                "block/airlock_door_top_left_open",
-                "half=upper,hinge=right,open=false",
-                "block/airlock_door_top_right",
-                "half=upper,hinge=right,open=true",
-                "block/airlock_door_top_right_open");
+                "half=lower",
+                "block/airlock_door_lower",
+                "half=upper",
+                "block/airlock_door_upper");
         states("alien_leaves", NONE, "", "block/alien_leaves");
         states("alien_log", AXIS, "", "block/alien_log");
         states("alien_planks", NONE, "", "block/alien_planks");
@@ -1139,5 +1059,65 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states("wireless_transceiver", HORIZONTAL, "", "block/wireless_transceiver");
         connected("block/wulfentite_crystal_block", "block/ctm/crystal", 0);
         states("wulfentite_crystal_block", NONE, "", "block/wulfentite_crystal_block");
+    }
+
+    private void airlockFrame(String path, String texture, boolean upper) {
+        BlockModelBuilder builder = models().getBuilder(path)
+                .parent(unchecked("minecraft:block/block"))
+                .texture("door", location(texture))
+                .texture("particle", location(texture))
+                .renderType("minecraft:cutout")
+                .ao(false);
+        airlockPost(builder, 0, 1, upper);
+        airlockPost(builder, 15, 16, upper);
+        float bottom = upper ? 13 : 0;
+        float top = upper ? 16 : 3;
+        Direction outer = upper ? Direction.UP : Direction.DOWN;
+        Direction inner = upper ? Direction.DOWN : Direction.UP;
+        float edge = upper ? 0 : 15;
+        float rim = upper ? 2 : 15;
+        builder.element()
+                .from(0, bottom, 1)
+                .to(3, top, 15)
+                .face(Direction.WEST)
+                .uvs(1, 16 - top, 15, 16 - bottom)
+                .texture("#door")
+                .cullface(Direction.WEST)
+                .end()
+                .face(Direction.EAST)
+                .uvs(15, 16 - top, 1, 16 - bottom)
+                .texture("#door")
+                .end()
+                .face(outer)
+                .uvs(1, edge, 15, edge + 1)
+                .texture("#door")
+                .cullface(outer)
+                .end()
+                .face(inner)
+                .uvs(1, rim, 15, rim + 1)
+                .texture("#door")
+                .end()
+                .end();
+    }
+
+    private static void airlockPost(BlockModelBuilder builder, float from, float to, boolean upper) {
+        Direction end = upper ? Direction.UP : Direction.DOWN;
+        float row = upper ? 0 : 15;
+        var element = builder.element().from(0, 0, from).to(3, 16, to);
+        element.face(Direction.WEST)
+                .uvs(from, 0, to, 16)
+                .texture("#door")
+                .cullface(Direction.WEST)
+                .end();
+        element.face(Direction.EAST).uvs(to, 0, from, 16).texture("#door").end();
+        element.face(Direction.NORTH).uvs(from, 0, to, 16).texture("#door").end();
+        element.face(Direction.SOUTH).uvs(from, 0, to, 16).texture("#door").end();
+        element.face(end)
+                .uvs(from, row, to, row + 1)
+                .texture("#door")
+                .cullface(end)
+                .end();
+        if (from == 0) element.face(Direction.NORTH).cullface(Direction.NORTH);
+        else element.face(Direction.SOUTH).cullface(Direction.SOUTH);
     }
 }

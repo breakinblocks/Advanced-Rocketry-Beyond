@@ -21,10 +21,9 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -40,6 +39,16 @@ public final class LifeSupportRegistry {
             "airhissloop",
             () -> SoundEvent.createVariableRangeEvent(
                     ResourceLocation.fromNamespaceAndPath(Main.MODID, "airhissloop")));
+    public static final SoundEvent AIRLOCK_OPEN_EVENT =
+            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Main.MODID, "airlock_open"));
+    public static final SoundEvent AIRLOCK_CLOSE_EVENT =
+            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Main.MODID, "airlock_close"));
+
+    static {
+        SOUNDS.register("airlock_open", () -> AIRLOCK_OPEN_EVENT);
+        SOUNDS.register("airlock_close", () -> AIRLOCK_CLOSE_EVENT);
+    }
+
     private static final DeferredRegister<ArmorMaterial> MATERIALS =
             DeferredRegister.create(Registries.ARMOR_MATERIAL, Main.MODID);
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> SUIT_MATERIAL = MATERIALS.register(
@@ -71,11 +80,12 @@ public final class LifeSupportRegistry {
     public static final Supplier<OxygenBlock> CHARGER = BLOCKS.register(
             "oxygen_charger",
             () -> new OxygenBlock(true, BlockBehaviour.Properties.of().strength(3)));
-    public static final Supplier<DoorBlock> AIRLOCK = BLOCKS.register(
+    public static final Supplier<AirlockDoorBlock> AIRLOCK = BLOCKS.register(
             "airlock_door",
-            () -> new DoorBlock(
-                    BlockSetType.IRON,
-                    BlockBehaviour.Properties.of().strength(3).noOcclusion()));
+            () -> new AirlockDoorBlock(BlockBehaviour.Properties.of()
+                    .strength(3)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()));
     public static final Supplier<SuitWorkstationBlock> SUIT_WORKSTATION = BLOCKS.register(
             "suit_workstation",
             () -> new SuitWorkstationBlock(BlockBehaviour.Properties.of().strength(3)));
@@ -90,6 +100,10 @@ public final class LifeSupportRegistry {
     public static final Supplier<BlockEntityType<OxygenBlockEntity>> OXYGEN_ENTITY = ENTITIES.register(
             "oxygen_machine",
             () -> BlockEntityType.Builder.of(OxygenBlockEntity::new, VENT.get(), CHARGER.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<AirlockDoorBlockEntity>> AIRLOCK_ENTITY = ENTITIES.register(
+            "airlock_door",
+            () -> BlockEntityType.Builder.of(AirlockDoorBlockEntity::new, AIRLOCK.get())
                     .build(null));
     public static final Supplier<BlockEntityType<SuitWorkstationBlockEntity>> SUIT_WORKSTATION_ENTITY =
             ENTITIES.register(

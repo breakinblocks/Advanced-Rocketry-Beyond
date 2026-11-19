@@ -166,7 +166,7 @@ public final class PlanetEnvironment {
             double localGravity = planet.gravity;
             if (planet.id == GalaxyData.SPACE_ID) {
                 var station = StationLogic.at(galaxy, player.level(), player.blockPosition());
-                if (station != null && station.gravity != null) localGravity = station.gravity;
+                localGravity = station != null && station.gravity != null ? station.gravity : 0;
             }
             double amount = localGravity - 1;
             var modifier = gravity.getModifier(GRAVITY);
@@ -174,6 +174,7 @@ public final class PlanetEnvironment {
             if (amount != 0 && gravity.getModifier(GRAVITY) == null)
                 gravity.addTransientModifier(
                         new AttributeModifier(GRAVITY, amount, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            if (localGravity <= 0) player.fallDistance = 0;
         }
         var legArmor = player.getItemBySlot(EquipmentSlot.LEGS);
         int legUpgrades =

@@ -1276,6 +1276,8 @@ final class ModLanguage extends LanguageProvider {
     private void addSubtitles() {
         Map<String, String> subtitles = new LinkedHashMap<>();
         subtitles.put("airhissloop", "Air hisses");
+        subtitles.put("airlock_close", "Airlock slides shut");
+        subtitles.put("airlock_open", "Airlock slides open");
         subtitles.put("basic_laser_gun", "Laser fires");
         subtitles.put("buttonblipa", "Button blips");
         subtitles.put("combustionrocket", "Rocket engine roars");

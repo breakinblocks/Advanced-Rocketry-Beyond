@@ -26,7 +26,7 @@ public final class StationMotionLogic {
         Station station = station(controller);
         if (station == null) return 0;
         if (controller.stationGravityController()) {
-            double gravity = (station.gravity != null ? station.gravity : 1);
+            double gravity = (station.gravity != null ? station.gravity : 0);
             return Math.clamp((int) ((gravity - .1) / .059), 0, 15);
         }
         if (controller.stationAltitudeController()) {
@@ -66,7 +66,7 @@ public final class StationMotionLogic {
     public static void tickGravity(OrbitalBlockEntity controller) {
         Station station = station(controller);
         if (station == null) return;
-        double current = (station.gravity != null ? station.gravity : 1);
+        double current = (station.gravity != null ? station.gravity : 0);
         double target = Math.max(AdvancedRocketryConfig.allowZeroGStations() ? 0 : 10, station.targetGravity) / 100d;
         double next = current + Math.clamp(target - current, -.001, .001);
         if (next == current) return;
@@ -181,7 +181,7 @@ public final class StationMotionLogic {
 
     public static int currentGravity(OrbitalBlockEntity entity) {
         Station station = entity.getLevel() == null ? null : StationLogic.at(entity.getLevel(), entity.getBlockPos());
-        return station == null ? 100 : (int) Math.round(station.gravity != null ? station.gravity * 100 : 100);
+        return station == null ? 100 : (int) Math.round(station.gravity != null ? station.gravity * 100 : 0);
     }
 
     public static void adjustGravity(OrbitalBlockEntity entity, int delta) {
