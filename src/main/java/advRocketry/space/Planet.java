@@ -72,6 +72,8 @@ public final class Planet {
     public int generationVersion = CURRENT_GENERATION_VERSION;
     public String noiseProfile = "auto";
     public boolean structures = true;
+    public final List<String> structureSets = new ArrayList<>();
+    public final List<PlanetReservoirs.Entry> reservoirs = new ArrayList<>();
     public float craterFrequency = 1;
     public float volcanoFrequency = 1;
     public float geodeFrequency = 1;
@@ -205,6 +207,13 @@ public final class Planet {
         tag.putInt("generation_version", generationVersion);
         tag.putString("noise_profile", noiseProfile);
         tag.putBoolean("structures", structures);
+        putStrings(tag, "structure_sets", structureSets);
+        tag.put(
+                "reservoirs",
+                PlanetReservoirs.Entry.CODEC
+                        .listOf()
+                        .encodeStart(NbtOps.INSTANCE, reservoirs)
+                        .getOrThrow());
         tag.putFloat("crater_frequency", craterFrequency);
         tag.putFloat("volcano_frequency", volcanoFrequency);
         tag.putFloat("geode_frequency", geodeFrequency);
@@ -277,6 +286,13 @@ public final class Planet {
         planet.generationVersion = tag.contains("generation_version") ? tag.getInt("generation_version") : 1;
         planet.noiseProfile = tag.contains("noise_profile") ? tag.getString("noise_profile") : "auto";
         planet.structures = tag.getBoolean("structures");
+        planet.structureSets.addAll(strings(tag, "structure_sets"));
+        if (tag.contains("reservoirs"))
+            PlanetReservoirs.Entry.CODEC
+                    .listOf()
+                    .parse(NbtOps.INSTANCE, tag.get("reservoirs"))
+                    .result()
+                    .ifPresent(planet.reservoirs::addAll);
         planet.craterFrequency = tag.getFloat("crater_frequency");
         planet.volcanoFrequency = tag.getFloat("volcano_frequency");
         planet.geodeFrequency = tag.getFloat("geode_frequency");

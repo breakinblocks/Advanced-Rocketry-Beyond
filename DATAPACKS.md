@@ -167,6 +167,8 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   `structures`, `force_rivers`, `noise_profile`, `generation_version`, and
   `biome_features`. Generation versions 2 through 8 run native biome features and modifiers;
   individual planetary plants apply their own pressure, temperature, and attachment rules.
+  `structure_sets` lists the structure sets a planet with `structures` may generate, by id or as a
+  `#` tag. An empty or missing list keeps every installed set, so a planet that lists none behaves as before.
   `noise_profile` accepts `auto`, `temperate`, `volcanic`, `lunar`, `fractured`,
   `cavern`, `arid`, `storm`, `glacial`, or `oceanic`. `auto` derives a profile from terrain, pressure, temperature,
   and an exclusively hot-dry-rock palette. `oceanic` keeps the whole seabed at least six blocks under
@@ -261,7 +263,11 @@ position `x` and `z`, `black_hole`, `companions` (each with `temperature`,
   `[{"biome": "minecraft:plains", "weight": 9}]`. `crater_biomes` limits craters
   to listed biomes.
 - **Features:** `craters`, `volcanoes`, `geodes`, each with a `*_frequency`
-  multiplier (higher is rarer).
+  multiplier (higher is rarer). `reservoirs` places sealed underground fluid pockets: each entry
+  names the fluid `block` to fill it with and takes `chance` (per cell), `spacing` (cell size in chunks,
+  default 10), `min_radius`/`max_radius` (default 26/32), `min_depth`/`max_depth` (default 8/10) and
+  `min_top`/`max_top` (default 0/30). A pocket is a half ellipsoid under a flat roof, and any open
+  block around it is sealed with `filler_block`.
 - **Resources:** `ores`, `laser_drill_ores`, `laser_drillable`, `geode_ores`,
   `crater_ores`, `warp_artifacts`. These take an id or `#tag` with an optional
   `count`.

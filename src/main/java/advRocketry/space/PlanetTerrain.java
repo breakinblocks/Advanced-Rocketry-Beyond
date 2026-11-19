@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +41,7 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 /** Native noise generation plus the original planet surface and decoration rules. */
@@ -83,6 +85,12 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
     @Override
     protected MapCodec<? extends ChunkGenerator> codec() {
         return CODEC;
+    }
+
+    @Override
+    public ChunkGeneratorStructureState createState(
+            HolderLookup<StructureSet> structureSets, RandomState random, long seed) {
+        return super.createState(PlanetStructureSets.forPlanet(structureSets, planet.structureSets), random, seed);
     }
 
     @Override
@@ -223,6 +231,7 @@ public final class PlanetTerrain extends NoiseBasedChunkGenerator {
         PlanetWatershed.finish(chunk, planet, seed);
         PlanetHabitatDeposits.generate(chunk, planet, seed);
         if (decorated) super.applyBiomeDecoration(level, chunk, structures);
+        PlanetReservoirs.generate(chunk, planet, seed);
         if (!PlanetOres.generate(level, chunk, this, planet, seed))
             PlanetDecorations.ores(chunk, planet, seed, decorated ? biomeOres(level, chunk) : Set.of());
         if (planet.generationVersion < 2) PlanetDecorations.flora(level, chunk, seed);

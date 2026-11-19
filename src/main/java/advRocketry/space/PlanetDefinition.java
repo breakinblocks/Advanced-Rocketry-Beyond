@@ -152,7 +152,8 @@ public record PlanetDefinition(
             List<WeightedBiome> biomes,
             Map<ResourceLocation, Integer> craterBiomes,
             String noiseProfile,
-            int generationVersion) {
+            int generationVersion,
+            List<String> structureSets) {
         public Terrain(
                 TerrainType type,
                 int seaLevel,
@@ -176,7 +177,8 @@ public record PlanetDefinition(
                     biomes,
                     craterBiomes,
                     "auto",
-                    Planet.CURRENT_GENERATION_VERSION);
+                    Planet.CURRENT_GENERATION_VERSION,
+                    List.of());
         }
 
         static final MapCodec<Terrain> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -222,7 +224,11 @@ public record PlanetDefinition(
                                 .forGetter(Terrain::noiseProfile),
                         Codec.intRange(1, Planet.CURRENT_GENERATION_VERSION)
                                 .optionalFieldOf("generation_version", Planet.CURRENT_GENERATION_VERSION)
-                                .forGetter(Terrain::generationVersion))
+                                .forGetter(Terrain::generationVersion),
+                        Codec.STRING
+                                .listOf()
+                                .optionalFieldOf("structure_sets", List.of())
+                                .forGetter(Terrain::structureSets))
                 .apply(instance, Terrain::new));
     }
 
@@ -232,14 +238,29 @@ public record PlanetDefinition(
             boolean volcanoes,
             float volcanoFrequency,
             boolean geodes,
-            float geodeFrequency) {
+            float geodeFrequency,
+            List<PlanetReservoirs.Entry> reservoirs) {
+        public Features(
+                boolean craters,
+                float craterFrequency,
+                boolean volcanoes,
+                float volcanoFrequency,
+                boolean geodes,
+                float geodeFrequency) {
+            this(craters, craterFrequency, volcanoes, volcanoFrequency, geodes, geodeFrequency, List.of());
+        }
+
         static final MapCodec<Features> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                         Codec.BOOL.optionalFieldOf("craters", false).forGetter(Features::craters),
                         FREQUENCY.optionalFieldOf("crater_frequency", 1f).forGetter(Features::craterFrequency),
                         Codec.BOOL.optionalFieldOf("volcanoes", false).forGetter(Features::volcanoes),
                         FREQUENCY.optionalFieldOf("volcano_frequency", 1f).forGetter(Features::volcanoFrequency),
                         Codec.BOOL.optionalFieldOf("geodes", false).forGetter(Features::geodes),
-                        FREQUENCY.optionalFieldOf("geode_frequency", 1f).forGetter(Features::geodeFrequency))
+                        FREQUENCY.optionalFieldOf("geode_frequency", 1f).forGetter(Features::geodeFrequency),
+                        PlanetReservoirs.Entry.CODEC
+                                .listOf()
+                                .optionalFieldOf("reservoirs", List.of())
+                                .forGetter(Features::reservoirs))
                 .apply(instance, Features::new));
     }
 
@@ -326,6 +347,7 @@ public record PlanetDefinition(
         planet.ocean = terrain.ocean();
         planet.caves = terrain.caves();
         planet.structures = terrain.structures();
+        planet.structureSets.addAll(terrain.structureSets());
         planet.forceRivers = terrain.forceRivers();
         planet.biomeFeatures = terrain.biomeFeatures();
         for (WeightedBiome biome : terrain.biomes()) {
@@ -339,6 +361,7 @@ public record PlanetDefinition(
         planet.volcanoFrequency = features.volcanoFrequency();
         planet.geodes = features.geodes();
         planet.geodeFrequency = features.geodeFrequency();
+        planet.reservoirs.addAll(features.reservoirs());
         planet.ores.addAll(resources.ores());
         planet.spawns.addAll(resources.spawns());
         planet.laserOres.addAll(resources.laserDrillOres());
