@@ -35,6 +35,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -105,6 +106,10 @@ public final class RocketEntity extends ServerDrivenEntity {
   double overrideZ;
   @Nullable private BlockPos builderPos;
   @Nullable private UUID missionSource;
+  static final int CREW_WAIT_TICKS = 12000;
+  final List<UUID> awaitingCrew = new ArrayList<>();
+  int crewWait;
+  private boolean duplicate;
 
   public boolean returnedFrom(UUID source) {
     return source.equals(missionSource);
@@ -352,7 +357,53 @@ public final class RocketEntity extends ServerDrivenEntity {
   @Override
   public void onAddedToLevel() {
     super.onAddedToLevel();
+    if (level() instanceof ServerLevel server && loaded(server.getServer(), getUUID()) != null) {
+      duplicate = true;
+      return;
+    }
     transit.added();
+  }
+
+  @Override
+  public boolean shouldBeSaved() {
+    RemovalReason reason = getRemovalReason();
+    if (reason != null && !reason.shouldSave()) return false;
+    return !isPassenger();
+  }
+
+  @Override
+  protected void addPassenger(Entity passenger) {
+    super.addPassenger(passenger);
+    if (passenger instanceof Player) {
+      awaitingCrew.clear();
+      crewWait = 0;
+    }
+  }
+
+  boolean holdForCrew(ServerLevel level) {
+    if (awaitingCrew.isEmpty() || flight() == 0 || !getPassengers().isEmpty()) {
+      awaitingCrew.clear();
+      crewWait = 0;
+      return false;
+    }
+    for (UUID id : List.copyOf(awaitingCrew)) {
+      ServerPlayer member = level.getServer().getPlayerList().getPlayer(id);
+      if (member == null || !member.isAlive()) continue;
+      if (member.level() == level && !member.isPassenger()) {
+        member.teleportTo(getX(), getY(), getZ());
+        if (member.startRiding(this, true)) return false;
+      }
+      awaitingCrew.clear();
+      crewWait = 0;
+      abortTransfer(level);
+      return true;
+    }
+    if (++crewWait > CREW_WAIT_TICKS) {
+      awaitingCrew.clear();
+      crewWait = 0;
+      abortTransfer(level);
+    }
+    return true;
   }
 
   @Override
@@ -591,11 +642,16 @@ public final class RocketEntity extends ServerDrivenEntity {
 
   @Override
   public void tick() {
+    if (duplicate) {
+      discard();
+      return;
+    }
     super.tick();
     if (level().isClientSide) return;
     if (!(level() instanceof ServerLevel serverLevel)) return;
     transit.ticked(serverLevel);
     transit.update();
+    if (holdForCrew(serverLevel)) return;
     if (flight() == 3 && navigation != null) {
       if (++inputAge > 10 || !(getFirstPassenger() instanceof Player))
         forwardInput = turnInput = verticalInput = 0;
@@ -937,6 +993,15 @@ public final class RocketEntity extends ServerDrivenEntity {
     tag.putInt("override_planet", overridePlanet);
     tag.putDouble("override_x", overrideX);
     tag.putDouble("override_z", overrideZ);
+    ListTag crew = new ListTag();
+    List<UUID> members =
+        getPassengers().stream()
+            .filter(Player.class::isInstance)
+            .map(Entity::getUUID)
+            .toList();
+    for (UUID id : members.isEmpty() ? awaitingCrew : members) crew.add(NbtUtils.createUUID(id));
+    tag.put("crew", crew);
+    tag.putInt("crew_wait", members.isEmpty() ? crewWait : 0);
   }
 
   @Override
@@ -965,6 +1030,9 @@ public final class RocketEntity extends ServerDrivenEntity {
         tag.contains("override_planet") ? tag.getInt("override_planet") : Integer.MIN_VALUE;
     overrideX = tag.getDouble("override_x");
     overrideZ = tag.getDouble("override_z");
+    awaitingCrew.clear();
+    for (Tag id : tag.getList("crew", Tag.TAG_INT_ARRAY)) awaitingCrew.add(NbtUtils.loadUUID(id));
+    crewWait = tag.getInt("crew_wait");
     entityData.set(SHIP, structure.save(false));
     refreshDimensions();
   }
