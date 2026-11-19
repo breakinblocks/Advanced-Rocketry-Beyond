@@ -537,17 +537,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/controller_lathe",
                 "side",
                 "block/machinegeneric");
-        model(
-                "block/launch_pad",
-                "minecraft:block/cube_bottom_top",
-                null,
-                true,
-                "top",
-                "block/rocketpad_",
-                "side",
-                "block/rocketpad_xcross",
-                "bottom",
-                "block/rocketpad_");
+        connected("block/launch_pad", "block/ctm/launch_pad", -1);
         model("block/lens_block", "minecraft:block/cube_all", null, true, "all", "minecraft:block/glass");
         model(
                 "block/microwave_receiver",

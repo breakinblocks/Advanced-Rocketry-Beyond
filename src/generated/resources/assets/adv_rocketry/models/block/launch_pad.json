@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
+  "parent": "minecraft:block/cube_all",
+  "loader": "adv_rocketry:connected",
   "textures": {
-    "bottom": "adv_rocketry:block/rocketpad_",
-    "side": "adv_rocketry:block/rocketpad_xcross",
-    "top": "adv_rocketry:block/rocketpad_"
+    "base": "adv_rocketry:block/ctm/launch_pad/base",
+    "center": "adv_rocketry:block/ctm/launch_pad/center",
+    "corner": "adv_rocketry:block/ctm/launch_pad/corner",
+    "horizontal": "adv_rocketry:block/ctm/launch_pad/horizontal",
+    "particle": "adv_rocketry:block/ctm/launch_pad/base",
+    "vertical": "adv_rocketry:block/ctm/launch_pad/vertical"
   }
 }

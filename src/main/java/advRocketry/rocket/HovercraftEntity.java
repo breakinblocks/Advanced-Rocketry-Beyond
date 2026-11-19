@@ -3,6 +3,7 @@
 
 package advRocketry.rocket;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 /** Original steerable single-seat hovercraft with its 0.05 acceleration and height ceiling. */
@@ -130,6 +132,16 @@ public final class HovercraftEntity extends Entity {
         spawnAtLocation(new ItemStack(HovercraftRegistry.ITEM.get()));
         discard();
         return true;
+    }
+
+    @Override
+    public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
+        return false;
+    }
+
+    @Override
+    protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {
+        resetFallDistance();
     }
 
     @Override

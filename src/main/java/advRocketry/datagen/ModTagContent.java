@@ -97,6 +97,7 @@ final class ModTagContent {
                 "adv_rocketry:solar_panel",
                 "adv_rocketry:solar_array_panel",
                 "adv_rocketry:landing_pad",
+                "adv_rocketry:launch_pad",
                 "adv_rocketry:circle_light");
         tags.values(
                 "adv_rocketry:geode_ores",

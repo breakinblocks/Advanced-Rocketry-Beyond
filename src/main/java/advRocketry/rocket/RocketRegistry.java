@@ -172,14 +172,14 @@ public final class RocketRegistry {
 
     private static void part(
             String id, RocketPartBlock.Kind kind, RocketPartBlock.Fuel fuel, int thrust, int consumption) {
-        Supplier<RocketPartBlock> block = BLOCKS.register(
-                id,
-                () -> new RocketPartBlock(
-                        kind,
-                        fuel,
-                        thrust,
-                        consumption,
-                        BlockBehaviour.Properties.of().strength(3).requiresCorrectToolForDrops()));
+        Supplier<RocketPartBlock> block = BLOCKS.register(id, () -> {
+            BlockBehaviour.Properties properties =
+                    BlockBehaviour.Properties.of().strength(3).requiresCorrectToolForDrops();
+            if (kind == RocketPartBlock.Kind.SEAT
+                    || kind == RocketPartBlock.Kind.ENGINE
+                    || kind == RocketPartBlock.Kind.TANK) properties = properties.noOcclusion();
+            return new RocketPartBlock(kind, fuel, thrust, consumption, properties);
+        });
         PARTS.put(id, block);
         ITEMS.register(id, () -> new BlockItem(block.get(), new Item.Properties()));
     }
