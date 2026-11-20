@@ -176,7 +176,7 @@ public final class RocketBlockEntity extends BlockEntity implements MenuProvider
 
     public void cycleDestination() {
         if (!(level instanceof ServerLevel serverLevel)) return;
-        destination = GuidanceComputer.nextDestination(serverLevel, destination);
+        destination = GuidanceComputer.nextDestination(serverLevel, worldPosition, destination);
         if (destination != GalaxyData.SPACE_ID) stationId = 0;
         setChanged();
     }

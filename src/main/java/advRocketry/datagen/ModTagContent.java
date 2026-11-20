@@ -15,6 +15,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 
 final class ModTagContent {
@@ -205,6 +208,20 @@ final class ModTagContent {
                 .map(Map.Entry::getValue)
                 .forEach(block -> tags.value(
                         tags.key("minecraft:mineable/pickaxe"), BuiltInRegistries.BLOCK.getKey(block.get())));
+        String[] mineable = {
+            "minecraft:mineable/pickaxe",
+            "minecraft:mineable/axe",
+            "minecraft:mineable/shovel",
+            "minecraft:mineable/hoe"
+        };
+        for (Block block : BuiltInRegistries.BLOCK) {
+            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+            if (!id.getNamespace().equals(Main.MODID) || tags.contains(id, mineable)) continue;
+            if (block instanceof LiquidBlock || block instanceof BushBlock || block.defaultDestroyTime() <= 0) continue;
+            tags.value(
+                    tags.key(block instanceof LeavesBlock ? "minecraft:mineable/hoe" : "minecraft:mineable/pickaxe"),
+                    id);
+        }
     }
 
     static void items(ModTagProvider<Item> tags) {

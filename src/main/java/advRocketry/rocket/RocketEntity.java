@@ -289,7 +289,7 @@ public final class RocketEntity extends ServerDrivenEntity {
         if (!(level() instanceof ServerLevel level)
                 || flight() != 0
                 || !guidanceChip().isEmpty()) return;
-        structure.destination = GuidanceComputer.nextDestination(level, structure.destination);
+        structure.destination = GuidanceComputer.nextDestination(level, blockPosition(), structure.destination);
         if (structure.destination != GalaxyData.SPACE_ID) structure.stationId = 0;
     }
 

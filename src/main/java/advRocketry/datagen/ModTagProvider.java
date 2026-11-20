@@ -52,6 +52,13 @@ public final class ModTagProvider<T> extends TagsProvider<T> {
             else appender.addOptional(ResourceLocation.parse(id));
     }
 
+    public boolean contains(ResourceLocation id, String... tagIds) {
+        for (String tagId : tagIds)
+            if (getOrCreateRawBuilder(key(tagId)).build().stream()
+                    .anyMatch(entry -> entry.toString().equals(id.toString()))) return true;
+        return false;
+    }
+
     public void value(TagKey<T> tag, ResourceLocation id) {
         tag(tag).add(ResourceKey.create(registryKey, id));
     }

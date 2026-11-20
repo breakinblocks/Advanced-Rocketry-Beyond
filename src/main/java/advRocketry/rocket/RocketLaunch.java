@@ -53,6 +53,14 @@ final class RocketLaunch {
             rocket.structure.stationId = padTarget.stationId();
             rocket.sync(RocketEntity.SHIP, rocket.structure.save(false));
         }
+        if (guidanceTarget == null && padTarget == null && guidance.isEmpty()) {
+            int reachable = GuidanceComputer.reachable(level, rocket.blockPosition(), rocket.structure.destination);
+            if (reachable != rocket.structure.destination) {
+                rocket.structure.destination = reachable;
+                if (reachable != GalaxyData.SPACE_ID) rocket.structure.stationId = 0;
+                rocket.sync(RocketEntity.SHIP, rocket.structure.save(false));
+            }
+        }
         Planet current = galaxy.planet(level), target = galaxy.planets.get(rocket.structure.destination);
         ItemStack asteroidChip = rocket.miningChip();
         boolean mining = asteroidChip != null && rocket.structure.drillingPower > 0 && rocket.structure.seats == 0;

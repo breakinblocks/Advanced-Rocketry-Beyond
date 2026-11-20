@@ -8,6 +8,7 @@ import advRocketry.orbit.LinkerItem;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.PlanetIdChipItem;
 import advRocketry.orbit.SatelliteLink;
+import advRocketry.orbit.Station;
 import advRocketry.orbit.StationChipLocations;
 import advRocketry.orbit.StationLink;
 import advRocketry.orbit.StationLogic;
@@ -42,17 +43,40 @@ public final class GuidanceComputer {
         return chip.is(OrbitalRegistry.STATION_CHIP.get()) && StationChipLocations.destination(chip, planet) != null;
     }
 
-    static int nextDestination(ServerLevel level, int destination) {
+    static Planet origin(GalaxyData galaxy, ServerLevel level, BlockPos pos) {
+        Planet current = galaxy.planet(level);
+        if (current.id != GalaxyData.SPACE_ID) return current;
+        Station station = StationLogic.at(galaxy, level, pos);
+        return station == null ? null : galaxy.planets.get(station.orbitPlanet);
+    }
+
+    static List<Planet> destinations(ServerLevel level, BlockPos pos) {
         var galaxy = GalaxyData.get(level.getServer());
         int current = galaxy.planet(level).id;
-        List<Planet> planets = galaxy.planets.values().stream()
+        Planet origin = origin(galaxy, level, pos);
+        return galaxy.planets.values().stream()
                 .filter(planet -> planet.landable()
-                        && (planet.id != GalaxyData.SPACE_ID || StationLogic.orbiting(galaxy, current) != null))
+                        && (planet.id == GalaxyData.SPACE_ID
+                                ? StationLogic.orbiting(galaxy, current) != null
+                                : origin == null || planet.star == origin.star))
                 .toList();
+    }
+
+    static int nextDestination(ServerLevel level, BlockPos pos, int destination) {
+        List<Planet> planets = destinations(level, pos);
         if (planets.isEmpty()) return destination;
         int index = 0;
         for (int i = 0; i < planets.size(); i++) if (planets.get(i).id == destination) index = i + 1;
         return planets.get(index % planets.size()).id;
+    }
+
+    static int reachable(ServerLevel level, BlockPos pos, int destination) {
+        List<Planet> planets = destinations(level, pos);
+        if (planets.isEmpty() || planets.stream().anyMatch(planet -> planet.id == destination)) return destination;
+        var galaxy = GalaxyData.get(level.getServer());
+        Planet origin = origin(galaxy, level, pos);
+        if (origin != null && planets.contains(origin)) return origin.id;
+        return planets.getFirst().id;
     }
 
     public static LandingPadLogic.Target route(ServerLevel level, ItemStack chip, BlockPos origin) {

@@ -146,6 +146,10 @@ public final class RocketAssembly {
                             if (route != null) {
                                 structure.destination = route.planet();
                                 structure.stationId = route.stationId();
+                            } else {
+                                structure.destination =
+                                        GuidanceComputer.reachable(level, origin, structure.destination);
+                                if (structure.destination != GalaxyData.SPACE_ID) structure.stationId = 0;
                             }
                         }
                         case SEAT -> structure.seats++;
