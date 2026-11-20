@@ -15,9 +15,9 @@
 - Launching a rocket from a station in another star system no longer fails with "Interstellar travel requires a warp-capable station" when no destination was picked
 - Machines, orbital blocks, motors, generators, tanks, rocket loaders and life support blocks now mine at pickaxe speed and show the right tool, and leaves mine faster with a hoe (FTBTesting/Testing-Issues#5230)
 - The Warp Core guide page now shows titanium blocks in the two centre spots, matching what the structure needs, instead of gold blocks (FTBTesting/Testing-Issues#5231)
+- A formed Warp Core keeps its block texture instead of leaving a see-through hole in the frame, and formed machine controllers no longer hide the faces of the blocks next to them (FTBTesting/Testing-Issues#5232)
 - The Atmosphere Terraformer guide page now matches the current structure, with concrete instead of clay
 - Clouds no longer render in space or on planets with thin atmospheres, including with shader packs
 - Right-clicking a Launch Pad, Landing Pad, rocket part, pipe or cable while holding a block now places the block instead of needing a sneak-click
-
 - Landing the hovercraft no longer deals fall damage to the rider (FTBTesting/Testing-Issues#5210)
 - Seats, rocket motors and fuel tanks no longer hide the faces of the blocks next to them, which made nearby blocks see-through
