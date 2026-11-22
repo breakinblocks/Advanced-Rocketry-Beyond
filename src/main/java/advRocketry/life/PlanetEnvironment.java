@@ -29,6 +29,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -129,6 +130,23 @@ public final class PlanetEnvironment {
         if ((vacuum || !planet.oxygen) && AdvancedRocketryConfig.atmosphericNausea())
             living.addEffect(new MobEffectInstance(
                     MobEffects.CONFUSION, 400, !planet.oxygen && planet.atmosphere > 200 ? 2 : 1));
+    }
+
+    public static void breatheUnderwater(LivingBreatheEvent event) {
+        LivingEntity living = event.getEntity();
+        if (event.canBreathe()
+                || !(living.level() instanceof ServerLevel level)
+                || !living.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())
+                || !suitProtected(living, level, false)) return;
+        var chest = living.getItemBySlot(EquipmentSlot.CHEST);
+        boolean consume = level.getGameTime() % 20 == 0;
+        boolean breathing;
+        if (chest.getItem() instanceof SpaceSuitItem suit)
+            breathing = suit.consumeGas(consume ? chest : chest.copy(), ProcessingFluids.OXYGEN, 1) == 1;
+        else if (SpaceBreathing.sealed(level, chest))
+            breathing = consume ? SpaceBreathing.consume(chest) : SpaceBreathing.air(chest) > 0;
+        else breathing = false;
+        if (breathing) event.setCanBreathe(true);
     }
 
     public static void preventNarcosisJump(LivingEvent.LivingJumpEvent event) {

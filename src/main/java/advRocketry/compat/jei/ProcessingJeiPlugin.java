@@ -5,12 +5,16 @@ package advRocketry.compat.jei;
 
 import advRocketry.Main;
 import advRocketry.compat.ProcessingDisplay;
+import advRocketry.orbit.AsteroidCatalog;
+import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.MachineType;
 import advRocketry.processing.ProcessingBlockEntity;
 import advRocketry.processing.ProcessingRegistry;
 import advRocketry.processing.client.FuelGeneratorScreen;
 import advRocketry.processing.client.MachineScreen;
+import advRocketry.rocket.RocketPartBlock;
+import advRocketry.rocket.RocketRegistry;
 import advRocketry.transport.client.TransportScreen;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -42,8 +46,12 @@ public final class ProcessingJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
+        var gui = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(
-                new LiquidFuelCategory(registration.getJeiHelpers().getGuiHelper()));
+                new LiquidFuelCategory(gui),
+                new AsteroidMiningCategory(gui),
+                new GasHarvestCategory(gui),
+                new RocketPropellantCategory(gui));
         recipes = ProcessingDisplay.collect();
         types.clear();
         for (MachineType machine : MachineType.values()) {
@@ -69,12 +77,20 @@ public final class ProcessingJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         var level = Minecraft.getInstance().level;
-        if (level != null)
+        if (level != null) {
             registration.addRecipes(
                     LiquidFuelCategory.TYPE,
                     level.getRecipeManager().getAllRecipesFor(ProcessingRegistry.LIQUID_FUEL_TYPE.get()).stream()
                             .map(LiquidFuelCategory.Display::new)
                             .toList());
+            registration.addRecipes(
+                    AsteroidMiningCategory.TYPE,
+                    AsteroidCatalog.types(level.registryAccess()).stream()
+                            .map(AsteroidMiningCategory.Display::of)
+                            .toList());
+        }
+        registration.addRecipes(GasHarvestCategory.TYPE, GasHarvestCategory.collect());
+        registration.addRecipes(RocketPropellantCategory.TYPE, RocketPropellantCategory.collect());
         types.forEach((machine, type) -> registration.addRecipes(
                 type,
                 recipes.stream()
@@ -85,6 +101,14 @@ public final class ProcessingJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(MachinePorts.FUEL_GENERATOR.get()), LiquidFuelCategory.TYPE);
+        registration.addRecipeCatalyst(
+                new ItemStack(RocketRegistry.PARTS.get("mining_drill").get()), AsteroidMiningCategory.TYPE);
+        registration.addRecipeCatalyst(new ItemStack(OrbitalRegistry.ASTEROID_CHIP.get()), AsteroidMiningCategory.TYPE);
+        registration.addRecipeCatalyst(new ItemStack(OrbitalRegistry.OBSERVATORY.get()), AsteroidMiningCategory.TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ProcessingRegistry.part("gas_intake")), GasHarvestCategory.TYPE);
+        for (var part : RocketRegistry.PARTS.values())
+            if (part.get().kind == RocketPartBlock.Kind.ENGINE)
+                registration.addRecipeCatalyst(new ItemStack(part.get()), RocketPropellantCategory.TYPE);
         types.forEach((machine, type) -> registration.addRecipeCatalyst(catalyst(machine), type));
     }
 

@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 
 /** Original machine category ingredients, fluids, processing costs and output chances. */
 public final class ProcessingCategory implements IRecipeCategory<ProcessingDisplay> {
-    private static final IDrawable SLOT = new IDrawable() {
+    static final IDrawable SLOT = new IDrawable() {
         @Override
         public int getWidth() {
             return 18;

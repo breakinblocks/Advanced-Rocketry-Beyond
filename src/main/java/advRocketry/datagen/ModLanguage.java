@@ -327,6 +327,37 @@ final class ModLanguage extends LanguageProvider {
         add("gui.adv_rocketry.liquid_fuel.rate", "%s FE/t");
         add("gui.adv_rocketry.liquid_fuel.duration", "%s ticks (%s s)");
         add("gui.adv_rocketry.liquid_fuel.total", "%s FE total");
+        add("gui.adv_rocketry.jei.asteroid_mining", "Asteroid Mining");
+        add("gui.adv_rocketry.jei.asteroid_mining.chip", "Program it at an Observatory with this asteroid's survey");
+        add(
+                "gui.adv_rocketry.jei.asteroid_mining.drill",
+                "More drills shorten the mission. Keep two blocks of air above each drill");
+        add("gui.adv_rocketry.jei.asteroid_mining.artifact", "Required in the Observatory's artifact slots");
+        add("gui.adv_rocketry.jei.asteroid_mining.yield", "About %s per mission (%s to %s)");
+        add("gui.adv_rocketry.jei.asteroid_mining.share", "%s%% of the asteroid's mass");
+        add("gui.adv_rocketry.jei.asteroid_mining.mass", "Mass %s, %s%% ore");
+        add("gui.adv_rocketry.jei.mission_time_one_drill", "Mission time with one drill: %s");
+        add(
+                "gui.adv_rocketry.jei.asteroid_mining.unmanned",
+                "Unmanned rocket with no seat. Research data adds bonus ore");
+        add("gui.adv_rocketry.jei.gas_harvest", "Gas Giant Harvesting");
+        add("gui.adv_rocketry.jei.gas_harvest.intake", "Each intake adds harvesting speed");
+        add("gui.adv_rocketry.jei.gas_harvest.tank", "Tanks and fluid hatches on the rocket hold the gas");
+        add("gui.adv_rocketry.jei.gas_harvest.every_giant", "Found on every gas giant");
+        add("gui.adv_rocketry.jei.gas_harvest.chance", "%s%% of gas giants, %s");
+        add("gui.adv_rocketry.jei.gas_harvest.any_gravity", "any gravity");
+        add("gui.adv_rocketry.jei.gas_harvest.gravity_below", "gravity up to %sg");
+        add("gui.adv_rocketry.jei.gas_harvest.gravity_above", "gravity %sg or more");
+        add("gui.adv_rocketry.jei.gas_harvest.gravity_between", "gravity %sg to %sg");
+        add("gui.adv_rocketry.jei.gas_harvest.time", "Time per 1,000 mB per intake: %s");
+        add("gui.adv_rocketry.jei.gas_harvest.station", "Launch from a station orbiting the gas giant");
+        add("gui.adv_rocketry.jei.gas_harvest.unmanned", "Unmanned rocket with no seat. Pick the gas in its menu");
+        add("gui.adv_rocketry.jei.rocket_propellant", "Rocket Propellant");
+        add("gui.adv_rocketry.jei.rocket_propellant.header", "Fuel value per mB, by tank and engine");
+        add("gui.adv_rocketry.jei.rocket_propellant.monopropellant", "Monopropellant x%s");
+        add("gui.adv_rocketry.jei.rocket_propellant.bipropellant", "Bipropellant x%s");
+        add("gui.adv_rocketry.jei.rocket_propellant.oxidizer", "Oxidizer x%s");
+        add("gui.adv_rocketry.jei.rocket_propellant.nuclear", "Nuclear x%s");
         add("block.adv_rocketry.creative_energy_input", "Creative Power Input");
         add("block.adv_rocketry.landing_float", "Landing Float");
         add("block.adv_rocketry.deployable_rocket_builder", "Deployable Rocket Assembler");

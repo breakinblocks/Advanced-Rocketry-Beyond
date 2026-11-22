@@ -22,12 +22,14 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
@@ -56,6 +58,12 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
 
     public OxygenBlockEntity(BlockPos pos, BlockState state) {
         super(LifeSupportRegistry.OXYGEN_ENTITY.get(), pos, state);
+    }
+
+    private boolean fillsFromTank(ItemStack armor) {
+        if (armor.isEmpty() || !tank.getFluid().is(ProcessingFluids.OXYGEN)) return false;
+        var handler = armor.getCapability(Capabilities.FluidHandler.ITEM);
+        return handler != null && handler.fill(tank.getFluid().copy(), IFluidHandler.FluidAction.SIMULATE) > 0;
     }
 
     public boolean charger() {
@@ -148,6 +156,11 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
                 if (armor.getItem() instanceof SpaceSuitItem suit) {
                     int moved = suit.transferOxygen(armor, tank.getFluid().copy(), true);
                     tank.drain(moved, IFluidHandler.FluidAction.EXECUTE);
+                } else if (!level.isClientSide && fillsFromTank(armor)) {
+                    var handler = armor.getCapability(Capabilities.FluidHandler.ITEM);
+                    int moved = handler.fill(tank.getFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
+                    tank.drain(moved, IFluidHandler.FluidAction.EXECUTE);
+                    if (moved > 0) player.setItemSlot(EquipmentSlot.CHEST, handler.getContainer());
                 } else if (tank.getFluid().is(ProcessingFluids.OXYGEN) && SpaceBreathing.sealed(level, armor)) {
                     int moved = SpaceBreathing.fill(armor, tank.getFluidAmount());
                     tank.drain(moved, IFluidHandler.FluidAction.EXECUTE);

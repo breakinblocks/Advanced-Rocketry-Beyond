@@ -100,6 +100,7 @@ public final class Main {
         NeoForge.EVENT_BUS.addListener(PlanetEnvironment::tick);
         NeoForge.EVENT_BUS.addListener(PlanetEnvironment::tickLiving);
         NeoForge.EVENT_BUS.addListener(PlanetEnvironment::preventNarcosisJump);
+        NeoForge.EVENT_BUS.addListener(PlanetEnvironment::breatheUnderwater);
         NeoForge.EVENT_BUS.addListener(AdvancementLogic::seatOnTnt);
         NeoForge.EVENT_BUS.addListener(PlanetRespawn::sleep);
         NeoForge.EVENT_BUS.addListener(PlanetRespawn::setSpawn);
