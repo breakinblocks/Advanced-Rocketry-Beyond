@@ -6,6 +6,7 @@ import advRocketry.client.effects.HologramShader;
 import advRocketry.client.effects.SceneDistortion;
 import advRocketry.client.effects.WarpRingShader;
 import advRocketry.client.model.ConnectedModelLoader;
+import advRocketry.client.model.RootedLoamModel;
 import advRocketry.compat.guideme.RocketryGuide;
 import advRocketry.life.LifeSupportRegistry;
 import advRocketry.life.SuitMenu;
@@ -83,6 +84,8 @@ public final class MainClient {
         bus.addListener(SkyLayerShader::register);
         bus.addListener(JetpackLayer::register);
         bus.addListener(ConnectedModelLoader::register);
+        bus.addListener(RootedLoamModel::registerModels);
+        bus.addListener(RootedLoamModel::wrapModel);
         bus.<EntityRenderersEvent.RegisterLayerDefinitions>addListener(SpaceHelmetLayer::definitions);
         bus.<EntityRenderersEvent.AddLayers>addListener(SpaceHelmetLayer::register);
         bus.addListener(RocketClient::layers);

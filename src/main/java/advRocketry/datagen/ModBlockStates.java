@@ -89,6 +89,14 @@ final class ModBlockStates extends ModBlockStateHelpers {
                         "bottom",
                         folder + "bottom" + suffix);
             else model(path, parent, renderType, true, "all", side);
+            if (name.equals("rooted_loam"))
+                model(
+                        "block/rooted_loam_covered" + suffix,
+                        "minecraft:block/cube_all",
+                        null,
+                        true,
+                        "all",
+                        folder + "bottom" + suffix);
             variants[index] = new ConfiguredModel(unchecked(path));
         }
         var states = getVariantBuilder(BuiltInRegistries.BLOCK.get(location(name)));
