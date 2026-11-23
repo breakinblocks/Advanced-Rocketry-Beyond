@@ -1,7 +1,13 @@
 {
   "parent": "minecraft:block/cube_all",
+  "loader": "adv_rocketry:connected",
   "render_type": "minecraft:cutout",
   "textures": {
-    "all": "adv_rocketry:block/structuretower"
+    "base": "adv_rocketry:block/ctm/structure_tower/base",
+    "center": "adv_rocketry:block/ctm/structure_tower/center",
+    "corner": "adv_rocketry:block/ctm/structure_tower/corner",
+    "horizontal": "adv_rocketry:block/ctm/structure_tower/horizontal",
+    "particle": "adv_rocketry:block/ctm/structure_tower/base",
+    "vertical": "adv_rocketry:block/ctm/structure_tower/vertical"
   }
 }

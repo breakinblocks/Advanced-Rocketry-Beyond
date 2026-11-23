@@ -55,6 +55,22 @@ final class ModBlockStates extends ModBlockStateHelpers {
         super(output, files);
     }
 
+    private void connectedMachinePanel(String name, String folder) {
+        connected(
+                "block/" + name,
+                "block/ctm/" + folder,
+                -1,
+                "adv_rocketry:block_energy_input_block",
+                "adv_rocketry:block_energy_output_block",
+                "adv_rocketry:creative_energy_input",
+                "adv_rocketry:block_fluid_input_block",
+                "adv_rocketry:block_fluid_output_block",
+                "adv_rocketry:block_item_input_block",
+                "adv_rocketry:block_item_output_block",
+                "adv_rocketry:data_bus",
+                "adv_rocketry:centrifuge_casing");
+    }
+
     @Override
     protected void registerStatesAndModels() {
         for (String name : BiomeMaterials.ALL.keySet()) {
@@ -209,33 +225,15 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "all",
                 "block/controller_black_hole_generator");
-        model(
-                "block/blast_brick",
-                "minecraft:block/cube_all",
-                null,
-                true,
-                "all",
-                "legacy/advancedrocketry/blocks/blastbrick");
+        connected("block/blast_brick", "block/ctm/blast_brick", -1);
         connected("block/block_advanced_structure_block", "block/ctm/advstructureblock", -1);
         connected("block/block_coilcopper", "block/ctm/coilside_copper", -1);
-        model(
-                "block/block_energy_input_block",
-                "minecraft:block/cube_all",
-                null,
-                true,
-                "all",
-                "block/controller_block_energy_input_block");
-        model(
-                "block/block_energy_output_block",
-                "minecraft:block/cube_all",
-                null,
-                true,
-                "all",
-                "block/controller_block_energy_output_block");
-        model("block/block_fluid_input_block", "minecraft:block/cube_all", null, true, "all", "block/fluidinput");
-        model("block/block_fluid_output_block", "minecraft:block/cube_all", null, true, "all", "block/fluidoutput");
-        model("block/block_item_input_block", "minecraft:block/cube_all", null, true, "all", "block/inputhatch");
-        model("block/block_item_output_block", "minecraft:block/cube_all", null, true, "all", "block/outputhatch");
+        connectedMachinePanel("block_energy_input_block", "energy_input");
+        connectedMachinePanel("block_energy_output_block", "energy_output");
+        connectedMachinePanel("block_fluid_input_block", "fluid_input");
+        connectedMachinePanel("block_fluid_output_block", "fluid_output");
+        connectedMachinePanel("block_item_input_block", "item_input");
+        connectedMachinePanel("block_item_output_block", "item_output");
         obj("block/block_motor_block", "models/libvulpes/motor.obj", "block/motor/motor");
         connected("block/block_structure_block", "block/ctm/structureblock", -1);
         model("block/carbon_scrubber", "minecraft:block/cube_all", null, true, "all", "block/machinescrubber");
@@ -257,7 +255,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/controller_centrifuge",
                 "side",
                 "block/machinegeneric");
-        connected("block/centrifuge_casing", "block/ctm/panelside", -1);
+        connectedMachinePanel("centrifuge_casing", "panelside");
         model(
                 "block/charcoal_log",
                 "minecraft:block/cube_column",
@@ -283,7 +281,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         model("block/fuel_generator", "adv_rocketry:block/art/fuel_generator", null, true);
         connected("block/concrete", "block/ctm/concrete", -1);
         connected("block/copper_coil", "block/ctm/coilside", 0);
-        model("block/creative_energy_input", "minecraft:block/cube_all", null, true, "all", "block/batterycreative");
+        connectedMachinePanel("creative_energy_input", "creative_energy_input");
         model(
                 "block/crystallizer",
                 "minecraft:block/orientable",
@@ -306,7 +304,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/cuttingmachine",
                 "side",
                 "block/machinegeneric");
-        model("block/data_bus", "minecraft:block/cube_all", null, true, "all", "block/datahatch");
+        connectedMachinePanel("data_bus", "data_bus");
         model(
                 "block/deployable_rocket_builder",
                 "minecraft:block/orientable",
@@ -344,7 +342,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "top",
                 "block/machinegeneric",
                 "front",
-                "legacy/advancedrocketry/blocks/blastbrickfront",
+                "block/electric_arc_furnace_controls",
                 "side",
                 "block/machinegeneric");
         model(
@@ -470,7 +468,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "side",
                 "block/machinegeneric");
         connected("block/launch_pad", "block/ctm/launch_pad", -1);
-        model("block/lens_block", "minecraft:block/cube_all", null, true, "all", "minecraft:block/glass");
+        connectedWithRenderType("block/lens_block", "block/ctm/lens_block", -1, "minecraft:cutout");
         model(
                 "block/microwave_receiver",
                 "minecraft:block/orientable",
@@ -541,7 +539,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/machinegeneric",
                 "side",
                 "block/panelside");
-        model("block/oxygen_vent", "minecraft:block/cube_all", null, true, "all", "block/machinevent");
+        connected("block/oxygen_vent", "block/ctm/oxygen_vent", -1);
         model("block/pipe_sealer", "minecraft:block/cube_all", null, true, "all", "block/seal");
         model(
                 "block/plate_press",
@@ -549,13 +547,13 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 null,
                 true,
                 "platform",
-                "minecraft:block/piston_top",
+                "block/plate_press/piston_top",
                 "bottom",
-                "minecraft:block/piston_bottom",
+                "block/plate_press/piston_bottom",
                 "side",
-                "minecraft:block/piston_side",
+                "block/plate_press/piston_side",
                 "inside",
-                "minecraft:block/piston_inner");
+                "block/plate_press/piston_inner");
         model(
                 "block/precision_assembler",
                 "minecraft:block/orientable",
@@ -667,13 +665,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "all",
                 "block/controller_station_orientation_controller");
-        model(
-                "block/structure_tower",
-                "minecraft:block/cube_all",
-                "minecraft:cutout",
-                true,
-                "all",
-                "block/structuretower");
+        connectedWithRenderType("block/structure_tower", "block/ctm/structure_tower", -1, "minecraft:cutout");
         model(
                 "block/thermite_torch",
                 "minecraft:block/template_torch",
@@ -705,7 +697,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "torch",
                 "block/unlit_torch");
-        model("block/vacuum_laser", "minecraft:block/cube_all", null, true, "all", "block/vacuumlaserfront");
+        connected("block/vacuum_laser", "block/ctm/vacuum_laser", -1);
         model("block/warp_controller", "minecraft:block/cube_all", null, true, "all", "block/monitorplanet");
         model("block/warp_core", "minecraft:block/cube_all", null, true, "all", "block/warpcore");
         states(
@@ -1039,6 +1031,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states("station_builder", FACING_HORIZONTAL_ONLY, "", "block/station_builder");
         states("station_gravity_controller", NONE, "", "block/station_gravity_controller");
         states("station_orientation_controller", NONE, "", "block/station_orientation_controller");
+        connected("block/steel_block", "block/ctm/machine_steel", 0);
         states("steel_block", NONE, "", "block/steel_block");
         states("structure_tower", NONE, "", "block/structure_tower");
         states("suit_workstation", HORIZONTAL, "", "block/suit_workstation");
@@ -1047,6 +1040,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states("tin_block", NONE, "", "block/tin_block");
         states("tin_ore", NONE, "", "block/tin_ore");
         states("titanium_aluminide_block", NONE, "", "block/titanium_aluminide_block");
+        connected("block/titanium_block", "block/ctm/machine_titanium", 0);
         states("titanium_block", NONE, "", "block/titanium_block");
         states("titanium_coil", NONE, "", "block/titanium_coil");
         states("titanium_iridium_block", NONE, "", "block/titanium_iridium_block");

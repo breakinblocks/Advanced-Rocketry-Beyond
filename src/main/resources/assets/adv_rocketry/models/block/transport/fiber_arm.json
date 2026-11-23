@@ -1,10 +1,6 @@
 {
   "render_type": "minecraft:translucent",
   "ambientocclusion": false,
-  "textures": {
-    "all": "minecraft:block/light_blue_stained_glass",
-    "particle": "#all"
-  },
   "elements": [
     {
       "from": [
@@ -19,22 +15,42 @@
       ],
       "faces": {
         "up": {
-          "texture": "#all"
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            4,
+            6
+          ]
         },
         "down": {
-          "texture": "#all"
-        },
-        "north": {
-          "texture": "#all"
-        },
-        "south": {
-          "texture": "#all"
+          "texture": "#all",
+          "uv": [
+            0,
+            6,
+            4,
+            0
+          ]
         },
         "west": {
-          "texture": "#all"
+          "texture": "#all",
+          "uv": [
+            0,
+            6,
+            4,
+            0
+          ],
+          "rotation": 90
         },
         "east": {
-          "texture": "#all"
+          "texture": "#all",
+          "uv": [
+            0,
+            6,
+            4,
+            0
+          ],
+          "rotation": 270
         }
       }
     }

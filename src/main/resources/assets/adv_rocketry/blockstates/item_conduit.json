@@ -2,14 +2,6 @@
   "multipart": [
     {
       "when": {
-        "active": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core"
-      }
-    },
-    {
-      "when": {
         "active": "false",
         "north": "true"
       },
@@ -20,10 +12,29 @@
     {
       "when": {
         "active": "false",
+        "north": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core"
+      }
+    },
+    {
+      "when": {
+        "active": "false",
         "east": "true"
       },
       "apply": {
         "model": "adv_rocketry:block/transport/item_conduit_arm",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "active": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core",
         "y": 90
       }
     },
@@ -40,6 +51,16 @@
     {
       "when": {
         "active": "false",
+        "south": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "active": "false",
         "west": "true"
       },
       "apply": {
@@ -50,10 +71,30 @@
     {
       "when": {
         "active": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "active": "false",
         "up": "true"
       },
       "apply": {
         "model": "adv_rocketry:block/transport/item_conduit_arm",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "active": "false",
+        "up": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core",
         "x": 270
       }
     },
@@ -69,10 +110,12 @@
     },
     {
       "when": {
-        "active": "true"
+        "active": "false",
+        "down": "false"
       },
       "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core_active"
+        "model": "adv_rocketry:block/transport/item_conduit_core",
+        "x": 90
       }
     },
     {
@@ -87,10 +130,29 @@
     {
       "when": {
         "active": "true",
+        "north": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core_active"
+      }
+    },
+    {
+      "when": {
+        "active": "true",
         "east": "true"
       },
       "apply": {
         "model": "adv_rocketry:block/transport/item_conduit_arm_active",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "east": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core_active",
         "y": 90
       }
     },
@@ -107,10 +169,30 @@
     {
       "when": {
         "active": "true",
+        "south": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core_active",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "active": "true",
         "west": "true"
       },
       "apply": {
         "model": "adv_rocketry:block/transport/item_conduit_arm_active",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "west": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core_active",
         "y": 270
       }
     },
@@ -127,10 +209,30 @@
     {
       "when": {
         "active": "true",
+        "up": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core_active",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "active": "true",
         "down": "true"
       },
       "apply": {
         "model": "adv_rocketry:block/transport/item_conduit_arm_active",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "active": "true",
+        "down": "false"
+      },
+      "apply": {
+        "model": "adv_rocketry:block/transport/item_conduit_core_active",
         "x": 90
       }
     }

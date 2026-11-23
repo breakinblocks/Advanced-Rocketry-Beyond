@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "loader": "adv_rocketry:connected",
+  "textures": {
+    "base": "adv_rocketry:block/ctm/machine_titanium/base",
+    "center": "adv_rocketry:block/ctm/machine_titanium/center",
+    "corner": "adv_rocketry:block/ctm/machine_titanium/corner",
+    "horizontal": "adv_rocketry:block/ctm/machine_titanium/horizontal",
+    "particle": "adv_rocketry:block/ctm/machine_titanium/base",
+    "vertical": "adv_rocketry:block/ctm/machine_titanium/vertical"
+  },
+  "tint_index": 0
+}

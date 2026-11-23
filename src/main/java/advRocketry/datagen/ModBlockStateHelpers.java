@@ -50,10 +50,15 @@ abstract class ModBlockStateHelpers extends BlockStateProvider {
     }
 
     void connected(String path, String folder, int tint, String... connectWith) {
+        String renderType = path.endsWith("_crystal_block") ? "minecraft:translucent" : null;
+        connectedWithRenderType(path, folder, tint, renderType, connectWith);
+    }
+
+    void connectedWithRenderType(String path, String folder, int tint, String renderType, String... connectWith) {
         BlockModelBuilder builder = models().getBuilder(path)
                 .parent(unchecked("minecraft:block/cube_all"))
                 .texture("particle", location(folder + "/base"));
-        if (path.endsWith("_crystal_block")) builder.renderType("minecraft:translucent");
+        if (renderType != null) builder.renderType(renderType);
         for (String variant : new String[] {"base", "horizontal", "vertical", "corner", "center"})
             builder.texture(variant, location(folder + "/" + variant));
         ConnectedModelBuilder<BlockModelBuilder> loader =

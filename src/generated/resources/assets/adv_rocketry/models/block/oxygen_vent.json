@@ -1,6 +1,12 @@
 {
   "parent": "minecraft:block/cube_all",
+  "loader": "adv_rocketry:connected",
   "textures": {
-    "all": "adv_rocketry:block/machinevent"
+    "base": "adv_rocketry:block/ctm/oxygen_vent/base",
+    "center": "adv_rocketry:block/ctm/oxygen_vent/center",
+    "corner": "adv_rocketry:block/ctm/oxygen_vent/corner",
+    "horizontal": "adv_rocketry:block/ctm/oxygen_vent/horizontal",
+    "particle": "adv_rocketry:block/ctm/oxygen_vent/base",
+    "vertical": "adv_rocketry:block/ctm/oxygen_vent/vertical"
   }
 }

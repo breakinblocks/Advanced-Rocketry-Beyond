@@ -1,6 +1,13 @@
 {
   "parent": "minecraft:block/cube_all",
+  "loader": "adv_rocketry:connected",
+  "render_type": "minecraft:cutout",
   "textures": {
-    "all": "minecraft:block/glass"
+    "base": "adv_rocketry:block/ctm/lens_block/base",
+    "center": "adv_rocketry:block/ctm/lens_block/center",
+    "corner": "adv_rocketry:block/ctm/lens_block/corner",
+    "horizontal": "adv_rocketry:block/ctm/lens_block/horizontal",
+    "particle": "adv_rocketry:block/ctm/lens_block/base",
+    "vertical": "adv_rocketry:block/ctm/lens_block/vertical"
   }
 }

@@ -82,6 +82,8 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/black_hole_generator_glass.obj");
     private static final ResourceLocation BLACK_HOLE_LIGHTS =
             ResourceLocation.fromNamespaceAndPath(Main.MODID, "multiblock/black_hole_generator_lights.obj");
+    private static final ResourceLocation SCANNER_BASE_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/biome_scanner_base.png");
     private static final ResourceLocation BLACK_HOLE_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/machine/black_hole_generator.png");
     private static final ResourceLocation MICROWAVE_MODEL =
@@ -255,7 +257,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             model(SCANNER_BASE_MODEL)
                     .renderAll(
                             pose,
-                            buffers.getBuffer(RenderType.entityCutoutNoCull(WARP_CORE_TEXTURE)),
+                            buffers.getBuffer(RenderType.entityCutoutNoCull(SCANNER_BASE_TEXTURE)),
                             LevelRenderer.getLightColor(
                                     entity.getLevel(), entity.getBlockPos().above()),
                             overlay,

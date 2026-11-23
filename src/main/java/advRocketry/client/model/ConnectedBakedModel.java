@@ -18,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.RenderTypeGroup;
@@ -140,8 +141,9 @@ public final class ConnectedBakedModel implements IDynamicBakedModel {
     }
 
     private boolean matches(BlockState self, BlockState other) {
-        return other.getBlock() == self.getBlock()
-                || connectWith.contains(BuiltInRegistries.BLOCK.getKey(other.getBlock()));
+        return other.getRenderShape() == RenderShape.MODEL
+                && (other.getBlock() == self.getBlock()
+                        || connectWith.contains(BuiltInRegistries.BLOCK.getKey(other.getBlock())));
     }
 
     @Override

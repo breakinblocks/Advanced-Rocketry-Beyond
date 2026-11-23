@@ -1,6 +1,23 @@
 {
   "parent": "minecraft:block/cube_all",
+  "connect_with": [
+    "adv_rocketry:block_energy_input_block",
+    "adv_rocketry:block_energy_output_block",
+    "adv_rocketry:creative_energy_input",
+    "adv_rocketry:block_fluid_input_block",
+    "adv_rocketry:block_fluid_output_block",
+    "adv_rocketry:block_item_input_block",
+    "adv_rocketry:block_item_output_block",
+    "adv_rocketry:data_bus",
+    "adv_rocketry:centrifuge_casing"
+  ],
+  "loader": "adv_rocketry:connected",
   "textures": {
-    "all": "adv_rocketry:block/batterycreative"
+    "base": "adv_rocketry:block/ctm/creative_energy_input/base",
+    "center": "adv_rocketry:block/ctm/creative_energy_input/center",
+    "corner": "adv_rocketry:block/ctm/creative_energy_input/corner",
+    "horizontal": "adv_rocketry:block/ctm/creative_energy_input/horizontal",
+    "particle": "adv_rocketry:block/ctm/creative_energy_input/base",
+    "vertical": "adv_rocketry:block/ctm/creative_energy_input/vertical"
   }
 }

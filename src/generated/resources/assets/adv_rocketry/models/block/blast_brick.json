@@ -1,6 +1,12 @@
 {
   "parent": "minecraft:block/cube_all",
+  "loader": "adv_rocketry:connected",
   "textures": {
-    "all": "adv_rocketry:legacy/advancedrocketry/blocks/blastbrick"
+    "base": "adv_rocketry:block/ctm/blast_brick/base",
+    "center": "adv_rocketry:block/ctm/blast_brick/center",
+    "corner": "adv_rocketry:block/ctm/blast_brick/corner",
+    "horizontal": "adv_rocketry:block/ctm/blast_brick/horizontal",
+    "particle": "adv_rocketry:block/ctm/blast_brick/base",
+    "vertical": "adv_rocketry:block/ctm/blast_brick/vertical"
   }
 }

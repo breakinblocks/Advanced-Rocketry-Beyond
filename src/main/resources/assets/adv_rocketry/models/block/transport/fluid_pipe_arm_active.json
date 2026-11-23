@@ -1,3 +1,7 @@
 {
-  "parent": "adv_rocketry:block/transport/fiber_arm"
+  "parent": "adv_rocketry:block/transport/fiber_arm",
+  "textures": {
+    "all": "adv_rocketry:block/transport/jackets/fluid_pipe_active",
+    "particle": "#all"
+  }
 }

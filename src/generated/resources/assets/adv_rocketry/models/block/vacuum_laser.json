@@ -1,6 +1,12 @@
 {
   "parent": "minecraft:block/cube_all",
+  "loader": "adv_rocketry:connected",
   "textures": {
-    "all": "adv_rocketry:block/vacuumlaserfront"
+    "base": "adv_rocketry:block/ctm/vacuum_laser/base",
+    "center": "adv_rocketry:block/ctm/vacuum_laser/center",
+    "corner": "adv_rocketry:block/ctm/vacuum_laser/corner",
+    "horizontal": "adv_rocketry:block/ctm/vacuum_laser/horizontal",
+    "particle": "adv_rocketry:block/ctm/vacuum_laser/base",
+    "vertical": "adv_rocketry:block/ctm/vacuum_laser/vertical"
   }
 }
