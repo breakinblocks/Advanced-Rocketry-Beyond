@@ -166,6 +166,9 @@ public class OrbitalBlock extends Block implements EntityBlock {
         if (entity.dockingPort()) DockingPortLogic.remove(entity);
         if (entity.forceFieldProjector()) ForceFieldLogic.remove(entity);
         if (entity.orbitalLaser()) OrbitalLaserLogic.clearLights(entity);
-        if (entity.warpCore()) WarpCoreLogic.unregister(entity);
+        if (entity.warpCore()) {
+            WarpCoreLighting.clear(entity);
+            WarpCoreLogic.unregister(entity);
+        }
     }
 }

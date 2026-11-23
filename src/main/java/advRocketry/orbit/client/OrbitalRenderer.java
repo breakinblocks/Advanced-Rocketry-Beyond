@@ -3,17 +3,20 @@
 
 package advRocketry.orbit.client;
 
+import advRocketry.AdvancedRocketryConfig;
 import advRocketry.Main;
 import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.MachineIndicators;
 import advRocketry.client.effects.ShaderCompatibility;
+import advRocketry.client.effects.WarpRingShader;
 import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.RailgunLogic;
+import advRocketry.orbit.WarpCoreLighting;
 import advRocketry.processing.client.FormedMaterialRenderer;
 import advRocketry.processing.client.ObjModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -392,8 +395,11 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             if (entity.isRemoved() || entity.getLevel() != client.level) continue;
             var pos = entity.getBlockPos();
             var back = front(entity).getOpposite();
-            float time =
-                    entity.getLevel().getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false);
+            boolean moving = !AdvancedRocketryConfig.reducedMotion();
+            double time = moving
+                    ? (double) entity.getLevel().getGameTime()
+                            + event.getPartialTick().getGameTimeDeltaPartialTick(false)
+                    : 0;
             int pulse = 190 + (int) (42 * Math.sin(time * .09));
             pose.pushPose();
             pose.translate(
@@ -402,7 +408,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
                     pos.getZ() + .5 + back.getStepZ() - camera.z);
             var warp = model(WARP_CORE_MODEL);
             pose.pushPose();
-            pose.mulPose(Axis.YP.rotationDegrees(time * 1.2f));
+            pose.mulPose(Axis.YP.rotationDegrees((float) ((time * 1.2) % 360)));
             warp.renderPart(
                     "Radiation",
                     pose,
@@ -414,11 +420,14 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             buffers.endBatch(WARP_RADIATION);
             var glow = buffers.getBuffer(EffectRenderTypes.GLOW);
             EffectGeometry.beam(pose, glow, new Vec3(0, .64, 0), new Vec3(0, 4.08, 0), .15, 0x444acaff);
-            for (int ring = 0; ring < 3; ring++) {
-                double height = .78 + ((ring * 1.14 + time * .025) % 3.2);
-                EffectGeometry.ring(pose, glow, .32, height, .035, 0x8854d5ff, 16);
+            for (int ring = 0; ring < WarpCoreLighting.RING_COUNT; ring++) {
+                double height = WarpCoreLighting.ringHeight(time, ring);
+                double intensity = moving ? WarpCoreLighting.ringPulse(time, ring) : .5;
+                int opacity = 0x60 + (int) (0x8f * intensity);
+                EffectGeometry.ring(pose, glow, .32, height, .035, opacity << 24 | 0x54d5ff, 16);
             }
             buffers.endBatch(EffectRenderTypes.GLOW);
+            WarpRingShader.render(pose, buffers, time, moving);
             warp.renderPart("Glass", pose, buffers.getBuffer(WARP_CORE_GLASS), effect.light, effect.overlay);
             buffers.endBatch(WARP_CORE_GLASS);
             pose.popPose();

@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
@@ -46,12 +47,21 @@ public final class BiomeMaterials {
     public static final String[] SOILS = {"rooted_loam", "alluvial_silt", "volcanic_ash", "luminous_moss"};
 
     static {
-        for (String name : STONES)
-            add(
-                    name,
-                    () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
-                            .strength(1.8f, 6)
-                            .lightLevel(s -> name.equals("cooling_crust") ? 2 : 0)));
+        for (String name : STONES) {
+            if (name.equals("strike_glass")) {
+                add(
+                        name,
+                        () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)
+                                .strength(1.8f, 6)
+                                .requiresCorrectToolForDrops()));
+            } else {
+                add(
+                        name,
+                        () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+                                .strength(1.8f, 6)
+                                .lightLevel(s -> name.equals("cooling_crust") ? 2 : 0)));
+            }
+        }
         for (String name : SOILS)
             add(
                     name,

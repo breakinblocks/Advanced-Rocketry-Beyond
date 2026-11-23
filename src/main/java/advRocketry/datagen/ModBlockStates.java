@@ -128,7 +128,9 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 model(
                         "block/" + name,
                         "minecraft:block/cube_all",
-                        name.endsWith("leaves") ? "minecraft:cutout" : null,
+                        name.equals("strike_glass")
+                                ? "minecraft:translucent"
+                                : name.endsWith("leaves") ? "minecraft:cutout" : null,
                         true,
                         "all",
                         "block/" + name);
@@ -887,6 +889,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states("landing_float", NONE, "", "block/landing_float");
         states("landing_pad", NONE, "", "block/landing_pad");
         states("laser_light", NONE, "", "block/laser_light");
+        states("warp_ring_light", NONE, "", "block/laser_light");
         states("lathe", HORIZONTAL, "state=false", "block/lathe", "state=true", "block/lathe_formed");
         states("launch_pad", NONE, "", "block/launch_pad");
         states("lens_block", NONE, "", "block/lens_block");

@@ -128,6 +128,8 @@ public final class OrbitalRegistry {
                     .noLootTable()));
     public static final Supplier<HorizontalOrbitalBlock> WARP_CORE =
             horizontal("warp_core", OrbitalBlock.Kind.WARP_CORE, 4);
+    static final Supplier<WarpRingLightBlock> WARP_RING_LIGHT =
+            BLOCKS.register("warp_ring_light", WarpRingLightBlock::new);
     public static final Supplier<OrbitalBlock> WARP_CONTROLLER =
             block("warp_controller", OrbitalBlock.Kind.WARP_CONTROLLER);
     public static final Supplier<OrbitalBlock> HOLOGRAPHIC_SELECTOR = block(

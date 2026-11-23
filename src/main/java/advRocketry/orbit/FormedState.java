@@ -51,11 +51,13 @@ public final class FormedState {
                 || Math.floorMod(level.getGameTime() + entity.getBlockPos().hashCode(), INTERVAL) != 0) return;
         boolean formed = check(entity);
         OrbitalAssembly.update(entity, formed);
+        if (formed && entity.warpCore()) WarpCoreLighting.ensure(entity);
         boolean stateChanged = entity.getBlockState().getValue(OrbitalBlock.FORMED) != formed;
         if (formed == entity.formed && !stateChanged) {
             FormedMachineParts.update(entity);
             return;
         }
+        if (!formed && entity.warpCore()) WarpCoreLighting.clear(entity);
         entity.formed = formed;
         entity.setChanged();
         if (stateChanged)

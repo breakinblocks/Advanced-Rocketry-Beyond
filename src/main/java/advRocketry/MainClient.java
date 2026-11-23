@@ -4,6 +4,7 @@ import advRocketry.client.effects.EffectGeometry;
 import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.HologramShader;
 import advRocketry.client.effects.SceneDistortion;
+import advRocketry.client.effects.WarpRingShader;
 import advRocketry.client.model.ConnectedModelLoader;
 import advRocketry.compat.guideme.RocketryGuide;
 import advRocketry.life.LifeSupportRegistry;
@@ -76,6 +77,7 @@ public final class MainClient {
         bus.addListener(MainClient::reloadListeners);
         bus.addListener(SceneDistortion::register);
         bus.addListener(HologramShader::register);
+        bus.addListener(WarpRingShader::register);
         bus.addListener(RocketEffectShader::register);
         bus.addListener(PlanetClouds::register);
         bus.addListener(SkyLayerShader::register);
