@@ -5,6 +5,7 @@ package advRocketry.processing;
 
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.DataMaps;
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.space.GalaxyData;
 import java.util.ArrayList;
@@ -108,6 +109,7 @@ public final class ProcessingBlockEntity extends MultiblockMachine implements Me
 
     public void tick() {
         if (level.isClientSide) {
+            if (level.getGameTime() % 4 == 0) FormedMachineParts.update(this);
             if (running && progress < duration) progress++;
             ProcessingRegistry.clientMachineTick.accept(this);
             return;

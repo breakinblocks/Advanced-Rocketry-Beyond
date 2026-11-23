@@ -4,6 +4,7 @@
 package advRocketry.orbit;
 
 import advRocketry.AdvancedRocketryConfig;
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.util.ModMenu;
 import advRocketry.util.SplitIntData;
 import java.util.function.IntUnaryOperator;
@@ -361,7 +362,7 @@ public final class OrbitalMenu extends ModMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return !entity.isRemoved() && player.distanceToSqr(entity.getBlockPos().getCenter()) <= 64;
+        return !entity.isRemoved() && FormedMachineParts.withinMenuRange(player, entity.getBlockPos());
     }
 
     @Override

@@ -3,6 +3,7 @@
 
 package advRocketry.processing;
 
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.util.ModMenu;
 import advRocketry.util.SplitIntData;
 import java.util.List;
@@ -161,7 +162,7 @@ public final class MachineMenu extends ModMenu {
     @Override
     public boolean stillValid(Player player) {
         Level level = player.level();
-        if (player.distanceToSqr(controller.getX() + 0.5, controller.getY() + 0.5, controller.getZ() + 0.5) > 64
+        if (!FormedMachineParts.withinMenuRange(player, controller)
                 || !(level.getBlockEntity(controller) instanceof ProcessingBlockEntity machine
                                 && machine.getBlockState().getValue(ProcessingBlock.FORMED)
                         || level.getBlockEntity(controller) instanceof PortBlockEntity)) return false;

@@ -3,6 +3,7 @@
 
 package advRocketry.orbit;
 
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.util.MachineChunkLoading;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -27,6 +28,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class OrbitalBlock extends Block implements EntityBlock {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
+    private static final VoxelShape WARP_CONTROLS = Block.box(2, 0, 2, 14, 5, 14);
 
     public enum Kind {
         BUILDER,
@@ -79,7 +81,8 @@ public class OrbitalBlock extends Block implements EntityBlock {
                             BEACON,
                             RAILGUN,
                             ASTROBODY_PROCESSOR,
-                            ATMOSPHERE_TERRAFORMER -> true;
+                            ATMOSPHERE_TERRAFORMER,
+                            WARP_CORE -> true;
                     default -> false;
                 }) return RenderShape.INVISIBLE;
         return RenderShape.MODEL;
@@ -106,6 +109,7 @@ public class OrbitalBlock extends Block implements EntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (kind == Kind.WARP_CORE && state.getValue(FORMED)) return WARP_CONTROLS;
         return kind == Kind.HOLOGRAPHIC_SELECTOR
                 ? Block.box(0, 0, 0, 16, 8, 16)
                 : super.getShape(state, level, pos, context);
@@ -129,9 +133,12 @@ public class OrbitalBlock extends Block implements EntityBlock {
     protected InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer serverPlayer
-                && level.getBlockEntity(pos) instanceof OrbitalBlockEntity entity)
-            serverPlayer.openMenu(entity, buffer -> OrbitalMenu.writeOpeningData(buffer, entity));
+                && level.getBlockEntity(pos) instanceof OrbitalBlockEntity entity) open(entity, serverPlayer);
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    public static void open(OrbitalBlockEntity entity, ServerPlayer player) {
+        player.openMenu(entity, buffer -> OrbitalMenu.writeOpeningData(buffer, entity));
     }
 
     @Override
@@ -148,13 +155,9 @@ public class OrbitalBlock extends Block implements EntityBlock {
     }
 
     public static void cleanup(OrbitalBlockEntity entity) {
+        FormedMachineParts.remove(entity);
         if (entity.getLevel() instanceof ServerLevel level) MachineChunkLoading.remove(level, entity.getBlockPos());
-        if (entity.blackHoleGenerator()
-                || entity.observatory()
-                || entity.biomeScanner()
-                || entity.warpCore()
-                || entity.orbitalLaser()
-                || entity.spaceElevator()) OrbitalAssembly.update(entity, false);
+        OrbitalAssembly.update(entity, false);
         if (entity.blackHoleGenerator()) {
             HorizonSatelliteLogic.unlink(entity);
         }

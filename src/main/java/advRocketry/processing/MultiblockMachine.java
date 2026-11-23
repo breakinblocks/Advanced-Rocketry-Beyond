@@ -3,6 +3,7 @@
 
 package advRocketry.processing;
 
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.multiblock.Multiblock;
 import advRocketry.multiblock.PlacedMultiblock;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ public abstract class MultiblockMachine extends BlockEntity {
         if (!getBlockState().getValue(ProcessingBlock.FORMED)) {
             level.setBlock(worldPosition, getBlockState().setValue(ProcessingBlock.FORMED, true), Block.UPDATE_CLIENTS);
         }
+        FormedMachineParts.update(this);
         for (BlockPos pos : parts) {
             OWNERS.get(level).put(pos, worldPosition);
             BlockState state = level.getBlockState(pos);
@@ -85,6 +87,7 @@ public abstract class MultiblockMachine extends BlockEntity {
 
     public void unform() {
         if (level == null || level.isClientSide) return;
+        FormedMachineParts.remove(this);
         for (BlockPos pos : parts) {
             OWNERS.computeIfAbsent(level, ignored -> new HashMap<>()).remove(pos, worldPosition);
             if (!level.isLoaded(pos)) continue;
@@ -155,6 +158,12 @@ public abstract class MultiblockMachine extends BlockEntity {
     public void consumeEnergy(int amount, List<PortBlockEntity> ports) {
         int remaining = amount;
         for (var port : ports) remaining -= port.energyStorage.consume(remaining, false);
+    }
+
+    @Override
+    public void setRemoved() {
+        FormedMachineParts.remove(this);
+        super.setRemoved();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package advRocketry.processing.client;
 
 import advRocketry.Main;
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.processing.MachinePartBlock;
 import advRocketry.processing.PortBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -35,7 +36,8 @@ public final class PortMarkerRenderer implements BlockEntityRenderer<PortBlockEn
             MultiBufferSource buffers,
             int light,
             int overlay) {
-        if (!port.getBlockState().getValue(MachinePartBlock.ASSEMBLED)) return;
+        if (!port.getBlockState().getValue(MachinePartBlock.ASSEMBLED)
+                || FormedMachineParts.controllerAt(port.getLevel(), port.getBlockPos()) != null) return;
         ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(
                 Main.MODID, "textures/block/port_marker_" + port.kind().name().toLowerCase() + ".png");
         VertexConsumer vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(texture));

@@ -12,6 +12,7 @@ import advRocketry.life.LifeSupportRegistry;
 import advRocketry.life.LightingRegistry;
 import advRocketry.life.PlanetEnvironment;
 import advRocketry.life.SealedRooms;
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.orbit.BeaconLogic;
 import advRocketry.orbit.BiomeChangerLogic;
 import advRocketry.orbit.DockingPortConfig;
@@ -81,6 +82,7 @@ public final class Main {
         BreakDebug.register();
         NeoForge.EVENT_BUS.addListener(TransportNetworks::levelTick);
         NeoForge.EVENT_BUS.addListener(TransportInteraction::bucket);
+        NeoForge.EVENT_BUS.addListener(FormedMachineParts::interact);
         ProcessingFluids.register(bus);
         NeoForge.EVENT_BUS.addListener(ProcessingFluids::lavaContact);
         ProcessingRegistry.register(bus);

@@ -8,12 +8,19 @@ import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.space.GalaxyData;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** The original three-layer warp-core frame and its station fuel input. */
 public final class WarpCoreLogic {
@@ -21,7 +28,37 @@ public final class WarpCoreLogic {
     private static final TagKey<Item> DILITHIUM =
             ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "gems/dilithium"));
 
+    private static final Map<BlockPos, VoxelShape> PART_SHAPES = buildPartShapes();
+
     private WarpCoreLogic() {}
+
+    private static Map<BlockPos, VoxelShape> buildPartShapes() {
+        // Centered on the crystal cell, using the formed model's two pedestal tiers
+        // and a three-rectangle approximation of its octagonal containment glass.
+        VoxelShape model = Shapes.or(
+                Shapes.box(-.28, 0, -.28, 1.28, .22, 1.28),
+                Shapes.box(-.07, .22, -.07, 1.07, .42, 1.07),
+                Shapes.box(.06, .42, .06, .94, 4.36, .94),
+                Shapes.box(-.10, .42, .25, 1.10, 4.36, .75),
+                Shapes.box(.25, .42, -.10, .75, 4.36, 1.10),
+                Shapes.box(.22, 4.32, .22, .78, 4.46, .78));
+        Map<BlockPos, VoxelShape> shapes = new HashMap<>();
+        for (int y = 0; y <= 4; y++)
+            for (int x = -1; x <= 1; x++)
+                for (int z = -1; z <= 1; z++) {
+                    VoxelShape part = Shapes.join(model.move(-x, -y, -z), Shapes.block(), BooleanOp.AND);
+                    if (!part.isEmpty()) shapes.put(new BlockPos(x, y, z), part);
+                }
+        return Map.copyOf(shapes);
+    }
+
+    public static VoxelShape partShape(OrbitalBlockEntity core, BlockPos part) {
+        Direction facing = core.getBlockState()
+                .getOptionalValue(BlockStateProperties.HORIZONTAL_FACING)
+                .orElse(Direction.NORTH);
+        BlockPos crystal = core.getBlockPos().relative(facing.getOpposite());
+        return PART_SHAPES.getOrDefault(part.subtract(crystal), Shapes.empty());
+    }
 
     public static boolean complete(OrbitalBlockEntity core) {
         return core.warpCore() && PlacedMultiblock.complete(core, "warp_core");

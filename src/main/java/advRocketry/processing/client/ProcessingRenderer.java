@@ -82,6 +82,8 @@ public final class ProcessingRenderer implements BlockEntityRenderer<ProcessingB
             int overlay) {
         MachineType machine = tile.machine();
         if (!tile.getBlockState().getValue(ProcessingBlock.FORMED)) return;
+        if (machine == MachineType.PRECISION_LASER_ETCHER)
+            FormedMaterialRenderer.slabs(tile, tile.structure(), pose, buffers, overlay);
         if (machine == MachineType.ELECTRIC_ARC_FURNACE) {
             renderArcFurnace(tile, pose, buffers, light, overlay);
             return;

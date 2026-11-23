@@ -18,6 +18,7 @@ import advRocketry.life.client.SpaceHelmetLayer;
 import advRocketry.life.client.SuitHud;
 import advRocketry.life.client.SuitScreen;
 import advRocketry.life.client.ZeroGravityClient;
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.client.ElevatorCapsuleRenderer;
 import advRocketry.orbit.client.HologramBodyRenderer;
@@ -48,6 +49,7 @@ import advRocketry.transport.TransportRegistry;
 import advRocketry.transport.client.TransportRenderer;
 import advRocketry.transport.client.TransportScreen;
 import advRocketry.transport.client.TransportTerminalScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -58,6 +60,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(value = Main.MODID, dist = Dist.CLIENT)
@@ -111,8 +114,20 @@ public final class MainClient {
         NeoForge.EVENT_BUS.addListener(PlanetEffects::afterSky);
         NeoForge.EVENT_BUS.addListener(PlanetEffects::disconnected);
         NeoForge.EVENT_BUS.addListener(StructurePreview::render);
+        NeoForge.EVENT_BUS.addListener(MainClient::formedPartHighlight);
+        NeoForge.EVENT_BUS.addListener(OrbitalRenderer::renderWarpEffects);
         NeoForge.EVENT_BUS.addListener(StructurePreview::scroll);
         NeoForge.EVENT_BUS.addListener(StructurePreview::loggingOut);
+    }
+
+    private static void formedPartHighlight(RenderHighlightEvent.Block event) {
+        var client = Minecraft.getInstance();
+        if (client.level != null
+                && client.player != null
+                && !client.player.isShiftKeyDown()
+                && FormedMachineParts.controllerAt(
+                                client.level, event.getTarget().getBlockPos())
+                        != null) event.setCanceled(true);
     }
 
     private static void screens(RegisterMenuScreensEvent event) {

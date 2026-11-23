@@ -23,17 +23,7 @@ public final class OrbitalAssembly {
         if (level == null || level.isClientSide) return;
         var owners = OWNERS.computeIfAbsent(level, ignored -> new HashMap<>());
         Set<BlockPos> target = new HashSet<>();
-        String id = controller.observatory()
-                ? "observatory"
-                : controller.blackHoleGenerator()
-                        ? "black_hole_generator"
-                        : controller.biomeScanner()
-                                ? "biome_scanner"
-                                : controller.warpCore()
-                                        ? "warp_core"
-                                        : controller.orbitalLaser()
-                                                ? "orbital_laser"
-                                                : controller.spaceElevator() ? "space_elevator" : null;
+        String id = assemblyId(controller);
         if (id == null) return;
         var structure = PlacedMultiblock.of(controller, id);
         if (formed && structure != null) {
@@ -71,12 +61,21 @@ public final class OrbitalAssembly {
         if (owner == null) return false;
         if (!level.isLoaded(owner)) return true;
         return level.getBlockEntity(owner) instanceof OrbitalBlockEntity controller
-                && (controller.blackHoleGenerator()
-                        || controller.observatory()
-                        || controller.biomeScanner()
-                        || controller.warpCore()
-                        || controller.orbitalLaser()
-                        || controller.spaceElevator())
+                && assemblyId(controller) != null
                 && controller.formed;
+    }
+
+    private static String assemblyId(OrbitalBlockEntity controller) {
+        return switch (controller.kind()) {
+            case OBSERVATORY -> "observatory";
+            case BLACK_HOLE_GENERATOR -> "black_hole_generator";
+            case BIOME_SCANNER -> "biome_scanner";
+            case WARP_CORE -> "warp_core";
+            case ORBITAL_LASER -> "orbital_laser";
+            case SPACE_ELEVATOR -> "space_elevator";
+            case BEACON -> "beacon";
+            case RAILGUN -> "railgun";
+            default -> null;
+        };
     }
 }

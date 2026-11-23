@@ -64,15 +64,22 @@ public final class ProcessingBlock extends Block implements EntityBlock {
     protected InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer serverPlayer
-                && level.getBlockEntity(pos) instanceof ProcessingBlockEntity machine) {
-            if (machine.scanStructure())
-                serverPlayer.openMenu(
-                        machine, buffer -> MachineMenu.writeOpeningData(buffer, pos, machine.menuPorts(), level));
-            else
-                serverPlayer.displayClientMessage(
-                        Texts.translate("message.adv_rocketry.processing_block.incomplete", getName()), true);
-        }
+                && level.getBlockEntity(pos) instanceof ProcessingBlockEntity machine) open(machine, serverPlayer);
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    public static void open(ProcessingBlockEntity machine, ServerPlayer player) {
+        if (machine.scanStructure())
+            player.openMenu(
+                    machine,
+                    buffer -> MachineMenu.writeOpeningData(
+                            buffer, machine.getBlockPos(), machine.menuPorts(), machine.getLevel()));
+        else
+            player.displayClientMessage(
+                    Texts.translate(
+                            "message.adv_rocketry.processing_block.incomplete",
+                            machine.getBlockState().getBlock().getName()),
+                    true);
     }
 
     @Override

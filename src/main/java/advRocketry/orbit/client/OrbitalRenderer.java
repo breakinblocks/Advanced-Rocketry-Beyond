@@ -9,27 +9,35 @@ import advRocketry.client.effects.EffectProfiles;
 import advRocketry.client.effects.EffectRenderTypes;
 import advRocketry.client.effects.MachineIndicators;
 import advRocketry.client.effects.ShaderCompatibility;
+import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.orbit.HorizontalOrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.RailgunLogic;
+import advRocketry.processing.client.FormedMaterialRenderer;
 import advRocketry.processing.client.ObjModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 
 /** Renders the original MIT solar array OBJ at its controller. */
@@ -102,10 +110,17 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
     private static final RenderType CONTAINMENT_GLASS = EffectRenderTypes.containmentGlass(BLACK_HOLE_TEXTURE);
     private static final Map<ResourceLocation, ObjModel> MODELS = new HashMap<>();
 
+    private record WarpEffects(OrbitalBlockEntity entity, int light, int overlay) {}
+
+    private static final List<WarpEffects> WARP_EFFECTS = new ArrayList<>();
+    private static final RenderType WARP_RADIATION = RenderType.entityTranslucentEmissive(WARP_CORE_RADIATION_TEXTURE);
+
     public OrbitalRenderer(BlockEntityRendererProvider.Context context) {}
 
     public static void clearModels() {
         MODELS.clear();
+        WARP_EFFECTS.clear();
+        FormedMaterialRenderer.clearModel();
         HologramBodyRenderer.clearModel();
     }
 
@@ -130,7 +145,8 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
         if (entity.railgun()) return new AABB(entity.getBlockPos()).inflate(11);
         if (entity.astrobodyProcessor()) return new AABB(entity.getBlockPos()).inflate(3);
         if (entity.atmosphereTerraformer()) return new AABB(entity.getBlockPos()).inflate(16);
-        if (entity.blackHoleGenerator() || entity.warpCore()) return new AABB(entity.getBlockPos()).inflate(5);
+        if (entity.blackHoleGenerator() || entity.warpCore() || entity.beacon())
+            return new AABB(entity.getBlockPos()).inflate(5);
         return new AABB(entity.getBlockPos()).inflate(entity.observatory() ? 6 : 3);
     }
 
@@ -208,6 +224,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             if (!entity.formed) return;
             light = LevelRenderer.getLightColor(
                     entity.getLevel(), entity.getBlockPos().above(4));
+            FormedMaterialRenderer.render(entity, entity.getBlockPos(), "WarpControls", 0, 1, pose, buffers, overlay);
             pose.pushPose();
             Direction back = front(entity).getOpposite();
             pose.translate(.5 + back.getStepX(), 0, .5 + back.getStepZ());
@@ -218,27 +235,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
                     buffers.getBuffer(RenderType.entityCutoutNoCull(WARP_CORE_TEXTURE)),
                     light,
                     overlay);
-            if (!ShaderCompatibility.shadowPass()) {
-                float time = entity.getLevel().getGameTime() + partialTick;
-                int pulse = 190 + (int) (42 * Math.sin(time * .09));
-                pose.pushPose();
-                pose.mulPose(Axis.YP.rotationDegrees(time * 1.2f));
-                warp.renderPart(
-                        "Radiation",
-                        pose,
-                        buffers.getBuffer(RenderType.entityTranslucentEmissive(WARP_CORE_RADIATION_TEXTURE)),
-                        LightTexture.FULL_BRIGHT,
-                        overlay,
-                        pulse << 24 | 0x00ffffff);
-                pose.popPose();
-                VertexConsumer glow = buffers.getBuffer(EffectRenderTypes.GLOW);
-                EffectGeometry.beam(pose, glow, new Vec3(0, .64, 0), new Vec3(0, 4.08, 0), .15, 0x444acaff);
-                for (int ring = 0; ring < 3; ring++) {
-                    double height = .78 + ((ring * 1.14 + time * .025) % 3.2);
-                    EffectGeometry.ring(pose, glow, .32, height, .035, 0x8854d5ff, 16);
-                }
-                warp.renderPart("Glass", pose, buffers.getBuffer(WARP_CORE_GLASS), light, overlay);
-            }
+            if (!ShaderCompatibility.shadowPass()) WARP_EFFECTS.add(new WarpEffects(entity, light, overlay));
             pose.popPose();
             return;
         }
@@ -252,6 +249,10 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
         }
         if (entity.biomeScanner()) {
             if (!entity.formed) return;
+            var layout = PlacedMultiblock.of(entity, "biome_scanner");
+            BlockPos support = layout == null ? null : layout.first('R');
+            if (support != null)
+                FormedMaterialRenderer.render(entity, support, "ScannerSupport", 0, 1, pose, buffers, overlay);
             pose.pushPose();
             pose.translate(.5, 0, .5);
             model(SCANNER_BASE_MODEL)
@@ -276,19 +277,27 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             return;
         }
         if (entity.beacon()) {
-            if (!entity.beaconEnabled || !entity.formed) return;
+            if (!entity.formed) return;
+            var layout = PlacedMultiblock.of(entity, "beacon");
+            BlockPos emitter = layout == null ? null : layout.first('R');
+            if (emitter != null)
+                FormedMaterialRenderer.render(entity, emitter, "BeaconEmitter", 0, 1, pose, buffers, overlay);
             pose.pushPose();
-            // The model's base overlays the still-visible support blocks.
             pose.translate(-.5, .002, 1.5);
-            pose.scale(1.002f, 1.002f, 1.002f);
-            model(BEACON_MODEL)
-                    .renderAll(
-                            pose, buffers.getBuffer(RenderType.entityCutoutNoCull(BEACON_TEXTURE)), light, overlay, -1);
+            var mesh = model(BEACON_MODEL);
+            var vertices = buffers.getBuffer(RenderType.entityCutoutNoCull(BEACON_TEXTURE));
+            mesh.renderPart("Base", pose, vertices, light, overlay);
+            // The cage and base were exported with different local origins.
+            pose.translate(1, 0, 0);
+            pose.scale(.8f, 1, .8f);
+            mesh.renderPart("OuterSpin", pose, vertices, light, overlay);
+            mesh.renderPart("InnerSpin", pose, vertices, light, overlay);
             pose.popPose();
             return;
         }
         if (entity.railgun()) {
             if (!entity.formed) return;
+            FormedMaterialRenderer.slabs(entity, PlacedMultiblock.of(entity, "railgun"), pose, buffers, overlay);
             pose.pushPose();
             var offset = RailgunLogic.emitter(entity).subtract(entity.getBlockPos());
             pose.translate(offset.getX() + .5, offset.getY() + .002, offset.getZ() + .5);
@@ -306,6 +315,8 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
         }
         if (entity.astrobodyProcessor()) {
             if (!entity.formed) return;
+            FormedMaterialRenderer.slabs(
+                    entity, PlacedMultiblock.of(entity, "astrobody_data_processor"), pose, buffers, overlay);
             pose.pushPose();
             pose.translate(.5, 0, .5);
             pose.mulPose(Axis.YP.rotationDegrees(yaw(front(entity))));
@@ -360,13 +371,69 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
         pose.popPose();
     }
 
+    public static void renderWarpEffects(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) WARP_EFFECTS.clear();
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES || WARP_EFFECTS.isEmpty()) return;
+        if (ShaderCompatibility.shadowPass()) {
+            WARP_EFFECTS.clear();
+            return;
+        }
+        var client = Minecraft.getInstance();
+        var camera = event.getCamera().getPosition();
+        var buffers = client.renderBuffers().bufferSource();
+        // Flush the trailing ordinary block entity before blending the glass over it.
+        buffers.endLastBatch();
+        WARP_EFFECTS.sort(Comparator.comparingDouble(
+                        (WarpEffects effect) -> effect.entity.getBlockPos().distToCenterSqr(camera))
+                .reversed());
+        var pose = event.getPoseStack();
+        for (WarpEffects effect : WARP_EFFECTS) {
+            var entity = effect.entity;
+            if (entity.isRemoved() || entity.getLevel() != client.level) continue;
+            var pos = entity.getBlockPos();
+            var back = front(entity).getOpposite();
+            float time =
+                    entity.getLevel().getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false);
+            int pulse = 190 + (int) (42 * Math.sin(time * .09));
+            pose.pushPose();
+            pose.translate(
+                    pos.getX() + .5 + back.getStepX() - camera.x,
+                    pos.getY() - camera.y,
+                    pos.getZ() + .5 + back.getStepZ() - camera.z);
+            var warp = model(WARP_CORE_MODEL);
+            pose.pushPose();
+            pose.mulPose(Axis.YP.rotationDegrees(time * 1.2f));
+            warp.renderPart(
+                    "Radiation",
+                    pose,
+                    buffers.getBuffer(WARP_RADIATION),
+                    LightTexture.FULL_BRIGHT,
+                    effect.overlay,
+                    pulse << 24 | 0x00ffffff);
+            pose.popPose();
+            buffers.endBatch(WARP_RADIATION);
+            var glow = buffers.getBuffer(EffectRenderTypes.GLOW);
+            EffectGeometry.beam(pose, glow, new Vec3(0, .64, 0), new Vec3(0, 4.08, 0), .15, 0x444acaff);
+            for (int ring = 0; ring < 3; ring++) {
+                double height = .78 + ((ring * 1.14 + time * .025) % 3.2);
+                EffectGeometry.ring(pose, glow, .32, height, .035, 0x8854d5ff, 16);
+            }
+            buffers.endBatch(EffectRenderTypes.GLOW);
+            warp.renderPart("Glass", pose, buffers.getBuffer(WARP_CORE_GLASS), effect.light, effect.overlay);
+            buffers.endBatch(WARP_CORE_GLASS);
+            pose.popPose();
+        }
+        WARP_EFFECTS.clear();
+    }
+
     private static void renderLaser(
             OrbitalBlockEntity entity, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
         if (!entity.formed) return;
         pose.pushPose();
         pose.translate(.5, 0, .5);
         pose.mulPose(Axis.YP.rotationDegrees(yaw(front(entity))));
-        pose.translate(-4, 0, 1);
+        // Align the OBJ's lens and both coil banks with their blueprint cells.
+        pose.translate(2.5, 0, 4.5);
         model(LASER_MODEL)
                 .renderAll(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(LASER_TEXTURE)), light, overlay, -1);
         pose.popPose();
@@ -404,6 +471,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             int light,
             int overlay) {
         if (!entity.formed) return;
+        FormedMaterialRenderer.slabs(entity, PlacedMultiblock.of(entity, "space_elevator"), pose, buffers, overlay);
         ObjModel elevatorModel = model(ELEVATOR_MODEL);
         Direction front = front(entity);
         pose.pushPose();

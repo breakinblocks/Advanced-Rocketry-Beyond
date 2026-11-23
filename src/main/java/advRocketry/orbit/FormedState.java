@@ -1,5 +1,6 @@
 package advRocketry.orbit;
 
+import advRocketry.multiblock.FormedMachineParts;
 import java.util.function.Predicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -49,14 +50,12 @@ public final class FormedState {
         if (!(entity.getLevel() instanceof ServerLevel level)
                 || Math.floorMod(level.getGameTime() + entity.getBlockPos().hashCode(), INTERVAL) != 0) return;
         boolean formed = check(entity);
-        if (entity.blackHoleGenerator()
-                || entity.observatory()
-                || entity.biomeScanner()
-                || entity.warpCore()
-                || entity.orbitalLaser()
-                || entity.spaceElevator()) OrbitalAssembly.update(entity, formed);
+        OrbitalAssembly.update(entity, formed);
         boolean stateChanged = entity.getBlockState().getValue(OrbitalBlock.FORMED) != formed;
-        if (formed == entity.formed && !stateChanged) return;
+        if (formed == entity.formed && !stateChanged) {
+            FormedMachineParts.update(entity);
+            return;
+        }
         entity.formed = formed;
         entity.setChanged();
         if (stateChanged)
@@ -67,5 +66,6 @@ public final class FormedState {
         else
             level.sendBlockUpdated(
                     entity.getBlockPos(), entity.getBlockState(), entity.getBlockState(), Block.UPDATE_CLIENTS);
+        FormedMachineParts.update(entity);
     }
 }

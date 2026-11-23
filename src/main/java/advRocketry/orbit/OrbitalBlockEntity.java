@@ -4,6 +4,7 @@
 package advRocketry.orbit;
 
 import advRocketry.AdvancedRocketryConfig;
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.processing.PortBlockEntity;
 import advRocketry.util.ComponentText;
 import advRocketry.util.MachineChunkLoading;
@@ -224,8 +225,15 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
         return energy.generate(amount, false);
     }
 
+    @Override
+    public void setRemoved() {
+        FormedMachineParts.remove(this);
+        super.setRemoved();
+    }
+
     public void tickClient() {
         if (level == null) return;
+        if (level.getGameTime() % 4 == 0) FormedMachineParts.update(this);
         if (areaGravityController()
                 && areaCurrentGravity > .02f
                 && level.getGameTime() % 45 == Math.floorMod(worldPosition.hashCode(), 45))

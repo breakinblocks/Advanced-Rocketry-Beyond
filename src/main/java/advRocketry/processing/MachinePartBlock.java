@@ -3,11 +3,13 @@
 
 package advRocketry.processing;
 
+import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.orbit.OrbitalAssembly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,7 +24,7 @@ public class MachinePartBlock extends Block {
     public static final BooleanProperty ASSEMBLED = BooleanProperty.create("assembled");
 
     public MachinePartBlock(Properties properties) {
-        super(properties.noOcclusion());
+        super(properties.noOcclusion().dynamicShape());
         registerDefaultState(stateDefinition.any().setValue(ASSEMBLED, false));
     }
 
@@ -38,13 +40,21 @@ public class MachinePartBlock extends Block {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(ASSEMBLED) ? Shapes.empty() : super.getShape(state, level, pos, context);
+        VoxelShape warp = warpShape(state, level, pos);
+        return warp == null ? super.getShape(state, level, pos, context) : warp;
     }
 
     @Override
     protected VoxelShape getCollisionShape(
             BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return Shapes.block();
+        VoxelShape warp = warpShape(state, level, pos);
+        return warp == null ? Shapes.block() : warp;
+    }
+
+    private static VoxelShape warpShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return state.getValue(ASSEMBLED) && level instanceof Level world
+                ? FormedMachineParts.warpPartShape(world, pos)
+                : null;
     }
 
     @Override
