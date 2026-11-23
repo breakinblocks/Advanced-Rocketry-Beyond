@@ -105,7 +105,7 @@ public final class HolographicSelectorLogic {
                         planet.id,
                         Component.literal(planet.name),
                         new Vec3(Math.cos(angle) * distance, .1, Math.sin(angle) * distance),
-                        .18f * scale * Math.max(.5f, planet.gravity * planet.gravity),
+                        .18f * scale * Math.clamp((float) Math.sqrt(Math.max(0, planet.gravity)), .6f, 2.5f),
                         selected ? 0xd07feaff : 0xa0000000 | (planet.skyColor == 0 ? 0x6a9ccd : planet.skyColor),
                         selected));
             }
