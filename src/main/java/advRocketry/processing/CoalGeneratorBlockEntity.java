@@ -3,10 +3,12 @@
 
 package advRocketry.processing;
 
+import advRocketry.util.ClientSync;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +25,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 public final class CoalGeneratorBlockEntity extends BlockEntity implements MenuProvider {
     public static final int FE_PER_TICK = 80;
     private int energy;
+    private final ClientSync clientSync = new ClientSync();
     private int burnTime;
     public final ItemStackHandler fuel = new ItemStackHandler(1) {
         @Override
@@ -108,6 +111,7 @@ public final class CoalGeneratorBlockEntity extends BlockEntity implements MenuP
 
     public void tick() {
         if (level == null || level.isClientSide) return;
+        clientSync.update(this, energy);
         if (burnTime == 0
                 && energy <= 10000 - FE_PER_TICK
                 && !fuel.getStackInSlot(0).isEmpty()) {
@@ -147,5 +151,15 @@ public final class CoalGeneratorBlockEntity extends BlockEntity implements MenuP
         energy = Math.clamp(tag.getInt("energy"), 0, 10000);
         burnTime = Math.max(0, tag.getInt("burn_time"));
         if (tag.contains("fuel")) fuel.deserializeNBT(registries, tag.getCompound("fuel"));
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

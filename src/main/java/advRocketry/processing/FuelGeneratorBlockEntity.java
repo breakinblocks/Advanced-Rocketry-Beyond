@@ -1,10 +1,12 @@
 package advRocketry.processing;
 
+import advRocketry.util.ClientSync;
 import java.util.Comparator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -20,6 +22,7 @@ public final class FuelGeneratorBlockEntity extends BlockEntity implements MenuP
     public static final int CAPACITY = 1000000;
     public static final int TANK_CAPACITY = 16000;
     private int energy;
+    private final ClientSync clientSync = new ClientSync();
     private int burnTime;
     private int burnDuration;
     private int fePerTick;
@@ -95,6 +98,7 @@ public final class FuelGeneratorBlockEntity extends BlockEntity implements MenuP
 
     public void tick() {
         if (level == null || level.isClientSide) return;
+        clientSync.update(this, energy);
         if (burnTime == 0 && !tank.isEmpty()) {
             // Stable selection for overlapping datapack recipes. No cache survives a recipe reload.
             var recipe = level.getRecipeManager().getAllRecipesFor(ProcessingRegistry.LIQUID_FUEL_TYPE.get()).stream()
@@ -149,5 +153,15 @@ public final class FuelGeneratorBlockEntity extends BlockEntity implements MenuP
         if (fePerTick == 0) burnTime = 0;
         tank.readFromNBT(registries, tag.getCompound("tank"));
         if (tank.getFluidAmount() > TANK_CAPACITY) tank.getFluid().setAmount(TANK_CAPACITY);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

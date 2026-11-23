@@ -4,6 +4,7 @@
 package advRocketry.rocket;
 
 import advRocketry.processing.FluidContainers;
+import advRocketry.util.ClientSync;
 import advRocketry.util.MachineEnergy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,6 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
@@ -107,6 +109,7 @@ public final class FuelingStationBlockEntity extends BlockEntity implements Menu
     }
 
     public final MachineEnergy energy = MachineEnergy.consumer(1000, this::setChanged);
+    private final ClientSync clientSync = new ClientSync();
     public final FluidTank tank = new FluidTank(5000, FuelingStationBlockEntity::validFuel) {
         @Override
         protected void onContentsChanged() {
@@ -127,6 +130,7 @@ public final class FuelingStationBlockEntity extends BlockEntity implements Menu
 
     public void tick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
+        clientSync.update(this, energy.getEnergyStored() * 31L + tank.getFluidAmount());
         FluidContainers.emptyInto(inventory, tank);
         if (!tank.isEmpty()) {
             var fluid = BuiltInRegistries.FLUID.getKey(tank.getFluid().getFluid());
@@ -190,5 +194,15 @@ public final class FuelingStationBlockEntity extends BlockEntity implements Menu
         outputMode = InfrastructureRedstone.Mode.values()[Math.clamp(tag.getInt("output_mode"), 0, 2)];
         lastFuel = tag.contains("last_fuel") ? ResourceLocation.tryParse(tag.getString("last_fuel")) : null;
         link.load(tag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

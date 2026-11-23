@@ -3,6 +3,7 @@
 
 package advRocketry.orbit;
 
+import advRocketry.util.ClientSync;
 import advRocketry.util.MachineEnergy;
 import java.util.ArrayDeque;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,6 +27,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 /** One-thousand-FE pump, sixteen-bucket buffer and bounded upward flood search. */
 public final class PumpBlockEntity extends BlockEntity {
     public final MachineEnergy energy = MachineEnergy.consumer(1000, this::setChanged);
+    private final ClientSync clientSync = new ClientSync();
     public final FluidTank tank = new FluidTank(16000) {
         @Override
         protected void onContentsChanged() {
@@ -39,6 +42,7 @@ public final class PumpBlockEntity extends BlockEntity {
 
     public void tick() {
         if (!(level instanceof ServerLevel server)) return;
+        clientSync.update(this, energy.getEnergyStored() * 31L + tank.getFluidAmount());
         for (Direction direction : Direction.values()) {
             if (tank.isEmpty()) break;
             IFluidHandler output = server.getCapability(
@@ -155,5 +159,15 @@ public final class PumpBlockEntity extends BlockEntity {
         super.loadAdditional(tag, registries);
         if (tag.contains("energy")) energy.deserializeNBT(registries, tag.get("energy"));
         if (tag.contains("tank")) tank.readFromNBT(registries, tag.getCompound("tank"));
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

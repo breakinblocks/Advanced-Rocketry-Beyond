@@ -9,6 +9,7 @@ import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.PlanetIdChipItem;
 import advRocketry.orbit.StationLink;
 import advRocketry.space.GalaxyData;
+import advRocketry.util.ClientSync;
 import advRocketry.util.ComponentText;
 import advRocketry.util.MachineEnergy;
 import java.util.Map;
@@ -93,6 +94,7 @@ public final class RocketBlockEntity extends BlockEntity implements MenuProvider
     }
 
     public void tick() {
+        clientSync.update(this, energy.getEnergyStored());
         if (buildRemaining <= 0 || !(level instanceof ServerLevel)) return;
         if (energy.consume(100, true) < 100) return;
         energy.consume(100, false);
@@ -150,6 +152,7 @@ public final class RocketBlockEntity extends BlockEntity implements MenuProvider
         }
     };
     public final MachineEnergy energy = MachineEnergy.consumer(500000, this::setChanged);
+    private final ClientSync clientSync = new ClientSync();
     public final FluidTank tank = new FluidTank(tankCapacity(), this::validFuel) {
         @Override
         protected void onContentsChanged() {

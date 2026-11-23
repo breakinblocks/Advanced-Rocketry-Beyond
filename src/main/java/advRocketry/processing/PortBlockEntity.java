@@ -4,12 +4,14 @@
 package advRocketry.processing;
 
 import advRocketry.space.SolarPower;
+import advRocketry.util.ClientSync;
 import advRocketry.util.MachineEnergy;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,6 +44,7 @@ public final class PortBlockEntity extends BlockEntity implements MenuProvider {
     };
     public final MachineEnergy energyStorage = createEnergy();
     private final NeighbourEnergy neighbours = new NeighbourEnergy(this);
+    private final ClientSync clientSync = new ClientSync();
 
     public PortBlockEntity(BlockPos pos, BlockState state) {
         super(MachinePorts.ENTITY.get(), pos, state);
@@ -188,6 +191,7 @@ public final class PortBlockEntity extends BlockEntity implements MenuProvider {
         if (kind() == MachinePorts.Kind.SOLAR
                 || kind() == MachinePorts.Kind.ENERGY_OUTPUT
                 || kind() == MachinePorts.Kind.CREATIVE_ENERGY_INPUT) neighbours.push(energyStorage);
+        clientSync.update(this, energyStorage.getEnergyStored() * 31L + myTank.getFluidAmount());
     }
 
     @Override
@@ -232,5 +236,15 @@ public final class PortBlockEntity extends BlockEntity implements MenuProvider {
         inventory.deserializeNBT(registries, tag.getCompound("inventory"));
         myTank.readFromNBT(registries, tag.getCompound("fluid"));
         if (tag.contains("energy")) energyStorage.deserializeNBT(registries, tag.get("energy"));
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

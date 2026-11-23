@@ -5,6 +5,7 @@ package advRocketry.life;
 
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.processing.ProcessingFluids;
+import advRocketry.util.ClientSync;
 import advRocketry.util.MachineEnergy;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,6 +47,7 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     private long lastScan;
     private BoundingBox explored;
     public final MachineEnergy energy = MachineEnergy.consumer(ENERGY_CAPACITY, this::setChanged);
+    private final ClientSync clientSync = new ClientSync();
     public final FluidTank tank =
             new FluidTank(
                     TANK_CAPACITY,
@@ -150,6 +152,7 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
 
     public void tick() {
         if (level == null) return;
+        clientSync.update(this, energy.getEnergyStored());
         if (charger()) {
             for (var player : level.getEntitiesOfClass(Player.class, new AABB(worldPosition).expandTowards(0, 2, 0))) {
                 var armor = player.getItemBySlot(EquipmentSlot.CHEST);
