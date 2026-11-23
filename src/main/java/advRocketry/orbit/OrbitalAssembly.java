@@ -3,6 +3,7 @@ package advRocketry.orbit;
 import advRocketry.multiblock.PlacedMultiblock;
 import advRocketry.processing.MachinePartBlock;
 import advRocketry.processing.MultiblockMachine;
+import advRocketry.processing.PortBlock;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 /** Reversible visual ownership of supports and ports beneath formed orbital models. */
 public final class OrbitalAssembly {
@@ -44,6 +46,27 @@ public final class OrbitalAssembly {
         for (BlockPos pos : target) {
             owners.put(pos, controller.getBlockPos());
             setHidden(level, pos, true);
+        }
+        if (controller.warpCore() && structure != null) coverFrame(level, controller, structure, formed);
+    }
+
+    private static void coverFrame(
+            Level level, OrbitalBlockEntity controller, PlacedMultiblock structure, boolean formed) {
+        for (var cell : structure.cells()) {
+            BlockPos pos = cell.pos();
+            if (pos.equals(controller.getBlockPos()) || !level.isLoaded(pos)) continue;
+            BlockState state = level.getBlockState(pos);
+            if (!formed) {
+                if (state.getBlock() instanceof FormedCoverBlock) FormedCoverBlock.uncover(level, pos);
+                continue;
+            }
+            if (state.isAir()
+                    || state.hasProperty(MachinePartBlock.ASSEMBLED)
+                    || state.getBlock() instanceof PortBlock
+                    || state.getBlock() instanceof OrbitalBlock
+                    || state.getBlock() instanceof FormedCoverBlock
+                    || state.getBlock() instanceof WarpRingLightBlock) continue;
+            FormedCoverBlock.cover(level, pos, state);
         }
     }
 

@@ -130,6 +130,8 @@ public final class OrbitalRegistry {
             horizontal("warp_core", OrbitalBlock.Kind.WARP_CORE, 4);
     static final Supplier<WarpRingLightBlock> WARP_RING_LIGHT =
             BLOCKS.register("warp_ring_light", WarpRingLightBlock::new);
+    public static final Supplier<FormedCoverBlock> FORMED_COVER =
+            BLOCKS.register("formed_cover", FormedCoverBlock::new);
     public static final Supplier<OrbitalBlock> WARP_CONTROLLER =
             block("warp_controller", OrbitalBlock.Kind.WARP_CONTROLLER);
     public static final Supplier<OrbitalBlock> HOLOGRAPHIC_SELECTOR = block(
@@ -204,6 +206,10 @@ public final class OrbitalRegistry {
                             STATION_ALTITUDE_CONTROLLER.get(),
                             STATION_ORIENTATION_CONTROLLER.get(),
                             FORCE_FIELD_PROJECTOR.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<FormedCoverBlockEntity>> FORMED_COVER_ENTITY = ENTITIES.register(
+            "formed_cover",
+            () -> BlockEntityType.Builder.of(FormedCoverBlockEntity::new, FORMED_COVER.get())
                     .build(null));
     public static final Supplier<BlockEntityType<PumpBlockEntity>> PUMP_ENTITY = ENTITIES.register(
             "fluid_pump",
@@ -323,7 +329,7 @@ public final class OrbitalRegistry {
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,
                 BLOCK_ENTITY.get(),
-                (entity, side) -> entity.hatch() || entity.stationGravityController() ? null : entity.energy);
+                (entity, side) -> entity.usesEnergy() ? entity.energy : null);
     }
 
     private static void creative(BuildCreativeModeTabContentsEvent event) {

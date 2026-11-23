@@ -6,6 +6,7 @@ package advRocketry.orbit;
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.processing.PortBlockEntity;
+import advRocketry.util.ClientSync;
 import advRocketry.util.ComponentText;
 import advRocketry.util.MachineChunkLoading;
 import advRocketry.util.MachineEnergy;
@@ -49,6 +50,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
             return level != null && observatory() && AsteroidCatalog.isArtifact(level.registryAccess(), stack);
         }
     };
+    private final ClientSync clientSync = new ClientSync();
     public final MachineEnergy energy = new MachineEnergy(100000, 100000, 100000, this::setChanged) {
         @Override
         public boolean canReceive() {
@@ -104,6 +106,24 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
 
     public boolean producesEnergy() {
         return solarArray() || microwaveReceiver() || blackHoleGenerator();
+    }
+
+    public boolean usesEnergy() {
+        return switch (kind()) {
+            case TERMINAL,
+                    BUILDER,
+                    MICROWAVE_RECEIVER,
+                    SOLAR_ARRAY,
+                    BLACK_HOLE_GENERATOR,
+                    OBSERVATORY,
+                    SPACE_ELEVATOR,
+                    AREA_GRAVITY_CONTROLLER,
+                    ORBITAL_LASER,
+                    RAILGUN,
+                    ASTROBODY_PROCESSOR,
+                    WARP_CONTROLLER -> true;
+            default -> false;
+        };
     }
 
     public int pullFrom(PortBlockEntity port, int maximum) {
@@ -277,6 +297,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     }
 
     public void tick() {
+        clientSync.update(this, energy.getEnergyStored());
         MachineChunkLoading.refresh(this);
         boolean generating = powerMadeLastTick > 0;
         boolean laserRunning = laser.running;
@@ -502,6 +523,7 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
         tag.putString("docking_id", dockingId);
         tag.putString("docking_target", dockingTarget);
         tag.putBoolean("formed", formed);
+        tag.put("energy", energy.serializeNBT(registries));
         return tag;
     }
 

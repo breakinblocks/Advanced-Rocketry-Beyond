@@ -71,6 +71,17 @@ public final class WarpCoreLogic {
         return PlacedMultiblock.of(core, "warp_core").entity('I', PortBlockEntity.class);
     }
 
+    public static int dilithiumInInput(OrbitalBlockEntity core) {
+        PortBlockEntity input = input(core);
+        if (input == null) return 0;
+        int count = 0;
+        for (int slot = 0; slot < input.inventory.getSlots(); slot++) {
+            var stack = input.inventory.getStackInSlot(slot);
+            if (stack.is(DILITHIUM)) count += stack.getCount();
+        }
+        return count;
+    }
+
     public static int stationFuel(OrbitalBlockEntity core) {
         if (!(core.getLevel() instanceof ServerLevel level)) return 0;
         Station station = StationLogic.at(level, core.getBlockPos());

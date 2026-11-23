@@ -1355,6 +1355,9 @@ final class ModLanguage extends LanguageProvider {
         add("jade.adv_rocketry.running", "Running");
         add("jade.adv_rocketry.idle", "Idle");
         add("jade.adv_rocketry.progress", "Progress: %s%%");
+        add("block.adv_rocketry.formed_cover", "Machine Frame");
         add("jade.adv_rocketry.room", "Room volume: %s blocks");
+        add("jade.adv_rocketry.dilithium", "Dilithium in input: %s");
+        add("jade.adv_rocketry.warp_fuel", "Station warp fuel: %s / %s");
     }
 }

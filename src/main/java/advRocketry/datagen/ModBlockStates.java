@@ -939,6 +939,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states("landing_pad", NONE, "", "block/landing_pad");
         states("laser_light", NONE, "", "block/laser_light");
         states("warp_ring_light", NONE, "", "block/laser_light");
+        states("formed_cover", NONE, "", "block/laser_light");
         states("lathe", HORIZONTAL, "state=false", "block/lathe", "state=true", "block/lathe_formed");
         states("launch_pad", NONE, "", "block/launch_pad");
         states("lens_block", NONE, "", "block/lens_block");

@@ -1,5 +1,6 @@
 package advRocketry.multiblock;
 
+import advRocketry.orbit.FormedCoverBlock;
 import advRocketry.orbit.OrbitalBlock;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.PortBlock;
@@ -214,7 +215,8 @@ public final class Multiblock {
     public boolean complete(Level level, BlockPos controller, Direction facing) {
         for (Cell cell : cells) {
             BlockPos pos = position(controller, facing, cell);
-            if (!level.isLoaded(pos) || !key(cell.symbol()).test(level.getBlockState(pos))) return false;
+            if (!level.isLoaded(pos) || !key(cell.symbol()).test(FormedCoverBlock.visibleState(level, pos)))
+                return false;
         }
         return true;
     }

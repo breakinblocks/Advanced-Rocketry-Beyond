@@ -3,6 +3,7 @@ package advRocketry.compat.jade;
 import advRocketry.Main;
 import advRocketry.life.OxygenBlockEntity;
 import advRocketry.orbit.OrbitalBlockEntity;
+import advRocketry.orbit.WarpCoreLogic;
 import advRocketry.processing.ProcessingBlock;
 import advRocketry.processing.ProcessingBlockEntity;
 import advRocketry.rocket.RocketBlockEntity;
@@ -30,8 +31,13 @@ enum MachineStatusProvider implements IBlockComponentProvider, IServerDataProvid
     public void appendServerData(CompoundTag data, BlockAccessor accessor) {
         var registries = accessor.getLevel().registryAccess();
         switch (accessor.getBlockEntity()) {
-            case OrbitalBlockEntity orbital ->
+            case OrbitalBlockEntity orbital -> {
                 data.putString("status", Component.Serializer.toJson(orbital.status, registries));
+                if (orbital.warpCore() && WarpCoreLogic.complete(orbital)) {
+                    data.putInt("dilithium", WarpCoreLogic.dilithiumInInput(orbital));
+                    data.putInt("warp_fuel", WarpCoreLogic.stationFuel(orbital));
+                }
+            }
             case RocketBlockEntity rocket -> {
                 data.putString("status", Component.Serializer.toJson(rocket.status, registries));
                 if (rocket.buildTotal > 0 && rocket.buildRemaining > 0)
@@ -65,5 +71,10 @@ enum MachineStatusProvider implements IBlockComponentProvider, IServerDataProvid
         if (data.contains("progress"))
             tooltip.add(Component.translatable("jade.adv_rocketry.progress", data.getInt("progress")));
         if (data.contains("room")) tooltip.add(Component.translatable("jade.adv_rocketry.room", data.getInt("room")));
+        if (data.contains("dilithium"))
+            tooltip.add(Component.translatable("jade.adv_rocketry.dilithium", data.getInt("dilithium")));
+        if (data.contains("warp_fuel"))
+            tooltip.add(Component.translatable(
+                    "jade.adv_rocketry.warp_fuel", data.getInt("warp_fuel"), WarpCoreLogic.MAX_FUEL));
     }
 }
