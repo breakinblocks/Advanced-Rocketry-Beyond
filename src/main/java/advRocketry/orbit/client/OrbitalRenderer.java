@@ -297,7 +297,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
         }
         if (entity.railgun()) {
             if (!entity.formed) return;
-            FormedMaterialRenderer.slabs(entity, PlacedMultiblock.of(entity, "railgun"), pose, buffers, overlay);
+            FormedMaterialRenderer.slabs(PlacedMultiblock.of(entity, "railgun"), pose, buffers, overlay);
             pose.pushPose();
             var offset = RailgunLogic.emitter(entity).subtract(entity.getBlockPos());
             pose.translate(offset.getX() + .5, offset.getY() + .002, offset.getZ() + .5);
@@ -316,7 +316,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
         if (entity.astrobodyProcessor()) {
             if (!entity.formed) return;
             FormedMaterialRenderer.slabs(
-                    entity, PlacedMultiblock.of(entity, "astrobody_data_processor"), pose, buffers, overlay);
+                    PlacedMultiblock.of(entity, "astrobody_data_processor"), pose, buffers, overlay);
             pose.pushPose();
             pose.translate(.5, 0, .5);
             pose.mulPose(Axis.YP.rotationDegrees(yaw(front(entity))));
@@ -471,7 +471,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             int light,
             int overlay) {
         if (!entity.formed) return;
-        FormedMaterialRenderer.slabs(entity, PlacedMultiblock.of(entity, "space_elevator"), pose, buffers, overlay);
+        FormedMaterialRenderer.slabs(PlacedMultiblock.of(entity, "space_elevator"), pose, buffers, overlay);
         ObjModel elevatorModel = model(ELEVATOR_MODEL);
         Direction front = front(entity);
         pose.pushPose();

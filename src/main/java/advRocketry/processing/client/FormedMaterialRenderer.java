@@ -9,8 +9,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.SlabType;
 
 public final class FormedMaterialRenderer {
     private static final ResourceLocation MODEL =
@@ -26,25 +24,8 @@ public final class FormedMaterialRenderer {
         model = null;
     }
 
-    public static void slabs(
-            BlockEntity entity, PlacedMultiblock layout, PoseStack pose, MultiBufferSource buffers, int overlay) {
-        if (layout == null) return;
-        for (BlockPos pos : layout.positions('s')) {
-            SlabType type = layout.level()
-                    .getBlockState(pos)
-                    .getOptionalValue(BlockStateProperties.SLAB_TYPE)
-                    .orElse(null);
-            if (type != null)
-                render(
-                        entity,
-                        pos,
-                        "ProcessorDeck",
-                        type == SlabType.TOP ? .5f : 0,
-                        type == SlabType.DOUBLE ? 2 : 1,
-                        pose,
-                        buffers,
-                        overlay);
-        }
+    public static void slabs(PlacedMultiblock layout, PoseStack pose, MultiBufferSource buffers, int overlay) {
+        if (layout != null) FormedDeckRenderer.render(layout, pose, buffers, overlay);
     }
 
     public static void render(

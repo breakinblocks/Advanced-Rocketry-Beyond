@@ -1,240 +1,244 @@
 {
   "multipart": [
     {
-      "when": {
-        "active": "false",
-        "north": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm"
-      }
+      "when": {"AND": [
+        {"active": "false", "north": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm"}
     },
     {
-      "when": {
-        "active": "false",
-        "north": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core"
-      }
+      "when": {"AND": [
+        {"active": "false", "north": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core"}
     },
     {
-      "when": {
-        "active": "false",
-        "east": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm",
-        "y": 90
-      }
+      "when": {"AND": [
+        {"active": "false", "east": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm", "y": 90}
     },
     {
-      "when": {
-        "active": "false",
-        "east": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core",
-        "y": 90
-      }
+      "when": {"AND": [
+        {"active": "false", "east": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core", "y": 90}
     },
     {
-      "when": {
-        "active": "false",
-        "south": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm",
-        "y": 180
-      }
+      "when": {"AND": [
+        {"active": "false", "south": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm", "y": 180}
     },
     {
-      "when": {
-        "active": "false",
-        "south": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core",
-        "y": 180
-      }
+      "when": {"AND": [
+        {"active": "false", "south": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core", "y": 180}
     },
     {
-      "when": {
-        "active": "false",
-        "west": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm",
-        "y": 270
-      }
+      "when": {"AND": [
+        {"active": "false", "west": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm", "y": 270}
     },
     {
-      "when": {
-        "active": "false",
-        "west": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core",
-        "y": 270
-      }
+      "when": {"AND": [
+        {"active": "false", "west": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core", "y": 270}
     },
     {
-      "when": {
-        "active": "false",
-        "up": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm",
-        "x": 270
-      }
+      "when": {"AND": [
+        {"active": "false", "up": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm", "x": 270}
     },
     {
-      "when": {
-        "active": "false",
-        "up": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core",
-        "x": 270
-      }
+      "when": {"AND": [
+        {"active": "false", "up": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core", "x": 270}
     },
     {
-      "when": {
-        "active": "false",
-        "down": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm",
-        "x": 90
-      }
+      "when": {"AND": [
+        {"active": "false", "down": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm", "x": 90}
     },
     {
-      "when": {
-        "active": "false",
-        "down": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core",
-        "x": 90
-      }
+      "when": {"AND": [
+        {"active": "false", "down": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core", "x": 90}
     },
     {
-      "when": {
-        "active": "true",
-        "north": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm_active"
-      }
+      "when": {"AND": [
+        {"active": "true", "north": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm_active"}
     },
     {
-      "when": {
-        "active": "true",
-        "north": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core_active"
-      }
+      "when": {"AND": [
+        {"active": "true", "north": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core_active"}
     },
     {
-      "when": {
-        "active": "true",
-        "east": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm_active",
-        "y": 90
-      }
+      "when": {"AND": [
+        {"active": "true", "east": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm_active", "y": 90}
     },
     {
-      "when": {
-        "active": "true",
-        "east": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core_active",
-        "y": 90
-      }
+      "when": {"AND": [
+        {"active": "true", "east": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core_active", "y": 90}
     },
     {
-      "when": {
-        "active": "true",
-        "south": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm_active",
-        "y": 180
-      }
+      "when": {"AND": [
+        {"active": "true", "south": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm_active", "y": 180}
     },
     {
-      "when": {
-        "active": "true",
-        "south": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core_active",
-        "y": 180
-      }
+      "when": {"AND": [
+        {"active": "true", "south": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core_active", "y": 180}
     },
     {
-      "when": {
-        "active": "true",
-        "west": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm_active",
-        "y": 270
-      }
+      "when": {"AND": [
+        {"active": "true", "west": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm_active", "y": 270}
     },
     {
-      "when": {
-        "active": "true",
-        "west": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core_active",
-        "y": 270
-      }
+      "when": {"AND": [
+        {"active": "true", "west": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core_active", "y": 270}
     },
     {
-      "when": {
-        "active": "true",
-        "up": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm_active",
-        "x": 270
-      }
+      "when": {"AND": [
+        {"active": "true", "up": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm_active", "x": 270}
     },
     {
-      "when": {
-        "active": "true",
-        "up": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core_active",
-        "x": 270
-      }
+      "when": {"AND": [
+        {"active": "true", "up": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core_active", "x": 270}
     },
     {
-      "when": {
-        "active": "true",
-        "down": "true"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_arm_active",
-        "x": 90
-      }
+      "when": {"AND": [
+        {"active": "true", "down": "true"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_arm_active", "x": 90}
     },
     {
-      "when": {
-        "active": "true",
-        "down": "false"
-      },
-      "apply": {
-        "model": "adv_rocketry:block/transport/item_conduit_core_active",
-        "x": 90
-      }
+      "when": {"AND": [
+        {"active": "true", "down": "false"},
+        {"OR": [{"north": "false"}, {"south": "false"}, {"east": "true"}, {"west": "true"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "false"}, {"west": "false"}, {"up": "true"}, {"down": "true"}]},
+        {"OR": [{"north": "true"}, {"south": "true"}, {"east": "true"}, {"west": "true"}, {"up": "false"}, {"down": "false"}]}
+      ]},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_core_active", "x": 90}
+    },
+    {
+      "when": {"active": "false", "north": "true", "south": "true", "east": "false", "west": "false", "up": "false", "down": "false"},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_straight"}
+    },
+    {
+      "when": {"active": "false", "north": "false", "south": "false", "east": "true", "west": "true", "up": "false", "down": "false"},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_straight", "y": 90}
+    },
+    {
+      "when": {"active": "false", "north": "false", "south": "false", "east": "false", "west": "false", "up": "true", "down": "true"},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_straight", "x": 90}
+    },
+    {
+      "when": {"active": "true", "north": "true", "south": "true", "east": "false", "west": "false", "up": "false", "down": "false"},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_straight_active"}
+    },
+    {
+      "when": {"active": "true", "north": "false", "south": "false", "east": "true", "west": "true", "up": "false", "down": "false"},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_straight_active", "y": 90}
+    },
+    {
+      "when": {"active": "true", "north": "false", "south": "false", "east": "false", "west": "false", "up": "true", "down": "true"},
+      "apply": {"model": "adv_rocketry:block/transport/item_conduit_straight_active", "x": 90}
     }
   ]
 }
