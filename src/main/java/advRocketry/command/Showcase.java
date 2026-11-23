@@ -5,6 +5,7 @@ import advRocketry.multiblock.Multiblocks;
 import advRocketry.processing.BlueprintPlacer;
 import advRocketry.processing.MachinePorts;
 import advRocketry.processing.ProjectorBlueprint;
+import advRocketry.rocket.RocketRegistry;
 import advRocketry.util.Texts;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -165,14 +166,12 @@ public final class Showcase {
         BlockPos min = start.offset(-2, 0, -2);
         BlockPos max = start.offset(width + 1, height, depth + 1);
         AABB area = new AABB(min.getCenter(), max.getCenter()).inflate(4);
+        BlockState floor = RocketRegistry.PARTS.get("launch_pad").get().defaultBlockState();
         level.getEntitiesOfClass(ItemFrame.class, area).forEach(ItemFrame::discard);
         level.getEntitiesOfClass(Display.TextDisplay.class, area).forEach(Display.TextDisplay::discard);
         for (int x = min.getX(); x <= max.getX(); x++)
             for (int z = min.getZ(); z <= max.getZ(); z++) {
-                level.setBlock(
-                        new BlockPos(x, start.getY() - 1, z),
-                        Blocks.SMOOTH_STONE.defaultBlockState(),
-                        Block.UPDATE_CLIENTS);
+                level.setBlock(new BlockPos(x, start.getY() - 1, z), floor, Block.UPDATE_CLIENTS);
                 for (int y = start.getY(); y <= max.getY(); y++)
                     level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
             }
