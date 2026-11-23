@@ -34,14 +34,16 @@ public final class WarpCoreLogic {
 
     private static Map<BlockPos, VoxelShape> buildPartShapes() {
         // Centered on the crystal cell, using the formed model's two pedestal tiers
-        // and a three-rectangle approximation of its octagonal containment glass.
+        // and a three-rectangle approximation for each octagonal section.
         VoxelShape model = Shapes.or(
                 Shapes.box(-.28, 0, -.28, 1.28, .22, 1.28),
                 Shapes.box(-.07, .22, -.07, 1.07, .42, 1.07),
                 Shapes.box(.06, .42, .06, .94, 4.36, .94),
                 Shapes.box(-.10, .42, .25, 1.10, 4.36, .75),
                 Shapes.box(.25, .42, -.10, .75, 4.36, 1.10),
-                Shapes.box(.22, 4.32, .22, .78, 4.46, .78));
+                Shapes.box(.302, 4.32, .302, .698, 4.46, .698),
+                Shapes.box(.22, 4.32, .384, .78, 4.46, .616),
+                Shapes.box(.384, 4.32, .22, .616, 4.46, .78));
         Map<BlockPos, VoxelShape> shapes = new HashMap<>();
         for (int y = 0; y <= 4; y++)
             for (int x = -1; x <= 1; x++)

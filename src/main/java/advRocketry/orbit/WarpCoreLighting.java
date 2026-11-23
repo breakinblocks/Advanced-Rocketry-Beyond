@@ -8,7 +8,9 @@ import net.minecraft.world.level.block.Block;
 
 /** Steady block light for the formed core and timing shared by its visual rings. */
 public final class WarpCoreLighting {
-    public static final int RING_COUNT = 3;
+    public static final int RING_COUNT = 4;
+    private static final double RING_TRAVEL_TICKS = 100;
+    private static final double RING_MIDPOINT = 2.38;
 
     enum Anchor {
         LOWER(2, 1, 1),
@@ -45,11 +47,18 @@ public final class WarpCoreLighting {
     private WarpCoreLighting() {}
 
     public static double ringHeight(double time, int ring) {
-        return .78 + (ring * 1.14 + time * .025) % 3.2;
+        double distance = 1.58 - 1.54 * ringProgress(time, ring);
+        return RING_MIDPOINT + (ring % 2 == 0 ? -distance : distance);
     }
 
     public static double ringPulse(double time, int ring) {
-        return .5 + .5 * Math.sin(time * .09 + ring * Math.TAU / RING_COUNT);
+        double progress = ringProgress(time, ring);
+        return Math.min(1, Math.sin(progress * Math.PI) * 1.5);
+    }
+
+    private static double ringProgress(double time, int ring) {
+        // Consecutive rings are mirrored partners. The second pair starts half a cycle later.
+        return (time / RING_TRAVEL_TICKS + (ring / 2) * .5) % 1;
     }
 
     static void ensure(OrbitalBlockEntity core) {

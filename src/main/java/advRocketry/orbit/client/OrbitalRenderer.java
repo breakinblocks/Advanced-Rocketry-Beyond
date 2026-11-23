@@ -423,7 +423,7 @@ public final class OrbitalRenderer implements BlockEntityRenderer<OrbitalBlockEn
             for (int ring = 0; ring < WarpCoreLighting.RING_COUNT; ring++) {
                 double height = WarpCoreLighting.ringHeight(time, ring);
                 double intensity = moving ? WarpCoreLighting.ringPulse(time, ring) : .5;
-                int opacity = 0x60 + (int) (0x8f * intensity);
+                int opacity = (int) (0xef * intensity);
                 EffectGeometry.ring(pose, glow, .32, height, .035, opacity << 24 | 0x54d5ff, 16);
             }
             buffers.endBatch(EffectRenderTypes.GLOW);

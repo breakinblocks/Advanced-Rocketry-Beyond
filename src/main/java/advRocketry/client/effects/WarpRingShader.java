@@ -63,24 +63,16 @@ public final class WarpRingShader extends RenderType {
     public static void render(PoseStack pose, MultiBufferSource.BufferSource buffers, double time, boolean moving) {
         if (shader == null || ShaderCompatibility.shaderPackActive() || !AdvancedRocketryConfig.advancedVfx()) return;
         VertexConsumer vertices = buffers.getBuffer(HALO);
-        double spill = moving ? WarpCoreLighting.ringPulse(time, 0) : .5;
+        double spill = moving ? WarpCoreLighting.ringPulse(time, 2) : .5;
         int spillColor = (int) (24 + 64 * spill) << 24 | 0x258fd9;
-        // The containment socket is a fixed surface on the formed model.
-        double socketRadius = .48 + spill * .07;
-        for (int segment = 0; segment < SEGMENTS; segment++) {
-            double a = segment * Math.TAU / SEGMENTS;
-            double b = (segment + 1) * Math.TAU / SEGMENTS;
-            vertex(pose, vertices, a, 0, .424, .5f, spillColor);
-            vertex(pose, vertices, b, socketRadius, .424, 0, spillColor);
-            vertex(pose, vertices, a, socketRadius, .424, 0, spillColor);
-            vertex(pose, vertices, a, 0, .424, .5f, spillColor);
-        }
+        socketGlow(pose, vertices, .424, .48 + spill * .07, false, spillColor);
+        socketGlow(pose, vertices, 4.316, .23 + spill * .03, true, spillColor);
         for (int ring = 0; ring < WarpCoreLighting.RING_COUNT; ring++) {
             double pulse = moving ? WarpCoreLighting.ringPulse(time, ring) : .5;
             double height = WarpCoreLighting.ringHeight(time, ring);
             double radius = .39 + pulse * .055;
             double spread = .16 + pulse * .21;
-            int color = (int) (65 + pulse * 160) << 24 | 0x47bcff;
+            int color = (int) (225 * pulse) << 24 | 0x47bcff;
             for (int segment = 0; segment < SEGMENTS; segment++) {
                 double a = segment * Math.TAU / SEGMENTS;
                 double b = (segment + 1) * Math.TAU / SEGMENTS;
@@ -91,6 +83,19 @@ public final class WarpRingShader extends RenderType {
             }
         }
         buffers.endBatch(HALO);
+    }
+
+    private static void socketGlow(
+            PoseStack pose, VertexConsumer vertices, double y, double radius, boolean downward, int color) {
+        double step = (downward ? -Math.TAU : Math.TAU) / SEGMENTS;
+        for (int segment = 0; segment < SEGMENTS; segment++) {
+            double a = segment * step;
+            double b = a + step;
+            vertex(pose, vertices, a, 0, y, .5f, color);
+            vertex(pose, vertices, b, radius, y, 0, color);
+            vertex(pose, vertices, a, radius, y, 0, color);
+            vertex(pose, vertices, a, 0, y, .5f, color);
+        }
     }
 
     private static void vertex(
