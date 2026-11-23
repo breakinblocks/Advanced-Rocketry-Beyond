@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "adv_rocketry:block/volcanic_ash"
-    }
+    "": [
+      {
+        "model": "adv_rocketry:block/volcanic_ash"
+      },
+      {
+        "model": "adv_rocketry:block/volcanic_ash_1"
+      },
+      {
+        "model": "adv_rocketry:block/volcanic_ash_2"
+      },
+      {
+        "model": "adv_rocketry:block/volcanic_ash_3"
+      }
+    ]
   }
 }

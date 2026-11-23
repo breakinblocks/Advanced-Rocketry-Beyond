@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "adv_rocketry:block/weathered_basalt"
-    }
+    "": [
+      {
+        "model": "adv_rocketry:block/weathered_basalt"
+      },
+      {
+        "model": "adv_rocketry:block/weathered_basalt_1"
+      },
+      {
+        "model": "adv_rocketry:block/weathered_basalt_2"
+      },
+      {
+        "model": "adv_rocketry:block/weathered_basalt_3"
+      }
+    ]
   }
 }

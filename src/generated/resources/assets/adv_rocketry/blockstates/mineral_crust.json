@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "adv_rocketry:block/mineral_crust"
-    }
+    "": [
+      {
+        "model": "adv_rocketry:block/mineral_crust"
+      },
+      {
+        "model": "adv_rocketry:block/mineral_crust_1"
+      },
+      {
+        "model": "adv_rocketry:block/mineral_crust_2"
+      },
+      {
+        "model": "adv_rocketry:block/mineral_crust_3"
+      }
+    ]
   }
 }

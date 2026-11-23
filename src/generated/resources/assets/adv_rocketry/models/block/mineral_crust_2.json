@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "adv_rocketry:block/terrain/mineral_crust/bottom_2",
+    "side": "adv_rocketry:block/terrain/mineral_crust/side_2",
+    "top": "adv_rocketry:block/terrain/mineral_crust/top_2"
+  }
+}

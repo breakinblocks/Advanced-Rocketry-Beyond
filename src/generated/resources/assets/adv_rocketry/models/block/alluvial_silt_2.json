@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "adv_rocketry:block/terrain/alluvial_silt/bottom_2",
+    "side": "adv_rocketry:block/terrain/alluvial_silt/side_2",
+    "top": "adv_rocketry:block/terrain/alluvial_silt/top_2"
+  }
+}

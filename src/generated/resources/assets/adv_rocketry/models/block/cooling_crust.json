@@ -1,6 +1,8 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "all": "adv_rocketry:block/cooling_crust"
+    "bottom": "adv_rocketry:block/terrain/cooling_crust/bottom",
+    "side": "adv_rocketry:block/cooling_crust",
+    "top": "adv_rocketry:block/terrain/cooling_crust/top"
   }
 }

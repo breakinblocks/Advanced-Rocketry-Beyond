@@ -2,9 +2,12 @@ package advRocketry.datagen;
 
 import advRocketry.space.BiomeMaterials;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 final class ModBlockStates extends ModBlockStateHelpers {
@@ -50,9 +53,46 @@ final class ModBlockStates extends ModBlockStateHelpers {
             Map.entry("facing=up", new int[] {270, 0}),
             Map.entry("facing=west", new int[] {0, 270}));
     private static final Map<String, int[]> UPSIDE_DOWN = Map.ofEntries(Map.entry("", new int[] {180, 0}));
+    private static final Set<String> LAYERED_TERRAIN = Set.of(
+            "weathered_basalt",
+            "wet_slate",
+            "rooted_loam",
+            "banded_stone",
+            "glacial_stone",
+            "alluvial_silt",
+            "cooling_crust",
+            "mineral_crust",
+            "dark_regolith",
+            "volcanic_ash");
 
     ModBlockStates(PackOutput output, ExistingFileHelper files) {
         super(output, files);
+    }
+
+    private void terrain(String name, String parent, String renderType, boolean layered) {
+        String folder = "block/terrain/" + name + "/";
+        ConfiguredModel[] variants = new ConfiguredModel[4];
+        for (int index = 0; index < variants.length; index++) {
+            String suffix = index == 0 ? "" : "_" + index;
+            String path = "block/" + name + suffix;
+            String side = index == 0 ? path : folder + "side" + suffix;
+            if (layered)
+                model(
+                        path,
+                        parent,
+                        renderType,
+                        true,
+                        "side",
+                        side,
+                        "top",
+                        folder + "top" + suffix,
+                        "bottom",
+                        folder + "bottom" + suffix);
+            else model(path, parent, renderType, true, "all", side);
+            variants[index] = new ConfiguredModel(unchecked(path));
+        }
+        var states = getVariantBuilder(BuiltInRegistries.BLOCK.get(location(name)));
+        states.setModels(states.partialState(), variants);
     }
 
     private void connectedMachinePanel(String name, String folder) {
@@ -75,7 +115,11 @@ final class ModBlockStates extends ModBlockStateHelpers {
     protected void registerStatesAndModels() {
         for (String name : BiomeMaterials.ALL.keySet()) {
             String habitat = BiomeMaterials.PLANTS.get(name);
-            if (name.endsWith("_log")) {
+            if (LAYERED_TERRAIN.contains(name)) {
+                terrain(name, "minecraft:block/cube_bottom_top", null, true);
+            } else if (name.equals("strike_glass")) {
+                terrain(name, "minecraft:block/cube_all", "minecraft:translucent", false);
+            } else if (name.endsWith("_log")) {
                 model(
                         "block/" + name,
                         "minecraft:block/cube_column",
@@ -128,9 +172,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 model(
                         "block/" + name,
                         "minecraft:block/cube_all",
-                        name.equals("strike_glass")
-                                ? "minecraft:translucent"
-                                : name.endsWith("leaves") ? "minecraft:cutout" : null,
+                        name.endsWith("leaves") ? "minecraft:cutout" : null,
                         true,
                         "all",
                         "block/" + name);
@@ -145,7 +187,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         obj("block/advanced_rocket_motor", "models/rocket/advrocketmotor.obj", "block/rocket/advrocketmotor");
         airlockFrame("block/airlock_door_lower", "block/smallairlockdoor_lower", false);
         airlockFrame("block/airlock_door_upper", "block/smallairlockdoor_upper", true);
-        model("block/alien_leaves", "minecraft:block/leaves", "minecraft:cutout", true, "all", "block/bluewood_leaves");
+        terrain("alien_leaves", "minecraft:block/leaves", "minecraft:cutout", false);
         model(
                 "block/alien_log",
                 "minecraft:block/cube_column",
@@ -722,7 +764,6 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/airlock_door_lower",
                 "half=upper",
                 "block/airlock_door_upper");
-        states("alien_leaves", NONE, "", "block/alien_leaves");
         states("alien_log", AXIS, "", "block/alien_log");
         states("alien_planks", NONE, "", "block/alien_planks");
         states("alien_sapling", NONE, "stage=0", "block/alien_sapling", "stage=1", "block/alien_sapling");

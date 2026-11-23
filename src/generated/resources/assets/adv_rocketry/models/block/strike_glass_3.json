@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "all": "adv_rocketry:block/terrain/strike_glass/side_3"
+  }
+}

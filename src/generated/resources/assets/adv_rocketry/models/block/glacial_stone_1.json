@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "adv_rocketry:block/terrain/glacial_stone/bottom_1",
+    "side": "adv_rocketry:block/terrain/glacial_stone/side_1",
+    "top": "adv_rocketry:block/terrain/glacial_stone/top_1"
+  }
+}

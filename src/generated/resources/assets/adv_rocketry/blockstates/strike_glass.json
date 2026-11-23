@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "adv_rocketry:block/strike_glass"
-    }
+    "": [
+      {
+        "model": "adv_rocketry:block/strike_glass"
+      },
+      {
+        "model": "adv_rocketry:block/strike_glass_1"
+      },
+      {
+        "model": "adv_rocketry:block/strike_glass_2"
+      },
+      {
+        "model": "adv_rocketry:block/strike_glass_3"
+      }
+    ]
   }
 }

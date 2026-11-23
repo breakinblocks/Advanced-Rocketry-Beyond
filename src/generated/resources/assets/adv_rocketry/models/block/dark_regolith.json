@@ -1,6 +1,8 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "all": "adv_rocketry:block/dark_regolith"
+    "bottom": "adv_rocketry:block/terrain/dark_regolith/bottom",
+    "side": "adv_rocketry:block/dark_regolith",
+    "top": "adv_rocketry:block/terrain/dark_regolith/top"
   }
 }

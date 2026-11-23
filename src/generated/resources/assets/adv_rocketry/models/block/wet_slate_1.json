@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "adv_rocketry:block/terrain/wet_slate/bottom_1",
+    "side": "adv_rocketry:block/terrain/wet_slate/side_1",
+    "top": "adv_rocketry:block/terrain/wet_slate/top_1"
+  }
+}

@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "adv_rocketry:block/wet_slate"
-    }
+    "": [
+      {
+        "model": "adv_rocketry:block/wet_slate"
+      },
+      {
+        "model": "adv_rocketry:block/wet_slate_1"
+      },
+      {
+        "model": "adv_rocketry:block/wet_slate_2"
+      },
+      {
+        "model": "adv_rocketry:block/wet_slate_3"
+      }
+    ]
   }
 }

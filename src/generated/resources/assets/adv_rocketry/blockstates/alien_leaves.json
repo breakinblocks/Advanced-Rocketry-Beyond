@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "adv_rocketry:block/alien_leaves"
-    }
+    "": [
+      {
+        "model": "adv_rocketry:block/alien_leaves"
+      },
+      {
+        "model": "adv_rocketry:block/alien_leaves_1"
+      },
+      {
+        "model": "adv_rocketry:block/alien_leaves_2"
+      },
+      {
+        "model": "adv_rocketry:block/alien_leaves_3"
+      }
+    ]
   }
 }

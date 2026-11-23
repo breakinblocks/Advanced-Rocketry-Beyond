@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "adv_rocketry:block/alluvial_silt"
-    }
+    "": [
+      {
+        "model": "adv_rocketry:block/alluvial_silt"
+      },
+      {
+        "model": "adv_rocketry:block/alluvial_silt_1"
+      },
+      {
+        "model": "adv_rocketry:block/alluvial_silt_2"
+      },
+      {
+        "model": "adv_rocketry:block/alluvial_silt_3"
+      }
+    ]
   }
 }

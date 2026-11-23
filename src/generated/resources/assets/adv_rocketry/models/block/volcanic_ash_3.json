@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "adv_rocketry:block/terrain/volcanic_ash/bottom_3",
+    "side": "adv_rocketry:block/terrain/volcanic_ash/side_3",
+    "top": "adv_rocketry:block/terrain/volcanic_ash/top_3"
+  }
+}

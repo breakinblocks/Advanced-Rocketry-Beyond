@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "adv_rocketry:block/terrain/rooted_loam/bottom_2",
+    "side": "adv_rocketry:block/terrain/rooted_loam/side_2",
+    "top": "adv_rocketry:block/terrain/rooted_loam/top_2"
+  }
+}

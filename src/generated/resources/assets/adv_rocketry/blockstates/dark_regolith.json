@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "adv_rocketry:block/dark_regolith"
-    }
+    "": [
+      {
+        "model": "adv_rocketry:block/dark_regolith"
+      },
+      {
+        "model": "adv_rocketry:block/dark_regolith_1"
+      },
+      {
+        "model": "adv_rocketry:block/dark_regolith_2"
+      },
+      {
+        "model": "adv_rocketry:block/dark_regolith_3"
+      }
+    ]
   }
 }
