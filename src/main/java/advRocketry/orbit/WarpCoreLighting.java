@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 /** Steady block light for the formed core and timing shared by its visual rings. */
 public final class WarpCoreLighting {
     public static final int RING_COUNT = 4;
-    private static final double RING_TRAVEL_TICKS = 100;
+    private static final double RING_TRAVEL_TICKS = 50;
     private static final double RING_MIDPOINT = 2.38;
 
     enum Anchor {
