@@ -27,14 +27,26 @@ public final class WarpHud {
         event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, LAYER, WarpHud::render);
     }
 
-    private static void render(GuiGraphics graphics, DeltaTracker delta) {
+    public static final int BOTTOM = 28;
+
+    public static boolean active() {
+        return transitStation() != null;
+    }
+
+    private static Station transitStation() {
         var client = Minecraft.getInstance();
         var player = client.player;
-        if (player == null || client.level == null || client.options.hideGui) return;
+        if (player == null || client.level == null || client.options.hideGui) return null;
         Planet here = GalaxySync.clientPlanet(client.level.dimension().location());
-        if (here == null || here.id != GalaxyData.SPACE_ID) return;
+        if (here == null || here.id != GalaxyData.SPACE_ID) return null;
         Station station = GalaxySync.clientStationAt(player.blockPosition());
-        if (station == null || !station.inWarp()) return;
+        return station == null || !station.inWarp() ? null : station;
+    }
+
+    private static void render(GuiGraphics graphics, DeltaTracker delta) {
+        var client = Minecraft.getInstance();
+        Station station = transitStation();
+        if (station == null) return;
         double time = client.level.getGameTime() + (double) delta.getGameTimeDeltaPartialTick(false);
         double progress = station.warpProgress(time);
         Planet target = GalaxySync.clientPlanet(station.warpDestination);

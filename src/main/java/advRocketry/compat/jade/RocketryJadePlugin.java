@@ -10,6 +10,7 @@ import advRocketry.processing.ProcessingBlock;
 import advRocketry.processing.ProcessingBlockEntity;
 import advRocketry.rocket.RocketBlockEntity;
 import advRocketry.rocket.RocketPartBlock;
+import advRocketry.space.client.WarpHud;
 import advRocketry.transport.TransportBlock;
 import advRocketry.transport.TransportBlockEntity;
 import net.minecraft.ChatFormatting;
@@ -34,6 +35,10 @@ public final class RocketryJadePlugin implements IWailaPlugin {
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
+        registration.addBeforeRenderCallback((box, rect, graphics, accessor) -> {
+            if (WarpHud.active() && rect.rect.getY() < WarpHud.BOTTOM) rect.rect.setY(WarpHud.BOTTOM);
+            return false;
+        });
         registration.addRayTraceCallback((hit, accessor, original) -> {
             if (!(accessor instanceof BlockAccessor block)) return accessor;
             var controller = FormedMachineParts.controllerAt(block.getLevel(), block.getPosition());
