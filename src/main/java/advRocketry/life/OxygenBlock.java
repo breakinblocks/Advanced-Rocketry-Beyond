@@ -3,7 +3,9 @@
 
 package advRocketry.life;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -52,6 +54,22 @@ public final class OxygenBlock extends Block implements EntityBlock {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
+    private static Component report(Level level, OxygenBlockEntity vent) {
+        if (vent.roomSize() > 0)
+            return Component.translatable("message.adv_rocketry.vent_sealed", vent.roomSize())
+                    .withStyle(ChatFormatting.GREEN);
+        BlockPos leak = vent.leak();
+        if (leak == null)
+            return Component.translatable("message.adv_rocketry.vent_no_room").withStyle(ChatFormatting.YELLOW);
+        return Component.translatable(
+                        "message.adv_rocketry.vent_leak",
+                        leak.getX(),
+                        leak.getY(),
+                        leak.getZ(),
+                        level.getBlockState(leak).getBlock().getName())
+                .withStyle(ChatFormatting.RED);
+    }
+
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new OxygenBlockEntity(pos, state);
@@ -75,6 +93,14 @@ public final class OxygenBlock extends Block implements EntityBlock {
             Player player,
             InteractionHand hand,
             BlockHitResult hit) {
+        if (player.isShiftKeyDown()
+                && !charger
+                && (stack.getItem() instanceof SealDetectorItem || stack.getItem() instanceof AtmosphereAnalyzerItem)) {
+            if (player instanceof ServerPlayer serverPlayer
+                    && level.getBlockEntity(pos) instanceof OxygenBlockEntity entity)
+                serverPlayer.sendSystemMessage(report(level, entity));
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+        }
         return FluidUtil.interactWithFluidHandler(player, hand, level, pos, hit.getDirection())
                 ? ItemInteractionResult.SUCCESS
                 : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

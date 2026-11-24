@@ -1142,6 +1142,11 @@ final class ModLanguage extends LanguageProvider {
         add("jade.adv_rocketry.warp_transit", "Warping to %s");
         add("jade.adv_rocketry.orbiting", "Orbiting %s");
         add("jade.adv_rocketry.leak", "Leak at %s, %s, %s");
+        add("message.adv_rocketry.vent_sealed", "Sealed room of %s blocks");
+        add("message.adv_rocketry.vent_leak", "Leak at %s, %s, %s: %s");
+        add(
+                "message.adv_rocketry.vent_no_room",
+                "No room yet. Give the vent power and oxygen and wait a second for it to scan.");
         add("gui.adv_rocketry.orbital.no_targets", "No known destinations");
         add("gui.adv_rocketry.orbital.no_biome_catalog_entries", "No biome catalog entries");
         add("gui.adv_rocketry.orbital.none", "None");

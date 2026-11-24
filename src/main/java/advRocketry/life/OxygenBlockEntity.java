@@ -4,11 +4,14 @@
 package advRocketry.life;
 
 import advRocketry.AdvancedRocketryConfig;
+import advRocketry.life.client.LeakMarker;
 import advRocketry.processing.ProcessingFluids;
 import advRocketry.util.ClientSync;
 import advRocketry.util.MachineEnergy;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,7 +44,10 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     private static final int FALLBACK_SCAN_INTERVAL = 600;
 
     public boolean active;
-    private Set<BlockPos> room = Set.of();
+    private static final LongOpenHashSet EMPTY_ROOM = new LongOpenHashSet();
+
+    private LongOpenHashSet room = new LongOpenHashSet();
+    private boolean updatingNeighbors;
     private boolean roomKnown;
     private BlockPos leak;
     private boolean dirty;
@@ -87,15 +93,17 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         return leak;
     }
 
-    public Set<BlockPos> room() {
-        return room;
+    public int roomSize() {
+        return room.size();
     }
 
     public void setRoom(Set<BlockPos> room) {
-        assignRoom(room, BoundingBox.encapsulatingPositions(room).orElse(null));
+        LongOpenHashSet keys = new LongOpenHashSet(room.size());
+        for (BlockPos pos : room) keys.add(pos.asLong());
+        assignRoom(keys, BoundingBox.encapsulatingPositions(room).orElse(null));
     }
 
-    private void assignRoom(Set<BlockPos> room, BoundingBox explored) {
+    private void assignRoom(LongOpenHashSet room, BoundingBox explored) {
         this.room = room;
         this.explored = explored;
         roomKnown = true;
@@ -103,14 +111,15 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         lastScan = level == null ? 0 : level.getGameTime();
     }
 
-    boolean supplies(BlockPos pos) {
+    boolean supplies(BlockPos pos, long key) {
         if (!active) return false;
         if (!roomKnown) return pos.closerThan(worldPosition, AdvancedRocketryConfig.oxygenVentSize());
-        return explored != null && explored.isInside(pos) && room.contains(pos);
+        return explored != null && explored.isInside(pos) && room.contains(key);
     }
 
     void blockChanged(BlockPos pos) {
-        if (roomKnown
+        if (!updatingNeighbors
+                && roomKnown
                 && explored != null
                 && pos.getX() >= explored.minX() - 1
                 && pos.getX() <= explored.maxX() + 1
@@ -137,22 +146,31 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     }
 
     private void scanRoom() {
-        Set<BlockPos> seen = new HashSet<>();
-        Set<BlockPos> found = Set.of();
-        leak = null;
+        LongOpenHashSet seen = new LongOpenHashSet();
+        LongOpenHashSet leaked = new LongOpenHashSet();
+        SealedRooms.Scan found = null;
+        SealedRooms.Scan worst = null;
+        BoundingBox box = null;
         for (Direction direction : Direction.values()) {
-            BlockPos origin = worldPosition.relative(direction);
-            if (seen.contains(origin)) continue;
-            found = SealedRooms.scan(level, origin, worldPosition, seen);
-            if (!found.isEmpty()) break;
-            if (SealedRooms.lastLeak() != null) leak = SealedRooms.lastLeak();
+            SealedRooms.Scan scan =
+                    SealedRooms.scan(level, worldPosition.relative(direction), worldPosition, seen, leaked);
+            if (scan.explored() != null) box = box == null ? scan.explored() : box.encapsulate(scan.explored());
+            if (!scan.room().isEmpty()) {
+                found = scan;
+                break;
+            }
+            if (scan.leaked() && (worst == null || rank(scan) > rank(worst))) worst = scan;
         }
-        if (!found.isEmpty()) leak = null;
-        assignRoom(found, BoundingBox.encapsulatingPositions(seen).orElse(null));
+        leak = found == null && worst != null ? worst.leak() : null;
+        assignRoom(found == null ? new LongOpenHashSet() : found.room(), box);
+    }
+
+    private static long rank(SealedRooms.Scan scan) {
+        return (scan.gap() != null ? 1L << 40 : 0) + scan.visited();
     }
 
     private void forgetRoom() {
-        room = Set.of();
+        room = new LongOpenHashSet();
         roomKnown = false;
         dirty = false;
         explored = null;
@@ -160,7 +178,8 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
 
     public void tick() {
         if (level == null) return;
-        clientSync.update(this, energy.getEnergyStored());
+        clientSync.update(
+                this, energy.getEnergyStored() + 31L * (leak == null ? 0 : leak.hashCode()) + (active ? 7 : 0));
         if (charger()) {
             for (var player : level.getEntitiesOfClass(Player.class, new AABB(worldPosition).expandTowards(0, 2, 0))) {
                 var armor = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -180,7 +199,7 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
             return;
         }
         SealedRooms.register(this);
-        Set<BlockPos> previousRoom = active ? room : Set.of();
+        LongOpenHashSet previousRoom = active ? room : EMPTY_ROOM;
         int scrubbers = 0;
         for (Direction direction : Direction.values()) {
             if (level.getBlockEntity(worldPosition.relative(direction)) instanceof CarbonScrubberBlockEntity scrubber
@@ -198,7 +217,8 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         boolean previous = active;
         active = powered && !room.isEmpty() && tank.getFluidAmount() >= consumption;
         if (!previousRoom.isEmpty() && (!active || previousRoom != room) && level instanceof ServerLevel serverLevel)
-            LightingRegistry.atmosphereLost(serverLevel, active ? lost(previousRoom) : previousRoom);
+            LightingRegistry.atmosphereLost(
+                    serverLevel, active ? lost(previousRoom) : SealedRooms.positions(previousRoom));
         if (active != previous) {
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
@@ -215,8 +235,11 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
                 boolean scrubbing = active
                         && level.getBlockEntity(next) instanceof CarbonScrubberBlockEntity scrubber
                         && scrubber.canScrub();
-                if (state.getValue(CarbonScrubberBlock.POWERED) != scrubbing)
+                if (state.getValue(CarbonScrubberBlock.POWERED) != scrubbing) {
+                    updatingNeighbors = true;
                     level.setBlock(next, state.setValue(CarbonScrubberBlock.POWERED, scrubbing), 3);
+                    updatingNeighbors = false;
+                }
             }
         }
         if (active) {
@@ -225,12 +248,18 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         }
     }
 
-    private Collection<BlockPos> lost(Set<BlockPos> previousRoom) {
-        return previousRoom.stream().filter(pos -> !room.contains(pos)).toList();
+    private Collection<BlockPos> lost(LongOpenHashSet previousRoom) {
+        List<BlockPos> lost = new ArrayList<>();
+        for (long key : previousRoom) if (!room.contains(key)) lost.add(BlockPos.of(key));
+        return lost;
     }
 
     public void tickClient() {
-        if (level == null || charger() || !active) return;
+        if (level == null || charger()) return;
+        if (!active) {
+            if (leak != null) LeakMarker.tick(this, leak);
+            return;
+        }
         if (level.getGameTime() % 85 != Math.floorMod(worldPosition.hashCode(), 85)) return;
         level.playLocalSound(
                 worldPosition.getX() + .5,
@@ -246,7 +275,8 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     public void decommission() {
         active = false;
         SealedRooms.remove(this);
-        if (level instanceof ServerLevel serverLevel) LightingRegistry.atmosphereLost(serverLevel, room);
+        if (level instanceof ServerLevel serverLevel)
+            LightingRegistry.atmosphereLost(serverLevel, SealedRooms.positions(room));
         forgetRoom();
         if (level == null) return;
         for (Direction direction : Direction.values()) {
@@ -268,6 +298,7 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         super.saveAdditional(tag, registries);
         tag.putInt("energy", energy.getEnergyStored());
         tag.putBoolean("active", active);
+        if (leak != null) tag.putLong("leak", leak.asLong());
         tag.put("tank", tank.writeToNBT(registries, new CompoundTag()));
     }
 
@@ -276,6 +307,7 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         super.loadAdditional(tag, registries);
         energy.setEnergy(tag.getInt("energy"));
         active = tag.getBoolean("active");
+        leak = tag.contains("leak") ? BlockPos.of(tag.getLong("leak")) : null;
         tank.readFromNBT(registries, tag.getCompound("tank"));
     }
 

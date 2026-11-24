@@ -84,8 +84,8 @@ enum MachineStatusProvider implements IBlockComponentProvider, IServerDataProvid
             }
             case OxygenBlockEntity vent -> {
                 data.putBoolean("running", vent.active);
-                data.putInt("room", vent.room().size());
-                if (vent.room().isEmpty() && vent.leak() != null)
+                data.putInt("room", vent.roomSize());
+                if (vent.roomSize() == 0 && vent.leak() != null)
                     data.putLong("leak", vent.leak().asLong());
             }
             default -> {}

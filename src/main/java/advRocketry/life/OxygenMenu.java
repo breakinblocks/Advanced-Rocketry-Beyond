@@ -33,7 +33,7 @@ public final class OxygenMenu extends ModMenu {
         this(id, entity, SplitIntData.server(VALUES, index -> switch (index) {
             case 0 -> entity.energy.getEnergyStored();
             case 1 -> entity.tank.getFluidAmount();
-            case 2 -> entity.room().size();
+            case 2 -> entity.roomSize();
             case 4 -> entity.tank.getFluid().is(ProcessingFluids.HYDROGEN) ? 1 : 0;
             default -> entity.active ? 1 : 0;
         }));
