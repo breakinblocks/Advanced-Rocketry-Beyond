@@ -37,7 +37,13 @@ public final class SealedRooms {
             GameEvent.FLUID_PLACE,
             GameEvent.FLUID_PICKUP);
 
+    private static BlockPos lastLeak;
+
     private SealedRooms() {}
+
+    static BlockPos lastLeak() {
+        return lastLeak;
+    }
 
     public static void unload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel) VENTS.remove(event.getLevel());
@@ -86,6 +92,11 @@ public final class SealedRooms {
         if (vents != null) for (OxygenBlockEntity vent : vents.values()) vent.blockChanged(pos);
     }
 
+    private static Set<BlockPos> leak(BlockPos pos) {
+        lastLeak = pos.immutable();
+        return Set.of();
+    }
+
     public static boolean seals(Level level, BlockPos pos) {
         var state = level.getBlockState(pos);
         if (state.is(ModTags.UNSEALABLE)) return false;
@@ -120,17 +131,18 @@ public final class SealedRooms {
     private static Set<BlockPos> scan(
             Level level, BlockPos origin, BlockPos center, int radius, boolean volumeBased, Set<BlockPos> seen) {
         int maximumVolume = (int) (4d / 3d * Math.PI * radius * radius * radius);
+        lastLeak = null;
         Set<BlockPos> room = new HashSet<>();
         ArrayDeque<BlockPos> pending = new ArrayDeque<>();
         pending.add(origin);
         seen.add(origin);
         while (!pending.isEmpty()) {
             BlockPos pos = pending.removeFirst();
-            if (!level.isInWorldBounds(pos) || !level.hasChunkAt(pos)) return Set.of();
+            if (!level.isInWorldBounds(pos) || !level.hasChunkAt(pos)) return leak(pos);
             if (seals(level, pos)) continue;
-            if (!volumeBased && pos.distSqr(center) > (double) radius * radius) return Set.of();
+            if (!volumeBased && pos.distSqr(center) > (double) radius * radius) return leak(pos);
             room.add(pos);
-            if (volumeBased && room.size() > maximumVolume) return Set.of();
+            if (volumeBased && room.size() > maximumVolume) return leak(pos);
             for (Direction direction : Direction.values()) {
                 BlockPos neighbor = pos.relative(direction);
                 if (seen.add(neighbor)) pending.add(neighbor);

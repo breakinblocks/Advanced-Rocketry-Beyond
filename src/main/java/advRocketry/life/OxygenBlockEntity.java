@@ -43,6 +43,7 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     public boolean active;
     private Set<BlockPos> room = Set.of();
     private boolean roomKnown;
+    private BlockPos leak;
     private boolean dirty;
     private long lastScan;
     private BoundingBox explored;
@@ -80,6 +81,10 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new OxygenMenu(id, inventory, this);
+    }
+
+    public BlockPos leak() {
+        return leak;
     }
 
     public Set<BlockPos> room() {
@@ -134,12 +139,15 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     private void scanRoom() {
         Set<BlockPos> seen = new HashSet<>();
         Set<BlockPos> found = Set.of();
+        leak = null;
         for (Direction direction : Direction.values()) {
             BlockPos origin = worldPosition.relative(direction);
             if (seen.contains(origin)) continue;
             found = SealedRooms.scan(level, origin, worldPosition, seen);
             if (!found.isEmpty()) break;
+            if (SealedRooms.lastLeak() != null) leak = SealedRooms.lastLeak();
         }
+        if (!found.isEmpty()) leak = null;
         assignRoom(found, BoundingBox.encapsulatingPositions(seen).orElse(null));
     }
 
@@ -240,6 +248,13 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         SealedRooms.remove(this);
         if (level instanceof ServerLevel serverLevel) LightingRegistry.atmosphereLost(serverLevel, room);
         forgetRoom();
+        if (level == null) return;
+        for (Direction direction : Direction.values()) {
+            BlockPos next = worldPosition.relative(direction);
+            BlockState state = level.getBlockState(next);
+            if (state.is(LifeSupportRegistry.CARBON_SCRUBBER.get()) && state.getValue(CarbonScrubberBlock.POWERED))
+                level.setBlock(next, state.setValue(CarbonScrubberBlock.POWERED, false), 3);
+        }
     }
 
     @Override
