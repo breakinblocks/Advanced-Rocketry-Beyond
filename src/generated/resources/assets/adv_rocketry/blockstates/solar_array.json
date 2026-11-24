@@ -1,10 +1,12 @@
 {
   "variants": {
     "facing=east,formed=false": {
-      "model": "adv_rocketry:block/solar_array"
+      "model": "adv_rocketry:block/solar_array",
+      "y": 90
     },
     "facing=east,formed=true": {
-      "model": "adv_rocketry:block/solar_array"
+      "model": "adv_rocketry:block/solar_array",
+      "y": 90
     },
     "facing=north,formed=false": {
       "model": "adv_rocketry:block/solar_array"
@@ -13,16 +15,20 @@
       "model": "adv_rocketry:block/solar_array"
     },
     "facing=south,formed=false": {
-      "model": "adv_rocketry:block/solar_array"
+      "model": "adv_rocketry:block/solar_array",
+      "y": 180
     },
     "facing=south,formed=true": {
-      "model": "adv_rocketry:block/solar_array"
+      "model": "adv_rocketry:block/solar_array",
+      "y": 180
     },
     "facing=west,formed=false": {
-      "model": "adv_rocketry:block/solar_array"
+      "model": "adv_rocketry:block/solar_array",
+      "y": 270
     },
     "facing=west,formed=true": {
-      "model": "adv_rocketry:block/solar_array"
+      "model": "adv_rocketry:block/solar_array",
+      "y": 270
     }
   }
 }

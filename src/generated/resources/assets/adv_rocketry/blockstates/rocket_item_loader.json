@@ -1,10 +1,12 @@
 {
   "variants": {
     "facing=east,powered=false": {
-      "model": "adv_rocketry:block/rocket_item_loader"
+      "model": "adv_rocketry:block/rocket_item_loader",
+      "y": 90
     },
     "facing=east,powered=true": {
-      "model": "adv_rocketry:block/rocket_item_loader"
+      "model": "adv_rocketry:block/rocket_item_loader",
+      "y": 90
     },
     "facing=north,powered=false": {
       "model": "adv_rocketry:block/rocket_item_loader"
@@ -13,16 +15,20 @@
       "model": "adv_rocketry:block/rocket_item_loader"
     },
     "facing=south,powered=false": {
-      "model": "adv_rocketry:block/rocket_item_loader"
+      "model": "adv_rocketry:block/rocket_item_loader",
+      "y": 180
     },
     "facing=south,powered=true": {
-      "model": "adv_rocketry:block/rocket_item_loader"
+      "model": "adv_rocketry:block/rocket_item_loader",
+      "y": 180
     },
     "facing=west,powered=false": {
-      "model": "adv_rocketry:block/rocket_item_loader"
+      "model": "adv_rocketry:block/rocket_item_loader",
+      "y": 270
     },
     "facing=west,powered=true": {
-      "model": "adv_rocketry:block/rocket_item_loader"
+      "model": "adv_rocketry:block/rocket_item_loader",
+      "y": 270
     }
   }
 }

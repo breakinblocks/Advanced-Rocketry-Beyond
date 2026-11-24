@@ -1,6 +1,9 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
-    "all": "adv_rocketry:block/controller_railgun"
+    "bottom": "adv_rocketry:block/framed/bottom",
+    "front": "adv_rocketry:block/framed/railgun_front",
+    "side": "adv_rocketry:block/framed/railgun_side",
+    "top": "adv_rocketry:block/framed/railgun_top"
   }
 }

@@ -1,6 +1,9 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
-    "all": "adv_rocketry:block/outputhatch"
+    "bottom": "adv_rocketry:block/framed/bottom",
+    "front": "adv_rocketry:block/framed/rocket_item_unloader_front",
+    "side": "adv_rocketry:block/framed/rocket_item_unloader_side",
+    "top": "adv_rocketry:block/framed/rocket_item_unloader_top"
   }
 }

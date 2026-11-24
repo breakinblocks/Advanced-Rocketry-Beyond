@@ -1,6 +1,12 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "all": "adv_rocketry:block/machinenuclear"
+    "down": "adv_rocketry:block/framed/bottom",
+    "east": "adv_rocketry:block/framed/nuclear_core_side",
+    "north": "adv_rocketry:block/framed/nuclear_core_front",
+    "particle": "adv_rocketry:block/framed/nuclear_core_front",
+    "south": "adv_rocketry:block/framed/nuclear_core_side",
+    "up": "adv_rocketry:block/framed/nuclear_core_top",
+    "west": "adv_rocketry:block/framed/nuclear_core_side"
   }
 }
