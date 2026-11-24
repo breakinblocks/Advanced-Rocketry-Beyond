@@ -5,7 +5,6 @@ public enum OrbitalAction {
     UNKNOWN(-1),
     BUILD(0),
     TRANSFER_DATA(1),
-    NEXT_WARP_TARGET(2),
     WARP(3),
     GRAVITY_DOWN(4),
     GRAVITY_UP(5),

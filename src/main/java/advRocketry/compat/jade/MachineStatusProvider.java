@@ -3,11 +3,15 @@ package advRocketry.compat.jade;
 import advRocketry.Main;
 import advRocketry.life.OxygenBlockEntity;
 import advRocketry.orbit.OrbitalBlockEntity;
+import advRocketry.orbit.StationLogic;
 import advRocketry.orbit.WarpCoreLogic;
 import advRocketry.processing.ProcessingBlock;
 import advRocketry.processing.ProcessingBlockEntity;
 import advRocketry.rocket.RocketBlockEntity;
+import advRocketry.space.GalaxyData;
+import advRocketry.space.Planet;
 import advRocketry.util.ComponentText;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +37,35 @@ enum MachineStatusProvider implements IBlockComponentProvider, IServerDataProvid
         switch (accessor.getBlockEntity()) {
             case OrbitalBlockEntity orbital -> {
                 data.putString("status", Component.Serializer.toJson(orbital.status, registries));
+                if (orbital.warpController()) {
+                    var station = StationLogic.at(accessor.getLevel(), accessor.getPosition());
+                    if (station != null && station.inWarp()) {
+                        Planet target = GalaxyData.get(accessor.getLevel().getServer())
+                                .planets
+                                .get(station.warpDestination);
+                        data.putString(
+                                "status",
+                                Component.Serializer.toJson(
+                                        Component.translatable(
+                                                "jade.adv_rocketry.warp_transit", target == null ? "?" : target.name),
+                                        registries));
+                        data.putInt("progress", (int) (100
+                                * station.warpProgress(accessor.getLevel()
+                                        .getServer()
+                                        .overworld()
+                                        .getGameTime())));
+                    } else if (station != null) {
+                        Planet orbit = GalaxyData.get(accessor.getLevel().getServer())
+                                .planets
+                                .get(station.orbitPlanet);
+                        data.putString(
+                                "status",
+                                Component.Serializer.toJson(
+                                        Component.translatable(
+                                                "jade.adv_rocketry.orbiting", orbit == null ? "?" : orbit.name),
+                                        registries));
+                    }
+                }
                 if (orbital.warpCore() && WarpCoreLogic.complete(orbital)) {
                     data.putInt("dilithium", WarpCoreLogic.dilithiumInInput(orbital));
                     data.putInt("warp_fuel", WarpCoreLogic.stationFuel(orbital));
@@ -52,6 +85,8 @@ enum MachineStatusProvider implements IBlockComponentProvider, IServerDataProvid
             case OxygenBlockEntity vent -> {
                 data.putBoolean("running", vent.active);
                 data.putInt("room", vent.room().size());
+                if (vent.room().isEmpty() && vent.leak() != null)
+                    data.putLong("leak", vent.leak().asLong());
             }
             default -> {}
         }
@@ -71,6 +106,10 @@ enum MachineStatusProvider implements IBlockComponentProvider, IServerDataProvid
         if (data.contains("progress"))
             tooltip.add(Component.translatable("jade.adv_rocketry.progress", data.getInt("progress")));
         if (data.contains("room")) tooltip.add(Component.translatable("jade.adv_rocketry.room", data.getInt("room")));
+        if (data.contains("leak")) {
+            BlockPos leak = BlockPos.of(data.getLong("leak"));
+            tooltip.add(Component.translatable("jade.adv_rocketry.leak", leak.getX(), leak.getY(), leak.getZ()));
+        }
         if (data.contains("dilithium"))
             tooltip.add(Component.translatable("jade.adv_rocketry.dilithium", data.getInt("dilithium")));
         if (data.contains("warp_fuel"))

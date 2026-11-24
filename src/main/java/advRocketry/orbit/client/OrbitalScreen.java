@@ -15,8 +15,10 @@ import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.OrbitalMenu;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.orbit.WarpCoreLogic;
+import advRocketry.orbit.WarpLogic;
 import advRocketry.space.GalaxyData;
 import advRocketry.space.GalaxySync;
+import advRocketry.space.Planet;
 import advRocketry.util.Texts;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,6 +37,10 @@ import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
+    private static final int PICKER_ROW = 13;
+    private static final int PICKER_ROWS = 9;
+    private boolean targetPicker;
+    private int targetScroll;
     private int scannerPage;
     private int asteroidPreviewScroll;
     private Button artifactsBack;
@@ -69,12 +75,13 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
     protected void init() {
         super.init();
         if (menu.entity.warpController()) {
-            addRenderableWidget(UiButton.builder(
-                            Component.translatable("gui.adv_rocketry.orbital.next_target"),
-                            button -> minecraft.gameMode.handleInventoryButtonClick(
-                                    menu.containerId, OrbitalAction.NEXT_WARP_TARGET.id()))
-                    .bounds(leftPos + 8, topPos + 94, 76, 20)
-                    .build());
+            addRenderableWidget(
+                    UiButton.builder(Component.translatable("gui.adv_rocketry.orbital.select_target"), button -> {
+                                targetPicker = true;
+                                targetScroll = 0;
+                            })
+                            .bounds(leftPos + 8, topPos + 94, 76, 20)
+                            .build());
             addRenderableWidget(UiButton.builder(
                             Component.translatable("gui.adv_rocketry.orbital.warp"),
                             button -> minecraft.gameMode.handleInventoryButtonClick(
@@ -119,7 +126,7 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
                 addRenderableWidget(new SelectorButton(UiButton.builder(
                                 Component.translatable(labels[index]),
                                 button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, buttonId))
-                        .bounds(leftPos + 8 + index % 3 * 54, topPos + 35 + index / 3 * 25, 50, 20)));
+                        .bounds(leftPos + 8 + index % 3 * 54, topPos + 36 + index / 3 * 24, 52, 20)));
             }
         } else if (menu.entity.atmosphereTerraformer()) {
             addRenderableWidget(UiButton.builder(
@@ -425,7 +432,7 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
                     graphics,
                     Texts.translate("gui.adv_rocketry.orbital.selected", (planet == null ? "none" : planet.name)),
                     8,
-                    20,
+                    24,
                     UiTheme.ACCENT,
                     false);
             drawText(
@@ -436,7 +443,7 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
                             menu.hologramSize(),
                             menu.hologramRedstone()),
                     8,
-                    113,
+                    109,
                     UiTheme.TEXT,
                     false);
             drawText(graphics, playerInventoryTitle, 8, 123, UiTheme.TEXT, false);
@@ -931,8 +938,116 @@ public final class OrbitalScreen extends ModContainerScreen<OrbitalMenu> {
         }
     }
 
+    private List<Planet> warpTargets() {
+        return WarpLogic.destinations(
+                GalaxySync.clientPlanets(), GalaxySync.clientStationAt(menu.entity.getBlockPos()));
+    }
+
+    private int pickerLeft() {
+        return leftPos + 8;
+    }
+
+    private int pickerTop() {
+        return topPos + 24;
+    }
+
+    private int pickerWidth() {
+        return imageWidth - 16;
+    }
+
+    private int pickerRows(List<Planet> targets) {
+        return Math.max(1, Math.min(PICKER_ROWS, targets.size()));
+    }
+
+    private int pickerHeight(List<Planet> targets) {
+        return 18 + pickerRows(targets) * PICKER_ROW;
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        if (!targetPicker) return;
+        List<Planet> targets = warpTargets();
+        targetScroll = Math.clamp(targetScroll, 0, Math.max(0, targets.size() - PICKER_ROWS));
+        int x = pickerLeft();
+        int y = pickerTop();
+        int width = pickerWidth();
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 400);
+        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xa0000000);
+        UiTheme.panel(graphics, x, y, width, pickerHeight(targets));
+        graphics.drawString(
+                font,
+                Component.translatable("gui.adv_rocketry.orbital.select_target"),
+                x + 4,
+                y + 4,
+                UiTheme.ACCENT,
+                false);
+        if (targets.isEmpty())
+            graphics.drawString(
+                    font,
+                    Component.translatable("gui.adv_rocketry.orbital.no_targets"),
+                    x + 4,
+                    y + 18,
+                    UiTheme.MUTED,
+                    false);
+        for (int row = 0; row < pickerRows(targets) && row + targetScroll < targets.size(); row++) {
+            Planet planet = targets.get(row + targetScroll);
+            int top = y + 15 + row * PICKER_ROW;
+            boolean hovered = mouseX >= x + 2 && mouseX < x + width - 2 && mouseY >= top && mouseY < top + PICKER_ROW;
+            if (hovered) graphics.fill(x + 2, top, x + width - 2, top + PICKER_ROW, UiTheme.ACCENT_DIM);
+            graphics.drawString(
+                    font,
+                    UiTheme.fit(font, Component.literal(planet.name), width - 12),
+                    x + 6,
+                    top + 3,
+                    planet.id == menu.warpDestination() ? UiTheme.ACCENT : UiTheme.TEXT,
+                    false);
+        }
+        if (targets.size() > PICKER_ROWS) {
+            int track = pickerRows(targets) * PICKER_ROW;
+            int thumb = Math.max(6, track * PICKER_ROWS / targets.size());
+            int offset = (track - thumb) * targetScroll / (targets.size() - PICKER_ROWS);
+            graphics.fill(x + width - 4, y + 15 + offset, x + width - 2, y + 15 + offset + thumb, UiTheme.BORDER);
+        }
+        graphics.pose().popPose();
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!targetPicker) return super.mouseClicked(mouseX, mouseY, button);
+        List<Planet> targets = warpTargets();
+        int x = pickerLeft();
+        int y = pickerTop();
+        int row = (int) Math.floor((mouseY - y - 15) / PICKER_ROW);
+        if (mouseX >= x + 2
+                && mouseX < x + pickerWidth() - 2
+                && mouseY >= y + 15
+                && row >= 0
+                && row < pickerRows(targets)
+                && row + targetScroll < targets.size()) {
+            minecraft.gameMode.handleInventoryButtonClick(
+                    menu.containerId, WarpLogic.SELECT_DESTINATION + targets.get(row + targetScroll).id);
+        }
+        targetPicker = false;
+        return true;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (targetPicker && keyCode == 256) {
+            targetPicker = false;
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (targetPicker) {
+            targetScroll -= (int) Math.signum(scrollY);
+            return true;
+        }
         if (menu.artifactStrip()
                 && menu.artifactsScroll()
                 && mouseX >= leftPos + 8

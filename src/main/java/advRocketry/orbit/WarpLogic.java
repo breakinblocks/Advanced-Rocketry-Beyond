@@ -11,6 +11,8 @@ import advRocketry.space.Milestone;
 import advRocketry.space.Planet;
 import advRocketry.util.IdOrTag;
 import advRocketry.util.Texts;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -111,7 +113,7 @@ public final class WarpLogic {
             record.warpEta = level.getServer().overworld().getGameTime()
                     + Math.max(1, Math.round(Math.min(fuel * 5L, 5000L) * AdvancedRocketryConfig.warpTravelTime()));
             record.lastWarpCost = fuel;
-            record.lastWarpTime = level.getGameTime();
+            record.lastWarpTime = level.getServer().overworld().getGameTime();
         });
         boolean firstWarp = !galaxy.reachedWarp;
         for (var player : level.players())
@@ -158,21 +160,26 @@ public final class WarpLogic {
         return changed;
     }
 
-    public static void cycleDestination(OrbitalBlockEntity entity) {
-        if (!entity.warpController() || !(entity.getLevel() instanceof ServerLevel serverLevel)) return;
-        GalaxyData galaxy = GalaxyData.get(serverLevel.getServer());
-        Station station = StationLogic.at(galaxy, serverLevel, entity.getBlockPos());
-        List<Integer> planets = galaxy.planets.values().stream()
+    public static final int SELECT_DESTINATION = 1000;
+
+    public static List<Planet> destinations(Collection<Planet> planets, Station station) {
+        return planets.stream()
                 .filter(planet -> planet.id >= 0
                         && planet.landable()
                         && (!AdvancedRocketryConfig.planetsMustBeDiscovered()
                                 || planet.known
                                 || station != null && PlanetDiscoveryLogic.known(station, planet.id)))
-                .map(planet -> planet.id)
+                .sorted(Comparator.comparing((Planet planet) -> planet.name, String.CASE_INSENSITIVE_ORDER))
                 .toList();
-        int index = planets.indexOf(entity.warpDestination);
-        if (!planets.isEmpty()) entity.warpDestination = planets.get((index + 1) % planets.size());
-        if (station != null) StationLogic.update(galaxy, station, record -> record.warpTarget = entity.warpDestination);
+    }
+
+    public static void selectDestination(OrbitalBlockEntity entity, int planetId) {
+        if (!entity.warpController() || !(entity.getLevel() instanceof ServerLevel serverLevel)) return;
+        GalaxyData galaxy = GalaxyData.get(serverLevel.getServer());
+        Station station = StationLogic.at(galaxy, serverLevel, entity.getBlockPos());
+        if (destinations(galaxy.planets.values(), station).stream().noneMatch(planet -> planet.id == planetId)) return;
+        entity.warpDestination = planetId;
+        if (station != null) StationLogic.update(galaxy, station, record -> record.warpTarget = planetId);
         entity.setChanged();
     }
 }

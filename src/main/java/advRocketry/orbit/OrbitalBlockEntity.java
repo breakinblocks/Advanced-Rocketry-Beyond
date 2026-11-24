@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -530,5 +531,33 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+        readUpdate(tag, registries);
+    }
+
+    @Override
+    public void onDataPacket(
+            Connection connection, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries) {
+        readUpdate(packet.getTag(), registries);
+    }
+
+    private void readUpdate(CompoundTag tag, HolderLookup.Provider registries) {
+        if (tag.contains("railgun_fired_at")) railgunFiredAt = tag.getLong("railgun_fired_at");
+        if (tag.contains("laser_running")) laser.running = tag.getBoolean("laser_running");
+        if (tag.contains("beacon_enabled")) beaconEnabled = tag.getBoolean("beacon_enabled");
+        if (tag.contains("area_current_gravity")) areaCurrentGravity = tag.getFloat("area_current_gravity");
+        if (tag.contains("elevator_dimension")) elevatorDimension = tag.getString("elevator_dimension");
+        if (tag.contains("power_last_tick")) powerMadeLastTick = tag.getInt("power_last_tick");
+        if (tag.contains("observatory_open_progress"))
+            observation.openProgress = Math.clamp(tag.getInt("observatory_open_progress"), 0, 100);
+        if (tag.contains("terraformer_running")) terraformerRunning = tag.getBoolean("terraformer_running");
+        if (tag.contains("asteroid_seed")) observation.seed = tag.getLong("asteroid_seed");
+        if (tag.contains("docking_id")) dockingId = tag.getString("docking_id");
+        if (tag.contains("docking_target")) dockingTarget = tag.getString("docking_target");
+        if (tag.contains("formed")) formed = tag.getBoolean("formed");
+        if (tag.contains("energy")) energy.deserializeNBT(registries, tag.get("energy"));
     }
 }

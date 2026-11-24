@@ -1137,7 +1137,12 @@ final class ModLanguage extends LanguageProvider {
         add("gui.adv_rocketry.orbital.mission_time_x", "Mission time: %sx");
         add("gui.adv_rocketry.orbital.my_id", "My ID");
         add("gui.adv_rocketry.orbital.next", "Next");
-        add("gui.adv_rocketry.orbital.next_target", "Next target");
+        add("gui.adv_rocketry.orbital.select_target", "Select target");
+        add("hud.adv_rocketry.warp_transit", "Warp transit to %s: %s%%, %s left");
+        add("jade.adv_rocketry.warp_transit", "Warping to %s");
+        add("jade.adv_rocketry.orbiting", "Orbiting %s");
+        add("jade.adv_rocketry.leak", "Leak at %s, %s, %s");
+        add("gui.adv_rocketry.orbital.no_targets", "No known destinations");
         add("gui.adv_rocketry.orbital.no_biome_catalog_entries", "No biome catalog entries");
         add("gui.adv_rocketry.orbital.none", "None");
         add("gui.adv_rocketry.orbital.observe", "Observe");
@@ -1159,7 +1164,7 @@ final class ModLanguage extends LanguageProvider {
         add("gui.adv_rocketry.orbital.selector.back", "Back");
         add("gui.adv_rocketry.orbital.selector.center", "Center");
         add("gui.adv_rocketry.orbital.selector.next", "Next");
-        add("gui.adv_rocketry.orbital.selector.redstone", "Redstone");
+        add("gui.adv_rocketry.orbital.selector.redstone", "Signal");
         add("gui.adv_rocketry.orbital.selector.size_down", "Size -");
         add("gui.adv_rocketry.orbital.selector.size_up", "Size +");
         add("gui.adv_rocketry.orbital.selector.star", "Star");

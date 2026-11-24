@@ -70,7 +70,10 @@ public final class TerraformerLogic {
         }
         GalaxyData galaxy = GalaxyData.get(level.getServer());
         Planet planet = galaxy.byDimension(level.dimension().location());
-        if (planet == null && AdvancedRocketryConfig.allowTerraformNonAR()) planet = galaxy.ensureExternalPlanet(level);
+        if (planet == null && AdvancedRocketryConfig.allowTerraformNonAR()) {
+            planet = galaxy.ensureExternalPlanet(level);
+            for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) GalaxySync.send(player);
+        }
         if (!TerraformBiomeLogic.eligible(planet, level)) {
             controller.status =
                     Component.translatable("status.adv_rocketry.terraformer.terraformer_must_be_on_a_planet");

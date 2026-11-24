@@ -45,6 +45,11 @@ public final class Station {
         return warpEta != null;
     }
 
+    public double warpProgress(double time) {
+        if (warpEta == null) return 0;
+        return Math.clamp((time - lastWarpTime) / Math.max(1, warpEta - lastWarpTime), 0, 1);
+    }
+
     public boolean free() {
         return deployed && attachedTo == null;
     }
@@ -64,12 +69,9 @@ public final class Station {
         tag.putInt("target_gravity", targetGravity);
         if (gravity != null) tag.putDouble("gravity", gravity);
         for (int axis = 0; axis < 3; axis++) tag.putInt("target_rotation_" + AXES[axis], targetRotation[axis]);
-        tag.putInt("fuel", fuel);
         tag.putLongArray("warp_cores", warpCores);
-        if (warpTarget != null) tag.putInt("warp_target", warpTarget);
         tag.putInt("last_warp_cost", lastWarpCost);
         tag.putLong("last_warp_time", lastWarpTime);
-        tag.putIntArray("known_planets", knownPlanets);
         tag.put("landing_pads", positions(landingPads));
         tag.put("docking_ports", positions(dockingPorts));
         if (structure != null) tag.put("structure", structure.copy());
@@ -88,10 +90,14 @@ public final class Station {
         tag.putInt("orbit_planet", orbitPlanet);
         tag.putFloat("orbital_altitude", altitude);
         tag.putBoolean("anchored", anchored);
+        tag.putInt("fuel", fuel);
+        tag.putIntArray("known_planets", knownPlanets);
+        if (warpTarget != null) tag.putInt("warp_target", warpTarget);
         if (warpEta != null) {
             tag.putLong("warp_eta", warpEta);
             tag.putInt("warp_source", warpSource);
             tag.putInt("warp_destination", warpDestination);
+            tag.putLong("last_warp_time", lastWarpTime);
         }
         tag.putLong("rotation_time", rotationTime);
         for (int axis = 0; axis < 3; axis++) {

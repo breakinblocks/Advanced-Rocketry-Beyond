@@ -47,6 +47,7 @@ import advRocketry.space.client.PlanetClouds;
 import advRocketry.space.client.PlanetEffects;
 import advRocketry.space.client.PlanetSky;
 import advRocketry.space.client.SkyLayerShader;
+import advRocketry.space.client.WarpHud;
 import advRocketry.transport.TransportRegistry;
 import advRocketry.transport.client.TransportRenderer;
 import advRocketry.transport.client.TransportScreen;
@@ -90,6 +91,7 @@ public final class MainClient {
         bus.<EntityRenderersEvent.AddLayers>addListener(SpaceHelmetLayer::register);
         bus.addListener(RocketClient::layers);
         bus.addListener(SuitHud::register);
+        bus.addListener(WarpHud::register);
         bus.addListener(RocketClient::renderers);
         bus.addListener(RocketClient::keys);
         bus.addListener(HovercraftClient::renderers);

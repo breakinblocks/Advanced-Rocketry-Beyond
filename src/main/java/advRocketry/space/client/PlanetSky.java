@@ -28,13 +28,16 @@ import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 /** Native sky buffers retaining the original atmosphere fade and apparent celestial-body size. */
 public final class PlanetSky {
+    private static final int WARP_STREAKS = 700;
     private static final ResourceLocation SUN =
             ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/legacy/advancedrocketry/env/sun.png");
     private static final ResourceLocation BLACK_HOLE =
@@ -132,6 +135,15 @@ public final class PlanetSky {
                 .rotateY((float) (-Math.PI / 2))
                 .rotateX(level.getTimeOfDay(partialTick) * (float) (Math.PI * 2));
         GalacticSky.render(starView, planet, star, state, starBrightness, level.getGameTime() + (double) partialTick);
+        if (station != null && station.inWarp()) {
+            drawWarp(skyView, station, level.getGameTime() + (double) partialTick);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+            RenderSystem.disableBlend();
+            RenderSystem.enableCull();
+            RenderSystem.depthMask(true);
+            setupFog.run();
+            return;
+        }
         var player = Minecraft.getInstance().player;
         SpaceNavigation navigation =
                 player != null && player.getVehicle() instanceof RocketEntity rocket ? rocket.navigation() : null;
@@ -299,6 +311,41 @@ public final class PlanetSky {
                 }
             }
         }
+    }
+
+    private static float hash(int index, int salt) {
+        double value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453;
+        return (float) (value - Math.floor(value));
+    }
+
+    private static void drawWarp(Matrix4f view, Station station, double ticks) {
+        double progress = station.warpProgress(ticks);
+        float intensity = (float) Math.clamp(Math.min(progress, 1 - progress) * 10, .25, 1);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        BufferBuilder buffer =
+                Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        for (int index = 0; index < WARP_STREAKS; index++) {
+            float angle = hash(index, 1) * Mth.TWO_PI;
+            float radius = 6 + hash(index, 2) * 40;
+            float speed = 2 + hash(index, 3) * 3;
+            float length = (6 + hash(index, 4) * 18) * intensity;
+            float z = (float) ((hash(index, 5) * 200 + ticks * speed * intensity) % 200) - 100;
+            float x = Mth.cos(angle) * radius;
+            float y = Mth.sin(angle) * radius;
+            float width = .08f + hash(index, 6) * .14f;
+            float offsetX = -Mth.sin(angle) * width;
+            float offsetY = Mth.cos(angle) * width;
+            int alpha = (int) (255 * intensity * Math.clamp(1 - Math.abs(z) / 100f, 0, 1));
+            int red = 150 + (int) (hash(index, 7) * 105);
+            int green = 190 + (int) (hash(index, 8) * 65);
+            buffer.addVertex(view, x - offsetX, y - offsetY, z).setColor(red, green, 255, 0);
+            buffer.addVertex(view, x + offsetX, y + offsetY, z).setColor(red, green, 255, 0);
+            buffer.addVertex(view, x + offsetX, y + offsetY, z + length).setColor(red, green, 255, alpha);
+            buffer.addVertex(view, x - offsetX, y - offsetY, z + length).setColor(red, green, 255, alpha);
+        }
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        RenderSystem.defaultBlendFunc();
     }
 
     private static PoseStack facing(Matrix4f view, Vec3 direction) {

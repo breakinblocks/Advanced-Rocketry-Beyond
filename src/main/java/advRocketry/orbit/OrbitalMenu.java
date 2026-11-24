@@ -389,6 +389,10 @@ public final class OrbitalMenu extends ModMenu {
     @Override
     public boolean clickMenuButton(Player player, int button) {
         if (!stillValid(player) || player.level().isClientSide) return false;
+        if (button >= WarpLogic.SELECT_DESTINATION && entity.warpController()) {
+            WarpLogic.selectDestination(entity, button - WarpLogic.SELECT_DESTINATION);
+            return true;
+        }
         if (button == OrbitalAction.ARTIFACTS_BACK.id() && artifactStrip) {
             scrollArtifacts(-1);
             return true;
@@ -400,8 +404,6 @@ public final class OrbitalMenu extends ModMenu {
         if (button == OrbitalAction.BUILD.id() && entity.builder()) SatelliteBuilderLogic.build(entity);
         else if (button == OrbitalAction.TRANSFER_DATA.id() && entity.terminal())
             SatelliteTerminalLogic.transferData(entity);
-        else if (button == OrbitalAction.NEXT_WARP_TARGET.id() && entity.warpController())
-            WarpLogic.cycleDestination(entity);
         else if (button == OrbitalAction.WARP.id() && entity.warpController()) WarpLogic.warp(entity);
         else if (button == OrbitalAction.GRAVITY_DOWN.id() && entity.stationGravityController())
             StationMotionLogic.adjustGravity(entity, -10);
