@@ -65,6 +65,7 @@ public final class Station {
     public CompoundTag save() {
         CompoundTag tag = snapshot();
         tag.putLong("deployed_time", deployedTime);
+        tag.putInt("fuel", fuel);
         tag.putInt("target_altitude", targetAltitude);
         tag.putInt("target_gravity", targetGravity);
         if (gravity != null) tag.putDouble("gravity", gravity);
@@ -90,7 +91,6 @@ public final class Station {
         tag.putInt("orbit_planet", orbitPlanet);
         tag.putFloat("orbital_altitude", altitude);
         tag.putBoolean("anchored", anchored);
-        tag.putInt("fuel", fuel);
         tag.putIntArray("known_planets", knownPlanets);
         if (warpTarget != null) tag.putInt("warp_target", warpTarget);
         if (warpEta != null) {
