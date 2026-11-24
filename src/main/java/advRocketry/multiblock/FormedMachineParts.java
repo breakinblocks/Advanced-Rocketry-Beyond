@@ -1,5 +1,6 @@
 package advRocketry.multiblock;
 
+import advRocketry.orbit.FormedCoverBlock;
 import advRocketry.orbit.OrbitalBlock;
 import advRocketry.orbit.OrbitalBlockEntity;
 import advRocketry.orbit.WarpCoreLogic;
@@ -112,7 +113,7 @@ public final class FormedMachineParts {
         if (index == null || !level.isLoaded(pos)) return null;
         Map<BlockPos, Part> owners = index.owners.get(pos);
         if (owners == null) return null;
-        BlockState state = level.getBlockState(pos);
+        BlockState state = FormedCoverBlock.visibleState(level, pos);
         if (state.isAir() || state.getBlock() instanceof OrbitalBlock || state.getBlock() instanceof ProcessingBlock)
             return null;
         for (Part part : owners.values()) {
@@ -133,8 +134,8 @@ public final class FormedMachineParts {
             BlockPos pos = part.cell.pos();
             if (player.distanceToSqr(pos.getCenter()) <= 64
                     && level.isLoaded(pos)
-                    && !level.getBlockState(pos).isAir()
-                    && part.cell.key().test(level.getBlockState(pos))) return true;
+                    && !FormedCoverBlock.visibleState(level, pos).isAir()
+                    && part.cell.key().test(FormedCoverBlock.visibleState(level, pos))) return true;
         }
         return false;
     }
