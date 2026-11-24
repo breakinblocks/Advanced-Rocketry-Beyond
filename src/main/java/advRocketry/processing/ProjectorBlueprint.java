@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Shared projector requirements used by both the preview and material list. */
 public final class ProjectorBlueprint {
-    public record Cell(BlockPos position, Object key, Predicate<BlockState> matches) {}
+    public record Cell(BlockPos position, Object key, Predicate<BlockState> matches, List<BlockState> options) {}
 
     public record Material(List<Block> alternatives, int count, boolean optional) {}
 
@@ -46,8 +46,18 @@ public final class ProjectorBlueprint {
         Multiblock multiblock = Multiblocks.get(registries, id);
         if (multiblock == null) return List.of();
         List<Cell> cells = new ArrayList<>();
+        Map<Character, List<BlockState>> options = new LinkedHashMap<>();
         for (Multiblock.Placed placed : multiblock.place(origin, facing))
-            cells.add(new Cell(placed.pos(), placed.symbol(), placed.key()::test));
+            cells.add(new Cell(
+                    placed.pos(),
+                    placed.symbol(),
+                    placed.key()::test,
+                    options.computeIfAbsent(
+                            placed.symbol(),
+                            symbol -> placed.key().blocks().stream()
+                                    .map(block -> BlueprintPlacer.facing(block.defaultBlockState(), facing))
+                                    .filter(state -> !state.isAir())
+                                    .toList())));
         return List.copyOf(cells);
     }
 }
