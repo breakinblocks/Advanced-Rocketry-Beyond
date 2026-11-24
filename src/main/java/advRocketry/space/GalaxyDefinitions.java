@@ -2,6 +2,7 @@ package advRocketry.space;
 
 import advRocketry.DataRegistries;
 import advRocketry.Main;
+import advRocketry.util.IdOrTag;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -78,7 +79,16 @@ public final class GalaxyDefinitions {
                 .forEach(planet -> ids.put(planet.location, planet.id));
         List<Map.Entry<ResourceLocation, PlanetDefinition>> added = new ArrayList<>();
         for (var entry : sorted(definitions.planets())) {
-            if (ids.containsKey(entry.getKey())) continue;
+            if (ids.containsKey(entry.getKey())) {
+                Planet existing = galaxy.planets.get(ids.get(entry.getKey()));
+                List<IdOrTag> artifacts = entry.getValue().resources().warpArtifacts();
+                if (existing != null && !existing.artifacts.equals(artifacts)) {
+                    existing.artifacts.clear();
+                    existing.artifacts.addAll(artifacts);
+                    changed = true;
+                }
+                continue;
+            }
             added.add(entry);
         }
         for (var entry : added) ids.put(entry.getKey(), galaxy.planetId(entry.getKey()));
