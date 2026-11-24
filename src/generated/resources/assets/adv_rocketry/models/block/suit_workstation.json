@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "adv_rocketry:block/framed/suit_workstation_bottom",
+    "east": "adv_rocketry:block/framed/suit_workstation_east",
+    "north": "adv_rocketry:block/framed/suit_workstation_front",
+    "particle": "adv_rocketry:block/framed/suit_workstation_front",
+    "south": "adv_rocketry:block/framed/suit_workstation_back",
+    "up": "adv_rocketry:block/framed/suit_workstation_top",
+    "west": "adv_rocketry:block/framed/suit_workstation_west"
+  }
+}

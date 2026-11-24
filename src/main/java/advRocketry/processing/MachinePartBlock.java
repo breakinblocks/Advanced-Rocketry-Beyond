@@ -6,6 +6,7 @@ package advRocketry.processing;
 import advRocketry.multiblock.FormedMachineParts;
 import advRocketry.orbit.OrbitalAssembly;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
@@ -36,6 +37,11 @@ public class MachinePartBlock extends Block {
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return state.getValue(ASSEMBLED) ? RenderShape.INVISIBLE : RenderShape.MODEL;
+    }
+
+    @Override
+    protected boolean skipRendering(BlockState state, BlockState adjacent, Direction direction) {
+        return adjacent.is(this) && !adjacent.getValue(ASSEMBLED) || super.skipRendering(state, adjacent, direction);
     }
 
     @Override

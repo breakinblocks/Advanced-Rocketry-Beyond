@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "all": "adv_rocketry:block/transport/item_conduit",
+    "0": "adv_rocketry:block/transport/item_conduit",
     "particle": "adv_rocketry:block/transport/item_conduit"
   },
   "elements": [
@@ -17,23 +17,59 @@
         11
       ],
       "faces": {
-        "up": {
-          "texture": "#all"
-        },
-        "down": {
-          "texture": "#all"
-        },
         "north": {
-          "texture": "#all"
-        },
-        "south": {
-          "texture": "#all"
-        },
-        "west": {
-          "texture": "#all"
+          "uv": [
+            6.0,
+            0.0,
+            12.0,
+            16.0
+          ],
+          "texture": "#0"
         },
         "east": {
-          "texture": "#all"
+          "uv": [
+            6.0,
+            0.0,
+            12.0,
+            16.0
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            6.0,
+            0.0,
+            12.0,
+            16.0
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            6.0,
+            0.0,
+            12.0,
+            16.0
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            0.0,
+            0.0,
+            6.0,
+            6.0
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            0.0,
+            0.0,
+            6.0,
+            6.0
+          ],
+          "texture": "#0"
         }
       }
     }

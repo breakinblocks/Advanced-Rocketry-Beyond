@@ -51,6 +51,13 @@ Requires Java 21.
 ./gradlew build
 ```
 
+## Credits
+
+Block, item and space suit art by xMausie: the machine and controller faces,
+the item and fluid ports, oxygen vent, structure block, generators, liquid tank,
+seat, wireless transceiver, airlock door, cable items, space suit helmet and
+hovercraft.
+
 ## License
 
 MIT. See [LICENSE.md](LICENSE.md) and [NOTICE.md](NOTICE.md).

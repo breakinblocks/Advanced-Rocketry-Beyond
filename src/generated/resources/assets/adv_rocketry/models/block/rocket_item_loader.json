@@ -1,9 +1,12 @@
 {
-  "parent": "minecraft:block/orientable_with_bottom",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "bottom": "adv_rocketry:block/framed/bottom",
-    "front": "adv_rocketry:block/framed/rocket_item_loader_front",
-    "side": "adv_rocketry:block/framed/rocket_item_loader_side",
-    "top": "adv_rocketry:block/framed/rocket_item_loader_top"
+    "down": "adv_rocketry:block/framed/rocket_item_loader_bottom",
+    "east": "adv_rocketry:block/framed/rocket_item_loader_side",
+    "north": "adv_rocketry:block/framed/rocket_item_loader_side",
+    "particle": "adv_rocketry:block/framed/rocket_item_loader_side",
+    "south": "adv_rocketry:block/framed/rocket_item_loader_side",
+    "up": "adv_rocketry:block/framed/rocket_item_loader_top",
+    "west": "adv_rocketry:block/framed/rocket_item_loader_side"
   }
 }

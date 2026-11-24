@@ -62,7 +62,7 @@ public class AirlockDoorRenderer implements BlockEntityRenderer<AirlockDoorBlock
         poseStack.translate(-0.5, 0, -0.5);
         poseStack.scale(1 / 16f, 1 / 16f, 1 / 16f);
         PoseStack.Pose pose = poseStack.last();
-        VertexConsumer buffer = buffers.getBuffer(RenderType.entityCutout(InventoryMenu.BLOCK_ATLAS));
+        VertexConsumer buffer = buffers.getBuffer(RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS));
 
         float u0 = sprite.getU(texFrom / 16f);
         float u1 = sprite.getU(texTo / 16f);

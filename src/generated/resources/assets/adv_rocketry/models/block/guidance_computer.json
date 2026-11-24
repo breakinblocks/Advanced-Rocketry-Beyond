@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "front": "adv_rocketry:block/guidancecomputer",
-    "side": "adv_rocketry:block/machinegeneric",
-    "top": "adv_rocketry:block/machinegeneric"
+    "down": "adv_rocketry:block/framed/guidance_computer_bottom",
+    "east": "adv_rocketry:block/framed/guidance_computer_east",
+    "north": "adv_rocketry:block/framed/guidance_computer_front",
+    "particle": "adv_rocketry:block/framed/guidance_computer_front",
+    "south": "adv_rocketry:block/framed/guidance_computer_back",
+    "up": "adv_rocketry:block/framed/guidance_computer_top",
+    "west": "adv_rocketry:block/framed/guidance_computer_west"
   }
 }

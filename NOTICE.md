@@ -17,5 +17,8 @@ Upstream sources:
 - LibVulpes, https://github.com/Advanced-Rocketry/LibVulpes,
   revision c2ca79dc18625c9e63a191a795f1f07d078f29f0
 
+Reworked block, item, space suit helmet and hovercraft art is by xMausie and is
+released with the mod under the same MIT license.
+
 Minecraft, NeoForge, JEI, Jade and GuideME keep their own licenses and are not
 bundled.

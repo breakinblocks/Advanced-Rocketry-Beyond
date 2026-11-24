@@ -1,8 +1,51 @@
 {
-  "parent": "minecraft:block/slab",
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#down"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#east"
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#north"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#south"
+        },
+        "up": {
+          "texture": "#up"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#west"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        8,
+        16
+      ]
+    }
+  ],
   "textures": {
-    "bottom": "adv_rocketry:block/machinegeneric",
-    "side": "adv_rocketry:block/panelside",
-    "top": "adv_rocketry:block/gaschargertop"
+    "down": "adv_rocketry:block/framed/oxygen_charger_bottom",
+    "east": "adv_rocketry:block/framed/oxygen_charger_east",
+    "north": "adv_rocketry:block/framed/oxygen_charger_front",
+    "particle": "adv_rocketry:block/framed/oxygen_charger_top",
+    "south": "adv_rocketry:block/framed/oxygen_charger_back",
+    "up": "adv_rocketry:block/framed/oxygen_charger_top",
+    "west": "adv_rocketry:block/framed/oxygen_charger_west"
   }
 }

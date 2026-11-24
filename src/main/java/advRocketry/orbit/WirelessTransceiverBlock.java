@@ -23,15 +23,20 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Original directional wireless data node with an in-world mode control. */
 public final class WirelessTransceiverBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    private static final VoxelShape NORTH_SHAPE = Block.box(4, 4, 12, 12, 12, 16);
-    private static final VoxelShape SOUTH_SHAPE = Block.box(4, 4, 0, 12, 12, 4);
-    private static final VoxelShape EAST_SHAPE = Block.box(12, 4, 4, 16, 12, 12);
-    private static final VoxelShape WEST_SHAPE = Block.box(0, 4, 4, 4, 12, 12);
+    private static final VoxelShape NORTH_SHAPE =
+            Shapes.or(Block.box(4, 4, 12, 13, 13, 15), Block.box(10, 13, 13, 11, 16, 14));
+    private static final VoxelShape SOUTH_SHAPE =
+            Shapes.or(Block.box(3, 4, 1, 12, 13, 4), Block.box(5, 13, 2, 6, 16, 3));
+    private static final VoxelShape EAST_SHAPE =
+            Shapes.or(Block.box(1, 4, 4, 4, 13, 13), Block.box(2, 13, 10, 3, 16, 11));
+    private static final VoxelShape WEST_SHAPE =
+            Shapes.or(Block.box(12, 4, 3, 15, 13, 12), Block.box(13, 13, 5, 14, 16, 6));
 
     public WirelessTransceiverBlock(Properties properties) {
         super(properties);

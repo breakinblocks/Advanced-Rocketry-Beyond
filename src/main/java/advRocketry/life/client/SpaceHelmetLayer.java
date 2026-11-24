@@ -75,7 +75,7 @@ public final class SpaceHelmetLayer<T extends LivingEntity, M extends HumanoidMo
                 PartPose.ZERO);
         helmet.addOrReplaceChild(
                 "visor_glass",
-                CubeListBuilder.create().texOffs(44, 16).addBox(-4.0F, -7.0F, -5.5F, 8.0F, 5.0F, 1.0F, none),
+                CubeListBuilder.create().texOffs(43, 15).addBox(-4.0F, -7.0F, -5.5F, 8.0F, 5.0F, 2.0F, none),
                 PartPose.ZERO);
         return LayerDefinition.create(mesh, 64, 64);
     }

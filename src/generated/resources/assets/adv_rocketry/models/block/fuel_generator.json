@@ -1,3 +1,4 @@
 {
-  "parent": "adv_rocketry:block/art/fuel_generator"
+  "parent": "adv_rocketry:block/art/fuel_generator",
+  "render_type": "minecraft:cutout"
 }

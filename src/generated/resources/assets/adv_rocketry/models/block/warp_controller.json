@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "down": "adv_rocketry:block/framed/bottom",
-    "east": "adv_rocketry:block/framed/warp_controller_side",
+    "down": "adv_rocketry:block/framed/warp_controller_bottom",
+    "east": "adv_rocketry:block/framed/warp_controller_east",
     "north": "adv_rocketry:block/framed/warp_controller_front",
     "particle": "adv_rocketry:block/framed/warp_controller_front",
-    "south": "adv_rocketry:block/framed/warp_controller_side",
+    "south": "adv_rocketry:block/framed/warp_controller_back",
     "up": "adv_rocketry:block/framed/warp_controller_top",
-    "west": "adv_rocketry:block/framed/warp_controller_side"
+    "west": "adv_rocketry:block/framed/warp_controller_west"
   }
 }

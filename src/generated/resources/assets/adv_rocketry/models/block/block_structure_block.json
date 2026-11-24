@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/cube_all",
   "loader": "adv_rocketry:connected",
+  "render_type": "minecraft:cutout",
   "textures": {
     "base": "adv_rocketry:block/ctm/structureblock/base",
     "center": "adv_rocketry:block/ctm/structureblock/center",

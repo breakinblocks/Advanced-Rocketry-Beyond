@@ -1,9 +1,12 @@
 {
-  "parent": "minecraft:block/orientable_with_bottom",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "bottom": "adv_rocketry:block/framed/bottom",
-    "front": "adv_rocketry:block/framed/observatory_front",
-    "side": "adv_rocketry:block/framed/observatory_side",
-    "top": "adv_rocketry:block/framed/observatory_top"
+    "down": "adv_rocketry:block/framed/observatory_bottom",
+    "east": "adv_rocketry:block/framed/observatory_east",
+    "north": "adv_rocketry:block/framed/observatory_front",
+    "particle": "adv_rocketry:block/framed/observatory_front",
+    "south": "adv_rocketry:block/framed/observatory_back",
+    "up": "adv_rocketry:block/framed/observatory_top",
+    "west": "adv_rocketry:block/framed/observatory_west"
   }
 }

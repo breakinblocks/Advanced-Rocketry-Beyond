@@ -39,14 +39,15 @@ abstract class ModBlockStateHelpers extends BlockStateProvider {
         if (!ambientOcclusion) builder.ao(false);
     }
 
-    void obj(String path, String model, String particle) {
-        models().getBuilder(path)
+    BlockModelBuilder obj(String path, String model, String particle) {
+        BlockModelBuilder builder = models().getBuilder(path)
                 .parent(unchecked("minecraft:block/block"))
-                .texture("particle", location(particle))
-                .customLoader(ObjModelBuilder::begin)
+                .texture("particle", location(particle));
+        builder.customLoader(ObjModelBuilder::begin)
                 .modelLocation(location(model))
                 .flipV(true)
                 .automaticCulling(false);
+        return builder;
     }
 
     void connected(String path, String folder, int tint, String... connectWith) {

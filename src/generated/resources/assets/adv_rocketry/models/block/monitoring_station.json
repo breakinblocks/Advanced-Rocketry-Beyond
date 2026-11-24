@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "front": "adv_rocketry:block/monitorrocket",
-    "side": "adv_rocketry:block/machinegeneric",
-    "top": "adv_rocketry:block/machinegeneric"
+    "down": "adv_rocketry:block/framed/monitoring_station_bottom",
+    "east": "adv_rocketry:block/framed/monitoring_station_east",
+    "north": "adv_rocketry:block/framed/monitoring_station_front",
+    "particle": "adv_rocketry:block/framed/monitoring_station_front",
+    "south": "adv_rocketry:block/framed/monitoring_station_back",
+    "up": "adv_rocketry:block/framed/monitoring_station_top",
+    "west": "adv_rocketry:block/framed/monitoring_station_west"
   }
 }

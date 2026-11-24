@@ -7,6 +7,7 @@ modId="adv_rocketry"
 version="${mod_version}"
 displayName="Advanced Rocketry"
 authors="Advanced Rocketry contributors, LibVulpes contributors, Saymayhem LLC"
+credits="Block, item and space suit art by xMausie"
 description='''Port of the original MIT Advanced Rocketry and LibVulpes sources.'''
 
 [[dependencies.adv_rocketry]]

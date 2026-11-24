@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "down": "adv_rocketry:block/framed/bottom",
+    "down": "adv_rocketry:block/framed/carbon_scrubber_bottom",
     "east": "adv_rocketry:block/framed/carbon_scrubber_active_side",
-    "north": "adv_rocketry:block/framed/carbon_scrubber_active_front",
-    "particle": "adv_rocketry:block/framed/carbon_scrubber_active_front",
+    "north": "adv_rocketry:block/framed/carbon_scrubber_active_side",
+    "particle": "adv_rocketry:block/framed/carbon_scrubber_active_side",
     "south": "adv_rocketry:block/framed/carbon_scrubber_active_side",
-    "up": "adv_rocketry:block/framed/carbon_scrubber_active_top",
+    "up": "adv_rocketry:block/framed/carbon_scrubber_top",
     "west": "adv_rocketry:block/framed/carbon_scrubber_active_side"
   }
 }
