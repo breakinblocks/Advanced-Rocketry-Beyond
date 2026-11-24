@@ -68,7 +68,12 @@ public final class FormedCoverBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return level instanceof Level world ? FormedMachineParts.warpPartShape(world, pos) : Shapes.empty();
+        VoxelShape formed = level instanceof Level world ? FormedMachineParts.warpPartShape(world, pos) : null;
+        if (formed != null) return formed;
+        BlockState original = original(level, pos);
+        return original == null || original.isAir() || original.getBlock() instanceof FormedCoverBlock
+                ? Shapes.empty()
+                : original.getShape(level, pos, context);
     }
 
     @Override
