@@ -45,6 +45,13 @@ final class ModItemModels extends ModItemModelHelpers {
         bucket("item/ammonia_bucket", "adv_rocketry:ammonia");
         model("item/area_gravity_controller", "block/area_gravity_controller", null, true);
         model("item/asteroid_chip", "minecraft:item/generated", null, true, "layer0", "item/asteroididchip");
+        model(
+                "item/observatory_auto_programmer",
+                "minecraft:item/generated",
+                null,
+                true,
+                "layer0",
+                "item/observatory_auto_programmer");
         model("item/astrobody_data_processor", "block/astrobody_data_processor", null, true);
         model("item/atm_analyzer", "minecraft:item/generated", null, true, "layer0", "item/atmanalyzer");
         model("item/atmosphere_detector", "block/atmosphere_detector", null, true);

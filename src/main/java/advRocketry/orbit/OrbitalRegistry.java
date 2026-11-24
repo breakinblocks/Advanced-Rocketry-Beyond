@@ -161,6 +161,8 @@ public final class OrbitalRegistry {
             ITEMS.register("satellite", () -> new SatelliteItem(new Item.Properties()));
     public static final Supplier<AsteroidChipItem> ASTEROID_CHIP =
             ITEMS.register("asteroid_chip", () -> new AsteroidChipItem(new Item.Properties()));
+    public static final Supplier<Item> AUTO_PROGRAMMER =
+            ITEMS.register("observatory_auto_programmer", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final Supplier<PlanetIdChipItem> PLANET_CHIP =
             ITEMS.register("planet_id_chip", () -> new PlanetIdChipItem(new Item.Properties()));
     public static final Supplier<OreScannerItem> ORE_SCANNER =
@@ -323,7 +325,7 @@ public final class OrbitalRegistry {
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK, FLUID_TANK_ENTITY.get(), (entity, side) -> entity.handler());
         event.registerBlockEntity(
-                Capabilities.ItemHandler.BLOCK, BLOCK_ENTITY.get(), (entity, side) -> entity.inventory);
+                Capabilities.ItemHandler.BLOCK, BLOCK_ENTITY.get(), (entity, side) -> entity.automationItems());
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK, LANDING_PAD_ENTITY.get(), (entity, side) -> entity.linker);
         event.registerBlockEntity(
@@ -365,6 +367,7 @@ public final class OrbitalRegistry {
         for (Supplier<? extends Item> part : List.<Supplier<? extends Item>>of(
                 SATELLITE,
                 ASTEROID_CHIP,
+                AUTO_PROGRAMMER,
                 PLANET_CHIP,
                 ORE_SCANNER,
                 STATION,

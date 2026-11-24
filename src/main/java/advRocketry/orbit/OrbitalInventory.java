@@ -166,7 +166,9 @@ public final class OrbitalInventory extends ItemStackHandler {
         if (owner.observatory())
             return slot == 0
                     ? stack.is(OrbitalRegistry.ASTEROID_CHIP.get())
-                    : slot >= 1 && slot <= 3 && stack.is(OrbitalRegistry.DATA_UNIT.get());
+                    : slot == 5
+                            ? stack.is(OrbitalRegistry.AUTO_PROGRAMMER.get())
+                            : slot >= 1 && slot <= 3 && stack.is(OrbitalRegistry.DATA_UNIT.get());
         if (owner.warpController())
             return slot == 0
                     ? stack.is(OrbitalRegistry.PLANET_CHIP.get())

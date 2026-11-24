@@ -146,6 +146,10 @@ public final class ObservatoryLogic {
             controller.setChanged();
             level.sendBlockUpdated(controller.getBlockPos(), controller.getBlockState(), controller.getBlockState(), 2);
         }
+        if (level.getGameTime() % 20 == 0
+                && controller.inventory.getStackInSlot(5).is(OrbitalRegistry.AUTO_PROGRAMMER.get())
+                && controller.inventory.getStackInSlot(0).is(OrbitalRegistry.ASTEROID_CHIP.get())
+                && !AsteroidChipItem.programmed(controller.inventory.getStackInSlot(0))) program(controller);
         if (controller.observation.ticks > 0 && ObservatoryStructure.complete(controller)) {
             controller.observation.ticks = 0;
             controller.observation.seed = level.getGameTime() / 100;

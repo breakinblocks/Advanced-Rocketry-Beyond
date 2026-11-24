@@ -206,6 +206,7 @@ final class ModLanguage extends LanguageProvider {
         add("item.adv_rocketry.hovercraft", "Hovercraft");
         add("item.adv_rocketry.unlit_torch", "Extinguished Torch");
         add("item.adv_rocketry.asteroid_chip", "Asteroid Chip");
+        add("item.adv_rocketry.observatory_auto_programmer", "Observatory Auto-Programmer");
         add("item.adv_rocketry.basic_satellite_solar_panel", "Basic Satellite Solar Panel");
         add("item.adv_rocketry.composition_sensor", "Composition Sensor");
         add("item.adv_rocketry.large_satellite_solar_panel", "Large Satellite Solar Panel");
@@ -1101,7 +1102,7 @@ final class ModLanguage extends LanguageProvider {
         add("gui.adv_rocketry.orbital.channel_distance", "Distance");
         add("gui.adv_rocketry.orbital.channel_mass", "Mass");
         add("gui.adv_rocketry.orbital.channels", "Channels %s");
-        add("gui.adv_rocketry.orbital.chip_dist_comp_mass_out", "Chip    Dist.   Comp.   Mass   Out");
+        add("gui.adv_rocketry.orbital.chip_dist_comp_mass_out", "Chip    Dist.   Comp.   Mass   Out    Auto");
         add("gui.adv_rocketry.orbital.clear_jam", "Clear jam");
         add("gui.adv_rocketry.orbital.composition", "Composition: %s");
         add("gui.adv_rocketry.orbital.controller_modules", "Controller  /  Modules");

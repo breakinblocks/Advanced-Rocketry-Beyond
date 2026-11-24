@@ -7,6 +7,7 @@ navigation:
 item_ids:
   - adv_rocketry:observatory
   - adv_rocketry:asteroid_chip
+  - adv_rocketry:observatory_auto_programmer
 ---
 
 # Observatory
@@ -16,6 +17,17 @@ Complete the telescope and keep its required sky view open. The service rim acce
 Supply distance data to find asteroid targets. With the telescope open, spend **500 FE** to program a chip for the selected target. Composition and mass data refine cargo estimates.
 
 Research the chip in the [Astrobody Data Processor](astrobody_data_processor.md) before preparing a mining rocket.
+
+## Automatic mining runs
+
+Put an **Observatory Auto-Programmer** in the Auto slot and the Observatory programs any blank chip in the Chip slot once a second, for the selected target, at the usual 500 FE and data cost. Pipes and hoppers can only insert blank asteroid chips and only take programmed chips from the Out slot.
+
+A mining rocket comes home with its chip wiped. A Rocket Guidance port beside the pad pushes the blank chip into a pipe or chest next to it, and inserting into the port loads a chip straight into the docked rocket. A loop that runs without you:
+
+1. The Guidance port sends the returned blank chip to the Observatory.
+2. The Observatory programs it and a pipe carries it back into the Guidance port.
+3. A Rocket Item Unloader empties the cargo and a Fueling Station refuels the rocket.
+4. Combine their redstone signals (cargo empty, fuel full, Guidance port no longer empty) into the Rocket Monitoring Station, which launches on a rising signal.
 
 Some asteroids only appear while the right artifact sits in the Observatory's artifact slots. When a pack uses them, the slots show every artifact held plus one free slot, and scroll once there are more than seven. Artifacts are checked, not used up.
 

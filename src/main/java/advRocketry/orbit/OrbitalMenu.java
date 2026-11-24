@@ -145,7 +145,7 @@ public final class OrbitalMenu extends ModMenu {
             addSlot(new SlotItemHandler(entity.inventory, 0, 26, 42));
             addSlot(new SlotItemHandler(entity.inventory, 1, 80, 42));
         } else if (entity.observatory()) {
-            for (int slot = 0; slot <= 4; slot++)
+            for (int slot = 0; slot <= 5; slot++)
                 addSlot(new SlotItemHandler(entity.inventory, slot, 8 + slot * 30, 42));
             if (AsteroidCatalog.usesArtifacts(level.registryAccess()))
                 for (int window = 0; window < ARTIFACT_WINDOW; window++)

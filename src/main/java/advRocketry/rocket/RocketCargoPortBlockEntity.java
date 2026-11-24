@@ -3,6 +3,7 @@
 
 package advRocketry.rocket;
 
+import advRocketry.orbit.AsteroidChipItem;
 import advRocketry.orbit.OrbitalRegistry;
 import advRocketry.processing.FluidContainers;
 import advRocketry.processing.PortBlockEntity;
@@ -61,7 +62,8 @@ public final class RocketCargoPortBlockEntity extends BlockEntity implements Men
             setChanged();
             return;
         }
-        if (!(chip.is(OrbitalRegistry.SATELLITE_CHIP.get()) && ejectOption(1)
+        if (!(chip.getItem() instanceof AsteroidChipItem && !AsteroidChipItem.programmed(chip)
+                || chip.is(OrbitalRegistry.SATELLITE_CHIP.get()) && ejectOption(1)
                 || chip.is(OrbitalRegistry.PLANET_CHIP.get()) && ejectOption(2)
                 || chip.is(OrbitalRegistry.STATION_CHIP.get()) && ejectOption(3))) return;
         for (Direction side : Direction.values()) {

@@ -166,6 +166,18 @@ final class ModCraftingRecipes extends ModRecipeHelpers {
                 item("adv_rocketry:blast_brick"),
                 'b',
                 tag("c:ingots/copper"));
+        shaped(
+                output,
+                "observatory_auto_programmer",
+                "adv_rocketry:observatory_auto_programmer",
+                1,
+                List.of(" t ", "dcd", " t "),
+                't',
+                item("adv_rocketry:tracking_circuit"),
+                'd',
+                item("adv_rocketry:item_data_storage"),
+                'c',
+                item("adv_rocketry:control_circuit_board"));
         shapeless(
                 output,
                 "legacy/asteroidchip",

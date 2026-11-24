@@ -26,6 +26,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 /** Original satellite builder and launch hatch roles, backed by native inventory and FE storage. */
@@ -236,6 +237,45 @@ public final class OrbitalBlockEntity extends BlockEntity implements MenuProvide
 
     public boolean startObservation() {
         return ObservatoryLogic.scan(this);
+    }
+
+    public IItemHandler automationItems() {
+        if (!observatory()) return inventory;
+        return new IItemHandler() {
+            @Override
+            public int getSlots() {
+                return 2;
+            }
+
+            @Override
+            public ItemStack getStackInSlot(int slot) {
+                return inventory.getStackInSlot(slot == 0 ? 0 : 4);
+            }
+
+            @Override
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+                if (slot != 0 || !stack.is(OrbitalRegistry.ASTEROID_CHIP.get()) || AsteroidChipItem.programmed(stack))
+                    return stack;
+                return inventory.insertItem(0, stack, simulate);
+            }
+
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                return slot == 1 ? inventory.extractItem(4, amount, simulate) : ItemStack.EMPTY;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return inventory.getSlotLimit(slot == 0 ? 0 : 4);
+            }
+
+            @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                return slot == 0
+                        && stack.is(OrbitalRegistry.ASTEROID_CHIP.get())
+                        && !AsteroidChipItem.programmed(stack);
+            }
+        };
     }
 
     public boolean programAsteroidChip() {
