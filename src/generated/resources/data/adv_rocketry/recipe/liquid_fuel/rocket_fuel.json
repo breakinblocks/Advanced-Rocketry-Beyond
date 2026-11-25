@@ -1,0 +1,9 @@
+{
+  "type": "adv_rocketry:liquid_fuel",
+  "fe_per_tick": 360,
+  "fuel": {
+    "amount": 1000,
+    "tag": "c:rocket_fuel"
+  },
+  "ticks": 1200
+}

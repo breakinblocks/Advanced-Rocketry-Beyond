@@ -1,0 +1,16 @@
+{
+  "type": "adv_rocketry:armor_sealing",
+  "armor_type": "leggings",
+  "energy": 10,
+  "materials": [
+    {
+      "count": 1,
+      "item": "adv_rocketry:pipe_sealer"
+    },
+    {
+      "count": 4,
+      "item": "adv_rocketry:titanium_aluminide_sheet"
+    }
+  ],
+  "ticks": 100
+}

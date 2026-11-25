@@ -1,7 +1,12 @@
 package advRocketry.datagen;
 
+import advRocketry.processing.ArmorSealingRecipe;
+import advRocketry.processing.LiquidFuelRecipe;
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.ArmorItem;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 final class ModProcessingRecipes extends ModRecipeHelpers {
     private ModProcessingRecipes() {}
@@ -805,5 +810,22 @@ final class ModProcessingRecipes extends ModRecipeHelpers {
                         stack("minecraft:ender_eye", 1),
                         stack("adv_rocketry:basic_circuit_plate", 1)),
                 List.of(stack("adv_rocketry:tracking_circuit", 1)));
+        for (ArmorItem.Type type : ArmorItem.Type.values()) {
+            List<SizedIngredient> materials = new ArrayList<>(List.of(
+                    stack("adv_rocketry:pipe_sealer", 1).ingredient(),
+                    stack("adv_rocketry:titanium_aluminide_sheet", 4).ingredient()));
+            if (type == ArmorItem.Type.CHESTPLATE)
+                materials.add(
+                        stack("adv_rocketry:portable_pressure_tank_iridium", 1).ingredient());
+            output.accept(id("sealing/" + type.getName()), new ArmorSealingRecipe(type, materials, 100, 10), null);
+        }
+        output.accept(
+                id("liquid_fuel/lava"),
+                new LiquidFuelRecipe(fluid("minecraft:lava", 1000).fluidIngredient(), 1000, 160),
+                null);
+        output.accept(
+                id("liquid_fuel/rocket_fuel"),
+                new LiquidFuelRecipe(fluid("#c:rocket_fuel", 1000).fluidIngredient(), 1200, 360),
+                null);
     }
 }

@@ -1,0 +1,2008 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm"
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "north": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core"
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "north": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "y": 90
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "east": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core",
+        "y": 90
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "east": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "y": 180
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "south": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core",
+        "y": 180
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "south": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "y": 270
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "west": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core",
+        "y": 270
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "west": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "x": 270
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "up": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core",
+        "x": 270
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm",
+        "x": 90
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "down": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core",
+        "x": 90
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "false",
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active"
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "north": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core_active"
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "north": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "y": 90
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "east": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core_active",
+        "y": 90
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "east": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "y": 180
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "south": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core_active",
+        "y": 180
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "south": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "y": 270
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "west": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core_active",
+        "y": 270
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "west": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "x": 270
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "up": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core_active",
+        "x": 270
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_arm_active",
+        "x": 90
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "down": "true"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_core_active",
+        "x": 90
+      },
+      "when": {
+        "AND": [
+          {
+            "active": "true",
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false"
+              },
+              {
+                "south": "false"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "false"
+              },
+              {
+                "west": "false"
+              },
+              {
+                "up": "true"
+              },
+              {
+                "down": "true"
+              }
+            ]
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              },
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              },
+              {
+                "up": "false"
+              },
+              {
+                "down": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_straight"
+      },
+      "when": {
+        "active": "false",
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_straight",
+        "y": 90
+      },
+      "when": {
+        "active": "false",
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_straight",
+        "x": 90
+      },
+      "when": {
+        "active": "false",
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_straight_active"
+      },
+      "when": {
+        "active": "true",
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_straight_active",
+        "y": 90
+      },
+      "when": {
+        "active": "true",
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "adv_rocketry:block/transport/fluid_pipe_straight_active",
+        "x": 90
+      },
+      "when": {
+        "active": "true",
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    }
+  ]
+}

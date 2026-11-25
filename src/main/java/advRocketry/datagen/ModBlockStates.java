@@ -1,13 +1,17 @@
 package advRocketry.datagen;
 
 import advRocketry.space.BiomeMaterials;
+import advRocketry.transport.TransportBlock;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 final class ModBlockStates extends ModBlockStateHelpers {
@@ -1128,6 +1132,91 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states("wireless_transceiver", HORIZONTAL, "", "block/wireless_transceiver");
         connected("block/wulfentite_crystal_block", "block/ctm/crystal", 0);
         states("wulfentite_crystal_block", NONE, "", "block/wulfentite_crystal_block");
+        for (String name : new String[] {"energy_cable", "fluid_pipe", "item_conduit"}) transport(name);
+        for (String name :
+                new String[] {"iridium_block", "tin_block", "titanium_aluminide_block", "titanium_iridium_block"})
+            tintedIron("block/" + name);
+        models().getBuilder("block/laser_light")
+                .parent(unchecked("minecraft:block/block"))
+                .texture("particle", location("minecraft:block/glass"));
+        formed("centrifuge", "block/controlpanel");
+        formed("chemical_reactor", "block/controlpanel");
+        formed("crystallizer", "block/crystallizer");
+        formed("cutting_machine", "block/cuttingmachine");
+        formed("electric_arc_furnace", "legacy/advancedrocketry/blocks/blastbrickfront");
+        formed("electrolyzer", "block/machineelectrolyzer");
+        formed("lathe", "block/controlpanel");
+        formed("precision_assembler", "block/precisionassemblerfront");
+        formed("precision_laser_etcher", "block/machineprecisionlaseretcher");
+        formed("rolling_machine", "block/controlpanel");
+    }
+
+    private void formed(String name, String particle) {
+        models().getBuilder("block/" + name + "_formed").texture("particle", location(particle));
+    }
+
+    private void tintedIron(String path) {
+        BlockModelBuilder builder = models().getBuilder(path)
+                .parent(unchecked("minecraft:block/cube_all"))
+                .texture("all", location("minecraft:block/iron_block"))
+                .texture("particle", "#all");
+        builder.element()
+                .from(0, 0, 0)
+                .to(16, 16, 16)
+                .allFaces((direction, face) -> face.texture("#all").tintindex(0).cullface(direction));
+    }
+
+    private void transport(String name) {
+        String[] parts = {"arm", "core", "straight"};
+        for (String suffix : new String[] {"", "_active"})
+            for (String part : parts)
+                models().getBuilder("block/transport/" + name + "_" + part + suffix)
+                        .parent(unchecked("block/transport/fiber_" + part))
+                        .texture("all", location("block/transport/jackets/" + name + suffix))
+                        .texture("particle", "#all");
+        Block block = BuiltInRegistries.BLOCK.get(location(name));
+        MultiPartBlockStateBuilder builder = getMultipartBuilder(block);
+        String[] sides = {"north", "east", "south", "west", "up", "down"};
+        int[][] sideRotations = {{0, 0}, {0, 90}, {0, 180}, {0, 270}, {270, 0}, {90, 0}};
+        String[] order = {"north", "south", "east", "west", "up", "down"};
+        int[][] axisRotations = {{0, 0}, {0, 90}, {90, 0}};
+        for (boolean active : new boolean[] {false, true}) {
+            String suffix = active ? "_active" : "";
+            for (int side = 0; side < sides.length; side++)
+                for (boolean connected : new boolean[] {true, false}) {
+                    MultiPartBlockStateBuilder.PartBuilder part = builder.part()
+                            .modelFile(unchecked("block/transport/" + name + (connected ? "_arm" : "_core") + suffix))
+                            .rotationX(sideRotations[side][0])
+                            .rotationY(sideRotations[side][1])
+                            .addModel();
+                    part.nestedGroup()
+                            .condition(TransportBlock.ACTIVE, active)
+                            .condition(side(block, sides[side]), connected)
+                            .end();
+                    for (int axis = 0; axis < 3; axis++) {
+                        MultiPartBlockStateBuilder.PartBuilder.ConditionGroup group =
+                                part.nestedGroup().useOr();
+                        for (int index = 0; index < order.length; index++)
+                            group.condition(side(block, order[index]), index / 2 != axis);
+                    }
+                }
+        }
+        for (boolean active : new boolean[] {false, true})
+            for (int axis = 0; axis < 3; axis++) {
+                MultiPartBlockStateBuilder.PartBuilder part = builder.part()
+                        .modelFile(unchecked("block/transport/" + name + "_straight" + (active ? "_active" : "")))
+                        .rotationX(axisRotations[axis][0])
+                        .rotationY(axisRotations[axis][1])
+                        .addModel()
+                        .condition(TransportBlock.ACTIVE, active);
+                for (int index = 0; index < order.length; index++)
+                    part.condition(side(block, order[index]), index / 2 == axis);
+            }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Property<Boolean> side(Block block, String name) {
+        return (Property<Boolean>) block.getStateDefinition().getProperty(name);
     }
 
     private void airlockFrame(String path, String texture, boolean upper) {
