@@ -929,7 +929,7 @@ final class ModLanguage extends LanguageProvider {
         add("message.adv_rocketry.rocket.the_rocket_tanks_cannot_hold_its", "The rocket tanks cannot hold its fuel");
         add(
                 "message.adv_rocketry.rocket.this_flight_requires_a_trans_body",
-                "This flight requires a trans-body injection upgrade");
+                "This planet is reached by launching from a space station in orbit");
         add("message.adv_rocketry.rocket_assembly.a_guidance_computer_is_required", "A guidance computer is required");
         add(
                 "message.adv_rocketry.rocket_assembly.a_structure_tower_at_least_four",

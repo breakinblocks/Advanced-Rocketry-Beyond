@@ -843,7 +843,7 @@
   "message.adv_rocketry.rocket.the_rocket_needs_an_available_seat": "The rocket needs an available seat",
   "message.adv_rocketry.rocket.the_rocket_needs_clear_space_before": "The rocket needs clear space before disassembly",
   "message.adv_rocketry.rocket.the_rocket_tanks_cannot_hold_its": "The rocket tanks cannot hold its fuel",
-  "message.adv_rocketry.rocket.this_flight_requires_a_trans_body": "This flight requires a trans-body injection upgrade",
+  "message.adv_rocketry.rocket.this_flight_requires_a_trans_body": "This planet is reached by launching from a space station in orbit",
   "message.adv_rocketry.rocket_assembly.a_guidance_computer_is_required": "A guidance computer is required",
   "message.adv_rocketry.rocket_assembly.a_structure_tower_at_least_four": "A structure tower at least four blocks high must border the pad",
   "message.adv_rocketry.rocket_assembly.assembly_was_cancelled": "%s assembly was cancelled",
