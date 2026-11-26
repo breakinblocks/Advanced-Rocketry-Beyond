@@ -13,6 +13,7 @@
 - Rocket destinations now only list planets in the star system you are launching from. With no chip in the guidance computer, a rocket launching from a station heads for the planet the station orbits
 - Faster sky rendering on planets and in space, with a lower render-thread cost for the atmosphere and cloud layers
 - Planet definitions take `structure_sets`, which limits a planet with `structures` to the listed structure sets or tags, and `reservoirs`, which places sealed underground fluid pockets
+- The space suit HUD no longer shows the panel listing worn suit pieces and their installed modules, which covered the top left of the screen and overlapped other mods such as FTB Ultimine. The oxygen gauge and atmosphere readout are unchanged
 
 ### Fixed
 

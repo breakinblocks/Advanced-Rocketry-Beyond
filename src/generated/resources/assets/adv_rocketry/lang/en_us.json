@@ -618,7 +618,6 @@
   "hud.adv_rocketry.oxygen": "Oxygen",
   "hud.adv_rocketry.oxygen_amount": "%s / %s mB",
   "hud.adv_rocketry.pressure": "%s atm",
-  "hud.adv_rocketry.suit": "Suit",
   "hud.adv_rocketry.unbreathable": "Not breathable",
   "hud.adv_rocketry.warp_transit": "Warp transit to %s: %s%%, %s left",
   "item.adv_rocketry.advanced_battery": "Advanced Battery",

@@ -480,7 +480,6 @@ final class ModLanguage extends LanguageProvider {
     private void addHud() {
         add("hud.adv_rocketry.oxygen", "Oxygen");
         add("hud.adv_rocketry.oxygen_amount", "%s / %s mB");
-        add("hud.adv_rocketry.suit", "Suit");
         add("hud.adv_rocketry.atmosphere", "Atmosphere");
         add("hud.adv_rocketry.pressure", "%s atm");
         add("hud.adv_rocketry.breathable", "Breathable");

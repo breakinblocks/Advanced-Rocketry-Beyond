@@ -14,8 +14,6 @@ import advRocketry.life.SpaceSuitItem;
 import advRocketry.orbit.BeaconFinderItem;
 import advRocketry.rocket.client.RocketClient;
 import advRocketry.space.GalaxySync;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -28,16 +26,11 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
-/** Original suit oxygen gauge, installed component strip and helmet atmosphere analyzer. */
+/** Original suit oxygen gauge and helmet atmosphere analyzer. */
 public final class SuitHud {
     private static final ResourceLocation LAYER = ResourceLocation.fromNamespaceAndPath(Main.MODID, "suit_hud");
-    private static final EquipmentSlot[] ARMOR = {
-        EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET
-    };
     private static final int MARGIN = 6;
-    private static final int ROW = 18;
 
     private SuitHud() {}
 
@@ -61,10 +54,7 @@ public final class SuitHud {
         warning(graphics, client.font, dimension, player.tickCount);
         if (helmet.getItem() instanceof SpaceSuitItem suit && suit.countModule(helmet, "beacon_finder") > 0)
             beacons(graphics, player, dimension);
-        if (!player.isCreative()) {
-            oxygen(graphics, client.font, player);
-            if (helmet.getItem() instanceof SpaceSuitItem) modules(graphics, client.font, player, top);
-        }
+        if (!player.isCreative()) oxygen(graphics, client.font, player);
         if (analyzer(helmet)) atmosphere(graphics, client.font, player, dimension, top);
     }
 
@@ -123,37 +113,6 @@ public final class SuitHud {
         graphics.drawString(font, amount, x + width - 6 - font.width(amount), y + 5, UiTheme.TEXT, false);
         graphics.drawString(font, label, x + 8, y + 5, UiTheme.MUTED, false);
         UiTheme.meter(graphics, x + 8, y + 16, width - 14, 3, fraction, color);
-    }
-
-    private static void modules(GuiGraphics graphics, Font font, LocalPlayer player, int top) {
-        List<ItemStack> pieces = new ArrayList<>();
-        List<List<ItemStack>> installed = new ArrayList<>();
-        int columns = 0;
-        for (EquipmentSlot equipment : ARMOR) {
-            ItemStack armor = player.getItemBySlot(equipment);
-            if (!(armor.getItem() instanceof SpaceSuitItem suit)) continue;
-            ItemStackHandler modules = suit.inventory(armor);
-            List<ItemStack> stacks = new ArrayList<>();
-            for (int slot = 0; slot < modules.getSlots(); slot++)
-                if (!modules.getStackInSlot(slot).isEmpty()) stacks.add(modules.getStackInSlot(slot));
-            pieces.add(armor);
-            installed.add(stacks);
-            columns = Math.max(columns, stacks.size());
-        }
-        if (pieces.isEmpty()) return;
-        Component title = Component.translatable("hud.adv_rocketry.suit");
-        int width = Math.max(32 + ROW * columns, font.width(title) + 16);
-        int height = 16 + pieces.size() * ROW;
-        UiTheme.hudPanel(graphics, MARGIN, top, width, height, UiTheme.ACCENT);
-        graphics.drawString(font, title, MARGIN + 8, top + 4, UiTheme.MUTED, false);
-        int y = top + 14;
-        for (int piece = 0; piece < pieces.size(); piece++) {
-            graphics.renderItem(pieces.get(piece), MARGIN + 7, y);
-            if (!installed.get(piece).isEmpty()) graphics.fill(MARGIN + 25, y + 1, MARGIN + 26, y + 15, UiTheme.BORDER);
-            for (int column = 0; column < installed.get(piece).size(); column++)
-                graphics.renderItem(installed.get(piece).get(column), MARGIN + 29 + column * ROW, y);
-            y += ROW;
-        }
     }
 
     private static void atmosphere(
