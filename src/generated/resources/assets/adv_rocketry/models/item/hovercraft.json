@@ -1,6 +1,144 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:block/block",
+  "automatic_culling": false,
+  "display": {
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "translation": [
+        -1.599,
+        2.965,
+        0.332
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "translation": [
+        -0.468,
+        2.965,
+        -0.799
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "translation": [
+        -0.824,
+        2.612,
+        -2
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.12,
+        0.12,
+        0.12
+      ],
+      "translation": [
+        0.96,
+        4.454,
+        -0.396
+      ]
+    },
+    "gui": {
+      "rotation": [
+        30,
+        135,
+        0
+      ],
+      "scale": [
+        0.2357,
+        0.2357,
+        0.2357
+      ],
+      "translation": [
+        -1.883,
+        2.524,
+        0.552
+      ]
+    },
+    "head": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "translation": [
+        -2,
+        2.612,
+        0.824
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        75,
+        0,
+        0
+      ],
+      "scale": [
+        0.11,
+        0.11,
+        0.11
+      ],
+      "translation": [
+        -0.88,
+        3.148,
+        1.016
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        0,
+        0
+      ],
+      "scale": [
+        0.11,
+        0.11,
+        0.11
+      ],
+      "translation": [
+        0.88,
+        3.148,
+        1.016
+      ]
+    }
+  },
+  "flip_v": true,
+  "loader": "neoforge:obj",
+  "model": "adv_rocketry:multiblock/legacy/hovercraft.obj",
+  "render_type": "minecraft:cutout",
   "textures": {
-    "layer0": "adv_rocketry:item/hovercraft"
+    "particle": "adv_rocketry:legacy/advancedrocketry/models/hovercraft"
   }
 }

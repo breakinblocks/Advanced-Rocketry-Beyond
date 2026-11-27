@@ -14,6 +14,7 @@
 - Faster sky rendering on planets and in space, with a lower render-thread cost for the atmosphere and cloud layers
 - Planet definitions take `structure_sets`, which limits a planet with `structures` to the listed structure sets or tags, and `reservoirs`, which places sealed underground fluid pockets
 - The space suit HUD no longer shows the panel listing worn suit pieces and their installed modules, which covered the top left of the screen and overlapped other mods such as FTB Ultimine. The oxygen gauge and atmosphere readout are unchanged
+- The hovercraft item shows the full 3D hovercraft in hand, in the inventory and in item frames instead of a flat icon
 
 ### Fixed
 
@@ -28,3 +29,5 @@
 - Right-clicking a Launch Pad, Landing Pad, rocket part, pipe or cable while holding a block now places the block instead of needing a sneak-click
 - Landing the hovercraft no longer deals fall damage to the rider (FTBTesting/Testing-Issues#5210)
 - Seats, rocket motors and fuel tanks no longer hide the faces of the blocks next to them, which made nearby blocks see-through
+- The hovercraft has its seat again, a cushion and a backrest
+- Hovercraft, rockets and other mod entities show their names instead of raw translation keys in Jade and death messages

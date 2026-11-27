@@ -2,6 +2,10 @@ package advRocketry.datagen;
 
 import advRocketry.space.BiomeMaterials;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.loaders.ObjModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 final class ModItemModels extends ModItemModelHelpers {
@@ -154,7 +158,7 @@ final class ModItemModels extends ModItemModelHelpers {
         model("item/holographic_planet_selector", "block/holographic_planet_selector", null, true);
         model("item/hot_turf", "block/hot_turf", null, true);
         model("item/hover_upgrade", "minecraft:item/generated", null, true, "layer0", "item/hoverupgrade");
-        model("item/hovercraft", "minecraft:item/generated", null, true, "layer0", "item/hovercraft");
+        hovercraft();
         bucket("item/hydrogen_bucket", "adv_rocketry:hydrogen");
         model("item/iridium_block", "block/iridium_block", null, true);
         model("item/iridium_coil", "block/iridium_coil", null, true);
@@ -371,5 +375,42 @@ final class ModItemModels extends ModItemModelHelpers {
         model("item/warp_core", "block/warp_core", null, true);
         model("item/wireless_transceiver", "block/wireless_transceiver", null, true);
         model("item/wulfentite_crystal_block", "block/wulfentite_crystal_block", null, true);
+    }
+
+    private void hovercraft() {
+        ItemModelBuilder builder = getBuilder("item/hovercraft")
+                .parent(new ModelFile.UncheckedModelFile(location("minecraft:block/block")))
+                .texture("particle", location("legacy/advancedrocketry/models/hovercraft"))
+                .renderType("minecraft:cutout");
+        display(builder, ItemDisplayContext.GUI, 30, 135, 0, -1.883f, 2.524f, 0.552f, 0.2357f);
+        display(builder, ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, 0, 45, 0, -0.468f, 2.965f, -0.799f, 0.1f);
+        display(builder, ItemDisplayContext.FIRST_PERSON_LEFT_HAND, 0, 45, 0, -1.599f, 2.965f, 0.332f, 0.1f);
+        display(builder, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, 75, 0, 0, 0.88f, 3.148f, 1.016f, 0.11f);
+        display(builder, ItemDisplayContext.THIRD_PERSON_LEFT_HAND, 75, 0, 0, -0.88f, 3.148f, 1.016f, 0.11f);
+        display(builder, ItemDisplayContext.GROUND, 0, 0, 0, 0.96f, 4.454f, -0.396f, 0.12f);
+        display(builder, ItemDisplayContext.FIXED, 0, 90, 0, -0.824f, 2.612f, -2f, 0.25f);
+        display(builder, ItemDisplayContext.HEAD, 0, 180, 0, -2f, 2.612f, 0.824f, 0.25f);
+        builder.customLoader(ObjModelBuilder::begin)
+                .modelLocation(location("multiblock/legacy/hovercraft.obj"))
+                .flipV(true)
+                .automaticCulling(false);
+    }
+
+    private static void display(
+            ItemModelBuilder builder,
+            ItemDisplayContext context,
+            float rx,
+            float ry,
+            float rz,
+            float tx,
+            float ty,
+            float tz,
+            float scale) {
+        builder.transforms()
+                .transform(context)
+                .rotation(rx, ry, rz)
+                .translation(tx, ty, tz)
+                .scale(scale)
+                .end();
     }
 }

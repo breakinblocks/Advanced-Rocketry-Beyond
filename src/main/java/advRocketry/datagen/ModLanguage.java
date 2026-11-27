@@ -468,6 +468,12 @@ final class ModLanguage extends LanguageProvider {
 
     private void addEntity() {
         add("entity.adv_rocketry.hologram_body", "Hologram");
+        add("entity.adv_rocketry.hovercraft", "Hovercraft");
+        add("entity.adv_rocketry.rocket", "Rocket");
+        add("entity.adv_rocketry.seat_mount", "Seat");
+        add("entity.adv_rocketry.elevator_capsule", "Space Elevator Capsule");
+        add("entity.adv_rocketry.laser_node", "Orbital Laser Beam");
+        add("entity.adv_rocketry.railgun_cargo", "Railgun Cargo");
     }
 
     private void addMessage() {
