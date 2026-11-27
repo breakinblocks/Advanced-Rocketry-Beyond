@@ -4,25 +4,31 @@
 package advRocketry.processing;
 
 import advRocketry.ModTags;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 
-/** Original diamond-tier jackhammer speed, repaired with titanium rods. */
-public final class JackhammerItem extends PickaxeItem {
+/** A powered excavator for rock and loose ground. */
+public final class JackhammerItem extends DiggerItem {
     public JackhammerItem(Properties properties) {
-        super(Tiers.DIAMOND, properties);
+        super(
+                Tiers.DIAMOND,
+                ModTags.JACKHAMMER_MINEABLE,
+                properties.component(DataComponents.UNBREAKABLE, new Unbreakable(true)));
     }
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        return state.is(BlockTags.MINEABLE_WITH_PICKAXE) ? 50 : super.getDestroySpeed(stack, state);
+        return state.is(ModTags.JACKHAMMER_MINEABLE) ? 50 : super.getDestroySpeed(stack, state);
     }
 
     @Override
-    public boolean isValidRepairItem(ItemStack stack, ItemStack material) {
-        return material.is(ModTags.TITANIUM_RODS);
+    public boolean canPerformAction(ItemStack stack, ItemAbility ability) {
+        return ItemAbilities.DEFAULT_PICKAXE_ACTIONS.contains(ability) || ability == ItemAbilities.SHOVEL_DIG;
     }
 }

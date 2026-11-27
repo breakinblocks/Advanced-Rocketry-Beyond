@@ -155,7 +155,7 @@ public final class ProcessingRegistry {
             if (name.equals("biome_changer_remote")) return new BiomeChangerRemoteItem(new Item.Properties());
             if (name.equals("beacon_finder")) return new BeaconFinderItem(new Item.Properties());
             if (name.equals("item_data_storage")) return new DataUnitItem(new Item.Properties());
-            if (name.equals("jackhammer")) return new JackhammerItem(new Item.Properties().durability(1561));
+            if (name.equals("jackhammer")) return new JackhammerItem(new Item.Properties());
             if (name.equals("basic_laser_gun")) return new LaserGunItem(new Item.Properties());
             if (name.equals("thermite")) return new ThermiteItem(new Item.Properties());
             if (name.equals("carbon_scrubber_cartridge")) return new Item(new Item.Properties().durability(32766));

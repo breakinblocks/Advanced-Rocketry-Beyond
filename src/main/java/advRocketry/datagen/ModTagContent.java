@@ -40,6 +40,7 @@ final class ModTagContent {
     private ModTagContent() {}
 
     static void blocks(ModTagProvider<Block> tags) {
+        tags.values(ModTags.JACKHAMMER_MINEABLE, "#minecraft:mineable/pickaxe", "#minecraft:mineable/shovel");
         tags.values(
                 "adv_rocketry:machine_slabs",
                 "minecraft:smooth_stone_slab",
@@ -242,6 +243,7 @@ final class ModTagContent {
     }
 
     static void items(ModTagProvider<Item> tags) {
+        tags.values("minecraft:pickaxes", "adv_rocketry:jackhammer");
         tags.values("minecraft:leaves", "adv_rocketry:rootwood_leaves", "adv_rocketry:alien_leaves");
         for (String stone : BiomeMaterials.STONES) {
             tags.values("minecraft:stone_tool_materials", "adv_rocketry:" + stone);

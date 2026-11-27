@@ -14,7 +14,7 @@ item_ids:
 
 Use the Linker on a source and its compatible partner. Read the status message: systems have different range and planetary restrictions. Sneak-use supported endpoints to unlink.
 
-The Jackhammer mines stone and metal quickly and uses titanium rods for repair.
+The Jackhammer quickly mines pickaxe and shovel blocks, including obsidian, dirt, and gravel. It has diamond-tier harvest strength, accepts pickaxe enchantments, and never wears out.
 
 The Basic Laser Gun holds a beam up to **50 blocks**. Keep it on one block through the charge to harvest it. Entities in front can be struck; choose a clear line of sight.
 

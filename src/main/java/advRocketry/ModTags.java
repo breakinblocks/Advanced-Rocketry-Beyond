@@ -24,6 +24,7 @@ public final class ModTags {
     public static final TagKey<Block> MINERAL_PLANT_SUBSTRATES = tag(Registries.BLOCK, "plant_substrates/mineral");
     public static final TagKey<Block> SHORE_PLANT_SUBSTRATES = tag(Registries.BLOCK, "plant_substrates/shore");
     public static final TagKey<Item> LASER_DRILL_ORES = tag(Registries.ITEM, "laser_drill_ores");
+    public static final TagKey<Block> JACKHAMMER_MINEABLE = tag(Registries.BLOCK, "mineable/jackhammer");
     public static final TagKey<Block> GEODE_ORES = tag(Registries.BLOCK, "geode_ores");
     public static final TagKey<Item> SILICON_WAFERS = tag(Registries.ITEM, "silicon_wafers");
     public static final TagKey<Item> STEEL_PLATES = common(Registries.ITEM, "plates/steel");
