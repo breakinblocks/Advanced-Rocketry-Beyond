@@ -93,10 +93,14 @@ public final class AtmosphereSync {
 
     public static void tick(ServerPlayer player) {
         if (player.tickCount % 10 != 0) return;
-        Payload state = new Payload(
-                player.level().dimension().location(),
-                pressure(player),
-                AtmosphereDetectorBlockEntity.atmosphere(player.serverLevel(), player.blockPosition()));
+        var dimension = player.level().dimension().location();
+        Payload state;
+        if (SealedRooms.breathable(player.level(), player.blockPosition())) {
+            state = new Payload(dimension, 100, Target.PRESSURIZED_AIR);
+        } else {
+            var planet = GalaxyData.get(player.server).planet(player.level());
+            state = new Payload(dimension, planet.atmosphere, AtmosphereDetectorBlockEntity.atmosphere(planet));
+        }
         if (state.equals(LAST.get(player))) return;
         LAST.put(player, state);
         PacketDistributor.sendToPlayer(player, state);

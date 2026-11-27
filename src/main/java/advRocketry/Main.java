@@ -111,6 +111,7 @@ public final class Main {
         NeoForge.EVENT_BUS.addListener(SealedRooms::neighborChanged);
         NeoForge.EVENT_BUS.addListener(SealedRooms::gameEvent);
         NeoForge.EVENT_BUS.addListener(SealedRooms::chunkLoaded);
+        NeoForge.EVENT_BUS.addListener(SealedRooms::chunkUnloaded);
         NeoForge.EVENT_BUS.addListener(PlanetBiomeCatalog::starting);
         NeoForge.EVENT_BUS.addListener(PlanetBiomeCatalog::stopped);
         NeoForge.EVENT_BUS.addListener(PlanetOres::starting);

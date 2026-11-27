@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Original atmosphere classes inferred from native planet state and sealed rooms. */
 public final class AtmosphereDetectorBlockEntity extends BlockEntity {
+    private static final Direction[] DIRECTIONS = Direction.values();
+
     public enum Target {
         AIR,
         PRESSURIZED_AIR,
@@ -69,12 +71,17 @@ public final class AtmosphereDetectorBlockEntity extends BlockEntity {
 
     void sample(ServerLevel serverLevel) {
         boolean detected = false;
-        for (Direction direction : Direction.values()) {
-            BlockPos next = worldPosition.relative(direction);
-            if (!level.getBlockState(next).isCollisionShapeFullBlock(level, next)
-                    && atmosphere(serverLevel, next) == target) {
-                detected = true;
-                break;
+        boolean wantsRoom = target == Target.PRESSURIZED_AIR;
+        if (wantsRoom
+                || target == atmosphere(GalaxyData.get(serverLevel.getServer()).planet(serverLevel))) {
+            var next = new BlockPos.MutableBlockPos();
+            for (Direction direction : DIRECTIONS) {
+                next.setWithOffset(worldPosition, direction);
+                if (!level.getBlockState(next).isCollisionShapeFullBlock(level, next)
+                        && SealedRooms.breathable(level, next) == wantsRoom) {
+                    detected = true;
+                    break;
+                }
             }
         }
         BlockState state = getBlockState();

@@ -8,7 +8,7 @@ import advRocketry.Main;
 import advRocketry.ModTags;
 import advRocketry.processing.MachinePorts;
 import advRocketry.space.GalaxyData;
-import java.util.Collection;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -133,17 +133,24 @@ public final class LightingRegistry {
                     3);
     }
 
-    static void atmosphereLost(ServerLevel level, Collection<BlockPos> positions) {
-        for (BlockPos pos : positions) {
+    static void atmosphereLost(ServerLevel level, LongSet previous, LongSet remaining) {
+        if (previous.isEmpty()) return;
+        var planet = GalaxyData.get(level.getServer()).planet(level);
+        if (planet.oxygen && planet.atmosphere > 25) return;
+        var cursor = new BlockPos.MutableBlockPos();
+        for (var keys = previous.iterator(); keys.hasNext(); ) {
+            long key = keys.nextLong();
+            if (remaining.contains(key)) continue;
+            var pos = cursor.set(key);
             if (!level.hasChunkAt(pos)) continue;
             BlockState state = level.getBlockState(pos);
             boolean torch = state.is(Blocks.TORCH) || state.is(Blocks.WALL_TORCH);
             boolean configured = !torch && state.is(ModTags.TORCHES);
-            if (!torch && !configured || combustible(level, pos)) continue;
+            if (!torch && !configured || SealedRooms.breathable(level, pos)) continue;
             if (configured) {
-                level.removeBlock(pos, false);
+                level.removeBlock(pos.immutable(), false);
                 Block.popResource(level, pos, new ItemStack(state.getBlock()));
-            } else extinguish(level, pos, state);
+            } else extinguish(level, pos.immutable(), state);
         }
     }
 

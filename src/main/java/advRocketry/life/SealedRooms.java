@@ -6,14 +6,15 @@ package advRocketry.life;
 import advRocketry.AdvancedRocketryConfig;
 import advRocketry.ModTags;
 import advRocketry.transport.TransportBlock;
-import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ByteOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -38,7 +39,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 
 /** Bounded original vent flood-fill: unloaded chunks and open boundaries are leaks. */
 public final class SealedRooms {
-    private static final Map<Level, Map<BlockPos, OxygenBlockEntity>> VENTS = new WeakHashMap<>();
+    private static final Map<Level, VentIndex> VENTS = new WeakHashMap<>();
     private static final Set<Holder<GameEvent>> BLOCK_EVENTS = Set.of(
             GameEvent.BLOCK_OPEN,
             GameEvent.BLOCK_CLOSE,
@@ -65,23 +66,53 @@ public final class SealedRooms {
         if (event.getLevel() instanceof ServerLevel) VENTS.remove(event.getLevel());
     }
 
+    private static final class VentIndex {
+        final Long2ObjectOpenHashMap<Set<OxygenBlockEntity>> byChunk = new Long2ObjectOpenHashMap<>();
+        final Map<OxygenBlockEntity, LongSet> footprints = new IdentityHashMap<>();
+
+        void remove(OxygenBlockEntity vent) {
+            LongSet old = footprints.remove(vent);
+            if (old == null) return;
+            for (long chunk : old) {
+                var bucket = byChunk.get(chunk);
+                bucket.remove(vent);
+                if (bucket.isEmpty()) byChunk.remove(chunk);
+            }
+        }
+
+        void put(OxygenBlockEntity vent, LongSet chunks) {
+            if (chunks.equals(footprints.get(vent))) return;
+            remove(vent);
+            footprints.put(vent, chunks);
+            for (long chunk : chunks)
+                byChunk.computeIfAbsent(chunk, ignored -> new HashSet<>()).add(vent);
+        }
+    }
+
     public static void register(OxygenBlockEntity vent) {
-        if (!(vent.getLevel() instanceof ServerLevel)) return;
-        VENTS.computeIfAbsent(vent.getLevel(), level -> new HashMap<>()).put(vent.getBlockPos(), vent);
+        if (!(vent.getLevel() instanceof ServerLevel level)) return;
+        VENTS.computeIfAbsent(level, ignored -> new VentIndex()).put(vent, vent.watchedChunks());
     }
 
     public static void remove(OxygenBlockEntity vent) {
-        if (!(vent.getLevel() instanceof ServerLevel)) return;
-        var vents = VENTS.get(vent.getLevel());
-        if (vents != null) vents.remove(vent.getBlockPos());
+        if (!(vent.getLevel() instanceof ServerLevel level)) return;
+        var index = VENTS.get(level);
+        if (index == null) return;
+        index.remove(vent);
+        if (index.footprints.isEmpty()) VENTS.remove(level);
+    }
+
+    private static Set<OxygenBlockEntity> candidates(LevelAccessor level, long chunk) {
+        var index = VENTS.get(level);
+        return index == null ? null : index.byChunk.get(chunk);
     }
 
     public static boolean breathable(Level level, BlockPos pos) {
         if (!(level instanceof ServerLevel)) return false;
-        var vents = VENTS.get(level);
+        var vents = candidates(level, ChunkPos.asLong(pos));
         if (vents == null) return false;
         long key = pos.asLong();
-        for (OxygenBlockEntity vent : vents.values()) if (!vent.isRemoved() && vent.supplies(pos, key)) return true;
+        for (OxygenBlockEntity vent : vents) if (!vent.isRemoved() && vent.supplies(pos, key)) return true;
         return false;
     }
 
@@ -95,18 +126,26 @@ public final class SealedRooms {
     }
 
     public static void chunkLoaded(ChunkEvent.Load event) {
+        chunkChanged(event, true);
+    }
+
+    public static void chunkUnloaded(ChunkEvent.Unload event) {
+        chunkChanged(event, false);
+    }
+
+    private static void chunkChanged(ChunkEvent event, boolean loaded) {
         if (!(event.getLevel() instanceof ServerLevel level)) return;
-        ChunkPos chunk = event.getChunk().getPos();
+        long chunk = event.getChunk().getPos().toLong();
         level.getServer().execute(() -> {
-            var vents = VENTS.get(level);
-            if (vents != null) for (OxygenBlockEntity vent : vents.values()) vent.chunkLoaded(chunk);
+            var vents = candidates(level, chunk);
+            if (vents != null) for (var vent : vents) vent.chunkChanged(loaded);
         });
     }
 
     private static void changed(LevelAccessor level, BlockPos pos) {
         if (level.isClientSide()) return;
-        var vents = VENTS.get(level);
-        if (vents != null) for (OxygenBlockEntity vent : vents.values()) vent.blockChanged(pos);
+        var vents = candidates(level, ChunkPos.asLong(pos));
+        if (vents != null) for (var vent : vents) vent.blockChanged(pos);
     }
 
     public static boolean seals(Level level, BlockPos pos) {
@@ -118,12 +157,19 @@ public final class SealedRooms {
     }
 
     public static Set<BlockPos> scan(Level level, BlockPos origin, BlockPos center) {
-        return positions(scan(level, origin, center, new LongOpenHashSet(), new LongOpenHashSet())
+        return positions(scan(new Reader(level), origin, center, new Long2ByteOpenHashMap(), new LongOpenHashSet())
                 .room());
     }
 
     static Set<BlockPos> scan(Level level, BlockPos origin, BlockPos center, int radius, boolean volumeBased) {
-        return positions(scan(level, origin, center, radius, volumeBased, new LongOpenHashSet(), new LongOpenHashSet())
+        return positions(scan(
+                        new Reader(level),
+                        origin,
+                        center,
+                        radius,
+                        volumeBased,
+                        new Long2ByteOpenHashMap(),
+                        new LongOpenHashSet())
                 .room());
     }
 
@@ -133,33 +179,34 @@ public final class SealedRooms {
         return result;
     }
 
-    static Scan scan(Level level, BlockPos origin, BlockPos center, LongSet seen, LongSet leaked) {
+    static Scan scan(Reader reader, BlockPos origin, BlockPos center, Long2ByteOpenHashMap parent, LongSet leaked) {
         return scan(
-                level,
+                reader,
                 origin,
                 center,
                 AdvancedRocketryConfig.oxygenVentSize(),
                 AdvancedRocketryConfig.oxygenVentVolumeBased(),
-                seen,
+                parent,
                 leaked);
     }
 
     private static Scan scan(
-            Level level,
+            Reader reader,
             BlockPos origin,
             BlockPos center,
             int radius,
             boolean volumeBased,
-            LongSet seen,
+            Long2ByteOpenHashMap parent,
             LongSet leaked) {
         long start = origin.asLong();
         if (leaked.contains(start)) return new Scan(new LongOpenHashSet(), null, origin, null, 0);
-        if (!seen.add(start)) return new Scan(new LongOpenHashSet(), null, null, null, 0);
+        // Zero means undiscovered, -1 marks the origin, and 1 through 6 encode a step back.
+        if (parent.putIfAbsent(start, (byte) -1) != 0) return new Scan(new LongOpenHashSet(), null, null, null, 0);
         int maximumVolume = (int) (4d / 3d * Math.PI * radius * radius * radius);
         double radiusSquared = (double) radius * radius;
-        Reader reader = new Reader(level);
+        Level level = reader.level;
         LongOpenHashSet room = new LongOpenHashSet();
-        Long2LongOpenHashMap parent = new Long2LongOpenHashMap();
+        boolean hasPriorLeak = !leaked.isEmpty();
         LongArrayFIFOQueue pending = new LongArrayFIFOQueue();
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         pending.enqueue(start);
@@ -193,6 +240,7 @@ public final class SealedRooms {
                         reader,
                         room,
                         leaked,
+                        pending,
                         parent,
                         start,
                         key,
@@ -200,22 +248,21 @@ public final class SealedRooms {
                         visited);
             for (Direction direction : DIRECTIONS) {
                 long neighbor = BlockPos.offset(key, direction);
-                if (leaked.contains(neighbor)) {
-                    parent.put(neighbor, key);
+                byte back = (byte) (1 + direction.getOpposite().ordinal());
+                if (hasPriorLeak && leaked.contains(neighbor)) {
+                    parent.put(neighbor, back);
                     return leaked(
                             reader,
                             room,
                             leaked,
+                            pending,
                             parent,
                             start,
                             neighbor,
                             new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ),
                             visited);
                 }
-                if (seen.add(neighbor)) {
-                    parent.put(neighbor, key);
-                    pending.enqueue(neighbor);
-                }
+                if (parent.putIfAbsent(neighbor, back) == 0) pending.enqueue(neighbor);
             }
         }
         return new Scan(room, new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ), null, null, visited);
@@ -225,11 +272,14 @@ public final class SealedRooms {
             Reader reader,
             LongOpenHashSet room,
             LongSet leaked,
-            Long2LongOpenHashMap parent,
+            LongArrayFIFOQueue pending,
+            Long2ByteOpenHashMap parent,
             long start,
             long escape,
             BoundingBox explored,
             int visited) {
+        // Queued cells have not been classified. Another vent face may reach this leak through one.
+        while (!pending.isEmpty()) parent.remove(pending.dequeueLong());
         leaked.addAll(room);
         leaked.add(escape);
         LongArrayList path = new LongArrayList();
@@ -237,7 +287,7 @@ public final class SealedRooms {
         while (true) {
             path.add(step);
             if (step == start || !parent.containsKey(step)) break;
-            step = parent.get(step);
+            step = BlockPos.offset(step, DIRECTIONS[parent.get(step) - 1]);
         }
         return new Scan(new LongOpenHashSet(), explored, BlockPos.of(escape), gap(reader, path), visited);
     }
@@ -269,22 +319,38 @@ public final class SealedRooms {
         return Direction.Axis.Z;
     }
 
-    private static final class Reader {
+    static final class Reader {
         private final Level level;
         private final Long2ObjectOpenHashMap<LevelChunk> chunks = new Long2ObjectOpenHashMap<>();
+        private long lastChunkKey = Long.MIN_VALUE;
+        private LevelChunk lastChunk;
+        private final Long2IntOpenHashMap roofHeights = new Long2IntOpenHashMap();
+        private final BlockPos.MutableBlockPos column = new BlockPos.MutableBlockPos();
         private final BlockPos.MutableBlockPos probe = new BlockPos.MutableBlockPos();
 
         Reader(Level level) {
             this.level = level;
         }
 
+        boolean checkedSky() {
+            return !roofHeights.isEmpty();
+        }
+
+        LongSet watchedChunks() {
+            // The index keeps keys only, never chunk or section references.
+            return new LongOpenHashSet(chunks.keySet());
+        }
+
         LevelChunk chunk(int chunkX, int chunkZ) {
             long key = ChunkPos.asLong(chunkX, chunkZ);
+            if (key == lastChunkKey) return lastChunk;
             LevelChunk chunk = chunks.get(key);
             if (chunk == null && !chunks.containsKey(key)) {
                 chunk = level.getChunkSource().getChunkNow(chunkX, chunkZ);
                 chunks.put(key, chunk);
             }
+            lastChunkKey = key;
+            lastChunk = chunk;
             return chunk;
         }
 
@@ -305,33 +371,41 @@ public final class SealedRooms {
             if (state.isCollisionShapeFullBlock(level, pos)) return true;
             if (state.is(LifeSupportRegistry.AIRLOCK.get())) return !state.getValue(BlockStateProperties.OPEN);
             if (!state.isAir() && !(state.getBlock() instanceof TransportBlock)) return false;
-            return frame(pos, Direction.DOWN, Direction.UP, Direction.EAST, Direction.WEST)
-                    || frame(pos, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH)
-                    || frame(pos, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
+            boolean vertical = sealer(pos, Direction.DOWN) && sealer(pos, Direction.UP);
+            boolean northSouth = sealer(pos, Direction.NORTH) && sealer(pos, Direction.SOUTH);
+            if (vertical && northSouth) return true;
+            return (vertical || northSouth) && sealer(pos, Direction.EAST) && sealer(pos, Direction.WEST);
         }
 
-        private boolean frame(BlockPos center, Direction... sides) {
-            for (Direction side : sides) {
-                BlockState state = state(probe.setWithOffset(center, side));
-                if (state == null || !state.is(LifeSupportRegistry.PIPE_SEALER.get())) return false;
-            }
-            return true;
+        private boolean sealer(BlockPos center, Direction side) {
+            BlockState state = state(probe.setWithOffset(center, side));
+            return state != null && state.is(LifeSupportRegistry.PIPE_SEALER.get());
         }
 
         boolean openAbove(LevelChunk chunk, int x, int y, int z) {
-            if (y <= chunk.getHeight(Heightmap.Types.MOTION_BLOCKING, x & 15, z & 15)) return false;
-            BlockPos.MutableBlockPos column = new BlockPos.MutableBlockPos(x, y, z);
-            int top = level.getMaxBuildHeight();
-            for (int height = y + 1; height < top; height++) {
-                LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(height));
-                if (section.hasOnlyAir()) {
-                    height |= 15;
-                    continue;
+            int surface = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING, x & 15, z & 15);
+            if (y <= surface) return false;
+            // Non-motion-blocking roofs can still seal. Resolve the highest one once per column per scan.
+            long key = ChunkPos.asLong(x, z);
+            int roof = roofHeights.getOrDefault(key, Integer.MIN_VALUE);
+            if (roof == Integer.MIN_VALUE) {
+                roof = surface;
+                column.set(x, y, z);
+                for (int height = level.getMaxBuildHeight() - 1; height > surface; height--) {
+                    LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(height));
+                    if (section.hasOnlyAir()) {
+                        height &= ~15;
+                        continue;
+                    }
+                    BlockState state = section.getBlockState(x & 15, height & 15, z & 15);
+                    if (seals(column.setY(height), state)) {
+                        roof = height;
+                        break;
+                    }
                 }
-                BlockState state = section.getBlockState(x & 15, height & 15, z & 15);
-                if (seals(column.setY(height), state)) return false;
+                roofHeights.put(key, roof);
             }
-            return true;
+            return y >= roof;
         }
     }
 }

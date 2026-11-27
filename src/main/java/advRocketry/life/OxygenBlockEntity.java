@@ -8,10 +8,10 @@ import advRocketry.life.client.LeakMarker;
 import advRocketry.processing.ProcessingFluids;
 import advRocketry.util.ClientSync;
 import advRocketry.util.MachineEnergy;
+import it.unimi.dsi.fastutil.longs.Long2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.longs.LongSets;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,12 +46,17 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     public boolean active;
     private static final LongOpenHashSet EMPTY_ROOM = new LongOpenHashSet();
 
-    private LongOpenHashSet room = new LongOpenHashSet();
+    private LongOpenHashSet room = EMPTY_ROOM;
+    private LongSet watchedChunks = LongSets.EMPTY_SET;
+    private final BlockPos[] neighbors;
+    private final CarbonScrubberBlockEntity[] adjacentScrubbers = new CarbonScrubberBlockEntity[6];
     private boolean updatingNeighbors;
     private boolean roomKnown;
+    private boolean checkedSky;
     private BlockPos leak;
     private boolean dirty;
     private long lastScan;
+    private long fallbackScan;
     private BoundingBox explored;
     public final MachineEnergy energy = MachineEnergy.consumer(ENERGY_CAPACITY, this::setChanged);
     private final ClientSync clientSync = new ClientSync();
@@ -67,6 +72,9 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
 
     public OxygenBlockEntity(BlockPos pos, BlockState state) {
         super(LifeSupportRegistry.OXYGEN_ENTITY.get(), pos, state);
+        Direction[] directions = Direction.values();
+        neighbors = new BlockPos[directions.length];
+        for (int i = 0; i < directions.length; i++) neighbors[i] = pos.relative(directions[i]);
     }
 
     private boolean fillsFromTank(ItemStack armor) {
@@ -99,7 +107,14 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
 
     public void setRoom(Set<BlockPos> room) {
         LongOpenHashSet keys = new LongOpenHashSet(room.size());
-        for (BlockPos pos : room) keys.add(pos.asLong());
+        LongSet chunks = new LongOpenHashSet();
+        for (BlockPos pos : room) {
+            keys.add(pos.asLong());
+            for (int x = (pos.getX() - 1) >> 4; x <= (pos.getX() + 1) >> 4; x++)
+                for (int z = (pos.getZ() - 1) >> 4; z <= (pos.getZ() + 1) >> 4; z++) chunks.add(ChunkPos.asLong(x, z));
+        }
+        checkedSky = false;
+        watchedChunks = chunks;
         assignRoom(keys, BoundingBox.encapsulatingPositions(room).orElse(null));
     }
 
@@ -107,8 +122,13 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
         this.room = room;
         this.explored = explored;
         roomKnown = true;
+        SealedRooms.register(this);
         dirty = false;
         lastScan = level == null ? 0 : level.getGameTime();
+        // Distribute periodic validation across ticks when many vents power up together.
+        long untilPhase =
+                FALLBACK_SCAN_INTERVAL - Math.floorMod(lastScan - worldPosition.hashCode(), FALLBACK_SCAN_INTERVAL);
+        fallbackScan = lastScan + (untilPhase < RESCAN_DELAY ? FALLBACK_SCAN_INTERVAL : untilPhase);
     }
 
     boolean supplies(BlockPos pos, long key) {
@@ -124,36 +144,40 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
                 && pos.getX() >= explored.minX() - 1
                 && pos.getX() <= explored.maxX() + 1
                 && pos.getY() >= explored.minY() - 1
-                && pos.getY() <= explored.maxY() + 1
+                && (checkedSky || pos.getY() <= explored.maxY() + 1)
                 && pos.getZ() >= explored.minZ() - 1
                 && pos.getZ() <= explored.maxZ() + 1) dirty = true;
     }
 
-    void chunkLoaded(ChunkPos chunk) {
-        if (roomKnown
-                && room.isEmpty()
-                && explored != null
-                && chunk.getMinBlockX() <= explored.maxX()
-                && chunk.getMaxBlockX() >= explored.minX()
-                && chunk.getMinBlockZ() <= explored.maxZ()
-                && chunk.getMaxBlockZ() >= explored.minZ()) dirty = true;
+    LongSet watchedChunks() {
+        if (roomKnown) return watchedChunks;
+        int radius = AdvancedRocketryConfig.oxygenVentSize();
+        var chunks = new LongOpenHashSet();
+        for (int x = (worldPosition.getX() - radius) >> 4; x <= (worldPosition.getX() + radius) >> 4; x++)
+            for (int z = (worldPosition.getZ() - radius) >> 4; z <= (worldPosition.getZ() + radius) >> 4; z++)
+                chunks.add(ChunkPos.asLong(x, z));
+        return chunks;
+    }
+
+    void chunkChanged(boolean loaded) {
+        if (!loaded || room.isEmpty()) dirty = true;
     }
 
     private boolean scanDue() {
         if (!roomKnown) return true;
         long elapsed = level.getGameTime() - lastScan;
-        return elapsed < 0 || elapsed >= (dirty ? RESCAN_DELAY : FALLBACK_SCAN_INTERVAL);
+        return elapsed < 0 || level.getGameTime() >= fallbackScan || dirty && elapsed >= RESCAN_DELAY;
     }
 
     private void scanRoom() {
-        LongOpenHashSet seen = new LongOpenHashSet();
+        var parents = new Long2ByteOpenHashMap();
         LongOpenHashSet leaked = new LongOpenHashSet();
         SealedRooms.Scan found = null;
         SealedRooms.Scan worst = null;
         BoundingBox box = null;
-        for (Direction direction : Direction.values()) {
-            SealedRooms.Scan scan =
-                    SealedRooms.scan(level, worldPosition.relative(direction), worldPosition, seen, leaked);
+        var reader = new SealedRooms.Reader(level);
+        for (BlockPos origin : neighbors) {
+            SealedRooms.Scan scan = SealedRooms.scan(reader, origin, worldPosition, parents, leaked);
             if (scan.explored() != null) box = box == null ? scan.explored() : box.encapsulate(scan.explored());
             if (!scan.room().isEmpty()) {
                 found = scan;
@@ -162,6 +186,8 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
             if (scan.leaked() && (worst == null || rank(scan) > rank(worst))) worst = scan;
         }
         leak = found == null && worst != null ? worst.leak() : null;
+        checkedSky = reader.checkedSky();
+        watchedChunks = reader.watchedChunks();
         assignRoom(found == null ? new LongOpenHashSet() : found.room(), box);
     }
 
@@ -170,7 +196,9 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     }
 
     private void forgetRoom() {
-        room = new LongOpenHashSet();
+        SealedRooms.remove(this);
+        watchedChunks = LongSets.EMPTY_SET;
+        room = EMPTY_ROOM;
         roomKnown = false;
         dirty = false;
         explored = null;
@@ -198,46 +226,44 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
             }
             return;
         }
-        SealedRooms.register(this);
         LongOpenHashSet previousRoom = active ? room : EMPTY_ROOM;
         int scrubbers = 0;
-        for (Direction direction : Direction.values()) {
-            if (level.getBlockEntity(worldPosition.relative(direction)) instanceof CarbonScrubberBlockEntity scrubber
-                    && scrubber.canScrub()) {
-                scrubbers++;
+        int adjacent = 0;
+        for (BlockPos next : neighbors) {
+            if (level.getBlockEntity(next) instanceof CarbonScrubberBlockEntity scrubber) {
+                adjacentScrubbers[adjacent++] = scrubber;
+                if (scrubber.canScrub()) scrubbers++;
             }
         }
         int power = (int) Math.ceil((1 + scrubbers * 10) * AdvancedRocketryConfig.oxygenVentPowerMultiplier());
         boolean powered = energy.getEnergyStored() >= power && !level.hasNeighborSignal(worldPosition);
-        if (!powered) forgetRoom();
-        else if (scanDue()) scanRoom();
+        if (powered) {
+            if (scanDue()) scanRoom();
+        } else if (roomKnown) forgetRoom();
         int consumption = (int) Math.ceil(room.size()
                 * Math.max(.01 - scrubbers * .005, 0)
                 * AdvancedRocketryConfig.oxygenVentConsumptionMultiplier());
         boolean previous = active;
         active = powered && !room.isEmpty() && tank.getFluidAmount() >= consumption;
         if (!previousRoom.isEmpty() && (!active || previousRoom != room) && level instanceof ServerLevel serverLevel)
-            LightingRegistry.atmosphereLost(
-                    serverLevel, active ? lost(previousRoom) : SealedRooms.positions(previousRoom));
+            LightingRegistry.atmosphereLost(serverLevel, previousRoom, active ? room : EMPTY_ROOM);
         if (active != previous) {
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
-        for (Direction direction : Direction.values()) {
-            BlockPos next = worldPosition.relative(direction);
-            BlockState state = level.getBlockState(next);
-            if (state.is(LifeSupportRegistry.CARBON_SCRUBBER.get())) {
-                if (active
-                        && AdvancedRocketryConfig.scrubberRequiresCartridge()
-                        && level.getGameTime() % 200 == 0
-                        && level.getBlockEntity(next) instanceof CarbonScrubberBlockEntity scrubber)
-                    scrubber.useCharge();
-                boolean scrubbing = active
-                        && level.getBlockEntity(next) instanceof CarbonScrubberBlockEntity scrubber
-                        && scrubber.canScrub();
-                if (state.getValue(CarbonScrubberBlock.POWERED) != scrubbing) {
-                    updatingNeighbors = true;
-                    level.setBlock(next, state.setValue(CarbonScrubberBlock.POWERED, scrubbing), 3);
+        for (int i = 0; i < adjacent; i++) {
+            var scrubber = adjacentScrubbers[i];
+            adjacentScrubbers[i] = null;
+            if (scrubber.isRemoved()) continue;
+            if (active && AdvancedRocketryConfig.scrubberRequiresCartridge() && level.getGameTime() % 200 == 0)
+                scrubber.useCharge();
+            boolean scrubbing = active && scrubber.canScrub();
+            BlockState state = scrubber.getBlockState();
+            if (state.getValue(CarbonScrubberBlock.POWERED) != scrubbing) {
+                updatingNeighbors = true;
+                try {
+                    level.setBlock(scrubber.getBlockPos(), state.setValue(CarbonScrubberBlock.POWERED, scrubbing), 3);
+                } finally {
                     updatingNeighbors = false;
                 }
             }
@@ -246,12 +272,6 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
             energy.consume(power, false);
             tank.drain(consumption, IFluidHandler.FluidAction.EXECUTE);
         }
-    }
-
-    private Collection<BlockPos> lost(LongOpenHashSet previousRoom) {
-        List<BlockPos> lost = new ArrayList<>();
-        for (long key : previousRoom) if (!room.contains(key)) lost.add(BlockPos.of(key));
-        return lost;
     }
 
     public void tickClient() {
@@ -275,8 +295,7 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
     public void decommission() {
         active = false;
         SealedRooms.remove(this);
-        if (level instanceof ServerLevel serverLevel)
-            LightingRegistry.atmosphereLost(serverLevel, SealedRooms.positions(room));
+        if (level instanceof ServerLevel serverLevel) LightingRegistry.atmosphereLost(serverLevel, room, EMPTY_ROOM);
         forgetRoom();
         if (level == null) return;
         for (Direction direction : Direction.values()) {
@@ -284,6 +303,15 @@ public final class OxygenBlockEntity extends BlockEntity implements MenuProvider
             BlockState state = level.getBlockState(next);
             if (state.is(LifeSupportRegistry.CARBON_SCRUBBER.get()) && state.getValue(CarbonScrubberBlock.POWERED))
                 level.setBlock(next, state.setValue(CarbonScrubberBlock.POWERED, false), 3);
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (roomKnown) {
+            dirty = true;
+            SealedRooms.register(this);
         }
     }
 
