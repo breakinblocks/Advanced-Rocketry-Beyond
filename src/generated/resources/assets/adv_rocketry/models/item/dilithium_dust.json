@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "adv_rocketry:item/dust"
+    "layer0": "adv_rocketry:item/dilithium_dust"
   }
 }

@@ -129,7 +129,7 @@ final class ModItemModels extends ModItemModelHelpers {
         model("item/data_bus", "block/data_bus", null, true);
         model("item/deployable_rocket_builder", "block/deployable_rocket_builder", null, true);
         model("item/dilithium_crystal", "minecraft:item/generated", null, true, "layer0", "item/crystal");
-        model("item/dilithium_dust", "minecraft:item/generated", null, true, "layer0", "item/dust");
+        model("item/dilithium_dust", "minecraft:item/generated", null, true, "layer0", "item/dilithium_dust");
         model("item/dilithium_ore", "block/dilithium_ore", null, true);
         model("item/docking_port", "block/docking_port", null, true);
         model("item/electric_arc_furnace", "block/electric_arc_furnace", null, true);
