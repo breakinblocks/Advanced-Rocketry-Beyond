@@ -328,13 +328,7 @@ final class ModItemModels extends ModItemModelHelpers {
         model("item/structure_tower", "block/structure_tower", null, true);
         model("item/suit_workstation", "block/suit_workstation", null, true);
         model("item/thermite", "minecraft:item/generated", null, true, "layer0", "item/thermite");
-        model(
-                "item/thermite_torch",
-                "minecraft:item/generated",
-                null,
-                true,
-                "layer0",
-                "item/thermite_torch");
+        model("item/thermite_torch", "minecraft:item/generated", null, true, "layer0", "item/thermite_torch");
         model("item/tin_block", "block/tin_block", null, true);
         model("item/tin_dust", "minecraft:item/generated", null, true, "layer0", "item/dust");
         model("item/tin_ingot", "minecraft:item/generated", null, true, "layer0", "item/ingot");
