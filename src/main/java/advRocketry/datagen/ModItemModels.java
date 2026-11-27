@@ -334,7 +334,7 @@ final class ModItemModels extends ModItemModelHelpers {
                 null,
                 true,
                 "layer0",
-                "legacy/advancedrocketry/blocks/thermitetorch");
+                "item/thermite_torch");
         model("item/tin_block", "block/tin_block", null, true);
         model("item/tin_dust", "minecraft:item/generated", null, true, "layer0", "item/dust");
         model("item/tin_ingot", "minecraft:item/generated", null, true, "layer0", "item/ingot");
