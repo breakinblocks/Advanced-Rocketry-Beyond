@@ -37,11 +37,6 @@ final class ModBlockStates extends ModBlockStateHelpers {
             Map.entry("axis=x", new int[] {90, 90}),
             Map.entry("axis=y", new int[] {0, 0}),
             Map.entry("axis=z", new int[] {90, 0}));
-    private static final Map<String, int[]> FACING_FIXED = Map.ofEntries(
-            Map.entry("facing=east", new int[] {0, 0}),
-            Map.entry("facing=north", new int[] {0, 0}),
-            Map.entry("facing=south", new int[] {0, 0}),
-            Map.entry("facing=west", new int[] {0, 0}));
     private static final Map<String, int[]> FACING_HORIZONTAL_ONLY = Map.ofEntries(
             Map.entry("facing=down", new int[] {0, 0}),
             Map.entry("facing=east", new int[] {0, 90}),
@@ -56,7 +51,6 @@ final class ModBlockStates extends ModBlockStateHelpers {
             Map.entry("facing=south", new int[] {0, 180}),
             Map.entry("facing=up", new int[] {270, 0}),
             Map.entry("facing=west", new int[] {0, 270}));
-    private static final Map<String, int[]> UPSIDE_DOWN = Map.ofEntries(Map.entry("", new int[] {180, 0}));
     private static final Set<String> LAYERED_TERRAIN = Set.of(
             "weathered_basalt",
             "wet_slate",
@@ -226,40 +220,14 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "all",
                 "legacy/libvulpes/blocks/orealuminum");
-        model(
-                "block/area_gravity_controller",
-                "minecraft:block/cube_all",
-                null,
-                true,
-                "all",
-                "block/controller_area_gravity_controller");
-        model(
-                "block/astrobody_data_processor",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "front",
-                "block/astrobody_data_processor_front",
-                "side",
-                "block/astrobody_data_processor_side",
-                "top",
-                "block/astrobody_data_processor_top");
-        framedCube("atmosphere_detector");
-        framedCube("atmosphere_detector_active");
-        model(
-                "block/atmosphere_terraformer",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "front",
-                "block/atmosphere_terraformer_front",
-                "side",
-                "block/atmosphere_terraformer_side",
-                "top",
-                "block/atmosphere_terraformer_top");
+        machineCabinet("area_gravity_controller");
+        machineCabinet("astrobody_data_processor");
+        machineCabinet("atmosphere_detector");
+        activeMachineCabinet("atmosphere_detector", "atmosphere_detector_active");
+        machineCabinet("atmosphere_terraformer");
         model("block/basalt", "minecraft:block/cube_all", null, true, "all", "legacy/advancedrocketry/blocks/basalt");
-        framedCube("beacon");
-        framedCube("biome_scanner");
+        machineCabinet("beacon");
+        machineCabinet("biome_scanner");
         obj("block/bipropellant_fuel_tank", "models/rocket/middletank.obj", "block/rocket/middletank");
         obj("block/bipropellant_fuel_tank_bottom", "models/rocket/bottomtank.obj", "block/rocket/bottomtank");
         obj("block/bipropellant_fuel_tank_middle", "models/rocket/middletank.obj", "block/rocket/middletank");
@@ -268,13 +236,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/bipropellant_rocket_motor",
                 "models/rocket/bipropellantrocketmotor.obj",
                 "block/rocket/bipropellantrocketmotor");
-        model(
-                "block/black_hole_generator",
-                "minecraft:block/cube_all",
-                null,
-                true,
-                "all",
-                "block/controller_black_hole_generator");
+        machineCabinet("black_hole_generator");
         connected("block/blast_brick", "block/ctm/blast_brick", -1);
         connected("block/block_advanced_structure_block", "block/ctm/advstructureblock", -1);
         connected("block/block_coilcopper", "block/ctm/coilside_copper", -1);
@@ -286,33 +248,9 @@ final class ModBlockStates extends ModBlockStateHelpers {
         connectedMachinePanel("block_item_output_block", "item_output");
         obj("block/block_motor_block", "models/libvulpes/motor.obj", "block/motor/motor");
         connectedWithRenderType("block/block_structure_block", "block/ctm/structureblock", -1, "minecraft:cutout");
-        faced(
-                "carbon_scrubber",
-                "carbon_scrubber_side",
-                "carbon_scrubber_side",
-                "carbon_scrubber_side",
-                "carbon_scrubber_side",
-                "carbon_scrubber_top",
-                "carbon_scrubber_bottom");
-        faced(
-                "carbon_scrubber_active",
-                "carbon_scrubber_active_side",
-                "carbon_scrubber_active_side",
-                "carbon_scrubber_active_side",
-                "carbon_scrubber_active_side",
-                "carbon_scrubber_top",
-                "carbon_scrubber_bottom");
-        model(
-                "block/centrifuge",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/controller_centrifuge",
-                "side",
-                "block/machinegeneric");
+        machineCabinet("carbon_scrubber");
+        activeMachineCabinet("carbon_scrubber", "carbon_scrubber");
+        machineCabinet("centrifuge");
         connectedMachinePanel("centrifuge_casing", "panelside");
         model(
                 "block/charcoal_log",
@@ -323,57 +261,17 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "legacy/advancedrocketry/blocks/log_charcoal",
                 "end",
                 "legacy/advancedrocketry/blocks/log_charcoal_top");
-        model(
-                "block/chemical_reactor",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/controller_chemical_reactor",
-                "side",
-                "block/machinegeneric");
+        machineCabinet("chemical_reactor");
         connected("block/circle_light", "block/ctm/stationlight", -1);
         model("block/coal_generator", "adv_rocketry:block/art/coal_generator", "minecraft:cutout", true);
         model("block/fuel_generator", "adv_rocketry:block/art/fuel_generator", "minecraft:cutout", true);
         connected("block/concrete", "block/ctm/concrete", -1);
         connected("block/copper_coil", "block/ctm/coilside", 0);
         connectedMachinePanel("creative_energy_input", "creative_energy_input");
-        model(
-                "block/crystallizer",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/crystallizer",
-                "side",
-                "block/machinegeneric");
-        model(
-                "block/cutting_machine",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/cuttingmachine",
-                "side",
-                "block/machinegeneric");
+        machineCabinet("crystallizer");
+        machineCabinet("cutting_machine");
         connectedMachinePanel("data_bus", "data_bus");
-        model(
-                "block/deployable_rocket_builder",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "front",
-                "block/controller_deployable_rocket_builder",
-                "top",
-                "block/machinegeneric",
-                "side",
-                "block/machinegeneric");
+        machineCabinet("deployable_rocket_builder");
         model(
                 "block/dilithium_ore",
                 "minecraft:block/cube_all",
@@ -381,28 +279,8 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "all",
                 "legacy/libvulpes/blocks/oredilithium");
-        model(
-                "block/docking_port",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/satellitebay",
-                "side",
-                "block/machinegeneric");
-        model(
-                "block/electric_arc_furnace",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/electric_arc_furnace_controls",
-                "side",
-                "block/machinegeneric");
+        machineCabinet("docking_port");
+        machineCabinet("electric_arc_furnace");
         model(
                 "block/electric_mushroom",
                 "minecraft:block/cross",
@@ -410,30 +288,10 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "cross",
                 "legacy/advancedrocketry/blocks/mushroom_electric");
-        model(
-                "block/electrolyzer",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/machineelectrolyzer",
-                "side",
-                "block/machinegeneric");
+        machineCabinet("electrolyzer");
         obj("block/elite_motor", "models/libvulpes/elitemotor.obj", "block/motor/elitemotor");
         obj("block/enhanced_motor", "models/libvulpes/enhancedmotor.obj", "block/motor/enhancedmotor");
-        model(
-                "block/fluid_pump",
-                "minecraft:block/cube_bottom_top",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "bottom",
-                "block/pumpbottom",
-                "side",
-                "block/pumpside");
+        machineCabinet("fluid_pump");
         model(
                 "block/force_field",
                 "minecraft:block/cube_all",
@@ -441,62 +299,18 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "all",
                 "legacy/advancedrocketry/blocks/forcefield");
-        model(
-                "block/force_field_projector",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/forcefieldprojector",
-                "front",
-                "block/forcefieldprojectorfront",
-                "side",
-                "block/forcefieldprojector");
+        machineCabinet("force_field_projector");
         obj("block/fuel_tank", "models/rocket/middletank.obj", "block/rocket/middletank");
         obj("block/fuel_tank_bottom", "models/rocket/bottomtank.obj", "block/rocket/bottomtank");
         obj("block/fuel_tank_middle", "models/rocket/middletank.obj", "block/rocket/middletank");
         obj("block/fuel_tank_top", "models/rocket/toptank.obj", "block/rocket/toptank");
-        faced(
-                "fueling_station",
-                "fueling_station_front",
-                "fueling_station_east",
-                "fueling_station_back",
-                "fueling_station_west",
-                "fueling_station_top",
-                "fueling_station_bottom");
-        framedCube("gas_intake");
+        machineCabinet("fueling_station", true);
+        machineCabinet("gas_intake");
         model("block/geode", "minecraft:block/cube_all", null, true, "all", "legacy/advancedrocketry/blocks/geode");
         connected("block/gold_coil", "block/ctm/coilside", 0);
-        model(
-                "block/guidance_access_hatch",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/guidancecomputeraccesshatch",
-                "front",
-                "block/guidancecomputeraccesshatch",
-                "side",
-                "block/guidancecomputeraccesshatch");
-        faced(
-                "guidance_computer",
-                "guidance_computer_front",
-                "guidance_computer_east",
-                "guidance_computer_back",
-                "guidance_computer_west",
-                "guidance_computer_top",
-                "guidance_computer_bottom");
-        model(
-                "block/holographic_planet_selector",
-                "minecraft:block/slab",
-                null,
-                true,
-                "top",
-                "block/hololamp",
-                "side",
-                "block/panelside",
-                "bottom",
-                "block/machinegeneric");
+        machineCabinet("guidance_access_hatch");
+        machineCabinet("guidance_computer", true);
+        machineSlab("holographic_planet_selector", false);
         model(
                 "block/hot_turf",
                 "minecraft:block/cube_all",
@@ -508,49 +322,12 @@ final class ModBlockStates extends ModBlockStateHelpers {
         model("block/iridium_ore", "minecraft:block/cube_all", null, true, "all", "legacy/libvulpes/blocks/oreiridium");
         model("block/landing_float", "minecraft:block/cube_all", null, true, "all", "block/landingfloat");
         connected("block/landing_pad", "block/ctm/rocketpad_", -1);
-        model(
-                "block/lathe",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/controller_lathe",
-                "side",
-                "block/machinegeneric");
+        machineCabinet("lathe");
         connected("block/launch_pad", "block/ctm/launch_pad", -1);
         connectedWithRenderType("block/lens_block", "block/ctm/lens_block", -1, "minecraft:cutout");
-        model(
-                "block/microwave_receiver",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/solar",
-                "front",
-                "block/machinegeneric",
-                "side",
-                "block/machinegeneric");
-        model(
-                "block/mining_drill",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "front",
-                "block/machinewarning",
-                "top",
-                "block/laserbottom",
-                "side",
-                "block/machinewarning");
-        faced(
-                "monitoring_station",
-                "monitoring_station_front",
-                "monitoring_station_east",
-                "monitoring_station_back",
-                "monitoring_station_west",
-                "monitoring_station_top",
-                "monitoring_station_bottom");
+        machineCabinet("microwave_receiver");
+        machineCabinet("mining_drill");
+        machineCabinet("monitoring_station", true);
         model(
                 "block/moon_turf",
                 "minecraft:block/cube_all",
@@ -565,63 +342,24 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "all",
                 "legacy/advancedrocketry/blocks/moon_turf_dark");
-        framedCube("nuclear_core");
+        machineCabinet("nuclear_core");
         obj("block/nuclear_fuel_tank", "models/rocket/middletank.obj", "block/rocket/middletank");
         obj("block/nuclear_fuel_tank_bottom", "models/rocket/bottomtank.obj", "block/rocket/bottomtank");
         obj("block/nuclear_fuel_tank_middle", "models/rocket/middletank.obj", "block/rocket/middletank");
         obj("block/nuclear_fuel_tank_top", "models/rocket/toptank.obj", "block/rocket/toptank");
         obj("block/nuclear_rocket_motor", "models/rocket/nuclearrocketmotor.obj", "block/rocket/nuclearrocketmotor");
-        faced(
-                "observatory",
-                "observatory_front",
-                "observatory_east",
-                "observatory_back",
-                "observatory_west",
-                "observatory_top",
-                "observatory_bottom");
-        framedOrientable("orbital_laser");
+        machineCabinet("observatory", true);
+        machineCabinet("orbital_laser");
         obj("block/oxidizer_fuel_tank", "models/rocket/middletank.obj", "block/rocket/middletank");
         obj("block/oxidizer_fuel_tank_bottom", "models/rocket/bottomtank.obj", "block/rocket/bottomtank");
         obj("block/oxidizer_fuel_tank_middle", "models/rocket/middletank.obj", "block/rocket/middletank");
         obj("block/oxidizer_fuel_tank_top", "models/rocket/toptank.obj", "block/rocket/toptank");
-        oxygenCharger();
+        machineSlab("oxygen_charger", true);
         connected("block/oxygen_vent", "block/ctm/oxygen_vent", -1);
-        framedCube("pipe_sealer");
-        model(
-                "block/plate_press",
-                "minecraft:block/piston",
-                null,
-                true,
-                "platform",
-                "block/plate_press/piston_top",
-                "bottom",
-                "block/plate_press/piston_bottom",
-                "side",
-                "block/plate_press/piston_side",
-                "inside",
-                "block/plate_press/piston_inner");
-        model(
-                "block/precision_assembler",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/precisionassemblerfront",
-                "side",
-                "block/machinegeneric");
-        model(
-                "block/precision_laser_etcher",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/machineprecisionlaseretcher",
-                "side",
-                "block/machinegeneric");
+        machineCabinet("pipe_sealer");
+        machineCabinet("plate_press");
+        machineCabinet("precision_assembler");
+        machineCabinet("precision_laser_etcher");
         model(
                 "block/quartz_crucible",
                 "minecraft:block/cauldron",
@@ -637,64 +375,19 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/qcrucible_side",
                 "inside",
                 "block/qcrucible_inner");
-        framedOrientable("railgun");
-        faced(
-                "rocket_builder",
-                "rocket_builder_front",
-                "rocket_builder_east",
-                "rocket_builder_back",
-                "rocket_builder_west",
-                "rocket_builder_top",
-                "rocket_builder_bottom");
-        framedOrientable("rocket_fluid_loader");
-        framedOrientable("rocket_fluid_unloader");
-        faced(
-                "rocket_item_loader",
-                "rocket_item_loader_side",
-                "rocket_item_loader_side",
-                "rocket_item_loader_side",
-                "rocket_item_loader_side",
-                "rocket_item_loader_top",
-                "rocket_item_loader_bottom");
-        faced(
-                "rocket_item_unloader",
-                "rocket_item_unloader_side",
-                "rocket_item_unloader_side",
-                "rocket_item_unloader_side",
-                "rocket_item_unloader_side",
-                "rocket_item_unloader_top",
-                "rocket_item_unloader_bottom");
+        machineCabinet("railgun");
+        machineCabinet("rocket_builder", true);
+        machineCabinet("rocket_fluid_loader");
+        machineCabinet("rocket_fluid_unloader");
+        machineCabinet("rocket_item_loader");
+        machineCabinet("rocket_item_unloader");
         obj("block/rocket_motor", "models/rocket/rocketmotor.obj", "block/rocket/rocketmotor");
-        model(
-                "block/rolling_machine",
-                "minecraft:block/orientable",
-                null,
-                true,
-                "top",
-                "block/machinegeneric",
-                "front",
-                "block/controller_rolling_machine",
-                "side",
-                "block/machinegeneric");
-        framedCube("satellite_builder");
+        machineCabinet("rolling_machine");
+        machineCabinet("satellite_builder");
         obj("block/seat", "models/block/art/seat.obj", "block/seat").renderType("minecraft:cutout");
-        faced(
-                "suit_workstation",
-                "suit_workstation_front",
-                "suit_workstation_east",
-                "suit_workstation_back",
-                "suit_workstation_west",
-                "suit_workstation_top",
-                "suit_workstation_bottom");
-        faced(
-                "satellite_hatch",
-                "satellite_hatch",
-                "satellite_hatch",
-                "satellite_hatch",
-                "satellite_hatch",
-                "satellite_hatch",
-                "satellite_hatch");
-        framedCube("satellite_terminal");
+        machineCabinet("suit_workstation", true);
+        machineCabinet("satellite_hatch");
+        machineCabinet("satellite_terminal");
         model(
                 "block/saw_blade_assembly",
                 "minecraft:block/cube_all",
@@ -702,40 +395,14 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 true,
                 "all",
                 "item/sawbladeassembly");
-        framedOrientable("solar_array");
+        machineCabinet("solar_array");
         connected("block/solar_array_panel", "block/ctm/solar", -1, "adv_rocketry:solar_panel");
         connected("block/solar_panel", "block/ctm/solar", -1, "adv_rocketry:solar_array_panel");
-        framedOrientable("space_elevator");
-        faced(
-                "station_altitude_controller",
-                "station_altitude_controller_front",
-                "station_altitude_controller_east",
-                "station_altitude_controller_back",
-                "station_altitude_controller_west",
-                "station_altitude_controller_top",
-                "station_altitude_controller_bottom");
-        faced(
-                "station_builder",
-                "station_builder_front",
-                "station_builder_east",
-                "station_builder_back",
-                "station_builder_west",
-                "station_builder_top",
-                "station_builder_bottom");
-        model(
-                "block/station_gravity_controller",
-                "minecraft:block/cube_all",
-                null,
-                true,
-                "all",
-                "block/controller_station_gravity_controller");
-        model(
-                "block/station_orientation_controller",
-                "minecraft:block/cube_all",
-                null,
-                true,
-                "all",
-                "block/controller_station_orientation_controller");
+        machineCabinet("space_elevator");
+        machineCabinet("station_altitude_controller", true);
+        machineCabinet("station_builder", true);
+        machineCabinet("station_gravity_controller");
+        machineCabinet("station_orientation_controller");
         connectedWithRenderType("block/structure_tower", "block/ctm/structure_tower", -1, "minecraft:cutout");
         model(
                 "block/thermite_torch",
@@ -769,15 +436,8 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "torch",
                 "block/unlit_torch");
         connected("block/vacuum_laser", "block/ctm/vacuum_laser", -1);
-        faced(
-                "warp_controller",
-                "warp_controller_front",
-                "warp_controller_east",
-                "warp_controller_back",
-                "warp_controller_west",
-                "warp_controller_top",
-                "warp_controller_bottom");
-        framedOrientable("warp_core");
+        machineCabinet("warp_controller", true);
+        machineCabinet("warp_core");
         states(
                 "advanced_bipropellant_rocket_motor",
                 FACING_POINTS_DOWN,
@@ -808,7 +468,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states("amethyst_crystal_block", NONE, "", "block/amethyst_crystal_block");
         states("ammonia", NONE, "", "minecraft:block/water");
         states("area_gravity_controller", NONE, "", "block/area_gravity_controller");
-        states("astrobody_data_processor", FACING_FIXED, "", "block/astrobody_data_processor");
+        states("astrobody_data_processor", HORIZONTAL, "", "block/astrobody_data_processor");
         states(
                 "atmosphere_detector",
                 NONE,
@@ -816,7 +476,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "block/atmosphere_detector",
                 "powered=true",
                 "block/atmosphere_detector_active");
-        states("atmosphere_terraformer", FACING_FIXED, "", "block/atmosphere_terraformer");
+        states("atmosphere_terraformer", HORIZONTAL, "", "block/atmosphere_terraformer");
         states("basalt", NONE, "", "block/basalt");
         states("beacon", NONE, "", "block/beacon");
         states("biome_scanner", NONE, "", "block/biome_scanner");
@@ -830,7 +490,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
                 "tankstates=top",
                 "block/bipropellant_fuel_tank_top");
         states("bipropellant_rocket_motor", FACING_POINTS_DOWN, "", "block/bipropellant_rocket_motor");
-        states("black_hole_generator", FACING_FIXED, "", "block/black_hole_generator");
+        states("black_hole_generator", HORIZONTAL, "", "block/black_hole_generator");
         states("blast_brick", NONE, "", "block/blast_brick");
         states("block_advanced_structure_block", NONE, "", "block/block_advanced_structure_block");
         states("block_coilcopper", NONE, "", "block/block_coilcopper");
@@ -1003,7 +663,7 @@ final class ModBlockStates extends ModBlockStateHelpers {
         states("oxygen_charger", NONE, "", "block/oxygen_charger");
         states("oxygen_vent", NONE, "", "block/oxygen_vent");
         states("pipe_sealer", NONE, "", "block/pipe_sealer");
-        states("plate_press", UPSIDE_DOWN, "", "block/plate_press");
+        states("plate_press", NONE, "", "block/plate_press");
         states(
                 "precision_assembler",
                 HORIZONTAL,
@@ -1279,73 +939,63 @@ final class ModBlockStates extends ModBlockStateHelpers {
         else element.face(Direction.SOUTH).cullface(Direction.SOUTH);
     }
 
-    private void framedCube(String name) {
-        String base = "block/framed/" + name;
+    private void machineCabinet(String name) {
+        machineCabinet(name, false);
+    }
+
+    private void machineCabinet(String name, boolean splitSides) {
+        machineCube(name, name, name, splitSides);
+    }
+
+    private void activeMachineCabinet(String name, String poweredFaces) {
+        machineCube(name + "_active", name, poweredFaces, false);
+    }
+
+    private void machineCube(String modelName, String textureName, String poweredFaces, boolean splitSides) {
         model(
-                "block/" + name,
+                "block/" + modelName,
                 "minecraft:block/cube",
                 null,
                 true,
                 "particle",
-                base + "_front",
+                "block/framed/" + modelName + "_front",
                 "north",
-                base + "_front",
+                "block/framed/" + modelName + "_front",
                 "south",
-                base + "_side",
+                machineFace(textureName, Direction.SOUTH, splitSides),
                 "east",
-                base + "_side",
+                machineFace(poweredFaces, Direction.EAST, splitSides),
                 "west",
-                base + "_side",
+                machineFace(poweredFaces, Direction.WEST, splitSides),
                 "up",
-                base + "_top",
+                machineFace(poweredFaces, Direction.UP, splitSides),
                 "down",
-                "block/framed/bottom");
+                machineFace(textureName, Direction.DOWN, splitSides));
     }
 
-    private void framedOrientable(String name) {
-        String base = "block/framed/" + name;
-        model(
-                "block/" + name,
-                "minecraft:block/orientable_with_bottom",
-                null,
-                true,
-                "front",
-                base + "_front",
-                "side",
-                base + "_side",
-                "top",
-                base + "_top",
-                "bottom",
-                "block/framed/bottom");
-    }
-
-    private void faced(String name, String... faces) {
-        String[] keys = {"north", "east", "south", "west", "up", "down"};
-        String[] textures = new String[14];
-        textures[0] = "particle";
-        textures[1] = "block/framed/" + faces[0];
-        for (int index = 0; index < keys.length; index++) {
-            textures[2 + index * 2] = keys[index];
-            textures[3 + index * 2] = "block/framed/" + faces[index];
-        }
-        model("block/" + name, "minecraft:block/cube", null, true, textures);
-    }
-
-    private void oxygenCharger() {
-        BlockModelBuilder builder = models().getBuilder("block/oxygen_charger")
+    private void machineSlab(String name, boolean splitSides) {
+        BlockModelBuilder builder = models().getBuilder("block/" + name)
                 .parent(unchecked("minecraft:block/block"))
-                .texture("particle", location("block/framed/oxygen_charger_top"));
-        String[] faces = {"front", "east", "back", "west", "top", "bottom"};
-        Direction[] directions = {
-            Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.UP, Direction.DOWN
-        };
+                .texture("particle", location(machineFace(name, Direction.UP, splitSides)));
         var element = builder.element().from(0, 0, 0).to(16, 8, 16);
-        for (int index = 0; index < directions.length; index++) {
-            Direction direction = directions[index];
-            builder.texture(direction.getSerializedName(), location("block/framed/oxygen_charger_" + faces[index]));
-            var face = element.face(direction).texture("#" + direction.getSerializedName());
+        for (Direction direction : Direction.values()) {
+            String key = direction.getSerializedName();
+            builder.texture(key, location(machineFace(name, direction, splitSides)));
+            var face = element.face(direction).texture("#" + key);
             if (direction.getAxis().isHorizontal()) face.uvs(0, 8, 16, 16);
             if (direction != Direction.UP) face.cullface(direction);
         }
+    }
+
+    private static String machineFace(String name, Direction direction, boolean splitSides) {
+        String suffix =
+                switch (direction) {
+                    case NORTH -> "front";
+                    case SOUTH -> "back";
+                    case EAST, WEST -> splitSides ? direction.getSerializedName() : "side";
+                    case UP -> "top";
+                    case DOWN -> "bottom";
+                };
+        return "block/framed/" + name + "_" + suffix;
     }
 }

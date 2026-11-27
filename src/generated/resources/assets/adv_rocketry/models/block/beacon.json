@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "down": "adv_rocketry:block/framed/bottom",
+    "down": "adv_rocketry:block/framed/beacon_bottom",
     "east": "adv_rocketry:block/framed/beacon_side",
     "north": "adv_rocketry:block/framed/beacon_front",
     "particle": "adv_rocketry:block/framed/beacon_front",
-    "south": "adv_rocketry:block/framed/beacon_side",
+    "south": "adv_rocketry:block/framed/beacon_back",
     "up": "adv_rocketry:block/framed/beacon_top",
     "west": "adv_rocketry:block/framed/beacon_side"
   }

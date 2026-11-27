@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "down": "adv_rocketry:block/framed/bottom",
+    "down": "adv_rocketry:block/framed/nuclear_core_bottom",
     "east": "adv_rocketry:block/framed/nuclear_core_side",
     "north": "adv_rocketry:block/framed/nuclear_core_front",
     "particle": "adv_rocketry:block/framed/nuclear_core_front",
-    "south": "adv_rocketry:block/framed/nuclear_core_side",
+    "south": "adv_rocketry:block/framed/nuclear_core_back",
     "up": "adv_rocketry:block/framed/nuclear_core_top",
     "west": "adv_rocketry:block/framed/nuclear_core_side"
   }

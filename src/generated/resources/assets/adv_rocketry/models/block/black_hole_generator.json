@@ -1,6 +1,12 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "all": "adv_rocketry:block/controller_black_hole_generator"
+    "down": "adv_rocketry:block/framed/black_hole_generator_bottom",
+    "east": "adv_rocketry:block/framed/black_hole_generator_side",
+    "north": "adv_rocketry:block/framed/black_hole_generator_front",
+    "particle": "adv_rocketry:block/framed/black_hole_generator_front",
+    "south": "adv_rocketry:block/framed/black_hole_generator_back",
+    "up": "adv_rocketry:block/framed/black_hole_generator_top",
+    "west": "adv_rocketry:block/framed/black_hole_generator_side"
   }
 }

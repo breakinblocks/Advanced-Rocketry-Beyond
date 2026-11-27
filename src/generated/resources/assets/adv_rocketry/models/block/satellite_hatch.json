@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "down": "adv_rocketry:block/framed/satellite_hatch",
-    "east": "adv_rocketry:block/framed/satellite_hatch",
-    "north": "adv_rocketry:block/framed/satellite_hatch",
-    "particle": "adv_rocketry:block/framed/satellite_hatch",
-    "south": "adv_rocketry:block/framed/satellite_hatch",
-    "up": "adv_rocketry:block/framed/satellite_hatch",
-    "west": "adv_rocketry:block/framed/satellite_hatch"
+    "down": "adv_rocketry:block/framed/satellite_hatch_bottom",
+    "east": "adv_rocketry:block/framed/satellite_hatch_side",
+    "north": "adv_rocketry:block/framed/satellite_hatch_front",
+    "particle": "adv_rocketry:block/framed/satellite_hatch_front",
+    "south": "adv_rocketry:block/framed/satellite_hatch_back",
+    "up": "adv_rocketry:block/framed/satellite_hatch_top",
+    "west": "adv_rocketry:block/framed/satellite_hatch_side"
   }
 }

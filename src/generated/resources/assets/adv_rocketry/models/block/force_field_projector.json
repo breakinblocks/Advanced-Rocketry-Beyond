@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "front": "adv_rocketry:block/forcefieldprojectorfront",
-    "side": "adv_rocketry:block/forcefieldprojector",
-    "top": "adv_rocketry:block/forcefieldprojector"
+    "down": "adv_rocketry:block/framed/force_field_projector_bottom",
+    "east": "adv_rocketry:block/framed/force_field_projector_side",
+    "north": "adv_rocketry:block/framed/force_field_projector_front",
+    "particle": "adv_rocketry:block/framed/force_field_projector_front",
+    "south": "adv_rocketry:block/framed/force_field_projector_back",
+    "up": "adv_rocketry:block/framed/force_field_projector_top",
+    "west": "adv_rocketry:block/framed/force_field_projector_side"
   }
 }

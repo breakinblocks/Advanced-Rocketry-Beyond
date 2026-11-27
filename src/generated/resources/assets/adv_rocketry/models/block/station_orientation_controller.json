@@ -1,6 +1,12 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "all": "adv_rocketry:block/controller_station_orientation_controller"
+    "down": "adv_rocketry:block/framed/station_orientation_controller_bottom",
+    "east": "adv_rocketry:block/framed/station_orientation_controller_side",
+    "north": "adv_rocketry:block/framed/station_orientation_controller_front",
+    "particle": "adv_rocketry:block/framed/station_orientation_controller_front",
+    "south": "adv_rocketry:block/framed/station_orientation_controller_back",
+    "up": "adv_rocketry:block/framed/station_orientation_controller_top",
+    "west": "adv_rocketry:block/framed/station_orientation_controller_side"
   }
 }

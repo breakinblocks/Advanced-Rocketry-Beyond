@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "front": "adv_rocketry:block/controller_chemical_reactor",
-    "side": "adv_rocketry:block/machinegeneric",
-    "top": "adv_rocketry:block/machinegeneric"
+    "down": "adv_rocketry:block/framed/chemical_reactor_bottom",
+    "east": "adv_rocketry:block/framed/chemical_reactor_side",
+    "north": "adv_rocketry:block/framed/chemical_reactor_front",
+    "particle": "adv_rocketry:block/framed/chemical_reactor_front",
+    "south": "adv_rocketry:block/framed/chemical_reactor_back",
+    "up": "adv_rocketry:block/framed/chemical_reactor_top",
+    "west": "adv_rocketry:block/framed/chemical_reactor_side"
   }
 }

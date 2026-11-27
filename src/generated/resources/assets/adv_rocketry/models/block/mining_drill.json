@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "front": "adv_rocketry:block/machinewarning",
-    "side": "adv_rocketry:block/machinewarning",
-    "top": "adv_rocketry:block/laserbottom"
+    "down": "adv_rocketry:block/framed/mining_drill_bottom",
+    "east": "adv_rocketry:block/framed/mining_drill_side",
+    "north": "adv_rocketry:block/framed/mining_drill_front",
+    "particle": "adv_rocketry:block/framed/mining_drill_front",
+    "south": "adv_rocketry:block/framed/mining_drill_back",
+    "up": "adv_rocketry:block/framed/mining_drill_top",
+    "west": "adv_rocketry:block/framed/mining_drill_side"
   }
 }

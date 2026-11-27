@@ -1,9 +1,12 @@
 {
-  "parent": "minecraft:block/piston",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "bottom": "adv_rocketry:block/plate_press/piston_bottom",
-    "inside": "adv_rocketry:block/plate_press/piston_inner",
-    "platform": "adv_rocketry:block/plate_press/piston_top",
-    "side": "adv_rocketry:block/plate_press/piston_side"
+    "down": "adv_rocketry:block/framed/plate_press_bottom",
+    "east": "adv_rocketry:block/framed/plate_press_side",
+    "north": "adv_rocketry:block/framed/plate_press_front",
+    "particle": "adv_rocketry:block/framed/plate_press_front",
+    "south": "adv_rocketry:block/framed/plate_press_back",
+    "up": "adv_rocketry:block/framed/plate_press_top",
+    "west": "adv_rocketry:block/framed/plate_press_side"
   }
 }

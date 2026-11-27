@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "bottom": "adv_rocketry:block/pumpbottom",
-    "side": "adv_rocketry:block/pumpside",
-    "top": "adv_rocketry:block/machinegeneric"
+    "down": "adv_rocketry:block/framed/fluid_pump_bottom",
+    "east": "adv_rocketry:block/framed/fluid_pump_side",
+    "north": "adv_rocketry:block/framed/fluid_pump_front",
+    "particle": "adv_rocketry:block/framed/fluid_pump_front",
+    "south": "adv_rocketry:block/framed/fluid_pump_back",
+    "up": "adv_rocketry:block/framed/fluid_pump_top",
+    "west": "adv_rocketry:block/framed/fluid_pump_side"
   }
 }

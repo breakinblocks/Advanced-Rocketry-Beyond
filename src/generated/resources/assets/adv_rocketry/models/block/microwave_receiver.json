@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "front": "adv_rocketry:block/machinegeneric",
-    "side": "adv_rocketry:block/machinegeneric",
-    "top": "adv_rocketry:block/solar"
+    "down": "adv_rocketry:block/framed/microwave_receiver_bottom",
+    "east": "adv_rocketry:block/framed/microwave_receiver_side",
+    "north": "adv_rocketry:block/framed/microwave_receiver_front",
+    "particle": "adv_rocketry:block/framed/microwave_receiver_front",
+    "south": "adv_rocketry:block/framed/microwave_receiver_back",
+    "up": "adv_rocketry:block/framed/microwave_receiver_top",
+    "west": "adv_rocketry:block/framed/microwave_receiver_side"
   }
 }

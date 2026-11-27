@@ -3,9 +3,9 @@
   "textures": {
     "down": "adv_rocketry:block/framed/rocket_item_loader_bottom",
     "east": "adv_rocketry:block/framed/rocket_item_loader_side",
-    "north": "adv_rocketry:block/framed/rocket_item_loader_side",
-    "particle": "adv_rocketry:block/framed/rocket_item_loader_side",
-    "south": "adv_rocketry:block/framed/rocket_item_loader_side",
+    "north": "adv_rocketry:block/framed/rocket_item_loader_front",
+    "particle": "adv_rocketry:block/framed/rocket_item_loader_front",
+    "south": "adv_rocketry:block/framed/rocket_item_loader_back",
     "up": "adv_rocketry:block/framed/rocket_item_loader_top",
     "west": "adv_rocketry:block/framed/rocket_item_loader_side"
   }

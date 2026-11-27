@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "down": "adv_rocketry:block/framed/bottom",
+    "down": "adv_rocketry:block/framed/atmosphere_detector_bottom",
     "east": "adv_rocketry:block/framed/atmosphere_detector_side",
     "north": "adv_rocketry:block/framed/atmosphere_detector_front",
     "particle": "adv_rocketry:block/framed/atmosphere_detector_front",
-    "south": "adv_rocketry:block/framed/atmosphere_detector_side",
+    "south": "adv_rocketry:block/framed/atmosphere_detector_back",
     "up": "adv_rocketry:block/framed/atmosphere_detector_top",
     "west": "adv_rocketry:block/framed/atmosphere_detector_side"
   }
