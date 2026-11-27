@@ -118,8 +118,10 @@ public final class StructurePreview {
                         && !(minecraft.player.getOffhandItem().getItem() instanceof HoloProjectorItem)) return;
         var camera = event.getCamera().getPosition();
         long gameTime = minecraft.level.getGameTime();
-        if (gameTime - refreshedAt >= REFRESH_TICKS || gameTime < refreshedAt || refreshedLayer != selectedLayer)
-            refresh(minecraft, camera);
+        if (refreshedAt == Long.MIN_VALUE
+                || gameTime - refreshedAt >= REFRESH_TICKS
+                || gameTime < refreshedAt
+                || refreshedLayer != selectedLayer) refresh(minecraft, camera);
         if (ghosts.isEmpty() && invalid.isEmpty()) return;
         float time = gameTime + event.getPartialTick().getGameTimeDeltaPartialTick(false);
         float pulse = .5f + .5f * (float) Math.sin(time * Math.PI * 2 / PULSE_TICKS);

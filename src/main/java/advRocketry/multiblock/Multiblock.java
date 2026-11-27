@@ -182,6 +182,10 @@ public final class Multiblock {
                 : keys.get(symbol);
     }
 
+    public BlockPos controllerAtBase(BlockPos base) {
+        return base.above(cells.getLast().layer() - origin.layer());
+    }
+
     public BlockPos position(BlockPos controller, Direction facing, Cell cell) {
         return position(controller, facing, cell.layer(), cell.row(), cell.column());
     }

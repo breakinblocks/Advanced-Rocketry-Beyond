@@ -6,6 +6,8 @@ package advRocketry.processing;
 import advRocketry.Main;
 import advRocketry.ModComponents;
 import advRocketry.multiblock.Multiblocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -38,7 +40,32 @@ public record ProjectorSelection(ResourceLocation machine, InteractionHand hand)
         return true;
     }
 
+    public record Placement(ResourceLocation machine, BlockPos anchor, Direction facing)
+            implements CustomPacketPayload {
+        public static final Type<Placement> TYPE =
+                new Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "projector_placement"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, Placement> CODEC = StreamCodec.of(
+                (buffer, value) -> {
+                    buffer.writeResourceLocation(value.machine());
+                    buffer.writeBlockPos(value.anchor());
+                    buffer.writeEnum(value.facing());
+                },
+                buffer -> new Placement(
+                        buffer.readResourceLocation(), buffer.readBlockPos(), buffer.readEnum(Direction.class)));
+
+        @Override
+        public Type<Placement> type() {
+            return TYPE;
+        }
+    }
+
     public static void register(RegisterPayloadHandlersEvent event) {
+        event.registrar("1")
+                .playToClient(
+                        Placement.TYPE,
+                        Placement.CODEC,
+                        (payload, context) -> HoloProjectorItem.preview.select(
+                                payload.machine(), payload.anchor(), payload.facing()));
         event.registrar("1").playToServer(TYPE, CODEC, (payload, context) -> payload.apply(context.player()));
     }
 }

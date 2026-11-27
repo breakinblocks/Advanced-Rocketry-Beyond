@@ -26,7 +26,7 @@ item_ids:
 
 # Construction and ports
 
-Sneak-use the **Holographic Projector** to choose a structure and inspect its materials. Use it on a controller to preview that build, or on another block to position the selected preview. Sneak-scroll through layers.
+Sneak-use the **Holographic Projector** to choose a structure and inspect its materials. Use it on a controller to preview that build, or click any face of another block to place the bottom of the selected build on top of it. Each placement starts with all layers visible. Sneak-scroll to inspect one layer at a time.
 
 Controllers face outward. Guide examples face north; use the projector for rotated builds. Keep required air spaces empty. The scenes show unformed construction blocks so every part remains visible before the modeled shell appears.
 
